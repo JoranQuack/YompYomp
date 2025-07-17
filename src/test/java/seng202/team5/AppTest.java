@@ -22,4 +22,9 @@ public class AppTest {
     public void testTeamName() {
         assertEquals("The Dream Team 5", app.teamName());
     }
+
+    @Test
+    public void testHayley() {
+        assertEquals("Hello Hayley", app.helloHayley() );
+    }
 }
