@@ -32,4 +32,9 @@ public class AppTest {
     public void testAppName() {
         assertEquals("YompYomp", app.appName());
     }
+
+    @Test
+    public void testYellowCard() {
+        assertEquals("Bring snacks", app.yellowCard());
+    }
 }
