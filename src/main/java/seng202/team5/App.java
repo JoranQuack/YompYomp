@@ -23,6 +23,10 @@ public class App {
         return "Bring snacks";
     }
 
+    public String redCard(){
+        return "Your Out";
+    }
+
     public static void main(String[] args) {
         //TIP Press <shortcut actionId="ShowIntentionActions"/> with your caret at the highlighted text
         // to see how IntelliJ IDEA suggests fixing it.
