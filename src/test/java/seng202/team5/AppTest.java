@@ -17,4 +17,9 @@ public class AppTest {
     public void testHelloWorld() {
         assertEquals("Hello World", app.helloWorld());
     }
+
+    @Test
+    public void testTeamName() {
+        assertEquals("The Dream Team 5", app.teamName());
+    }
 }
