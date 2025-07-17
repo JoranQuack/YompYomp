@@ -37,4 +37,9 @@ public class AppTest {
     public void testYellowCard() {
         assertEquals("Bring snacks", app.yellowCard());
     }
+
+    @Test
+    public void testRedCard() {
+        assertEquals("Your Out", app.redCard());
+    }
 }
