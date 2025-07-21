@@ -18,7 +18,7 @@ dependencies {
 }
 
 application {
-    mainClass = "App"
+    mainClass = "seng202.team5.App"
 }
 
 javafx {
