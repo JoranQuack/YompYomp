@@ -1,3 +1,4 @@
+package seng202.team5;
 
 public class App {
     public String helloWorld() {
