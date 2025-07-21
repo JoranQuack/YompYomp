@@ -1,5 +1,3 @@
-package seng202.team5;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -25,7 +23,7 @@ public class AppTest {
 
     @Test
     public void testHayley() {
-        assertEquals("Hello Hayley", app.helloHayley() );
+        assertEquals("Hello Hayley", app.helloHayley());
     }
 
     @Test
