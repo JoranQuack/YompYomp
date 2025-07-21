@@ -10,7 +10,7 @@ import seng202.team5.Environment;
 import java.io.IOException;
 
 /**
- * Class that handles navigation between various {@link ScreenController}s. This
+ * Class that handles navigation between various {@link Controller}s. This
  * navigator
  * uses a {@link BorderPane} layout for the root pane. A launched screen is
  * placed in the
@@ -39,17 +39,17 @@ public class ScreenNavigator {
      * @param environment The environment instance
      */
     public void launchStartScreen(Environment environment) {
-        // TODO: Implement the logic to launch the start screen
+        launchScreen(new StartController(environment));
     }
 
     /**
      * Replaces the root border pane's center component with the screen defined by
      * the given
-     * {@link ScreenController}.
+     * {@link Controller}.
      *
      * @param controller The JavaFX screen controller for the screen to be launched
      */
-    public void launchScreen(ScreenController controller) {
+    public void launchScreen(Controller controller) {
         try {
             FXMLLoader setupLoader = new FXMLLoader(getClass().getResource(controller.getFxmlFile()));
             setupLoader.setControllerFactory(param -> controller);
