@@ -12,7 +12,7 @@ import java.util.Objects;
 /**
  * Abstract parent class for all {@link Environment} UI controller classes.
  */
-public abstract class ScreenController {
+public abstract class Controller {
 
     /**
      * The {@link Environment} instance used by this controller.
@@ -25,7 +25,7 @@ public abstract class ScreenController {
      *
      * @param gameEnvironment The game environment used by this ScreenController
      */
-    protected ScreenController(final Environment Environment) {
+    protected Controller(final Environment Environment) {
         this.Environment = Environment;
     }
 

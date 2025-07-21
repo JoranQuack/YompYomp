@@ -1,5 +1,7 @@
 package seng202.team5;
 
+import seng202.team5.gui.FXAppEntry;
+
 public class App {
     public String helloWorld() {
         return "Hello World";
@@ -26,10 +28,6 @@ public class App {
     }
 
     public static void main(String[] args) {
-        System.out.printf("Hello and welcome!");
-
-        for (int i = 1; i <= 5; i++) {
-            System.out.println("i = " + i);
-        }
+        FXAppEntry.launch(FXAppEntry.class, args);
     }
 }
