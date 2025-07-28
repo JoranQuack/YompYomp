@@ -1,0 +1,77 @@
+@startuml
+left to right direction
+package "Models" {
+  class Trail
+  class User
+  class Hut
+  class Location
+  class Review
+}
+
+package "Service" {
+  class SearchService
+  class DataService
+  class MapService
+  class UserService
+  class ValidationService
+}
+
+package "DataAccess (Start with file-based, migrate to SQL)" {
+  interface ITrail
+  interface IHut
+  'interface IUser (Use when extending User to storing the information)
+  class FileBasedTrailRepo
+  class FileBasedHutRepo
+  'class FileBasedUserRepo
+}
+
+package "Controllers (JavaFX GUI)" {
+  class OpeningPageController
+  class ContinueGuestController
+  class MainPageController
+  class AllTrailsController
+  class TrailInfoController
+  class RelevantHutsController
+  class HutInfoController
+  class AddingTrailController
+  class AddingHutController
+  class MapController
+}
+
+'package "Session" {
+  'class UserSession
+'}
+
+'UserSession -- User
+'ContinueGuestController -- UserSession
+
+MainPageController ..> DataService
+AllTrailsController ..> SearchService
+RelevantHutsController ..> SearchService
+TrailInfoController ..> DataService
+HutInfoController ..> DataService
+AddingHutController ..> ValidationService
+AddingTrailController ..> ValidationService
+ContinueGuestController ..> UserService
+MapController ..> MapService
+
+DataService ..> ITrail
+DataService ..> IHut
+SearchService ..> ITrail
+MapService ..> ITrail
+MapService ..> IHut
+'UserService ..> IUser
+
+FileBasedTrailRepo --|> ITrail
+FileBasedHutRepo --|> IHut
+'FileBasedUserRepo --|> IUser
+
+UserService ..> User
+SearchService ..> Location
+
+Trail -- Location
+Hut -- Location
+Review --> User
+Review --> Trail
+Review --> Hut
+@enduml
