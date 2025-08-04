@@ -2,18 +2,21 @@ package seng202.team5.models;
 
 public class User {
     //Some basic variables
+    private int id;
     private String name;
     private String email;
     private int experienceLevel;
 
     //Constructor for base variables
-    public User(String name, String email, int experienceLevel) {
+    public User(int id, String name, String email, int experienceLevel) {
+        this.id = id;
         this.name = name;
         this.email = email;
         this.experienceLevel = experienceLevel;
     }
 
     //getters
+    public int getId() { return id; }
     public String getName() { return name; }
     public String getEmail() { return email; }
     public int getExperienceLevel() { return experienceLevel; }
