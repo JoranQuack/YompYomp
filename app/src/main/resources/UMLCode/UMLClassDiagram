@@ -5,7 +5,8 @@ package "Models" {
   class User
   class Hut
   class Location
-  class Review
+  class LogTrail
+  class LogHut
 }
 
 package "Service" {
@@ -16,19 +17,19 @@ package "Service" {
   class ValidationService
 }
 
-package "DataAccess (Start with file-based, migrate to SQL)" {
+package "DataAccess (File-based)" {
   interface ITrail
   interface IHut
-  'interface IUser (Use when extending User to storing the information)
+  interface IUser
   class FileBasedTrailRepo
   class FileBasedHutRepo
-  'class FileBasedUserRepo
+  class FileBasedUserRepo
 }
 
 package "Controllers (JavaFX GUI)" {
-  class OpeningPageController
-  class ContinueGuestController
-  class MainPageController
+  class ScreenNavigator
+  class StartController
+  class DashboardController
   class AllTrailsController
   class TrailInfoController
   class RelevantHutsController
@@ -38,21 +39,13 @@ package "Controllers (JavaFX GUI)" {
   class MapController
 }
 
-'package "Session" {
-  'class UserSession
-'}
-
-'UserSession -- User
-'ContinueGuestController -- UserSession
-
-MainPageController ..> DataService
+DashboardController ..> DataService
 AllTrailsController ..> SearchService
 RelevantHutsController ..> SearchService
 TrailInfoController ..> DataService
 HutInfoController ..> DataService
 AddingHutController ..> ValidationService
 AddingTrailController ..> ValidationService
-ContinueGuestController ..> UserService
 MapController ..> MapService
 
 DataService ..> ITrail
@@ -60,18 +53,19 @@ DataService ..> IHut
 SearchService ..> ITrail
 MapService ..> ITrail
 MapService ..> IHut
-'UserService ..> IUser
+UserService ..> IUser
 
 FileBasedTrailRepo --|> ITrail
 FileBasedHutRepo --|> IHut
-'FileBasedUserRepo --|> IUser
+FileBasedUserRepo --|> IUser
 
 UserService ..> User
 SearchService ..> Location
 
 Trail -- Location
 Hut -- Location
-Review --> User
-Review --> Trail
-Review --> Hut
+LogTrail -- User
+LogHut -- User
+LogTrail -- Trail
+LogHut -- Hut
 @enduml
