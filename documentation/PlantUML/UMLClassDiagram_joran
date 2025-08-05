@@ -1,0 +1,61 @@
+@startuml
+left to right direction
+package "Models" {
+  class Trail
+  class User
+  class Hut
+  class Location
+  class LogTrail
+  class LogHut
+}
+
+package "Service" {
+  class SearchService
+  class DataService
+  class MapService
+  class UserService
+  class ValidationService
+}
+
+package "DataAccess (File-based)" {
+  interface ITrail
+  interface IHut
+  interface IUser
+  class FileBasedTrailRepo
+  class FileBasedHutRepo
+  class FileBasedUserRepo
+}
+
+package "Controllers (JavaFX GUI)" {
+  class DashboardController
+  class AllTrailsController
+  class TrailInfoController
+  class HutInfoController
+}
+
+DashboardController ..> DataService
+AllTrailsController ..> SearchService
+TrailInfoController ..> DataService
+HutInfoController ..> DataService
+
+DataService ..> ITrail
+DataService ..> IHut
+SearchService ..> ITrail
+MapService ..> ITrail
+MapService ..> IHut
+UserService ..> IUser
+
+FileBasedTrailRepo --|> ITrail
+FileBasedHutRepo --|> IHut
+FileBasedUserRepo --|> IUser
+
+UserService ..> User
+SearchService ..> Location
+
+Trail -- Location
+Hut -- Location
+LogTrail -- User
+LogHut -- User
+LogTrail -- Trail
+LogHut -- Hut
+@enduml
