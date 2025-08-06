@@ -25,6 +25,9 @@ dependencies {
 
     // This dependency is used by the application.
     implementation libs.guava
+
+    //this dependency is used of the CSV reader method
+    implementation 'com.opencsv:opencsv:5.12.0'
 }
 
 // Apply a specific Java toolchain to ease working on different environments.
