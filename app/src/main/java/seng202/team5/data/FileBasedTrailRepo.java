@@ -11,7 +11,7 @@ import java.io.FileReader;
  * FileBasedTrailRepo is responsible for loading the trail data from the DOC trail CSV
  * It stores the trails in a list as trail object
  */
-public class FileBasedTrailRepo {
+public class FileBasedTrailRepo implements ITrail{
 
     //List containing all the trails from the CSV
     private final List<Trail> trails;
