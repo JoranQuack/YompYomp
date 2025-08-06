@@ -42,6 +42,10 @@ public class ScreenNavigator {
         launchScreen(new StartController(environment));
     }
 
+    public void launchTrailsScreen(Environment environment) {
+        launchScreen(new TrailsController(environment));
+    }
+
     /**
      * Replaces the root border pane's center component with the screen defined by
      * the given
