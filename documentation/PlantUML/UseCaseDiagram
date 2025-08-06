@@ -1,0 +1,31 @@
+@startuml
+left to right direction
+title YompYomp Use Case Diagram
+
+actor "Guest User" as Guest
+actor "Profiled User" as User
+
+rectangle "YompYomp App" {
+
+  ' Guest user use cases
+  Guest -- (View Recommended Trails)
+  (View Recommended Trails) -- (View All Trails)
+  (View All Trails) -- (View Trail)
+
+  (View Trail) -- (View Relevant Huts)
+  (View Trail) -- (Rate/Log Trail)
+
+  (View Relevant Huts) -- (Rate/Log Hut)
+
+  (View Trail) -- (Modify/Add Missing/Existing Trail)
+  (View Relevant Huts) -- (Modify/Add Missing/Existing Huts)
+
+  ' Registered user use cases (independent of Guest)
+
+  User -- (Profile Setup)
+  User -- (View Recommended Trails)
+  User -- (Log Book)
+  (Profile Setup) ..> (Customise Profile) : <<include>>
+
+}
+@enduml
