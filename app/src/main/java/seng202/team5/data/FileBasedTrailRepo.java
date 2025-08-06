@@ -3,7 +3,7 @@ package seng202.team5.data;
 import seng202.team5.models.Trail;
 
 import java.io.BufferedReader;
-import java.util.Date;
+import java.util.ArrayList;
 import java.util.List;
 import java.io.FileReader;
 
@@ -14,14 +14,14 @@ import java.io.FileReader;
 public class FileBasedTrailRepo implements ITrail{
 
     //List containing all the trails from the CSV
-    private final List<Trail> trails;
+    private final List<Trail> trails = new ArrayList<>();
 
     /**
      * Constructor - Loads trails from the DOC CSV file path
      * @param csvFilePath Path to the CSV file
      */
     public FileBasedTrailRepo(String csvFilePath) {
-        this.trails = loadTrailsFromCSV(csvFilePath);
+        loadTrailsFromCSV(csvFilePath);
     }
 
     /**
@@ -33,8 +33,14 @@ public class FileBasedTrailRepo implements ITrail{
     private List<Trail> loadTrailsFromCSV(String filePath) {
         try(BufferedReader br = new BufferedReader(new FileReader(filePath))) {
             String curLine;
+            boolean firstLine = true;
 
             while ((curLine = br.readLine()) != null) {
+                if(firstLine) {
+                    firstLine = false;
+                    continue;
+                }
+                System.out.println(curLine);
                 //split the current line into the different values
                 String[] values = curLine.split(",");
 
@@ -49,11 +55,11 @@ public class FileBasedTrailRepo implements ITrail{
                 String hasAlerts = values[5];
                 String thumbnailURL = values[6];
                 String webpageURL = values[7];
-                Date dateLoaded = new Date(Long.parseLong(values[8]));
+                String dateLoaded = values[8];
                 double shapeLength = Double.parseDouble(values[9]);
 
                 //create the new trail object
-                Trail newTrail = new Trail(id, name, description, difficulty, completionTime, hasAlerts,
+                Trail newTrail = new Trail(id, name, difficulty,description, completionTime, hasAlerts,
                         thumbnailURL, webpageURL, dateLoaded, shapeLength);
 
                 //add the new trail object to the list
