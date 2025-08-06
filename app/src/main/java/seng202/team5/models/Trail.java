@@ -12,11 +12,11 @@ public class Trail {
     private String hasAlerts;
     private String thumbnailURL;
     private String webpageURL;
-    private Date dateLoaded;
+    private String dateLoaded;
     private double shapeLength;
 
     //Constructor for base variables
-    public Trail(int id, String name, String difficulty, String description, String completionTime, String hasAlerts, String thumbnailURL, String webpageURL, Date dateloaded, double shapeLength) {
+    public Trail(int id, String name, String difficulty, String description, String completionTime, String hasAlerts, String thumbnailURL, String webpageURL, String dateloaded, double shapeLength) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -38,7 +38,7 @@ public class Trail {
     public String getHasAlerts() { return hasAlerts; }
     public String getThumbnailURL() { return thumbnailURL; }
     public String getWebpageURL() { return webpageURL; }
-    public Date getDateLoaded() { return dateLoaded; }
+    public String getDateLoaded() { return dateLoaded; }
     public double getShapeLength() { return shapeLength; }
 
     //Setters
@@ -50,7 +50,7 @@ public class Trail {
     public void setHasAlerts(String hasAlerts) { this.hasAlerts = hasAlerts; }
     public void setThumbnailURL(String thumbnailURL) { this.thumbnailURL = thumbnailURL; }
     public void setWebpageURL(String webpageURL) { this.webpageURL = webpageURL; }
-    public void setDateLoaded(Date dateLoaded) { this.dateLoaded = dateLoaded; }
+    public void setDateLoaded(String dateLoaded) { this.dateLoaded = dateLoaded; }
     public void setShapeLength(int shapeLength) { this.shapeLength = shapeLength; }
 
 }
