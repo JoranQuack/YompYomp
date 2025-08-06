@@ -13,7 +13,7 @@ public class Trail {
     private String thumbnailURL;
     private String webpageURL;
     private Date dateLoaded;
-    private int shapeLength;
+    private double shapeLength;
 
     //Constructor for base variables
     public Trail(int id, String name, String difficulty, String description, String completionTime, String hasAlerts, String thumbnailURL, String webpageURL, Date dateloaded, int shapeLength) {
