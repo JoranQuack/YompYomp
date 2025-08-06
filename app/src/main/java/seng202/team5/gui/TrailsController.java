@@ -4,9 +4,14 @@ import java.util.List;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
+import javafx.scene.text.Text;
+import javafx.scene.text.TextFlow;
 import seng202.team5.models.Trail;
 import seng202.team5.services.SearchService;
 
@@ -22,6 +27,9 @@ public class TrailsController extends Controller {
     @FXML
     private GridPane trailsGridPane;
 
+    @FXML
+    private Label resultsLabel;
+
     protected TrailsController(seng202.team5.Environment Environment) {
         super(Environment);
     }
@@ -30,6 +38,7 @@ public class TrailsController extends Controller {
     private void initialize() {
         List<Trail> trails = searchService.searchTrails(null);
         updateTrailsGrid(trails);
+        resultsLabel.setText(trails.size() + " Trails Loaded");
     }
 
     private void clearTrailsGrid() {
@@ -42,14 +51,20 @@ public class TrailsController extends Controller {
         clearTrailsGrid();
         for (int i = 0; i < trails.size(); i++) {
             Trail trail = trails.get(i);
+            Hyperlink link = new Hyperlink("Link");
+            link.setOnAction(event -> {
+                // Open the trail's webpage URL in a browser
+                getEnvironment().getNavigator().openWebPage(trail.getWebpageURL());
+            });
             trailsGridPane.addRow(i + 1,
                     new Label(trail.getName()),
-                    new Label(trail.getThumbnailURL()),
-                    new Label(trail.getDescription()),
+                    new ImageView(new Image(trail.getThumbnailURL())),
+                    new TextFlow(new Text(trail.getDescription())),
                     new Label(trail.getDifficulty()),
                     new Label(trail.getCompletionTime()),
-                    new Label(trail.getWebpageURL()));
+                    link);
         }
+
     }
 
     @FXML
