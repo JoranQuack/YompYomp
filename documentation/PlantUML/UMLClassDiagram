@@ -1,9 +1,14 @@
 @startuml
 left to right direction
+title YompYomp UML Class Diagram - Architecture and Package View
+package "App" {
+  class Environment
+}
+
 package "Models" {
   class Trail
-  class User
   class Hut
+  class User
   class Location
   class LogTrail
   class LogHut
@@ -28,25 +33,31 @@ package "DataAccess (File-based)" {
 
 package "Controllers (JavaFX GUI)" {
   class ScreenNavigator
+  abstract class Controller
   class StartController
+  class SetupProfileController
   class DashboardController
   class AllTrailsController
-  class TrailInfoController
-  class RelevantHutsController
-  class HutInfoController
-  class AddingTrailController
-  class AddingHutController
-  class MapController
+  class TripInfoController
 }
+
+'skinparam linetype ortho
+
+'Controller relationships
+Environment --> ScreenNavigator
+ScreenNavigator ..> Controller
+
+'Inheritence with the abstract controller class
+Controller <|-- StartController
+Controller <|-- SetupProfileController
+Controller <|-- DashboardController
+Controller <|-- AllTrailsController
+Controller <|-- TripInfoController
 
 DashboardController ..> DataService
 AllTrailsController ..> SearchService
-RelevantHutsController ..> SearchService
-TrailInfoController ..> DataService
-HutInfoController ..> DataService
-AddingHutController ..> ValidationService
-AddingTrailController ..> ValidationService
-MapController ..> MapService
+TripInfoController ..> DataService
+SetupProfileController ..> UserService
 
 DataService ..> ITrail
 DataService ..> IHut
@@ -55,17 +66,19 @@ MapService ..> ITrail
 MapService ..> IHut
 UserService ..> IUser
 
-FileBasedTrailRepo --|> ITrail
-FileBasedHutRepo --|> IHut
-FileBasedUserRepo --|> IUser
+ITrail <|.. FileBasedTrailRepo
+IHut <|.. FileBasedHutRepo
+IUser <|.. FileBasedUserRepo
 
 UserService ..> User
 SearchService ..> Location
+ValidationService ..> LogHut
+ValidationService ..> LogTrail
 
 Trail -- Location
 Hut -- Location
+LogHut -- Hut
 LogTrail -- User
 LogHut -- User
 LogTrail -- Trail
-LogHut -- Hut
 @enduml
