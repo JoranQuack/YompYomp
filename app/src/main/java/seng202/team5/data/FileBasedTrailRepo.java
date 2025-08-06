@@ -2,7 +2,8 @@ package seng202.team5.data;
 
 import seng202.team5.models.Trail;
 
-import java.io.BufferedReader;
+//import java.io.BufferedReader;
+import com.opencsv.CSVReader;
 import java.util.ArrayList;
 import java.util.List;
 import java.io.FileReader;
@@ -31,19 +32,18 @@ public class FileBasedTrailRepo implements ITrail{
      * @return List of trail objects retireved from the CSV
      */
     private List<Trail> loadTrailsFromCSV(String filePath) {
-        try(BufferedReader br = new BufferedReader(new FileReader(filePath))) {
-            String curLine;
+        //define and try the OpenCSV reader
+        try(CSVReader reader = new CSVReader(new FileReader(filePath))) {
+            //list of values from each line of CSV
+            String[] values;
             boolean firstLine = true;
-
-            while ((curLine = br.readLine()) != null) {
+            //check if there are still rows to come
+            while((values = reader.readNext()) != null) {
+                //check that the line isnt a header line
                 if(firstLine) {
                     firstLine = false;
                     continue;
                 }
-                System.out.println(curLine);
-                //split the current line into the different values
-                String[] values = curLine.split(",");
-
                 //may need some checking to ensure file is right length in future
 
                 //Parse each field from the current line
