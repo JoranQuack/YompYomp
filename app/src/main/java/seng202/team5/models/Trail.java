@@ -16,7 +16,7 @@ public class Trail {
     private double shapeLength;
 
     //Constructor for base variables
-    public Trail(int id, String name, String difficulty, String description, String completionTime, String hasAlerts, String thumbnailURL, String webpageURL, String dateloaded, double shapeLength) {
+    public Trail(int id, String name, String difficulty, String description, String completionTime, String hasAlerts, String thumbnailURL, String webpageURL, String dateLoaded, double shapeLength) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -25,7 +25,7 @@ public class Trail {
         this.hasAlerts = hasAlerts;
         this.thumbnailURL = thumbnailURL;
         this.webpageURL = webpageURL;
-        this.dateLoaded = dateloaded;
+        this.dateLoaded = dateLoaded;
         this.shapeLength = shapeLength;
     }
 
