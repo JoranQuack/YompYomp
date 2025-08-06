@@ -9,8 +9,10 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import seng202.team5.models.Trail;
+import seng202.team5.services.SearchService;
 
 public class TrailsController extends Controller {
+    private SearchService searchService = new SearchService();
 
     @FXML
     private Button searchButton;
@@ -27,7 +29,7 @@ public class TrailsController extends Controller {
 
     @FXML
     private void initialize() {
-        List<Trail> trails = getEnvironment().getTrails();
+        List<Trail> trails = searchService.searchTrails(null);
 
         // Populate the trails grid with trail data
         for (int i = 0; i < trails.size(); i++) {
