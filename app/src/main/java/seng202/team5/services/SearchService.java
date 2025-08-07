@@ -9,7 +9,7 @@ public class SearchService {
     // private static SearchService instance;
     private static DataService dataService;
     private List<Trail> trails;
-    private static final int MAX_RESULTS = 50;
+    private static final int MAX_RESULTS = 20;
 
     public SearchService() {
         String currentPath = System.getProperty("user.dir");
