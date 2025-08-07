@@ -59,6 +59,7 @@ public class TrailsController extends Controller {
             trailsGridPane.addRow(i + 1,
                     new Label(trail.getName()),
                     new ImageView(new Image(trail.getThumbnailURL())),
+                    // new Label(trail.getThumbnailURL()),
                     new TextFlow(new Text(trail.getDescription())),
                     new Label(trail.getDifficulty()),
                     new Label(trail.getCompletionTime()),
