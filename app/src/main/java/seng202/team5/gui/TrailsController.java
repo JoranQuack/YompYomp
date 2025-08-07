@@ -4,6 +4,7 @@ import java.util.List;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
@@ -30,15 +31,19 @@ public class TrailsController extends Controller {
     @FXML
     private Label resultsLabel;
 
+    @FXML
+    private ChoiceBox<String> pageChoiceBox;
+
     protected TrailsController(seng202.team5.Environment Environment) {
         super(Environment);
     }
 
     @FXML
     private void initialize() {
-        List<Trail> trails = searchService.searchTrails(null);
+        List<Trail> trails = searchService.searchTrails(null, 0);
+        initializePageChoiceBox();
         updateTrailsGrid(trails);
-        resultsLabel.setText(trails.size() + " Trails Loaded");
+        resultsLabel.setText(trails.size() + "/" + searchService.getNumberOfTrails() + " trails loaded");
     }
 
     private void clearTrailsGrid() {
@@ -68,10 +73,29 @@ public class TrailsController extends Controller {
 
     }
 
+    private void initializePageChoiceBox() {
+        for (int i = 0; i < searchService.getNumberOfPages(null); i++) {
+            pageChoiceBox.getItems().add(String.valueOf(i + 1));
+        }
+        pageChoiceBox.setValue("1");
+        pageChoiceBox.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            onPageSelected();
+        });
+    }
+
     @FXML
     private void onSearchButtonClicked() {
         String query = searchBarTextField.getText();
-        List<Trail> filteredTrails = searchService.searchTrails(query);
+        int page = Integer.parseInt(pageChoiceBox.getValue()) - 1;
+        List<Trail> filteredTrails = searchService.searchTrails(query, page);
+        updateTrailsGrid(filteredTrails);
+    }
+
+    @FXML
+    private void onPageSelected() {
+        String query = searchBarTextField.getText();
+        int page = Integer.parseInt(pageChoiceBox.getValue()) - 1;
+        List<Trail> filteredTrails = searchService.searchTrails(query, page);
         updateTrailsGrid(filteredTrails);
     }
 
