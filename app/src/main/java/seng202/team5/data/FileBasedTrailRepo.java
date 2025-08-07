@@ -49,7 +49,12 @@ public class FileBasedTrailRepo implements ITrail {
                     firstLine = false;
                     continue;
                 }
-                // may need some checking to ensure file is right length in future
+                //checks that the CSV line is the right length, otherwise skips to ensure
+                //it doesnt break
+                if (values.length != 10) {
+                    System.err.println("Invalid CSV line: " + values.length);
+                    continue;
+                }
 
                 // Parse each field from the current line
                 int id = Integer.parseInt(values[0]);
