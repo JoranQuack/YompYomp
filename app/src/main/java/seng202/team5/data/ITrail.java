@@ -8,7 +8,8 @@ import java.util.List;
  */
 public interface ITrail {
     /**
-     * Returns all trails avaliable in the data source
+     * Returns all trails available in the data source
+     * 
      * @return List of the trail objects
      */
     List<Trail> getAllTrails();
