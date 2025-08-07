@@ -5,12 +5,22 @@ import java.util.stream.Collectors;
 
 import seng202.team5.models.Trail;
 
+/**
+ * Service for searching and filtering trails with pagination support.
+ * Provides trail search functionality and pagination calculations.
+ */
 public class SearchService {
     // private static SearchService instance;
+    /** Data service instance for accessing trail data */
     private static DataService dataService;
+    /** Cached list of all trails */
     private List<Trail> trails;
+    /** Maximum number of results per page */
     private static final int MAX_RESULTS = 20;
 
+    /**
+     * Creates SearchService and loads trail data from CSV.
+     */
     public SearchService() {
         String currentPath = System.getProperty("user.dir");
         String fullPath = currentPath
@@ -27,7 +37,6 @@ public class SearchService {
      * @param page  The page number (0-based) to retrieve results from
      * @return A list of trails matching the search query for the specified page,
      *         limited to MAX_RESULTS
-     *
      */
     public List<Trail> searchTrails(String query, int page) {
         int startIndex = page * MAX_RESULTS;
@@ -47,6 +56,13 @@ public class SearchService {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Alternative method for getting trails.
+     * 
+     * @param searchQuery Search query to filter trails
+     * @param page        Page number (0-based)
+     * @return List of trails for the specified page
+     */
     public List<Trail> getTrails(String searchQuery, int page) {
         return searchTrails(searchQuery, page);
     }

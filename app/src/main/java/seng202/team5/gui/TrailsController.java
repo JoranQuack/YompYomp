@@ -16,7 +16,12 @@ import javafx.scene.text.TextFlow;
 import seng202.team5.models.Trail;
 import seng202.team5.services.SearchService;
 
+/**
+ * Controller for the trails display screen.
+ * Handles trail search, pagination, and grid display.
+ */
 public class TrailsController extends Controller {
+    /** Service for searching and filtering trails */
     private SearchService searchService = new SearchService();
 
     @FXML
@@ -34,10 +39,18 @@ public class TrailsController extends Controller {
     @FXML
     private ChoiceBox<String> pageChoiceBox;
 
+    /**
+     * Creates controller with environment.
+     * 
+     * @param Environment Application environment
+     */
     protected TrailsController(seng202.team5.Environment Environment) {
         super(Environment);
     }
 
+    /**
+     * Initializes the trails view with default data.
+     */
     @FXML
     private void initialize() {
         List<Trail> trails = searchService.searchTrails(null, 0);
@@ -46,33 +59,41 @@ public class TrailsController extends Controller {
         resultsLabel.setText(trails.size() + "/" + searchService.getNumberOfTrails() + " trails loaded");
     }
 
+    /**
+     * Clears grid and adds header row.
+     */
     private void clearTrailsGrid() {
         trailsGridPane.getChildren().clear();
         trailsGridPane.addRow(0, new Label("Name"), new Label("Thumbnail URL"), new Label("Description"),
                 new Label("Difficulty"), new Label("Completion Time"), new Label("Webpage URL"));
     }
 
+    /**
+     * Updates grid with trail data.
+     * 
+     * @param trails List of trails to display
+     */
     private void updateTrailsGrid(List<Trail> trails) {
         clearTrailsGrid();
         for (int i = 0; i < trails.size(); i++) {
             Trail trail = trails.get(i);
             Hyperlink link = new Hyperlink("Link");
             link.setOnAction(event -> {
-                // Open the trail's webpage URL in a browser
                 getEnvironment().getNavigator().openWebPage(trail.getWebpageURL());
             });
             trailsGridPane.addRow(i + 1,
                     new Label(trail.getName()),
                     new ImageView(new Image(trail.getThumbnailURL())),
-                    // new Label(trail.getThumbnailURL()),
                     new TextFlow(new Text(trail.getDescription())),
                     new Label(trail.getDifficulty()),
                     new Label(trail.getCompletionTime()),
                     link);
         }
-
     }
 
+    /**
+     * Sets up pagination choice box.
+     */
     private void initializePageChoiceBox() {
         for (int i = 0; i < searchService.getNumberOfPages(null); i++) {
             pageChoiceBox.getItems().add(String.valueOf(i + 1));
@@ -83,6 +104,9 @@ public class TrailsController extends Controller {
         });
     }
 
+    /**
+     * Handles search button click.
+     */
     @FXML
     private void onSearchButtonClicked() {
         String query = searchBarTextField.getText();
@@ -91,6 +115,9 @@ public class TrailsController extends Controller {
         updateTrailsGrid(filteredTrails);
     }
 
+    /**
+     * Handles page selection change.
+     */
     @FXML
     private void onPageSelected() {
         String query = searchBarTextField.getText();
