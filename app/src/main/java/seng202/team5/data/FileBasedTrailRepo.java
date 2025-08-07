@@ -5,6 +5,7 @@ import seng202.team5.models.Trail;
 //import java.io.BufferedReader;
 import com.opencsv.CSVReader;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.io.FileReader;
 
@@ -49,7 +50,12 @@ public class FileBasedTrailRepo implements ITrail {
                     firstLine = false;
                     continue;
                 }
-                // may need some checking to ensure file is right length in future
+                //checks that the CSV line is the right length, otherwise skips to ensure
+                //it doesnt break
+                if (values.length != 10) {
+                    System.err.println("Invalid CSV line: " + Arrays.toString(values));
+                    continue;
+                }
 
                 // Parse each field from the current line
                 int id = Integer.parseInt(values[0]);
