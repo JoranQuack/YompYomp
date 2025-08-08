@@ -10,13 +10,6 @@ import seng202.team5.Environment;
 public class FXAppEntry extends Application {
 
     /**
-     * Constructs a new {@link FXAppEntry} instance.
-     */
-    public FXAppEntry() {
-        // No initialization required
-    }
-
-    /**
      * Creates the {@link Environment} with a {@link ScreenNavigator} for the
      * given {@link Stage}
      *

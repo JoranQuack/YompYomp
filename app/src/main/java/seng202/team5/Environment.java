@@ -15,7 +15,9 @@ public class Environment {
      */
     public Environment(ScreenNavigator navigator) {
         this.navigator = navigator;
-        navigator.launchStartScreen(this);
+
+        navigator.launchTrailsScreen(this); // temporary, will be removed later
+        // navigator.launchStartScreen(this);
     }
 
     /**

@@ -29,7 +29,7 @@ public class ScreenNavigator {
     public ScreenNavigator(Stage stage) {
         this.stage = stage;
         this.rootPane = new BorderPane();
-        Scene scene = new Scene(rootPane, 800, 600); // TODO: Adjust dimensions as needed
+        Scene scene = new Scene(rootPane, 1920, 1080);
         stage.setScene(scene);
     }
 
@@ -40,6 +40,23 @@ public class ScreenNavigator {
      */
     public void launchStartScreen(Environment environment) {
         launchScreen(new StartController(environment));
+    }
+
+    public void launchTrailsScreen(Environment environment) {
+        launchScreen(new TrailsController(environment));
+    }
+
+    /**
+     * Opens a web page in the default browser using the provided URL.
+     *
+     * @param url The URL of the web page to open
+     */
+    public void openWebPage(String url) {
+        try {
+            java.awt.Desktop.getDesktop().browse(java.net.URI.create(url));
+        } catch (IOException e) {
+            System.err.println("Failed to open web page: " + e.getMessage());
+        }
     }
 
     /**
