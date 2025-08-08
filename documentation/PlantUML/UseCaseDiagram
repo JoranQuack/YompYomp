@@ -13,12 +13,12 @@ rectangle "YompYomp App" {
   (View All Trails) -- (View Trail)
 
   (View Trail) -- (View Relevant Huts)
-  (View Trail) -- (Rate/Log Trail)
+  (View Trail) ..> (Rate/Log Trail) : extend
 
-  (View Relevant Huts) -- (Rate/Log Hut)
+  (View Relevant Huts) ..> (Rate/Log Hut) : extend
 
-  (View Trail) -- (Modify/Add Missing/Existing Trail)
-  (View Relevant Huts) -- (Modify/Add Missing/Existing Huts)
+  (View Trail) ..> (Modify/Add Missing/Existing Trail) : extend
+  (View Relevant Huts) ..> (Modify/Add Missing/Existing Huts) : extend
 
   ' Registered user use cases (independent of Guest)
 
