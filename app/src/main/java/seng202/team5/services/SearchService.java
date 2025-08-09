@@ -22,11 +22,13 @@ public class SearchService {
      * Creates SearchService and loads trail data from CSV.
      */
     public SearchService() {
-        String currentPath = System.getProperty("user.dir");
-        String fullPath = currentPath
-                + "/app/src/main/resources/datasets/DOC_Walking_Experiences_7994760352369043452.csv";
-        dataService = new DataService(fullPath);
-        trails = dataService.getTrails();
+        // Use getResourceAsStream to load from classpath
+        try {
+            dataService = new DataService("/datasets/DOC_Walking_Experiences_7994760352369043452.csv");
+            trails = dataService.getTrails();
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to load trail data", e);
+        }
     }
 
     /**
@@ -58,7 +60,7 @@ public class SearchService {
 
     /**
      * Alternative method for getting trails.
-     * 
+     *
      * @param searchQuery Search query to filter trails
      * @param page        Page number (0-based)
      * @return List of trails for the specified page
