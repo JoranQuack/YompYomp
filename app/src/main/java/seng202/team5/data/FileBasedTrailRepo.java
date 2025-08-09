@@ -7,7 +7,8 @@ import com.opencsv.CSVReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.io.FileReader;
+import java.io.InputStreamReader;
+import java.io.InputStream;
 
 /**
  * FileBasedTrailRepo is responsible for loading the trail data from the DOC
@@ -38,8 +39,15 @@ public class FileBasedTrailRepo implements ITrail {
      * @return List of trail objects retrieved from the CSV
      */
     private List<Trail> loadTrailsFromCSV(String filePath) {
-        // define and try the OpenCSV reader
-        try (CSVReader reader = new CSVReader(new FileReader(filePath))) {
+        // Get the resource as an input stream from the classpath
+        InputStream inputStream = getClass().getResourceAsStream(filePath);
+        if (inputStream == null) {
+            System.err.println("Could not find resource: " + filePath);
+            return trails;
+        }
+
+        // define and try the OpenCSV reader with InputStreamReader
+        try (CSVReader reader = new CSVReader(new InputStreamReader(inputStream))) {
             // list of values from each line of CSV
             String[] values;
             boolean firstLine = true;
