@@ -4,15 +4,15 @@ CREATE TABLE IF NOT EXISTS trails (
     name TEXT,
     description TEXT,
     difficulty TEXT,
-    completionTime TEXT,
+    completion_time TEXT,
     --leaving out hasAlerts (doesnt seem needed at this point)
-    thumbnailURL TEXT,
-    webpageURL TEXT,
-    dateLoadedRaw TEXT,
-    shapeLength REAL,
+    type TEXT,
+    thumb_URL TEXT,
+    web_URL TEXT,
+    date_loaded_raw TEXT,
+    --shapeLength REAL, (dont need cause of kml??)
     x REAL,
-    y REAL,
-    updatedAt TEXT DEFAULT CURRENT_TIMESTAMP
+    y REAL
 );
 --SPLIT
 /* add other tables below (hut, etc...)
