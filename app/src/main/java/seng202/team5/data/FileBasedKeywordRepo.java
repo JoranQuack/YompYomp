@@ -4,10 +4,12 @@ import java.io.*;
 import java.util.*;
 
 /**
- * Loads data from the keyword CSV file.
- * It stores the keywords in a map of category to a list of keywords.
+ * Loads data from the keyword CSV file
+ * It stores the keywords in a map of category to a list of keywords
  */
 public class FileBasedKeywordRepo implements IKeyword {
+    // This is what this CSV reader will return. It is in the form
+    // - Map of categories (ONE) : List of keywords (at least one)
     private final Map<String, List<String>> keywords = new HashMap<>();
 
     /**
@@ -18,8 +20,19 @@ public class FileBasedKeywordRepo implements IKeyword {
         loadKeywordsFromCSV(filePath);
     }
 
+    /**
+     * Reads the categories and all the keywords for that category in the created CSV
+     * The CSV has one category per line at index 0, and all the keywords for that category
+     * follow in a comma-separated list
+     *
+     * @param filePath The path to the CSV file
+     * @return A map of category names to lists of keywords in that category
+     */
     private Map<String, List<String>> loadKeywordsFromCSV(String filePath) {
+        // Using the filePath, open the CSV as a stream (in bytes) to read its contents.
         try (InputStream inputstream = getClass().getResourceAsStream(filePath);
+             // InputStreamReader converts the stream to a character stream, and BufferedReader
+             // allows efficient line-by-line reading
              BufferedReader reader = new BufferedReader(new InputStreamReader(inputstream))) {
 
             String line;
@@ -40,6 +53,11 @@ public class FileBasedKeywordRepo implements IKeyword {
         return keywords;
     }
 
+    /**
+     * Gets the map of categories to keywords
+     *
+     * @return The map of categories to keywords
+     */
     @Override
     public Map<String, List<String>> getKeywords() {
         return keywords;
