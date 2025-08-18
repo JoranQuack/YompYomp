@@ -108,8 +108,7 @@ public class Trail {
         this.dateLoaded = dateLoaded;
     }
 
-    public void setShapeLength(int shapeLength) {
-        this.shapeLength = shapeLength;
+    public void setShapeLength(double shapeLength) {this.shapeLength = shapeLength;
     }
 
 }
