@@ -90,7 +90,12 @@ public class SqlBasedTrailRepo implements ITrail{
 
 
     @Override public List<Trail> getAllTrails() {return null;}
-    @Override public void upsertAll(List<Trail> trails) {}
+    @Override public void upsertAll(List<Trail> trails) {
+        if(trails.isEmpty()) return;
+        for (Trail trail : trails) {
+            upsert(trail);
+        }
+    }
     @Override public void deleteById(int id) {}
     @Override public java.util.Optional<Trail> findById(int id) {return null;}
 }
