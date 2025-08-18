@@ -13,7 +13,7 @@ public class SqlBasedTrailRepo implements ITrail{
 
     public SqlBasedTrailRepo(DatabaseService databaseService) {
         this.databaseService = databaseService;
-        upsertTest();
+        //upsertTest();
     }
 
     public void upsertTest() {
@@ -88,6 +88,16 @@ public class SqlBasedTrailRepo implements ITrail{
         stmt.setDouble(11, trail.getY());
     }
 
+    public int countTrails() {
+        final String sql = "SELECT COUNT(*) FROM trail";
+        try (Connection conn = databaseService.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql);
+             var rs = ps.executeQuery()) {
+            return rs.next() ? rs.getInt(1) : 0;
+        } catch (SQLException e) {
+            throw new RuntimeException("countTrails failed", e);
+        }
+    }
 
     @Override public List<Trail> getAllTrails() {return null;}
     //this is not the best way to do this and may be too slow, but its a start
