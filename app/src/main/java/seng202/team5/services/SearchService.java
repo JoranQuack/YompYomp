@@ -24,7 +24,7 @@ public class SearchService {
     public SearchService() {
         // Use getResourceAsStream to load from classpath
         try {
-            dataService = new DataService("/datasets/DOC_Walking_Experiences_7994760352369043452.csv");
+            dataService = new DataService("/datasets/DOC_Walking_Experiences_7994760352369043452.csv", "/datasets/Categories_and_Keywords.csv");
             trails = dataService.getTrails();
         } catch (Exception e) {
             throw new RuntimeException("Failed to load trail data", e);
