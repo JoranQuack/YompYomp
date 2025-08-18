@@ -90,6 +90,7 @@ public class SqlBasedTrailRepo implements ITrail{
 
 
     @Override public List<Trail> getAllTrails() {return null;}
+    //this is not the best way to do this and may be too slow, but its a start
     @Override public void upsertAll(List<Trail> trails) {
         if(trails.isEmpty()) return;
         for (Trail trail : trails) {
