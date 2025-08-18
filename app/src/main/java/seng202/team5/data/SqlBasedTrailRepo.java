@@ -61,6 +61,21 @@ public class SqlBasedTrailRepo implements ITrail{
         }
     }
 
+    private void setParams(PreparedStatement stmt, Trail trail) throws SQLException {
+        stmt.setInt(1, trail.getId());
+        stmt.setString(2, trail.getName());
+        stmt.setString(3, trail.getDescription());
+        stmt.setString(4, trail.getDifficulty());
+        stmt.setString(5, trail.getCompletionTime());
+        stmt.setString(6, trail.getType());
+        stmt.setString(7, trail.getThumbnailURL());
+        stmt.setString(8, trail.getWebpageURL());
+        stmt.setString(9, trail.getDateLoaded());
+        stmt.setDouble(10, trail.getX());
+        stmt.setDouble(11, trail.getY());
+    }
+
+    public List<Trail> getAllTrails() {return null;}
     public void upsertAll(List<Trail> trails) {}
     public void deleteById(int id) {}
     public java.util.Optional<Trail> findById(int id) {return null;}
