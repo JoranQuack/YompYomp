@@ -75,8 +75,9 @@ public class SqlBasedTrailRepo implements ITrail{
         stmt.setDouble(11, trail.getY());
     }
 
-    public List<Trail> getAllTrails() {return null;}
-    public void upsertAll(List<Trail> trails) {}
-    public void deleteById(int id) {}
-    public java.util.Optional<Trail> findById(int id) {return null;}
+
+    @Override public List<Trail> getAllTrails() {return null;}
+    @Override public void upsertAll(List<Trail> trails) {}
+    @Override public void deleteById(int id) {}
+    @Override public java.util.Optional<Trail> findById(int id) {return null;}
 }
