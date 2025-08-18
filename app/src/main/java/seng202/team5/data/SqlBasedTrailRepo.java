@@ -13,6 +13,19 @@ public class SqlBasedTrailRepo implements ITrail{
 
     public SqlBasedTrailRepo(DatabaseService databaseService) {
         this.databaseService = databaseService;
+        upsertTest();
+    }
+
+    public void upsertTest() {
+        Trail trail = new Trail(1, "test", "hard", "trail tester", "1 hour",
+                "scenic", "", "", "1/1/20", 1,1);
+        try{
+            upsert(trail);
+            System.out.println("Upserted test");
+
+        } catch(Exception e){
+            e.printStackTrace();
+        }
     }
 
     private static final String SELECT_BASE = """
@@ -54,7 +67,7 @@ public class SqlBasedTrailRepo implements ITrail{
     public void upsert(Trail trail) {
         try(Connection conn = databaseService.getConnection();
             PreparedStatement stmt = conn.prepareStatement(UPSERT_SQL)) {
-            //setParams()...
+            setParams(stmt, trail);
             stmt.executeUpdate();
         } catch (SQLException e){
             throw new RuntimeException("upsertTrail failed (id=" + trail.getId() + ")", e);
