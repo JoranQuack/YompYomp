@@ -91,4 +91,16 @@ public class DatabaseService {
             }
         }));
     }
+
+    public boolean testConnection() {
+        try (var conn = getConnection();
+        var stmt = conn.createStatement();
+        var rs = stmt.executeQuery("SELECT 1")) {
+            return rs.next();
+        }
+        catch (SQLException e) {
+            System.err.println(e.getMessage());
+            return false;
+        }
+    }
 }
