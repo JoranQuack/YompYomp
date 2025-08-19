@@ -13,6 +13,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
+import seng202.team5.Environment;
 import seng202.team5.models.Trail;
 import seng202.team5.services.SearchService;
 
@@ -44,8 +45,8 @@ public class TrailsController extends Controller {
      * 
      * @param Environment Application environment
      */
-    protected TrailsController(seng202.team5.Environment Environment) {
-        super(Environment);
+    protected TrailsController(Environment Environment, ScreenNavigator navigator) {
+        super(Environment, navigator);
     }
 
     /**
