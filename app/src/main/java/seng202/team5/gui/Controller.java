@@ -18,6 +18,7 @@ public abstract class Controller {
      * The {@link Environment} instance used by this controller.
      */
     private final Environment Environment;
+    private final ScreenNavigator navigator;
 
     /**
      * Creates an instance of a Controller with the given
@@ -25,8 +26,9 @@ public abstract class Controller {
      *
      * @param Environment The environment used by this ScreenController
      */
-    protected Controller(final Environment Environment) {
+    protected Controller(final Environment Environment, final ScreenNavigator navigator) {
         this.Environment = Environment;
+        this.navigator = navigator;
     }
 
     /**
