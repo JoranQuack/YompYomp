@@ -26,7 +26,7 @@
    <children>
       <ImageView fitHeight="100.0" fitWidth="100.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER">
          <image>
-            <Image url="@../../../../../../YompYomp%20Icon.png" />
+            <Image url="@../images/YompYompIcon.png" />
          </image></ImageView>
       <Button fx:id="setUpProfileButton" mnemonicParsing="false" text="Set Up Profile" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="3" GridPane.valignment="TOP">
          <font>
