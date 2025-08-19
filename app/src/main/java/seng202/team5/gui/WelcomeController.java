@@ -11,8 +11,8 @@ public class WelcomeController extends Controller {
      *
      * @param Environment Application environment
      */
-    public WelcomeController(Environment Environment) {
-        super(Environment);
+    public WelcomeController(Environment Environment, ScreenNavigator navigator) {
+        super(Environment, navigator);
     }
 
     @FXML
