@@ -18,7 +18,6 @@ public abstract class Controller {
      * The {@link Environment} instance used by this controller.
      */
     private final Environment Environment;
-    private final S
 
     /**
      * Creates an instance of a Controller with the given
