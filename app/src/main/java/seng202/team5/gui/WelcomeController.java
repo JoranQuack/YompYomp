@@ -3,9 +3,7 @@ package seng202.team5.gui;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import seng202.team5.models.Trail;
-
-import java.util.List;
+import seng202.team5.Environment;
 
 public class WelcomeController extends Controller {
     /**
@@ -13,7 +11,7 @@ public class WelcomeController extends Controller {
      *
      * @param Environment Application environment
      */
-    protected WelcomeController(seng202.team5.Environment Environment) {
+    public WelcomeController(Environment Environment) {
         super(Environment);
     }
 
@@ -33,7 +31,9 @@ public class WelcomeController extends Controller {
     private void initialize() {
         setUpProfileButton.setText("Set Up Profile");
         skipButton.setText("Skip");
-        // TODO: initialise onClicked for buttons here
+        setUpProfileButton.setOnAction(e -> {
+            super.getEnvironment().getNavigator().launchScreen(new SetupController(super.getEnvironment()));
+        });
     }
 
     @FXML

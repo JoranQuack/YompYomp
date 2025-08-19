@@ -18,12 +18,13 @@ public abstract class Controller {
      * The {@link Environment} instance used by this controller.
      */
     private final Environment Environment;
+    private final S
 
     /**
-     * Creates an instance of a ScreenController with the given
-     * {@link GameEnvironment}
+     * Creates an instance of a Controller with the given
+     * {@link Environment}
      *
-     * @param gameEnvironment The game environment used by this ScreenController
+     * @param Environment The environment used by this ScreenController
      */
     protected Controller(final Environment Environment) {
         this.Environment = Environment;
