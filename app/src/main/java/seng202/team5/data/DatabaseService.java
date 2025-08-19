@@ -30,7 +30,7 @@ public class DatabaseService {
      */
     private void connect() {
         try {
-            URL dbResource = DatabaseService.class.getResource("/database/main.db");
+            URL dbResource = DatabaseService.class.getResource("/data/database/main.db");
             if (dbResource == null) {
                 throw new SQLException("Database file not found in resources");
             }
