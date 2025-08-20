@@ -43,7 +43,9 @@ public class ScreenNavigator {
     }
 
     public void launchTrailsScreen(Environment environment) {
-        launchScreen(new TrailsController(environment));
+        TrailsController controller = new TrailsController();
+        controller.setEnvironment(environment);
+        launchScreen(controller);
     }
 
     /**
