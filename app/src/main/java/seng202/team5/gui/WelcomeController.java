@@ -32,7 +32,8 @@ public class WelcomeController extends Controller {
         setUpProfileButton.setText("Set Up Profile");
         skipButton.setText("Skip");
         setUpProfileButton.setOnAction(e -> {
-            super.getEnvironment().getNavigator().launchScreen(new SetupController(super.getEnvironment()));
+            super.getEnvironment().getNavigator().launchScreen(
+                    new SetupController(super.getEnvironment(), super.getEnvironment().getNavigator()));
         });
     }
 
