@@ -1,6 +1,6 @@
 package seng202.team5.services;
 
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import seng202.team5.models.Trail;
@@ -15,6 +15,8 @@ public class SearchService {
     private static DataService dataService;
     /** Cached list of all trails */
     private List<Trail> trails;
+    /** Cached map of categories to keywords */
+    private Map<String, List<String>> keywords;
     /** Maximum number of results per page */
     private static final int MAX_RESULTS = 20;
 
@@ -24,10 +26,13 @@ public class SearchService {
     public SearchService() {
         // Use getResourceAsStream to load from classpath
         try {
-            dataService = new DataService("/datasets/DOC_Walking_Experiences_7994760352369043452.csv", "/datasets/Categories_and_Keywords.csv");
+            dataService = new DataService("/datasets/DOC_Walking_Experiences_7994760352369043452.csv",
+                                          "/datasets/Categories_and_Keywords.csv");
             trails = dataService.getTrails();
+            keywords = dataService.getKeywords();
+            categoriseAllTrails(); // This will most likely need to be moved as it's initialised too late here.\
         } catch (Exception e) {
-            throw new RuntimeException("Failed to load trail data", e);
+            throw new RuntimeException("Failed to load trail data and/or keyword data", e);
         }
     }
 
@@ -95,4 +100,47 @@ public class SearchService {
     public int getNumberOfTrails() {
         return trails.size();
     }
+
+    /**
+     * Checks if the description contains any of the keywords.
+     *
+     * @param description The description to check
+     * @param keywords The keywords to check against
+     * @return True if the description contains any of the keywords, false otherwise
+     */
+    private boolean containsKeyword(String description, List<String> keywords) {
+        String lowercaseDescription = description.toLowerCase();
+        return keywords.stream()
+                .anyMatch(keyword -> lowercaseDescription.contains(keyword.toLowerCase()));
+    }
+
+    /**
+     * Categorises the trail based on the keywords in the description.
+     *
+     * @param trail The trail to categorise
+     * @return A set of categories that the trail matches, or an empty set if no categories match
+     */
+    public Set<String> categoriseTrail(Trail trail) {
+        Set<String> matchedCategories = new HashSet<>();
+        String description = trail.getDescription();
+
+        for (Map.Entry<String, List<String>> entry : keywords.entrySet()) {
+            if (containsKeyword(description, entry.getValue())) {
+                matchedCategories.add(entry.getKey());
+            }
+        }
+
+        return matchedCategories;
+    }
+
+    /**
+     * Categorises all trails based on their descriptions.
+     */
+    public void categoriseAllTrails() {
+        for (Trail trail : trails) {
+            Set<String> matchedCategories = categoriseTrail(trail);
+            trail.setCategories(matchedCategories);
+        }
+    }
+
 }
