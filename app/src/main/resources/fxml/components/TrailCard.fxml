@@ -1,22 +1,35 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.control.*?>
 <?import javafx.scene.image.ImageView?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.*?>
 
-<!--
-  Layout for TrailCard
-  Only includes a thumbnail, title, and subtitle.
--->
-<VBox xmlns:fx="http://javafx.com/fxml"
-      fx:controller="seng202.team5.gui.components.TrailCard"
-      spacing="8" alignment="CENTER_LEFT"
-      style="-fx-padding: 12; -fx-background-radius: 8; -fx-background-color: white;">
+<VBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="seng202.team5.gui.components.TrailCardController"
+      spacing="8" padding="10"
+      style="-fx-background-color: #f9f9f9; -fx-background-radius: 8; -fx-border-radius: 8; -fx-border-color: #cccccc;">
 
-    <!-- Thumbnail image -->
-    <ImageView fx:id="thumbnail" fitWidth="200" fitHeight="120" preserveRatio="true"/>
+    <!-- Thumbnail -->
+    <ImageView fx:id="thumbnail"
+               fitWidth="200"
+               fitHeight="120"
+               preserveRatio="true"
+               style="-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 5, 0, 2, 2);" />
 
     <!-- Title -->
-    <Label fx:id="title" style="-fx-font-size: 16px; -fx-font-weight: bold;" text="Trail Name"/>
+    <Label fx:id="title"
+           style="-fx-font-size: 16px; -fx-font-weight: bold;" />
+
+    <!-- Match bar + label -->
+    <HBox spacing="8" alignment="CENTER_LEFT">
+        <ProgressBar fx:id="matchBar"
+                     prefWidth="150"
+                     progress="0.0" />
+        <Label fx:id="matchLabel"
+               text="0% Match"
+               style="-fx-font-size: 12px; -fx-text-fill: #333;" />
+    </HBox>
 
 </VBox>
+
