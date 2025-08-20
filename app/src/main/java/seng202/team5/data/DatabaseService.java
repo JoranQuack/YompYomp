@@ -3,54 +3,51 @@ package seng202.team5.data;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.net.URL;
+import java.nio.file.Paths;
+import java.nio.file.Files;
 
 public class DatabaseService {
-    private final String databasePath;
+    private final String customDatabasePath;
 
-    /**
-     * Constructor with default database location
-     */
     public DatabaseService() {
-        this("/data/database/main.db");
+        this.customDatabasePath = null;
     }
 
-    /**
-     * Constructor that allows custom database path (testing)
-     */
+    // Testing constructor with custom path
     public DatabaseService(String databasePath) {
-        this.databasePath = databasePath;
+        this.customDatabasePath = databasePath;
     }
 
     /**
-     * Creates a new database connection each time it's called.
+     * Creates a new database connection to the existing database.
      */
     public Connection getConnection() throws SQLException {
-        URL dbResource = DatabaseService.class.getResource(databasePath);
-        if (dbResource == null) {
-            throw new SQLException("Database file not found in resources: " + databasePath);
-        }
-
-        String url = "jdbc:sqlite:" + dbResource.getPath();
+        String databasePath = getDatabasePath();
+        String url = "jdbc:sqlite:" + databasePath;
         Connection connection = DriverManager.getConnection(url);
 
-        // Enable foreign keys (will need this for SQLite)
+        // Enable foreign keys
         connection.createStatement().execute("PRAGMA foreign_keys = ON");
 
         return connection;
     }
 
-    /**
-     * Test connection method
-     */
-    public boolean testConnection() {
-        try (Connection conn = getConnection();
-                var stmt = conn.createStatement();
-                var rs = stmt.executeQuery("SELECT 1")) {
-            return rs.next();
-        } catch (SQLException e) {
-            System.err.println("Database connection test failed: " + e.getMessage());
-            return false;
+    private String getDatabasePath() {
+        // Use custom path if provided (for testing)
+        if (customDatabasePath != null) {
+            return customDatabasePath;
         }
+
+        String projectRoot = System.getProperty("user.dir");
+        String databasePath;
+
+        // Check if running from root (./gradlew run) or app/
+        if (Files.exists(Paths.get(projectRoot, "app", "data", "database", "main.db"))) {
+            databasePath = Paths.get(projectRoot, "app", "data", "database", "main.db").toString();
+        } else {
+            databasePath = Paths.get(projectRoot, "data", "database", "main.db").toString();
+        }
+
+        return databasePath;
     }
 }
