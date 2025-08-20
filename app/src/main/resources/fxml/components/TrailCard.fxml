@@ -14,8 +14,7 @@
     <ImageView fx:id="thumbnail"
                fitWidth="200"
                fitHeight="120"
-               preserveRatio="true"
-               style="-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 5, 0, 2, 2);" />
+               preserveRatio="true" />
 
     <!-- Title -->
     <Label fx:id="title"
