@@ -30,7 +30,7 @@ public class SearchService {
                                           "/datasets/Categories_and_Keywords.csv");
             trails = dataService.getTrails();
             keywords = dataService.getKeywords();
-            categoriseAllTrails(); // This will most likely need to be moved as it's initialised too late here.\
+            categoriseAllTrails(); // This will most likely need to be moved as it's called too late here.
         } catch (Exception e) {
             throw new RuntimeException("Failed to load trail data and/or keyword data", e);
         }
