@@ -2,6 +2,9 @@ package seng202.team5.models;
 
 // import java.util.Date;
 
+import java.util.HashSet;
+import java.util.Set;
+
 public class Trail {
     // base variables from DOC dataset (some may be irrelevant)
     private int id;
@@ -14,10 +17,11 @@ public class Trail {
     private String webpageURL;
     private String dateLoaded;
     private double shapeLength;
+    private Set<String> categories = new HashSet<>();
 
     // Constructor for base variables
     public Trail(int id, String name, String difficulty, String description, String completionTime, String hasAlerts,
-            String thumbnailURL, String webpageURL, String dateLoaded, double shapeLength) {
+            String thumbnailURL, String webpageURL, String dateLoaded, double shapeLength, Set<String> categories) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -28,6 +32,7 @@ public class Trail {
         this.webpageURL = webpageURL;
         this.dateLoaded = dateLoaded;
         this.shapeLength = shapeLength;
+        this.categories = categories;
     }
 
     // Getters
@@ -71,6 +76,10 @@ public class Trail {
         return shapeLength;
     }
 
+    public Set<String> getCategories() {
+        return categories;
+    }
+
     // Setters
     public void setId(int id) {
         this.id = id;
@@ -110,6 +119,10 @@ public class Trail {
 
     public void setShapeLength(int shapeLength) {
         this.shapeLength = shapeLength;
+    }
+
+    public void setCategories(Set<String> categories) {
+        this.categories = categories;
     }
 
 }
