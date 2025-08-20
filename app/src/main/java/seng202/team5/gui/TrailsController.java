@@ -15,6 +15,7 @@ import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 import seng202.team5.models.Trail;
 import seng202.team5.data.DataService;
+import seng202.team5.data.DatabaseService;
 import seng202.team5.services.SearchService;
 
 /**
@@ -49,7 +50,7 @@ public class TrailsController extends Controller {
         super(Environment);
         // TODO: use database version of dataservice once fully implemented
         this.searchService = new SearchService(
-                new DataService("/datasets/DOC_Walking_Experiences_7994760352369043452.csv"));
+                new DataService(new DatabaseService()));
     }
 
     /**
