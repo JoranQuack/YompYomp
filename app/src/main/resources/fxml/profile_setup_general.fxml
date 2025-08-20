@@ -29,7 +29,7 @@
             <Insets top="30.0" />
          </GridPane.margin>
       </TextField>
-      <Label text="Username" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.valignment="TOP">
+      <Label fx:id="usernameLabel" text="Username" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.valignment="TOP">
          <GridPane.margin>
             <Insets top="10.0" />
          </GridPane.margin>
@@ -39,7 +39,7 @@
             <Insets top="85.0" />
          </GridPane.margin>
       </ChoiceBox>
-      <Label text="Choose your region" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.valignment="TOP">
+      <Label fx:id="regionLabel" text="Choose your region" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.valignment="TOP">
          <GridPane.margin>
             <Insets top="65.0" />
          </GridPane.margin>

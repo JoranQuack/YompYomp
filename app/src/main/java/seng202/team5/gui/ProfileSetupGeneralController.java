@@ -3,8 +3,12 @@ package seng202.team5.gui;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import seng202.team5.Environment;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class ProfileSetupGeneralController extends Controller {
 
@@ -18,6 +22,22 @@ public class ProfileSetupGeneralController extends Controller {
     private ChoiceBox regionChoiceBox;
     @FXML
     private Button continueButton;
+    @FXML
+    private Label usernameLabel;
+    @FXML
+    private Label regionLabel;
+
+    /**
+     * Initializes the first profile setup screen
+     */
+    @FXML
+    private void initialize() {
+        List<String> regions = new ArrayList<>();
+        usernameLabel.setText("Username");
+        regionLabel.setText("Choose your region");
+        usernameTextField.setPromptText("YompYomp User");
+        regionChoiceBox.getItems().addAll();
+    }
 
     @Override
     protected String getFxmlFile() {
