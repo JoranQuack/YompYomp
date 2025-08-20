@@ -11,13 +11,13 @@ public class SqlBasedTrailRepo implements ITrail {
     private static final String SELECT_ALL = """
             SELECT id, name, description, difficulty, completion_time,
                    type, thumb_url, web_url, date_loaded_raw, x, y
-            FROM trails
+            FROM trail
             """;
 
     private static final String SELECT_BY_ID = SELECT_ALL + " WHERE id = ?";
 
     private static final String UPSERT_SQL = """
-            INSERT INTO trails (
+            INSERT INTO trail (
                 id, name, description, difficulty, completion_time,
                 type, thumb_url, web_url, date_loaded_raw, x, y
             ) VALUES (?,?,?,?,?,?,?,?,?,?,?)
@@ -34,8 +34,8 @@ public class SqlBasedTrailRepo implements ITrail {
                 y=excluded.y
             """;
 
-    private static final String DELETE_SQL = "DELETE FROM trails WHERE id = ?";
-    private static final String COUNT_SQL = "SELECT COUNT(*) FROM trails";
+    private static final String DELETE_SQL = "DELETE FROM trail WHERE id = ?";
+    private static final String COUNT_SQL = "SELECT COUNT(*) FROM trail";
 
     public SqlBasedTrailRepo(DatabaseService databaseService) {
         this.queryHelper = new QueryHelper(databaseService);
