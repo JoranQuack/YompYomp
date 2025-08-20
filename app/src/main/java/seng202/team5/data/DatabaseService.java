@@ -1,5 +1,6 @@
 package seng202.team5.data;
 
+import java.nio.file.Path;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -42,8 +43,9 @@ public class DatabaseService {
         String databasePath;
 
         // Check if running from root (./gradlew run) or app/
-        if (Files.exists(Paths.get(projectRoot, "app", "data", "database", "main.db"))) {
-            databasePath = Paths.get(projectRoot, "app", "data", "database", "main.db").toString();
+        Path rootReference = Paths.get(projectRoot, "app", "data", "database", "main.db");
+        if (Files.exists(rootReference)) {
+            databasePath = rootReference.toString();
         } else {
             databasePath = Paths.get(projectRoot, "data", "database", "main.db").toString();
         }
