@@ -1,34 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
-<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
 
-<VBox xmlns="http://javafx.com/javafx"
-      xmlns:fx="http://javafx.com/fxml"
-      fx:controller="seng202.team5.gui.components.TrailCardController"
-      spacing="8" padding="10"
-      style="-fx-background-color: #f9f9f9; -fx-background-radius: 8; -fx-border-radius: 8; -fx-border-color: #cccccc;">
+<VBox spacing="8" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="seng202.team5.gui.components.TrailCardController">
 
-    <!-- Thumbnail -->
-    <ImageView fx:id="thumbnail"
-               fitWidth="200"
-               fitHeight="120"
-               preserveRatio="true" />
+    <!-- VBox padding -->
+    <padding>
+        <Insets bottom="10" left="10" right="10" top="10" />
+    </padding>
+
+    <!-- Thumbnail image -->
+    <ImageView fx:id="thumbnail" fitWidth="200" fitHeight="120" preserveRatio="true"/>
 
     <!-- Title -->
-    <Label fx:id="title"
-           style="-fx-font-size: 16px; -fx-font-weight: bold;" />
+    <Label fx:id="title" style="-fx-font-size: 16px; -fx-font-weight: bold;" text="Trail Name"/>
 
     <!-- Match bar + label -->
-    <HBox spacing="8" alignment="CENTER_LEFT">
-        <ProgressBar fx:id="matchBar"
-                     prefWidth="150"
-                     progress="0.0" />
-        <Label fx:id="matchLabel"
-               text="0% Match"
-               style="-fx-font-size: 12px; -fx-text-fill: #333;" />
+    <HBox alignment="CENTER_LEFT" spacing="8">
+        <ProgressBar fx:id="matchBar" prefWidth="150" progress="0.0" />
+        <Label fx:id="matchLabel" style="-fx-font-size: 12px; -fx-text-fill: #333;" text="0% Match" />
     </HBox>
 
 </VBox>
-
