@@ -20,10 +20,17 @@ public abstract class Controller {
     private final Environment Environment;
 
     /**
+     * No-argument constructor for FXML compatibility
+     */
+    protected Controller() {
+        this.Environment = null; // Will be set later via setter
+    }
+
+    /**
      * Creates an instance of a ScreenController with the given
-     * {@link GameEnvironment}
+     * {@link Environment}
      *
-     * @param gameEnvironment The game environment used by this ScreenController
+     * @param Environment The environment used by this ScreenController
      */
     protected Controller(final Environment Environment) {
         this.Environment = Environment;
@@ -70,9 +77,9 @@ public abstract class Controller {
     protected abstract String getTitle();
 
     /**
-     * Gets the game environment associated with this screen controller.
+     * Gets the environment associated with this screen controller.
      *
-     * @return The game environment for this controller
+     * @return The environment for this controller
      */
     protected Environment getEnvironment() {
         return Environment;
