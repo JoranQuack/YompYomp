@@ -4,8 +4,8 @@ import java.io.*;
 import java.util.*;
 
 /**
- * Loads data from the keyword CSV file
- * It stores the keywords in a map of category to a list of keywords
+ * Loads data from the keyword CSV file.
+ * It stores the keywords in a map of category to a list of keywords.
  */
 public class FileBasedKeywordRepo implements IKeyword {
     // This is what this CSV reader will return. It is in the form
@@ -13,7 +13,7 @@ public class FileBasedKeywordRepo implements IKeyword {
     private final Map<String, List<String>> keywords = new HashMap<>();
 
     /**
-     * Constructor - loads keywords from the CSV file for keywords
+     * Constructor - loads keywords from the CSV file for keywords.
      * @param filePath path to the keywords CSV file
      */
     public FileBasedKeywordRepo(String filePath) {
@@ -21,9 +21,9 @@ public class FileBasedKeywordRepo implements IKeyword {
     }
 
     /**
-     * Reads the categories and all the keywords for that category in the created CSV
+     * Reads the categories and all the keywords for that category in the created CSV.
      * The CSV has one category per line at index 0, and all the keywords for that category
-     * follow in a comma-separated list
+     * follow in a comma-separated list.
      *
      * @param filePath The path to the CSV file
      * @return A map of category names to lists of keywords in that category
@@ -54,7 +54,7 @@ public class FileBasedKeywordRepo implements IKeyword {
     }
 
     /**
-     * Gets the map of categories to keywords
+     * Gets the map of categories to keywords.
      *
      * @return The map of categories to keywords
      */
