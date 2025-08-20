@@ -9,6 +9,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.io.InputStreamReader;
 import java.io.InputStream;
+import java.util.Set;
 
 /**
  * FileBasedTrailRepo is responsible for loading the trail data from the DOC
@@ -19,6 +20,8 @@ public class FileBasedTrailRepo implements ITrail {
 
     // List containing all the trails from the CSV
     private final List<Trail> trails = new ArrayList<>();
+
+
 
     /**
      * Constructor - Loads trails from the DOC CSV file path
@@ -79,7 +82,7 @@ public class FileBasedTrailRepo implements ITrail {
 
                 // create the new trail object
                 Trail newTrail = new Trail(id, name, difficulty, description, completionTime, hasAlerts,
-                        thumbnailURL, webpageURL, dateLoaded, shapeLength);
+                        thumbnailURL, webpageURL, dateLoaded, shapeLength, null);
 
                 // add the new trail object to the list
                 trails.add(newTrail);
