@@ -37,11 +37,17 @@ public class WelcomeController extends Controller {
         });
     }
 
+    /**
+     * onClicked action of setUpProfileButton
+     */
     @FXML
     private void onSetUpProfileButtonClicked() {
         // TODO: link to profile setup screen
     }
 
+    /**
+     * onClicked action for skipButton
+     */
     @FXML
     private void onSkipButtonClicked() {
         // TODO: link to guest screen
