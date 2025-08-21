@@ -2,33 +2,22 @@ package seng202.team5.services;
 
 import java.util.List;
 import java.util.stream.Collectors;
-
 import seng202.team5.models.Trail;
+import seng202.team5.data.DataService;
 
 /**
  * Service for searching and filtering trails with pagination support.
  * Provides trail search functionality and pagination calculations.
  */
 public class SearchService {
-    // private static SearchService instance;
-    /** Data service instance for accessing trail data */
-    private static DataService dataService;
-    /** Cached list of all trails */
     private List<Trail> trails;
-    /** Maximum number of results per page */
     private static final int MAX_RESULTS = 20;
 
     /**
-     * Creates SearchService and loads trail data from CSV.
+     * Creates SearchService with injected DataService.
      */
-    public SearchService() {
-        // Use getResourceAsStream to load from classpath
-        try {
-            dataService = new DataService("/datasets/DOC_Walking_Experiences_7994760352369043452.csv");
-            trails = dataService.getTrails();
-        } catch (Exception e) {
-            throw new RuntimeException("Failed to load trail data", e);
-        }
+    public SearchService(DataService dataService) {
+        this.trails = dataService.getTrails();
     }
 
     /**
@@ -40,7 +29,7 @@ public class SearchService {
      * @return A list of trails matching the search query for the specified page,
      *         limited to MAX_RESULTS
      */
-    public List<Trail> searchTrails(String query, int page) {
+    private List<Trail> searchTrails(String query, int page) {
         int startIndex = page * MAX_RESULTS;
 
         if (query == null || query.isEmpty()) {
