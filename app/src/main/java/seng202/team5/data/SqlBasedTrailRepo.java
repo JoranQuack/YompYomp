@@ -4,6 +4,9 @@ import seng202.team5.models.Trail;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Class is responsible for holding and executing all SQL queries related to 'Trails'
+ */
 public class SqlBasedTrailRepo implements ITrail {
     private final QueryHelper queryHelper;
 
@@ -37,15 +40,28 @@ public class SqlBasedTrailRepo implements ITrail {
     private static final String DELETE_SQL = "DELETE FROM trail WHERE id = ?";
     private static final String COUNT_SQL = "SELECT COUNT(*) FROM trail";
 
+    /**
+     * Creates a SQL-based trail repository, uses query helper class
+     * @param databaseService provider of JDBC connection used by QueryHelper
+     */
     public SqlBasedTrailRepo(DatabaseService databaseService) {
         this.queryHelper = new QueryHelper(databaseService);
     }
 
+    /**
+     * Retrieves all trails from database
+     * @return a list of all rows in the trail table
+     */
     @Override
     public List<Trail> getAllTrails() {
         return queryHelper.executeQuery(SELECT_ALL, null, this::mapRowToTrail);
     }
 
+    /**
+     * Finds a single trail by its primary key
+     * @param id id of the object
+     * @return an Optional containing the trail if found; otherwise empty
+     */
     @Override
     public Optional<Trail> findById(int id) {
         return queryHelper.executeQuerySingle(
@@ -54,11 +70,20 @@ public class SqlBasedTrailRepo implements ITrail {
                 this::mapRowToTrail);
     }
 
+    /**
+     * Inserts or updates a trail (UPSERT). If a row with the same id exists, its fields are updated
+     * ;otherwise a new row is inserted
+     * @param trail trail that needs to be updated
+     */
     @Override
     public void upsert(Trail trail) {
         queryHelper.executeUpdate(UPSERT_SQL, stmt -> setTrailParameters(stmt, trail));
     }
 
+    /**
+     * Inserts or updates all supplied trails. Loops and calls upsert method.
+     * @param trails List of trails to insert into database
+     */
     @Override
     public void upsertAll(List<Trail> trails) {
         if (trails.isEmpty())
@@ -68,15 +93,29 @@ public class SqlBasedTrailRepo implements ITrail {
         }
     }
 
+    /**
+     * Deletes a trail by its primary key
+     * @param id the trail identifier to delete
+     */
     @Override
     public void deleteById(int id) {
         queryHelper.executeUpdate(DELETE_SQL, stmt -> stmt.setInt(1, id));
     }
 
+    /**
+     * Counts all the rows in the trail table
+     * @return
+     */
     public int countTrails() {
         return queryHelper.executeCountQuery(COUNT_SQL, null);
     }
 
+    /**
+     * Maps the current result set row to a trail
+     * @param rs result set positioned at a row from trail
+     * @return mapped Trail
+     * @throws java.sql.SQLException if column cannot be read
+     */
     private Trail mapRowToTrail(java.sql.ResultSet rs) throws java.sql.SQLException {
         return new Trail(
                 rs.getInt("id"),
@@ -92,6 +131,12 @@ public class SqlBasedTrailRepo implements ITrail {
                 rs.getDouble("y"));
     }
 
+    /**
+     * Binds trail fields to the prepared statement. The order must match.
+     * @param stmt prepared statement to bind
+     * @param trail source of values
+     * @throws java.sql.SQLException if a parameter cannot be set
+     */
     private void setTrailParameters(java.sql.PreparedStatement stmt, Trail trail) throws java.sql.SQLException {
         stmt.setInt(1, trail.getId());
         stmt.setString(2, trail.getName());
