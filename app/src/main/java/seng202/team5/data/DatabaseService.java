@@ -25,12 +25,15 @@ public class DatabaseService {
     public Connection getConnection() throws SQLException {
         String databasePath = getDatabasePath();
         String url = "jdbc:sqlite:" + databasePath;
-        Connection connection = DriverManager.getConnection(url);
-
-        // Enable foreign keys
-        connection.createStatement().execute("PRAGMA foreign_keys = ON");
-
-        return connection;
+        try {
+            Connection connection = DriverManager.getConnection(url);
+            // Enable foreign keys
+            connection.createStatement().execute("PRAGMA foreign_keys = ON");
+            return connection;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     private String getDatabasePath() {
