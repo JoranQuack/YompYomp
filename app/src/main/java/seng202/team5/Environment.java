@@ -16,7 +16,7 @@ public class Environment {
      */
     public Environment(ScreenNavigator navigator) {
         this.navigator = navigator;
-        navigator.launchScreen(new WelcomeController(this));
+        navigator.launchScreen(new WelcomeController(this, navigator));
     }
 
     /**
