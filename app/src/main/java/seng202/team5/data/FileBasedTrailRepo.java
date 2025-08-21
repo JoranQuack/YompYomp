@@ -71,15 +71,18 @@ public class FileBasedTrailRepo implements ITrail {
                 String description = values[2];
                 String difficulty = values[3];
                 String completionTime = values[4];
-                String hasAlerts = values[5];
+                //String hasAlerts = values[5];
+                String type = null;
                 String thumbnailURL = values[6];
                 String webpageURL = values[7];
                 String dateLoaded = values[8];
-                double shapeLength = Double.parseDouble(values[9]);
+                //double shapeLength = Double.parseDouble(values[9]);
+                double x = 0;
+                double y = 0;
 
                 // create the new trail object
-                Trail newTrail = new Trail(id, name, difficulty, description, completionTime, hasAlerts,
-                        thumbnailURL, webpageURL, dateLoaded, shapeLength);
+                Trail newTrail = new Trail(id, name, difficulty, description, completionTime, type,
+                        thumbnailURL, webpageURL, dateLoaded, x, y);
 
                 // add the new trail object to the list
                 trails.add(newTrail);
@@ -98,4 +101,8 @@ public class FileBasedTrailRepo implements ITrail {
     public List<Trail> getAllTrails() {
         return trails;
     }
+    public java.util.Optional<Trail> findById(int id) {return null;}
+    public void upsert(Trail trail) {}
+    public void upsertAll(List<Trail> trails) {}
+    public void deleteById(int id) {}
 }
