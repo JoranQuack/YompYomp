@@ -1,6 +1,7 @@
 package seng202.team5;
 
 import seng202.team5.gui.ScreenNavigator;
+import seng202.team5.gui.WelcomeController;
 
 public class Environment {
 
@@ -15,9 +16,7 @@ public class Environment {
      */
     public Environment(ScreenNavigator navigator) {
         this.navigator = navigator;
-
-        navigator.launchTrailsScreen(this); // temporary, will be removed later
-        // navigator.launchStartScreen(this);
+        navigator.launchScreen(new WelcomeController(this));
     }
 
     /**
