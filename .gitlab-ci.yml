@@ -1,0 +1,12 @@
+junit:
+  stage: test
+  script:
+    - ./gradlew test
+
+generate_artifacts:
+  stage: deploy
+  script:
+    - ./gradlew clean jar
+  artifacts:
+    paths:
+      - build/libs/seng202.team5.App.jar
