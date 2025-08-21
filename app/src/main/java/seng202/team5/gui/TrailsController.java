@@ -14,6 +14,8 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 import seng202.team5.models.Trail;
+import seng202.team5.data.DataService;
+import seng202.team5.data.DatabaseService;
 import seng202.team5.services.SearchService;
 
 /**
@@ -22,7 +24,7 @@ import seng202.team5.services.SearchService;
  */
 public class TrailsController extends Controller {
     /** Service for searching and filtering trails */
-    private SearchService searchService = new SearchService();
+    private SearchService searchService;
 
     @FXML
     private Button searchButton;
@@ -41,11 +43,14 @@ public class TrailsController extends Controller {
 
     /**
      * Creates controller with environment.
-     * 
+     *
      * @param Environment Application environment
      */
     protected TrailsController(seng202.team5.Environment Environment) {
         super(Environment);
+        // TODO: use database version of dataservice once fully implemented
+        this.searchService = new SearchService(
+                new DataService(new DatabaseService()));
     }
 
     /**
@@ -53,7 +58,7 @@ public class TrailsController extends Controller {
      */
     @FXML
     private void initialize() {
-        List<Trail> trails = searchService.searchTrails(null, 0);
+        List<Trail> trails = searchService.getTrails(null, 0);
         initializePageChoiceBox();
         updateTrailsGrid(trails);
         resultsLabel.setText(trails.size() + "/" + searchService.getNumberOfTrails() + " trails loaded");
@@ -70,7 +75,7 @@ public class TrailsController extends Controller {
 
     /**
      * Updates grid with trail data.
-     * 
+     *
      * @param trails List of trails to display
      */
     private void updateTrailsGrid(List<Trail> trails) {
@@ -111,7 +116,7 @@ public class TrailsController extends Controller {
     private void onSearchButtonClicked() {
         String query = searchBarTextField.getText();
         int page = Integer.parseInt(pageChoiceBox.getValue()) - 1;
-        List<Trail> filteredTrails = searchService.searchTrails(query, page);
+        List<Trail> filteredTrails = searchService.getTrails(query, page);
         updateTrailsGrid(filteredTrails);
     }
 
@@ -122,7 +127,7 @@ public class TrailsController extends Controller {
     private void onPageSelected() {
         String query = searchBarTextField.getText();
         int page = Integer.parseInt(pageChoiceBox.getValue()) - 1;
-        List<Trail> filteredTrails = searchService.searchTrails(query, page);
+        List<Trail> filteredTrails = searchService.getTrails(query, page);
         updateTrailsGrid(filteredTrails);
     }
 
