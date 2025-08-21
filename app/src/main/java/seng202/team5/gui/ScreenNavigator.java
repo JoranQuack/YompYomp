@@ -29,21 +29,15 @@ public class ScreenNavigator {
     public ScreenNavigator(Stage stage) {
         this.stage = stage;
         this.rootPane = new BorderPane();
-        Scene scene = new Scene(rootPane, 1920, 1080);
+        Scene scene = new Scene(rootPane, 1200, 800);
         stage.setScene(scene);
-    }
 
-    /**
-     * Launches the start screen of the application
-     *
-     * @param environment The environment instance
-     */
-    public void launchStartScreen(Environment environment) {
-        launchScreen(new StartController(environment));
-    }
-
-    public void launchTrailsScreen(Environment environment) {
-        launchScreen(new TrailsController(environment));
+        stage.setMinWidth(800);
+        stage.setMinHeight(600);
+        
+        stage.setResizable(true);
+        rootPane.prefWidthProperty().bind(scene.widthProperty());
+        rootPane.prefHeightProperty().bind(scene.heightProperty());
     }
 
     /**
