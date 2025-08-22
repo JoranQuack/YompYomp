@@ -8,9 +8,8 @@ public class Environment {
     private final ScreenNavigator navigator;
 
     /**
-     * Constructor for the GameEnvironment class. Initializes the game environment
-     * with a ScreenNavigator instance. Sets the initial bank balance, available
-     * cars and parts, and initializes some game data.
+     * Constructor for the Environment class. Initializes the environment
+     * with a ScreenNavigator instance.
      *
      * @param navigator The ScreenNavigator instance for navigating between screens
      */
