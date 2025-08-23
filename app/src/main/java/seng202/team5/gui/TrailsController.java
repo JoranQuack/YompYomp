@@ -13,6 +13,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
+import seng202.team5.Environment;
 import seng202.team5.models.Trail;
 import seng202.team5.data.DataService;
 import seng202.team5.data.DatabaseService;
@@ -46,11 +47,8 @@ public class TrailsController extends Controller {
      *
      * @param Environment Application environment
      */
-    protected TrailsController(seng202.team5.Environment Environment) {
-        super(Environment);
-        // TODO: use database version of dataservice once fully implemented
-        this.searchService = new SearchService(
-                new DataService(new DatabaseService()));
+    protected TrailsController(Environment Environment, ScreenNavigator navigator) {
+        super(Environment, navigator);
     }
 
     /**
