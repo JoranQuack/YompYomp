@@ -10,7 +10,6 @@ plugins {
     id 'application'
     id 'java'
     id 'jacoco'
-    id 'checkstyle'
     id 'org.openjfx.javafxplugin' version '0.1.0'
 }
 
