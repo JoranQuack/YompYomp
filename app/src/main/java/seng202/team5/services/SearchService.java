@@ -12,9 +12,7 @@ import seng202.team5.data.DataService;
  */
 public class SearchService {
     private List<Trail> trails;
-    /** Cached map of categories to keywords */
     private Map<String, List<String>> keywords;
-    /** Maximum number of results per page */
     private static final int MAX_RESULTS = 20;
 
     /**
