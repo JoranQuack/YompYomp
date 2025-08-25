@@ -31,7 +31,7 @@ public class WelcomeController extends Controller {
     private void initialize() {
         setUpProfileButton.setText("Set Up Profile");
         skipButton.setText("Skip");
-        setUpProfileButton.setOnAction(e -> {onSetUpProfileButtonClicked();});
+        setUpProfileButton.setOnAction(e -> onSetUpProfileButtonClicked());
     }
 
     /**
