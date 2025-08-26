@@ -1,3 +1,7 @@
+workflow:
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "main"'
+
 junit:
   stage: test
   script:
