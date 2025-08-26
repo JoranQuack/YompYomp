@@ -5,15 +5,15 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * Class is responsible for holding and executing all SQL queries related to 'Trails'
+ * Class is responsible for holding and executing all SQL queries related to
+ * 'Trails'
  */
 public class SqlBasedTrailRepo implements ITrail {
     private final QueryHelper queryHelper;
 
     // SQL Constants
     private static final String SELECT_ALL = """
-            SELECT id, name, description, difficulty, completion_time,
-                   type, thumb_url, web_url, date_loaded_raw, x, y
+            SELECT *
             FROM trail
             """;
 
@@ -42,6 +42,7 @@ public class SqlBasedTrailRepo implements ITrail {
 
     /**
      * Creates a SQL-based trail repository, uses query helper class
+     * 
      * @param databaseService provider of JDBC connection used by QueryHelper
      */
     public SqlBasedTrailRepo(DatabaseService databaseService) {
@@ -50,6 +51,7 @@ public class SqlBasedTrailRepo implements ITrail {
 
     /**
      * Retrieves all trails from database
+     * 
      * @return a list of all rows in the trail table
      */
     @Override
@@ -59,6 +61,7 @@ public class SqlBasedTrailRepo implements ITrail {
 
     /**
      * Finds a single trail by its primary key
+     * 
      * @param id id of the object
      * @return an Optional containing the trail if found; otherwise empty
      */
@@ -71,8 +74,10 @@ public class SqlBasedTrailRepo implements ITrail {
     }
 
     /**
-     * Inserts or updates a trail (UPSERT). If a row with the same id exists, its fields are updated
+     * Inserts or updates a trail (UPSERT). If a row with the same id exists, its
+     * fields are updated
      * ;otherwise a new row is inserted
+     * 
      * @param trail trail that needs to be updated
      */
     @Override
@@ -82,6 +87,7 @@ public class SqlBasedTrailRepo implements ITrail {
 
     /**
      * Inserts or updates all supplied trails. Loops and calls upsert method.
+     * 
      * @param trails List of trails to insert into database
      */
     @Override
@@ -95,6 +101,7 @@ public class SqlBasedTrailRepo implements ITrail {
 
     /**
      * Deletes a trail by its primary key
+     * 
      * @param id the trail identifier to delete
      */
     @Override
@@ -104,6 +111,7 @@ public class SqlBasedTrailRepo implements ITrail {
 
     /**
      * Counts all the rows in the trail table
+     * 
      * @return
      */
     public int countTrails() {
@@ -112,6 +120,7 @@ public class SqlBasedTrailRepo implements ITrail {
 
     /**
      * Maps the current result set row to a trail
+     * 
      * @param rs result set positioned at a row from trail
      * @return mapped Trail
      * @throws java.sql.SQLException if column cannot be read
@@ -133,7 +142,8 @@ public class SqlBasedTrailRepo implements ITrail {
 
     /**
      * Binds trail fields to the prepared statement. The order must match.
-     * @param stmt prepared statement to bind
+     * 
+     * @param stmt  prepared statement to bind
      * @param trail source of values
      * @throws java.sql.SQLException if a parameter cannot be set
      */
