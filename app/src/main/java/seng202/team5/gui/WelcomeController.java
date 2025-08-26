@@ -40,7 +40,8 @@ public class WelcomeController extends Controller {
     @FXML
     private void onSetUpProfileButtonClicked() {
         super.getEnvironment().getNavigator().launchScreen(
-                new ProfileSetupGeneralController(super.getEnvironment(), super.getEnvironment().getNavigator()));
+                new ProfileSetupGeneralController(super.getEnvironment(), super.getEnvironment().getNavigator())
+        );
     }
 
     /**
