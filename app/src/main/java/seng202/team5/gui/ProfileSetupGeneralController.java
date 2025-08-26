@@ -42,6 +42,18 @@ public class ProfileSetupGeneralController extends Controller {
         regionLabel.setText("Choose your region");
         usernameTextField.setPromptText("YompYomp User");
         regionChoiceBox.getItems().addAll(regionList);
+        continueButton.setOnAction(e -> onContinueButtonClicked());
+    }
+
+    /**
+     * Action method of continueButton
+     */
+    @FXML
+    private void onContinueButtonClicked() {
+
+        super.getEnvironment().getNavigator().launchScreen(
+                new ProfileQuiz1Controller(super.getEnvironment(), super.getEnvironment().getNavigator())
+        );
     }
 
     @Override
