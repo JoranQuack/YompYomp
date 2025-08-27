@@ -34,6 +34,11 @@ public class MatchMakingService {
         userWeights.put("Rocky", user.getGradientPreference());
         userWeights.put("Forest", user.getBushPreference());
         userWeights.put("Wet", user.getLakeRiverPreference());
-         //TODO: add more categories
+        userWeights.put("Beach", user.getCoastPreference());
+        userWeights.put("Alpine", user.getMountainPreference());
+        userWeights.put("Wildlife", user.getWildlifePreference());
+        userWeights.put("Historical", user.getHistoricPreference());
+        userWeights.put("Waterfall", user.getWaterfallPreference());
+        userWeights.put("Reserve", user.getReservePreference());
     }
 }
