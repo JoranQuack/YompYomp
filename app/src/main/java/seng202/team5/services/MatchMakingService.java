@@ -41,4 +41,23 @@ public class MatchMakingService {
         userWeights.put("Waterfall", user.getWaterfallPreference());
         userWeights.put("Reserve", user.getReservePreference());
     }
+
+    /**
+     * Calculates a score for a trail given its keywords based on the user's
+     * answers to the setup questions. This is where a percentage match is calculated.
+     * @param trailKeywords list of keywords for a trail
+     * @return weighted score for a trail
+     */
+    public double scoreTrail(List<String> trailKeywords) {
+        int score = 0;
+        //maximum possible score that a trail could get if it matches the user's preferences perfectly
+        int maxScore = userWeights.values().stream().mapToInt(Integer::intValue).sum();
+        for (String keyword : trailKeywords) {
+            String category =  keywordCategories.get(keyword).get(0);
+            if (category != null && userWeights.containsKey(category)) {
+                score += userWeights.get(category);
+            }
+        }
+        return (double) score/maxScore;
+    }
 }
