@@ -9,25 +9,31 @@ public class Trail {
     private String description;
     private String difficulty;
     private String completionTime;
-    private String hasAlerts;
+    //private String hasAlerts;
+    private String type;
     private String thumbnailURL;
     private String webpageURL;
     private String dateLoaded;
-    private double shapeLength;
+    //private double shapeLength;
+    private double x;
+    private double y;
 
     // Constructor for base variables
-    public Trail(int id, String name, String difficulty, String description, String completionTime, String hasAlerts,
-            String thumbnailURL, String webpageURL, String dateLoaded, double shapeLength) {
+    public Trail(int id, String name, String difficulty, String description, String completionTime, String type,
+            String thumbnailURL, String webpageURL, String dateLoaded, double x, double y){//, double shapeLength) {
         this.id = id;
         this.name = name;
         this.description = description;
         this.difficulty = difficulty;
         this.completionTime = completionTime;
-        this.hasAlerts = hasAlerts;
+        this.type = type;
         this.thumbnailURL = thumbnailURL;
         this.webpageURL = webpageURL;
         this.dateLoaded = dateLoaded;
-        this.shapeLength = shapeLength;
+        this.x = x;
+        this.y = y;
+        //this.shapeLength = shapeLength;
+
     }
 
     // Getters
@@ -51,8 +57,8 @@ public class Trail {
         return completionTime;
     }
 
-    public String getHasAlerts() {
-        return hasAlerts;
+    public String getType() {
+        return type;
     }
 
     public String getThumbnailURL() {
@@ -67,8 +73,15 @@ public class Trail {
         return dateLoaded;
     }
 
-    public double getShapeLength() {
-        return shapeLength;
+    //public double getShapeLength() {
+        //return shapeLength;
+    //}
+
+    public double getX() {
+        return x;
+    }
+    public double getY() {
+        return y;
     }
 
     // Setters
@@ -92,8 +105,8 @@ public class Trail {
         this.completionTime = completionTime;
     }
 
-    public void setHasAlerts(String hasAlerts) {
-        this.hasAlerts = hasAlerts;
+    public void setType(String type) {
+        this.type = type;
     }
 
     public void setThumbnailURL(String thumbnailURL) {
@@ -108,8 +121,14 @@ public class Trail {
         this.dateLoaded = dateLoaded;
     }
 
-    public void setShapeLength(int shapeLength) {
-        this.shapeLength = shapeLength;
-    }
+    //public void setShapeLength(int shapeLength) {
+        //this.shapeLength = shapeLength;
+    //}
 
+    public void setX(double x) {
+        this.x = x;
+    }
+    public void setY(double y) {
+        this.y = y;
+    }
 }
