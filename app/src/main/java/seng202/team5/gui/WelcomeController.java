@@ -39,6 +39,7 @@ public class WelcomeController extends Controller {
      */
     @FXML
     private void onSetUpProfileButtonClicked() {
+        super.getEnvironment().getUser().setType("profiled");
         super.getEnvironment().getNavigator().launchScreen(
                 new ProfileSetupGeneralController(super.getEnvironment(), super.getEnvironment().getNavigator())
         );
@@ -49,6 +50,7 @@ public class WelcomeController extends Controller {
      */
     @FXML
     private void onSkipButtonClicked() {
+        super.getEnvironment().getUser().setType("guest");
         // TODO: link to guest screen
     }
 

@@ -15,7 +15,7 @@ public enum Question {
     public final String question;
     public final String[] sliderLabels;
 
-    private Question(String question, String[] sliderLabels) {
+    Question(String question, String[] sliderLabels) {
         this.question = question;
         this.sliderLabels = sliderLabels;
     }

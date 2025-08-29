@@ -9,7 +9,6 @@ import java.util.Arrays;
 
 public class ProfileQuizController extends Controller {
 
-    private User user;
     private int quizId;
 
     public ProfileQuizController(seng202.team5.Environment environment, ScreenNavigator navigator, int quizId) {
@@ -46,94 +45,108 @@ public class ProfileQuizController extends Controller {
     private void initialize() {
         setSliders(slider1);
         setSliders(slider2);
-        // TODO: method to update progress bar
+        setProgressBar();
+        continueButton.setOnAction(e -> onContinueButtonClicked());
     }
 
     @FXML
     private void setSliders(Slider slider) {
+        slider.setSnapToTicks(true);
+        slider.setBlockIncrement(1);
         slider.setMin(1);
         slider.setMax(5);
         slider.setValue(3);
     }
 
     @FXML
+    private void setProgressBar() {
+        double progress = (quizId - 1) / 10.0;
+        progressBar.setProgress(progress);
+    }
+
+    @FXML
     private void setQuestionLabel() {
-        switch(this.quizId) {
+        switch (quizId) {
             case 1:
                 questionLabel1.setText(Question.ONE.question);
-                minLabel1.setText(Question.ONE.sliderLabels[0]);
-                medLabel1.setText(Question.ONE.sliderLabels[1]);
-                maxLabel1.setText(Question.ONE.sliderLabels[2]);
+                setSliderLabels(minLabel1, medLabel1, maxLabel1, Question.ONE.sliderLabels);
                 questionLabel2.setText(Question.TWO.question);
-                minLabel2.setText(Question.TWO.sliderLabels[0]);
-                medLabel2.setText(Question.TWO.sliderLabels[1]);
-                maxLabel2.setText(Question.TWO.sliderLabels[2]);
+                setSliderLabels(minLabel2, medLabel2, maxLabel2, Question.TWO.sliderLabels);
                 break;
             case 3:
                 questionLabel1.setText(Question.THREE.question);
-                minLabel1.setText(Question.THREE.sliderLabels[0]);
-                medLabel1.setText(Question.THREE.sliderLabels[1]);
-                maxLabel1.setText(Question.THREE.sliderLabels[2]);
+                setSliderLabels(minLabel1, medLabel1, maxLabel1, Question.THREE.sliderLabels);
                 questionLabel2.setText(Question.FOUR.question);
-                minLabel2.setText(Question.FOUR.sliderLabels[0]);
-                medLabel2.setText(Question.FOUR.sliderLabels[1]);
-                maxLabel2.setText(Question.FOUR.sliderLabels[2]);
+                setSliderLabels(minLabel2, medLabel2, maxLabel2, Question.FOUR.sliderLabels);
                 break;
             case 5:
                 questionLabel1.setText(Question.FIVE.question);
-                minLabel1.setText(Question.FIVE.sliderLabels[0]);
-                medLabel1.setText(Question.FIVE.sliderLabels[1]);
-                maxLabel1.setText(Question.FIVE.sliderLabels[2]);
+                setSliderLabels(minLabel1, medLabel1, maxLabel1, Question.FIVE.sliderLabels);
                 questionLabel2.setText(Question.SIX.question);
-                minLabel2.setText(Question.SIX.sliderLabels[0]);
-                medLabel2.setText(Question.SIX.sliderLabels[1]);
-                maxLabel2.setText(Question.SIX.sliderLabels[2]);
+                setSliderLabels(minLabel2, medLabel2, maxLabel2, Question.SIX.sliderLabels);
                 break;
             case 7:
                 questionLabel1.setText(Question.SEVEN.question);
-                minLabel1.setText(Question.SEVEN.sliderLabels[0]);
-                medLabel1.setText(Question.SEVEN.sliderLabels[1]);
-                maxLabel1.setText(Question.SEVEN.sliderLabels[2]);
+                setSliderLabels(minLabel1, medLabel1, maxLabel1, Question.SEVEN.sliderLabels);
                 questionLabel2.setText(Question.EIGHT.question);
-                minLabel2.setText(Question.EIGHT.sliderLabels[0]);
-                medLabel2.setText(Question.EIGHT.sliderLabels[1]);
-                maxLabel2.setText(Question.EIGHT.sliderLabels[2]);
+                setSliderLabels(minLabel2, medLabel2, maxLabel2, Question.EIGHT.sliderLabels);
                 break;
             case 9:
                 questionLabel1.setText(Question.NINE.question);
-                minLabel1.setText(Question.NINE.sliderLabels[0]);
-                medLabel1.setText(Question.NINE.sliderLabels[1]);
-                maxLabel1.setText(Question.NINE.sliderLabels[2]);
+                setSliderLabels(minLabel1, medLabel1, maxLabel1, Question.NINE.sliderLabels);
                 questionLabel2.setText(Question.TEN.question);
-                minLabel2.setText(Question.TEN.sliderLabels[0]);
-                medLabel2.setText(Question.TEN.sliderLabels[1]);
-                maxLabel2.setText(Question.TEN.sliderLabels[2]);
+                setSliderLabels(minLabel2, medLabel2, maxLabel2, Question.TEN.sliderLabels);
                 break;
         }
     }
 
     @FXML
     private void onContinueButtonClicked() {
-        incrementQuizId();
-        super.getEnvironment().getNavigator().launchScreen(
-                new ProfileQuizController(super.getEnvironment(), super.getEnvironment().getNavigator(), quizId)
-        );
+        setUserPreferences();
+        if (quizId < 10) {
+            incrementQuizId();
+            super.getEnvironment().getNavigator().launchScreen(
+                    new ProfileQuizController(super.getEnvironment(), super.getEnvironment().getNavigator(), quizId)
+            );
+        }
+        // TODO: add else clause to move to dashboard screen
     }
 
-    private void setSliderLabels(String[] sliderLabels) {
-
+    @FXML
+    private void setSliderLabels(Label minLabel, Label medLabel, Label maxLabel, String[] sliderLabels) {
+        minLabel.setText(sliderLabels[0]);
+        medLabel.setText(sliderLabels[1]);
+        maxLabel.setText(sliderLabels[2]);
     }
 
     private void incrementQuizId() {
         this.quizId += 2;
     }
 
-    public void setQuizId(int quizId) {
-        this.quizId = quizId;
-    }
-
-    public int getQuizId() {
-        return this.quizId;
+    private void setUserPreferences() {
+        User user = super.getEnvironment().getUser();
+        switch (quizId) {
+            case 1:
+                user.setExperienceLevel((int) slider1.getValue());
+                user.setGradientPreference((int) slider2.getValue());
+                break;
+            case 3:
+                user.setBushPreference((int) slider1.getValue());
+                user.setReservePreference((int) slider2.getValue());
+                break;
+            case 5:
+                user.setLakeRiverPreference((int) slider1.getValue());
+                user.setCoastPreference((int) slider2.getValue());
+                break;
+            case 7:
+                user.setMountainPreference((int) slider1.getValue());
+                user.setWildlifePreference((int) slider2.getValue());
+                break;
+            case 9:
+                user.setHistoricPreference((int) slider1.getValue());
+                user.setWaterfallPreference((int) slider2.getValue());
+                break;
+        }
     }
 
     @Override
