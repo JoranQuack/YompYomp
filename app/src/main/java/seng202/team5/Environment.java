@@ -2,10 +2,12 @@ package seng202.team5;
 
 import seng202.team5.gui.ScreenNavigator;
 import seng202.team5.gui.WelcomeController;
+import seng202.team5.models.User;
 
 public class Environment {
 
     private final ScreenNavigator navigator;
+    public User user;
 
     /**
      * Constructor for the GameEnvironment class. Initializes the game environment
@@ -26,5 +28,13 @@ public class Environment {
      */
     public ScreenNavigator getNavigator() {
         return navigator;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public User getUser() {
+        return user;
     }
 }
