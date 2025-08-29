@@ -18,7 +18,7 @@ public class ProfileSetupGeneralController extends Controller {
     @FXML
     private TextField usernameTextField;
     @FXML
-    private ChoiceBox regionChoiceBox;
+    private ChoiceBox<String> regionChoiceBox;
     @FXML
     private Button continueButton;
     @FXML
@@ -35,7 +35,7 @@ public class ProfileSetupGeneralController extends Controller {
      */
     @FXML
     private void initialize() {
-        List<String> regionList = new ArrayList<>(List.of("Northland", "Auckland",
+        List<String> regionList = new ArrayList<>(List.of("All", "Northland", "Auckland",
                 "Waikato", "Bay of Plenty", "Gisborne", "Hawke's Bay", "Taranaki",
                 "Manawatu-Whanganui", "Wellington", "Nelson", "Marlborough", "West Coast",
                 "Canterbury", "Otago", "Southland"));
@@ -67,7 +67,10 @@ public class ProfileSetupGeneralController extends Controller {
         } else {
             user.setName(usernameTextField.getText());
         }
-        user.setRegion(regionChoiceBox.getSelectionModel().getSelectedItem().toString());
+        if (regionChoiceBox.getSelectionModel().getSelectedItem().isEmpty()) {
+            regionChoiceBox.setValue("All");
+        }
+        user.setRegion(regionChoiceBox.getSelectionModel().getSelectedItem());
         user.setIsFamilyFriendly(familyFriendlyCheckBox.isSelected());
         user.setIsAccessible(accessibleCheckBox.isSelected());
     }

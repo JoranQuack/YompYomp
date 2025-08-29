@@ -4,7 +4,7 @@ public class User {
     // Some basic variables
     private String type; // guest or profiled
     private String name;
-    private String region;
+    private String region; // all or specific region
     private boolean isFamilyFriendly;
     private boolean isAccessible;
     private int experienceLevel;
