@@ -1,10 +1,7 @@
 package seng202.team5.gui;
 
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import javafx.scene.control.ChoiceBox;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import seng202.team5.Environment;
 
 import java.util.ArrayList;
@@ -27,6 +24,10 @@ public class ProfileSetupGeneralController extends Controller {
     private Label usernameLabel;
     @FXML
     private Label regionLabel;
+    @FXML
+    private CheckBox familyFriendlyCheckBox;
+    @FXML
+    private CheckBox accessibleCheckBox;
 
     /**
      * Initializes the first profile setup screen
@@ -42,6 +43,8 @@ public class ProfileSetupGeneralController extends Controller {
         regionLabel.setText("Choose your region");
         usernameTextField.setPromptText("YompYomp User");
         regionChoiceBox.getItems().addAll(regionList);
+        familyFriendlyCheckBox.setSelected(false);
+        accessibleCheckBox.setSelected(false);
         continueButton.setOnAction(e -> onContinueButtonClicked());
     }
 
@@ -50,9 +53,9 @@ public class ProfileSetupGeneralController extends Controller {
      */
     @FXML
     private void onContinueButtonClicked() {
-
+        // TODO: pass user's choices to User object
         super.getEnvironment().getNavigator().launchScreen(
-                new ProfileQuiz1Controller(super.getEnvironment(), super.getEnvironment().getNavigator())
+                new ProfileQuizController(super.getEnvironment(), super.getEnvironment().getNavigator(), 1)
         );
     }
 
