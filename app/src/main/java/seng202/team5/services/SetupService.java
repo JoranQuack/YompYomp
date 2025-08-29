@@ -3,7 +3,14 @@ package seng202.team5.services;
 import seng202.team5.data.FileBasedTrailRepo;
 import seng202.team5.data.SqlBasedTrailRepo;
 import seng202.team5.models.Trail;
+
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URI;
+import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 
 /**
  * Service class for setting up the application.
@@ -24,17 +31,37 @@ public class SetupService {
         return DbTrailRepo.countTrails() >= FileTrailRepo.countTrails();
     }
 
-    boolean areImagesScraped() {
-        for (Trail trail : DbTrailRepo.getAllTrails()) {
-            if (trail.getThumbnailURL() != null && !trail.getThumbnailURL().isEmpty()) {
-                String filename = extractFilenameFromUrl(trail.getThumbnailURL());
-                File imageFile = new File("data/images/" + filename);
-                if (!imageFile.exists()) {
-                    return false;
+    /**
+     * Scrapes trail image from its URL and downloads it to the data/images/
+     * directory.
+     *
+     * @param url
+     */
+    void scrapeTrailImage(String url) {
+        String filename = extractFilenameFromUrl(url);
+        File imageFile = new File("data/images/" + filename);
+        if (!imageFile.exists()) {
+            try {
+                // Create the images directory if it doesn't exist
+                imageFile.getParentFile().mkdirs();
+                // Download the image from the URL
+                URL imageUrl = URI.create(url).toURL();
+                try (InputStream in = imageUrl.openStream()) {
+                    Files.copy(in, imageFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
                 }
+            } catch (IOException e) {
+                System.err.println("Failed to download image from " + url + ": " + e.getMessage());
             }
         }
-        return true;
+    }
+
+    /**
+     * Scrapes images for all trails.
+     */
+    public void scrapeAllTrailImages() {
+        for (Trail trail : DbTrailRepo.getAllTrails()) {
+            scrapeTrailImage(trail.getThumbnailURL());
+        }
     }
 
     /**
