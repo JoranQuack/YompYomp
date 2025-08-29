@@ -2,7 +2,7 @@ package seng202.team5.models;
 
 public class User {
     // Some basic variables
-    private final String type; // guest or profile
+    private String type; // guest or profiled
     private String name;
     private String region;
     private boolean isFamilyFriendly;
@@ -18,15 +18,7 @@ public class User {
     private int historicPreference;
     private int waterfallPreference;
 
-    public User(String type) {
-        this.type = type;
-    }
-
-    public User(String type, String name, String region) {
-        this.type = type;
-        this.name = name;
-        this.region = region;
-    }
+    public User() {}
 
     //getters
     public String getType() {
@@ -90,6 +82,10 @@ public class User {
     }
 
     //setters
+    public void setType(String type) {
+        this.type = type;
+    }
+
     public void setName(String name) {
         this.name = name;
     }

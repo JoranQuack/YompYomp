@@ -7,7 +7,7 @@ import seng202.team5.models.User;
 public class Environment {
 
     private final ScreenNavigator navigator;
-    public User user;
+    private User user = new User();
 
     /**
      * Constructor for the GameEnvironment class. Initializes the game environment
