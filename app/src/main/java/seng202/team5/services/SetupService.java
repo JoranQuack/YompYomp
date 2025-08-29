@@ -11,6 +11,7 @@ import java.net.URI;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
+import java.util.List;
 
 /**
  * Service class for setting up the application.
@@ -72,5 +73,27 @@ public class SetupService {
      */
     private String extractFilenameFromUrl(String url) {
         return url.substring(url.lastIndexOf('/') + 1);
+    }
+
+    /**
+     * Upserts into DB if not up to date
+     */
+    public void syncDbFromTrailFile() {
+        if (!isTrailTablePopulated()) {
+            System.out.println("Trail table being populated");
+            List<Trail> source = FileTrailRepo.getAllTrails();
+            DbTrailRepo.upsertAll(source);
+            if (isTrailTablePopulated()) {
+                System.out.println("Trail table populated");
+            }
+        }
+    }
+
+    /**
+     * Calls key functions to set up application
+     */
+    public void setupApplication(){
+        syncDbFromTrailFile();
+        scrapeAllTrailImages();
     }
 }
