@@ -3,6 +3,7 @@ package seng202.team5.gui;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import seng202.team5.Environment;
+import seng202.team5.models.User;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -53,10 +54,22 @@ public class ProfileSetupGeneralController extends Controller {
      */
     @FXML
     private void onContinueButtonClicked() {
-        // TODO: pass user's choices to User object
+        setUserPreferences();
         super.getEnvironment().getNavigator().launchScreen(
                 new ProfileQuizController(super.getEnvironment(), super.getEnvironment().getNavigator(), 1)
         );
+    }
+
+    private void setUserPreferences() {
+        User user = super.getEnvironment().getUser();
+        if (usernameTextField.getText().isEmpty()) {
+            user.setName("YompYomp User");
+        } else {
+            user.setName(usernameTextField.getText());
+        }
+        user.setRegion(regionChoiceBox.getSelectionModel().getSelectedItem().toString());
+        user.setIsFamilyFriendly(familyFriendlyCheckBox.isSelected());
+        user.setIsAccessible(accessibleCheckBox.isSelected());
     }
 
     @Override
