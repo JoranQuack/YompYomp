@@ -5,13 +5,13 @@ import seng202.team5.Environment;
 import seng202.team5.models.Question;
 import seng202.team5.models.User;
 import javafx.scene.control.*;
-import java.util.Arrays;
+//import java.util.Arrays;
 
 public class ProfileQuizController extends Controller {
 
     private int quizId;
 
-    public ProfileQuizController(seng202.team5.Environment environment, ScreenNavigator navigator, int quizId) {
+    public ProfileQuizController(Environment environment, ScreenNavigator navigator, int quizId) {
         super(environment, navigator);
         this.quizId = quizId;
     }
