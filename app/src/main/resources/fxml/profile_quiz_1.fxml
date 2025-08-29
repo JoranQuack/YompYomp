@@ -36,7 +36,7 @@
             <Insets bottom="5.0" />
          </GridPane.margin>
       </Label>
-      <Slider fx:id="experienceSlider" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="2" />
+      <Slider fx:id="experienceSlider" max="5.0" min="1.0" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="2" />
       <Button fx:id="continueButton" mnemonicParsing="false" text="Continue" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.halignment="CENTER" GridPane.rowIndex="4" GridPane.valignment="BOTTOM">
          <GridPane.margin>
             <Insets bottom="20.0" />
