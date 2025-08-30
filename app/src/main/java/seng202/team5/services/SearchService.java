@@ -1,10 +1,14 @@
 package seng202.team5.services;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
-import seng202.team5.models.Trail;
 import seng202.team5.data.DataService;
+import seng202.team5.data.SqlBasedTrailRepo;
+import seng202.team5.models.Trail;
 
 /**
  * Service for searching and filtering trails with pagination support.
@@ -20,6 +24,13 @@ public class SearchService {
      */
     public SearchService(DataService dataService) {
         this.trails = dataService.getTrails();
+    }
+
+    /**
+     * Creates SearchService with injected SQLBasedTrailRepo.
+     */
+    public SearchService(SqlBasedTrailRepo sqlBasedTrailRepo) {
+        this.trails = sqlBasedTrailRepo.getAllTrails();
     }
 
     /**
@@ -91,7 +102,7 @@ public class SearchService {
      * Checks if the description contains any of the keywords.
      *
      * @param description The description to check
-     * @param keywords The keywords to check against
+     * @param keywords    The keywords to check against
      * @return True if the description contains any of the keywords, false otherwise
      */
     private boolean containsKeyword(String description, List<String> keywords) {
@@ -104,7 +115,8 @@ public class SearchService {
      * Categorises the trail based on the keywords in the description.
      *
      * @param trail The trail to categorise
-     * @return A set of categories that the trail matches, or an empty set if no categories match
+     * @return A set of categories that the trail matches, or an empty set if no
+     *         categories match
      */
     public Set<String> categoriseTrail(Trail trail) {
         Set<String> matchedCategories = new HashSet<>();
