@@ -5,7 +5,7 @@
 <?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
 
-<VBox spacing="8" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="seng202.team5.gui.components.TrailCardController">
+<fx:root type="javafx.scene.layout.VBox" spacing="8" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1">
 
     <!-- VBox padding -->
     <padding>
@@ -24,4 +24,4 @@
         <Label fx:id="matchLabel" style="-fx-font-size: 12px; -fx-text-fill: #333;" text="0% Match" />
     </HBox>
 
-</VBox>
+</fx:root>
