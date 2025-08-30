@@ -37,7 +37,7 @@ public class ProfileSetupGeneralController extends Controller {
     private void initialize() {
         List<String> regionList = new ArrayList<>(List.of("All", "Northland", "Auckland",
                 "Waikato", "Bay of Plenty", "Gisborne", "Hawke's Bay", "Taranaki",
-                "Manawatu-Whanganui", "Wellington", "Nelson", "Marlborough", "West Coast",
+                "Manawatu-Whanganui", "Tasman", "Wellington", "Nelson", "Marlborough", "West Coast",
                 "Canterbury", "Otago", "Southland"));
 
         usernameLabel.setText("Username");

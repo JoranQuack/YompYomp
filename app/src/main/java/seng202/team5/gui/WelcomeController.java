@@ -16,13 +16,11 @@ public class WelcomeController extends Controller {
     }
 
     @FXML
-    private Label kiaOraLabel;
-    @FXML
-    private Label welcomeTextLabel;
-    @FXML
     private Button setUpProfileButton;
     @FXML
     private Button skipButton;
+    @FXML
+    private Button returningUserButton;
 
     /**
      * Initializes the welcome screen
@@ -31,7 +29,10 @@ public class WelcomeController extends Controller {
     private void initialize() {
         setUpProfileButton.setText("Set Up Profile");
         skipButton.setText("Skip");
+        returningUserButton.setText("Returning User");
         setUpProfileButton.setOnAction(e -> onSetUpProfileButtonClicked());
+        // skipButton.setOnAction(e -> onSkipButtonClicked());
+        // setUpProfileButton.setOnAction(e -> onReturningUserButtonClicked());
     }
 
     /**
@@ -45,13 +46,19 @@ public class WelcomeController extends Controller {
         );
     }
 
+    @FXML
+    private void onReturningUserButtonClicked() {
+        // TODO: get information from database and make User object
+        // TODO: launch dashboard screen
+    }
+
     /**
      * onClicked action for skipButton
      */
     @FXML
     private void onSkipButtonClicked() {
         super.getEnvironment().getUser().setType("guest");
-        // TODO: link to guest screen
+        // TODO: launch dashboard screen
     }
 
     @Override
