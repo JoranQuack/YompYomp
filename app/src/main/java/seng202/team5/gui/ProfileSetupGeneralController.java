@@ -9,10 +9,11 @@ import javafx.scene.control.TextField;
 import java.util.ArrayList;
 import java.util.List;
 
+
 public class ProfileSetupGeneralController extends Controller {
 
-    public ProfileSetupGeneralController(seng202.team5.Environment Environment, ScreenNavigator navigator) {
-        super(Environment, navigator);
+    public ProfileSetupGeneralController(Environment environment, ScreenNavigator navigator) {
+        super(environment, navigator);
     }
 
     @FXML
@@ -31,11 +32,27 @@ public class ProfileSetupGeneralController extends Controller {
      */
     @FXML
     private void initialize() {
-        List<String> regions = new ArrayList<>();
+        List<String> regionList = new ArrayList<>(List.of("Northland", "Auckland",
+                "Waikato", "Bay of Plenty", "Gisborne", "Hawke's Bay", "Taranaki",
+                "Manawatu-Whanganui", "Wellington", "Nelson", "Marlborough", "West Coast",
+                "Canterbury", "Otago", "Southland"));
+
         usernameLabel.setText("Username");
         regionLabel.setText("Choose your region");
         usernameTextField.setPromptText("YompYomp User");
-        regionChoiceBox.getItems().addAll();
+        regionChoiceBox.getItems().addAll(regionList);
+        continueButton.setOnAction(e -> onContinueButtonClicked());
+    }
+
+    /**
+     * Action method of continueButton
+     */
+    @FXML
+    private void onContinueButtonClicked() {
+
+        super.getEnvironment().getNavigator().launchScreen(
+                new ProfileQuiz1Controller(super.getEnvironment(), super.getEnvironment().getNavigator())
+        );
     }
 
     @Override

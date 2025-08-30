@@ -2,7 +2,6 @@ package seng202.team5.data;
 
 import seng202.team5.models.Trail;
 
-//import java.io.BufferedReader;
 import com.opencsv.CSVReader;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -107,12 +106,7 @@ public class FileBasedTrailRepo implements ITrail {
         return null;
     }
 
-    public void upsert(Trail trail) {
-    }
-
-    public void upsertAll(List<Trail> trails) {
-    }
-
-    public void deleteById(int id) {
+    public int countTrails() {
+        return trails.size();
     }
 }
