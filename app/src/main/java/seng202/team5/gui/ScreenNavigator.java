@@ -5,7 +5,6 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
-import seng202.team5.Environment;
 
 import java.io.IOException;
 
@@ -38,21 +37,6 @@ public class ScreenNavigator {
         stage.setResizable(true);
         rootPane.prefWidthProperty().bind(scene.widthProperty());
         rootPane.prefHeightProperty().bind(scene.heightProperty());
-    }
-
-    /**
-     * Launches the start screen of the application
-     *
-     * @param environment The environment instance
-     */
-    public void launchStartScreen(Environment environment) {
-        launchScreen(new StartController(environment));
-    }
-
-    public void launchTrailsScreen(Environment environment) {
-        TrailsController controller = new TrailsController();
-        controller.setEnvironment(environment);
-        launchScreen(controller);
     }
 
     /**

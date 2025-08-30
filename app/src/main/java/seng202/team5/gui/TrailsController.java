@@ -15,8 +15,6 @@ import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 import seng202.team5.Environment;
 import seng202.team5.models.Trail;
-import seng202.team5.data.DataService;
-import seng202.team5.data.DatabaseService;
 import seng202.team5.services.SearchService;
 
 /**

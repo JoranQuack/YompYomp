@@ -87,4 +87,13 @@ public abstract class Controller {
     protected Environment getEnvironment() {
         return Environment;
     }
+
+    /**
+     * Gets the screen navigator associated with this screen controller.
+     *
+     * @return The screen navigator for this controller
+     */
+    protected ScreenNavigator getNavigator() {
+        return navigator;
+    }
 }
