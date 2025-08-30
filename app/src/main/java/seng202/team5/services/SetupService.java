@@ -1,5 +1,7 @@
 package seng202.team5.services;
 
+import seng202.team5.data.DataService;
+import seng202.team5.data.DatabaseService;
 import seng202.team5.data.FileBasedTrailRepo;
 import seng202.team5.data.SqlBasedTrailRepo;
 import seng202.team5.models.Trail;
@@ -20,8 +22,9 @@ import java.util.List;
  */
 public class SetupService {
 
-    private SqlBasedTrailRepo DbTrailRepo;
-    private FileBasedTrailRepo FileTrailRepo;
+    private final DatabaseService databaseService = new DatabaseService();
+    private SqlBasedTrailRepo DbTrailRepo = new SqlBasedTrailRepo(databaseService);
+    private FileBasedTrailRepo FileTrailRepo = new FileBasedTrailRepo("datasets/DOC_Walking_Experiences_7994760352369043452.csv"); //this is temporary and currently not working
 
     /**
      * Checks if the trail table is populated.
@@ -29,7 +32,9 @@ public class SetupService {
      * @return true if the trail table is populated, false otherwise.
      */
     boolean isTrailTablePopulated() {
-        return DbTrailRepo.countTrails() >= FileTrailRepo.countTrails();
+        System.out.println(DbTrailRepo.countTrails());
+        //return DbTrailRepo.countTrails() >= FileTrailRepo.countTrails();
+        return false;
     }
 
     /**
