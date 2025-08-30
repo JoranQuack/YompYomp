@@ -4,7 +4,6 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import seng202.team5.Environment;
-import seng202.team5.services.SetupService;
 
 public class WelcomeController extends Controller {
 
@@ -26,15 +25,15 @@ public class WelcomeController extends Controller {
     @FXML
     private Button skipButton;
 
-
     /**
      * Initializes the welcome screen
      */
     @FXML
     private void initialize() {
         setUpProfileButton.setText("Set Up Profile");
-        skipButton.setText("Skip");
         setUpProfileButton.setOnAction(e -> onSetUpProfileButtonClicked());
+        skipButton.setText("Skip");
+        skipButton.setOnAction(e -> onSkipButtonClicked());
     }
 
     /**
@@ -42,9 +41,8 @@ public class WelcomeController extends Controller {
      */
     @FXML
     private void onSetUpProfileButtonClicked() {
-        super.getEnvironment().getNavigator().launchScreen(
-                new ProfileSetupGeneralController(super.getEnvironment(), super.getEnvironment().getNavigator())
-        );
+        super.getNavigator()
+                .launchScreen(new ProfileSetupGeneralController(super.getEnvironment(), super.getNavigator()));
     }
 
     /**
@@ -52,7 +50,7 @@ public class WelcomeController extends Controller {
      */
     @FXML
     private void onSkipButtonClicked() {
-        // TODO: link to guest screen
+        super.getNavigator().launchScreen(new TrailsController(super.getEnvironment(), super.getNavigator()));
     }
 
     @Override
