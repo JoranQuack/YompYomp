@@ -6,9 +6,10 @@
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 
-<fx:root spacing="8" type="javafx.scene.layout.VBox" xmlns="http://javafx.com/javafx/21.0.2" xmlns:fx="http://javafx.com/fxml/1">
+<fx:root maxWidth="230.0" minWidth="230.0" spacing="8" type="javafx.scene.layout.VBox" xmlns="http://javafx.com/javafx/21.0.2" xmlns:fx="http://javafx.com/fxml/1">
 
     <!-- VBox padding -->
     <padding>
@@ -34,10 +35,9 @@
       </padding>
    </HBox>
 
-    <!-- Match bar + label -->
-    <HBox alignment="CENTER_LEFT" spacing="8">
-        <ProgressBar fx:id="matchBar" prefWidth="150" progress="0.0" />
-        <Label fx:id="matchLabel" style="-fx-font-size: 12px; -fx-text-fill: #333;" text="0% Match" />
-    </HBox>
+    <StackPane>
+        <ProgressBar fx:id="matchBar" maxWidth="Infinity" progress="0.0" />
+        <Label fx:id="matchLabel" style="-fx-font-size: 12px; -fx-text-fill: black; -fx-font-weight: bold;" text="0% Match" />
+    </StackPane>
 
 </fx:root>
