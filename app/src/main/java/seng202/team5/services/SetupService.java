@@ -22,17 +22,12 @@ import java.util.List;
  */
 public class SetupService {
 
-    private final DatabaseService databaseService = new DatabaseService();
-    private SqlBasedTrailRepo DbTrailRepo = new SqlBasedTrailRepo(databaseService);
-    private FileBasedTrailRepo FileTrailRepo = new FileBasedTrailRepo(
-            "datasets/DOC_Walking_Experiences_7994760352369043452.csv"); // this is temporary and currently not working
+    private final SqlBasedTrailRepo DbTrailRepo;
+    private final FileBasedTrailRepo FileTrailRepo;
 
-    /**
-     * Constructor for the SetupService class.
-     */
-    public SetupService() {
-        this.DbTrailRepo = new SqlBasedTrailRepo(new DatabaseService());
-        this.FileTrailRepo = new FileBasedTrailRepo("data/trails.csv");
+    public SetupService(SqlBasedTrailRepo sqlBasedTrailRepo, FileBasedTrailRepo fileTrailRepo) {
+        this.DbTrailRepo = sqlBasedTrailRepo;
+        this.FileTrailRepo = fileTrailRepo;
     }
 
     /**
@@ -41,9 +36,7 @@ public class SetupService {
      * @return true if the trail table is populated, false otherwise.
      */
     boolean isTrailTablePopulated() {
-        System.out.println(DbTrailRepo.countTrails());
-        // return DbTrailRepo.countTrails() >= FileTrailRepo.countTrails();
-        return false;
+        return DbTrailRepo.countTrails() >= FileTrailRepo.countTrails();
     }
 
     /**
