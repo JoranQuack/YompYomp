@@ -5,10 +5,10 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import seng202.team5.Environment;
 
 import java.util.ArrayList;
 import java.util.List;
-
 
 public class ProfileSetupGeneralController extends Controller {
 
@@ -51,8 +51,7 @@ public class ProfileSetupGeneralController extends Controller {
     private void onContinueButtonClicked() {
 
         super.getEnvironment().getNavigator().launchScreen(
-                new ProfileQuiz1Controller(super.getEnvironment(), super.getEnvironment().getNavigator())
-        );
+                new ProfileQuiz1Controller(super.getEnvironment(), super.getEnvironment().getNavigator()));
     }
 
     @Override
