@@ -1,6 +1,8 @@
 package seng202.team5.services;
 
 import seng202.team5.data.DatabaseService;
+import seng202.team5.data.DataService;
+import seng202.team5.data.DatabaseService;
 import seng202.team5.data.FileBasedTrailRepo;
 import seng202.team5.data.SqlBasedTrailRepo;
 import seng202.team5.models.Trail;
@@ -12,6 +14,7 @@ import java.net.URI;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
+import java.util.List;
 
 /**
  * Service class for setting up the application.
@@ -20,8 +23,10 @@ import java.nio.file.StandardCopyOption;
  */
 public class SetupService {
 
-    private SqlBasedTrailRepo DbTrailRepo;
-    private FileBasedTrailRepo FileTrailRepo;
+    private final DatabaseService databaseService = new DatabaseService();
+    private SqlBasedTrailRepo DbTrailRepo = new SqlBasedTrailRepo(databaseService);
+    private FileBasedTrailRepo FileTrailRepo = new FileBasedTrailRepo(
+            "datasets/DOC_Walking_Experiences_7994760352369043452.csv"); // this is temporary and currently not working
 
     /**
      * Constructor for the SetupService class.
@@ -45,7 +50,9 @@ public class SetupService {
      * @return true if the trail table is populated, false otherwise.
      */
     boolean isTrailTablePopulated() {
-        return DbTrailRepo.countTrails() >= FileTrailRepo.countTrails();
+        System.out.println(DbTrailRepo.countTrails());
+        // return DbTrailRepo.countTrails() >= FileTrailRepo.countTrails();
+        return false;
     }
 
     /**
@@ -89,5 +96,27 @@ public class SetupService {
      */
     private String extractFilenameFromUrl(String url) {
         return url.substring(url.lastIndexOf('/') + 1);
+    }
+
+    /**
+     * Upserts into DB if not up to date
+     */
+    public void syncDbFromTrailFile() {
+        if (!isTrailTablePopulated()) {
+            System.out.println("Trail table being populated");
+            List<Trail> source = FileTrailRepo.getAllTrails();
+            DbTrailRepo.upsertAll(source);
+            if (isTrailTablePopulated()) {
+                System.out.println("Trail table populated");
+            }
+        }
+    }
+
+    /**
+     * Calls key functions to set up application
+     */
+    public void setupApplication() {
+        syncDbFromTrailFile();
+        scrapeAllTrailImages();
     }
 }
