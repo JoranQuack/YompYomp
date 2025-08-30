@@ -1,5 +1,6 @@
 package seng202.team5.services;
 
+import seng202.team5.data.DatabaseService;
 import seng202.team5.data.FileBasedTrailRepo;
 import seng202.team5.data.SqlBasedTrailRepo;
 import seng202.team5.models.Trail;
@@ -21,6 +22,22 @@ public class SetupService {
 
     private SqlBasedTrailRepo DbTrailRepo;
     private FileBasedTrailRepo FileTrailRepo;
+
+    /**
+     * Constructor for the SetupService class.
+     */
+    public SetupService() {
+        this.DbTrailRepo = new SqlBasedTrailRepo(new DatabaseService());
+        this.FileTrailRepo = new FileBasedTrailRepo("data/trails.csv");
+    }
+
+    /**
+     * Initializes the setup service.
+     */
+    public void initialize() {
+        DbTrailRepo.upsertAll(FileTrailRepo.getAllTrails());
+        scrapeAllTrailImages();
+    }
 
     /**
      * Checks if the trail table is populated.
