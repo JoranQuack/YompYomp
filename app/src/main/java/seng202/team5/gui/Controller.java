@@ -18,22 +18,25 @@ public abstract class Controller {
      * The {@link Environment} instance used by this controller.
      */
     private final Environment Environment;
+    private final ScreenNavigator navigator;
 
     /**
      * No-argument constructor for FXML compatibility
      */
     protected Controller() {
         this.Environment = null; // Will be set later via setter
+        this.navigator = null; // Will be set later via setter
     }
 
     /**
      * Creates an instance of a ScreenController with the given
-     * {@link Environment}
+     * {@link GameEnvironment}
      *
      * @param Environment The environment used by this ScreenController
      */
-    protected Controller(final Environment Environment) {
+    protected Controller(final Environment Environment, final ScreenNavigator navigator) {
         this.Environment = Environment;
+        this.navigator = navigator;
     }
 
     /**
