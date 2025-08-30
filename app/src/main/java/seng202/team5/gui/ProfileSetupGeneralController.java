@@ -5,7 +5,6 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
-import seng202.team5.Environment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,7 +18,7 @@ public class ProfileSetupGeneralController extends Controller {
     @FXML
     private TextField usernameTextField;
     @FXML
-    private ChoiceBox regionChoiceBox;
+    private ChoiceBox<String> regionChoiceBox;
     @FXML
     private Button continueButton;
     @FXML

@@ -7,19 +7,27 @@ import javafx.scene.image.*;
 import javafx.scene.layout.*;
 import seng202.team5.models.Trail;
 
-public class TrailCardController extends VBox{
+public class TrailCardController extends VBox {
 
     // UI Components
-    @FXML private ImageView thumbnail;
-    @FXML private Label title;
-    @FXML private ProgressBar matchBar;
-    @FXML private Label matchLabel;
+    @FXML
+    private ImageView thumbnail;
+    @FXML
+    private Label title;
+    @FXML
+    private ProgressBar matchBar;
+    @FXML
+    private Label matchLabel;
 
     public TrailCardController() {
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("TrailCard.fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("trail_card.fxml"));
         fxmlLoader.setRoot(this);
-        fxmlLoader.setController(this); //FXML elements
-        try {fxmlLoader.load();} catch (IOException e) {throw new RuntimeException(e);} //If not work, crash?
+        fxmlLoader.setController(this); // FXML elements
+        try {
+            fxmlLoader.load();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        } // If not work, crash?
     }
 
     // Sets Title for the TrailCard Component
@@ -33,9 +41,5 @@ public class TrailCardController extends VBox{
             thumbnail.setImage(null);
         }
     }
-
-
-
-
 
 }
