@@ -8,7 +8,6 @@ import seng202.team5.services.SetupService;
 
 public class WelcomeController extends Controller {
 
-    private SetupService setupService = new SetupService();
     /**
      * Creates controller with environment.
      *
@@ -33,7 +32,6 @@ public class WelcomeController extends Controller {
      */
     @FXML
     private void initialize() {
-        setupService.setupApplication();
         setUpProfileButton.setText("Set Up Profile");
         skipButton.setText("Skip");
         setUpProfileButton.setOnAction(e -> onSetUpProfileButtonClicked());
