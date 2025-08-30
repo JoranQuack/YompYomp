@@ -40,13 +40,13 @@
                         <Insets />
                      </GridPane.margin>
                   </Label>
-                  <Slider fx:id="slider1" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="1" />
+                  <Slider fx:id="slider1" blockIncrement="1.0" majorTickUnit="1.0" max="5.0" min="1.0" minorTickCount="0" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="1" />
                   <Button fx:id="continueButton" mnemonicParsing="false" text="Continue" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.halignment="CENTER" GridPane.rowIndex="3" GridPane.valignment="BOTTOM">
                      <GridPane.margin>
                         <Insets bottom="20.0" />
                      </GridPane.margin>
                   </Button>
-                  <Label fx:id="questionLabel1" text="Experience" GridPane.columnIndex="1" GridPane.halignment="LEFT" GridPane.rowIndex="1" GridPane.valignment="TOP">
+                  <Label fx:id="questionLabel1" text="Experience" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.halignment="LEFT" GridPane.rowIndex="1" GridPane.valignment="TOP">
                      <font>
                         <Font size="14.0" />
                      </font>

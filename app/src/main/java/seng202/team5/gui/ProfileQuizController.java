@@ -39,19 +39,25 @@ public class ProfileQuizController extends Controller {
     @FXML
     private Button continueButton;
     @FXML
-    private ProgressBar progressBar;
+    private ProgressBar quizProgressBar;
 
     @FXML
     private void initialize() {
         setSliders(slider1);
         setSliders(slider2);
         setProgressBar();
+        setQuestionLabel();
+        if (quizId == 9) {
+            continueButton.setText("Complete");
+        }
         continueButton.setOnAction(e -> onContinueButtonClicked());
     }
 
     @FXML
     private void setSliders(Slider slider) {
         slider.setSnapToTicks(true);
+        slider.setMajorTickUnit(1);
+        slider.setMinorTickCount(0);
         slider.setBlockIncrement(1);
         slider.setMin(1);
         slider.setMax(5);
@@ -61,7 +67,7 @@ public class ProfileQuizController extends Controller {
     @FXML
     private void setProgressBar() {
         double progress = (quizId - 1) / 10.0;
-        progressBar.setProgress(progress);
+        quizProgressBar.setProgress(progress);
     }
 
     @FXML
@@ -103,8 +109,8 @@ public class ProfileQuizController extends Controller {
     @FXML
     private void onContinueButtonClicked() {
         setUserPreferences();
+        incrementQuizId();
         if (quizId < 10) {
-            incrementQuizId();
             super.getEnvironment().getNavigator().launchScreen(
                     new ProfileQuizController(super.getEnvironment(), super.getEnvironment().getNavigator(), quizId)
             );
