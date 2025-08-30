@@ -44,6 +44,7 @@ public class ProfileSetupGeneralController extends Controller {
         regionLabel.setText("Choose your region");
         usernameTextField.setPromptText("YompYomp User");
         regionChoiceBox.getItems().addAll(regionList);
+        regionChoiceBox.setValue("All");
         familyFriendlyCheckBox.setSelected(false);
         accessibleCheckBox.setSelected(false);
         continueButton.setOnAction(e -> onContinueButtonClicked());
@@ -66,9 +67,6 @@ public class ProfileSetupGeneralController extends Controller {
             user.setName("YompYomp User");
         } else {
             user.setName(usernameTextField.getText());
-        }
-        if (regionChoiceBox.getSelectionModel().getSelectedItem().isEmpty()) {
-            regionChoiceBox.setValue("All");
         }
         user.setRegion(regionChoiceBox.getSelectionModel().getSelectedItem());
         user.setIsFamilyFriendly(familyFriendlyCheckBox.isSelected());
