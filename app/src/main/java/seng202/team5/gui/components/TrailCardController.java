@@ -20,7 +20,7 @@ public class TrailCardController extends VBox {
     private Label matchLabel;
 
     public TrailCardController() {
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("trail_card.fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/components/trail_card.fxml"));
         fxmlLoader.setRoot(this);
         fxmlLoader.setController(this); // FXML elements
         try {
