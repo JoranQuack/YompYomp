@@ -1,5 +1,6 @@
 package seng202.team5.services;
 
+import seng202.team5.data.AppDataManager;
 import seng202.team5.data.DatabaseService;
 import seng202.team5.data.FileBasedTrailRepo;
 import seng202.team5.data.SqlBasedTrailRepo;
@@ -53,7 +54,8 @@ public class SetupService {
      */
     void scrapeTrailImage(String url) {
         String filename = extractFilenameFromUrl(url);
-        File imageFile = new File("data/images/" + filename);
+        String imagePath = AppDataManager.getAppData("images/" + filename);
+        File imageFile = new File(imagePath);
         if (!imageFile.exists()) {
             try {
                 // Create the images directory if it doesn't exist
