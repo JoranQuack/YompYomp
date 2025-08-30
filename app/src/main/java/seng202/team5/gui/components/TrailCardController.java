@@ -18,6 +18,12 @@ public class TrailCardController extends VBox {
     private ProgressBar matchBar;
     @FXML
     private Label matchLabel;
+    @FXML
+    private Label difficultyLabel;
+    @FXML
+    private Label durationLabel;
+    @FXML
+    private Label regionLabel;
 
     public TrailCardController() {
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/components/trail_card.fxml"));
@@ -30,7 +36,10 @@ public class TrailCardController extends VBox {
         } // If not work, crash?
     }
 
-    // Sets Title for the TrailCard Component
+    /**
+     *
+     * @param trail
+     */
     public void setData(Trail trail) {
         title.setText(trail.getName());
 
@@ -40,6 +49,10 @@ public class TrailCardController extends VBox {
         } catch (RuntimeException e) {
             thumbnail.setImage(null);
         }
+
+        difficultyLabel.setText(trail.getDifficulty());
+        durationLabel.setText(trail.getType());
+        regionLabel.setText("Region");
     }
 
 }
