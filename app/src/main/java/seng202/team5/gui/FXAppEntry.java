@@ -1,6 +1,9 @@
 package seng202.team5.gui;
 
+import java.util.Objects;
+
 import javafx.application.Application;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import seng202.team5.Environment;
 
@@ -18,10 +21,8 @@ public class FXAppEntry extends Application {
      */
     @Override
     public void start(Stage primaryStage) {
-        // TODO: Uncomment and set the icon when available
-        // Image icon = new
-        // Image(Objects.requireNonNull(getClass().getResourceAsStream("/icon.png")));
-        // primaryStage.getIcons().add(icon);
+        Image icon = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/YompYompIcon.png")));
+        primaryStage.getIcons().add(icon);
         primaryStage.setTitle("YompYomp");
         primaryStage.show();
 
