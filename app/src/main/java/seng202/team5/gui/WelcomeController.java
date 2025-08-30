@@ -4,8 +4,11 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import seng202.team5.Environment;
+import seng202.team5.services.SetupService;
 
 public class WelcomeController extends Controller {
+
+    private SetupService setupService = new SetupService();
     /**
      * Creates controller with environment.
      *
@@ -24,11 +27,13 @@ public class WelcomeController extends Controller {
     @FXML
     private Button skipButton;
 
+
     /**
      * Initializes the welcome screen
      */
     @FXML
     private void initialize() {
+        setupService.setupApplication();
         setUpProfileButton.setText("Set Up Profile");
         skipButton.setText("Skip");
         setUpProfileButton.setOnAction(e -> onSetUpProfileButtonClicked());
