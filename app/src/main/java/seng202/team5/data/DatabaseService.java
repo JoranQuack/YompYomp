@@ -1,11 +1,8 @@
 package seng202.team5.data;
 
-import java.nio.file.Path;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.nio.file.Paths;
-import java.nio.file.Files;
 
 public class DatabaseService {
     private final String customDatabasePath;
@@ -41,18 +38,6 @@ public class DatabaseService {
         if (customDatabasePath != null) {
             return customDatabasePath;
         }
-
-        String projectRoot = System.getProperty("user.dir");
-        String databasePath;
-
-        // Check if running from root (./gradlew run) or app/
-        Path rootReference = Paths.get(projectRoot, "app", "data", "database", "main.db");
-        if (Files.exists(rootReference)) {
-            databasePath = rootReference.toString();
-        } else {
-            databasePath = Paths.get(projectRoot, "data", "database", "main.db").toString();
-        }
-
-        return databasePath;
+        return AppDataManager.getAppData("database/main.db");
     }
 }
