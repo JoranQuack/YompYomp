@@ -4,8 +4,10 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import seng202.team5.Environment;
+import seng202.team5.services.SetupService;
 
 public class WelcomeController extends Controller {
+
     /**
      * Creates controller with environment.
      *
@@ -24,6 +26,7 @@ public class WelcomeController extends Controller {
     @FXML
     private Button skipButton;
 
+
     /**
      * Initializes the welcome screen
      */
@@ -31,10 +34,7 @@ public class WelcomeController extends Controller {
     private void initialize() {
         setUpProfileButton.setText("Set Up Profile");
         skipButton.setText("Skip");
-        setUpProfileButton.setOnAction(e -> {
-            super.getEnvironment().getNavigator().launchScreen(
-                    new SetupController(super.getEnvironment(), super.getEnvironment().getNavigator()));
-        });
+        setUpProfileButton.setOnAction(e -> onSetUpProfileButtonClicked());
     }
 
     /**
@@ -42,7 +42,9 @@ public class WelcomeController extends Controller {
      */
     @FXML
     private void onSetUpProfileButtonClicked() {
-        // TODO: link to profile setup screen
+        super.getEnvironment().getNavigator().launchScreen(
+                new ProfileSetupGeneralController(super.getEnvironment(), super.getEnvironment().getNavigator())
+        );
     }
 
     /**
