@@ -117,32 +117,18 @@ public class TrailsController extends Controller {
             pageChoiceBox.getItems().add(String.valueOf(i + 1));
         }
         pageChoiceBox.setValue("1");
-        pageChoiceBox.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
-            onPageSelected();
-        });
+        pageChoiceBox.getSelectionModel().selectedItemProperty().addListener(
+                (observable, oldValue, newValue) -> onSearchButtonClickedOrPageSelected());
     }
 
     /**
-     * Handles search button click.
+     * Handles search button click or page selection change
      */
     @FXML
-    private void onSearchButtonClicked() {
-        if (searchService == null)
+    private void onSearchButtonClickedOrPageSelected() {
+        if (searchService == null) {
             return;
-
-        String query = searchBarTextField.getText();
-        int page = Integer.parseInt(pageChoiceBox.getValue()) - 1;
-        List<Trail> filteredTrails = searchService.getTrails(query, page);
-        updateTrailsDisplay(filteredTrails);
-    }
-
-    /**
-     * Handles page selection change.
-     */
-    @FXML
-    private void onPageSelected() {
-        if (searchService == null)
-            return;
+        }
 
         String query = searchBarTextField.getText();
         int page = Integer.parseInt(pageChoiceBox.getValue()) - 1;
