@@ -2,6 +2,7 @@ package seng202.team5.gui;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import org.controlsfx.control.CheckComboBox;
 import seng202.team5.Environment;
 import seng202.team5.models.User;
 
@@ -18,7 +19,7 @@ public class ProfileSetupGeneralController extends Controller {
     @FXML
     private TextField usernameTextField;
     @FXML
-    private ChoiceBox<String> regionChoiceBox;
+    private CheckComboBox<String> regionCheckComboBox;
     @FXML
     private Button continueButton;
     @FXML
@@ -35,7 +36,7 @@ public class ProfileSetupGeneralController extends Controller {
      */
     @FXML
     private void initialize() {
-        List<String> regionList = new ArrayList<>(List.of("All", "Northland", "Auckland",
+        List<String> regionList = new ArrayList<>(List.of("Northland", "Auckland",
                 "Waikato", "Bay of Plenty", "Gisborne", "Hawke's Bay", "Taranaki",
                 "Manawatu-Whanganui", "Tasman", "Wellington", "Nelson", "Marlborough", "West Coast",
                 "Canterbury", "Otago", "Southland"));
@@ -43,8 +44,7 @@ public class ProfileSetupGeneralController extends Controller {
         usernameLabel.setText("Username");
         regionLabel.setText("Choose your region");
         usernameTextField.setPromptText("YompYomp User");
-        regionChoiceBox.getItems().addAll(regionList);
-        regionChoiceBox.setValue("All");
+        regionCheckComboBox.getItems().addAll(regionList);
         familyFriendlyCheckBox.setSelected(false);
         accessibleCheckBox.setSelected(false);
         continueButton.setOnAction(e -> onContinueButtonClicked());
@@ -68,7 +68,7 @@ public class ProfileSetupGeneralController extends Controller {
         } else {
             user.setName(usernameTextField.getText());
         }
-        user.setRegion(regionChoiceBox.getSelectionModel().getSelectedItem());
+        user.setRegion(regionCheckComboBox.getCheckModel().getCheckedItems());
         user.setIsFamilyFriendly(familyFriendlyCheckBox.isSelected());
         user.setIsAccessible(accessibleCheckBox.isSelected());
     }
