@@ -43,6 +43,7 @@ public class ProfileSetupGeneralController extends Controller {
      */
     @FXML
     private void initialize() {
+        // TODO: use regions based on trail data in DB
         List<String> regionList = new ArrayList<>(List.of("Northland", "Auckland",
                 "Waikato", "Bay of Plenty", "Gisborne", "Hawke's Bay", "Taranaki",
                 "Manawatu-Whanganui", "Tasman", "Wellington", "Nelson", "Marlborough", "West Coast",
@@ -65,8 +66,7 @@ public class ProfileSetupGeneralController extends Controller {
     private void onContinueButtonClicked() {
         setUserPreferences();
         super.getEnvironment().getNavigator().launchScreen(
-                new ProfileQuizController(super.getEnvironment(), super.getEnvironment().getNavigator(), 1)
-        );
+                new ProfileQuizController(super.getEnvironment(), super.getEnvironment().getNavigator(), 1));
     }
 
     /**
@@ -82,6 +82,7 @@ public class ProfileSetupGeneralController extends Controller {
         user.setRegion(regionCheckComboBox.getCheckModel().getCheckedItems());
         user.setIsFamilyFriendly(familyFriendlyCheckBox.isSelected());
         user.setIsAccessible(accessibleCheckBox.isSelected());
+        // TODO: Save user preferences to database (and Environment?)
     }
 
     @Override
