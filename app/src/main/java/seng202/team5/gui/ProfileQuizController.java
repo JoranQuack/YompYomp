@@ -142,8 +142,9 @@ public class ProfileQuizController extends Controller {
         if (quizId < 10) {
             super.getNavigator()
                     .launchScreen(new ProfileQuizController(super.getEnvironment(), super.getNavigator(), quizId));
+        } else {
+            super.getNavigator().launchScreen(new DashboardController(super.getEnvironment(), super.getNavigator()));
         }
-        // TODO: add else clause to move to dashboard screen
     }
 
     /**
