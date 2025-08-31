@@ -19,7 +19,7 @@ public class ProfileQuizController extends Controller {
      * Constructs the controller with environment
      *
      * @param environment application environment
-     * @param quizId quiz question id
+     * @param quizId      quiz question id
      */
     public ProfileQuizController(Environment environment, ScreenNavigator navigator, int quizId) {
         super(environment, navigator);
@@ -68,6 +68,7 @@ public class ProfileQuizController extends Controller {
 
     /**
      * Sets the sliders to the default position
+     * 
      * @param slider Slider object on quiz screen
      */
     @FXML
@@ -140,8 +141,7 @@ public class ProfileQuizController extends Controller {
         incrementQuizId();
         if (quizId < 10) {
             super.getEnvironment().getNavigator().launchScreen(
-                    new ProfileQuizController(super.getEnvironment(), super.getEnvironment().getNavigator(), quizId)
-            );
+                    new ProfileQuizController(super.getEnvironment(), super.getEnvironment().getNavigator(), quizId));
         }
         // TODO: add else clause to move to dashboard screen
     }
@@ -192,6 +192,7 @@ public class ProfileQuizController extends Controller {
                 user.setWaterfallPreference((int) slider2.getValue());
                 break;
         }
+        // TODO: Save user preferences to database (and Environment?)
     }
 
     @Override
