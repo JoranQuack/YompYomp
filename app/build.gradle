@@ -32,6 +32,8 @@ dependencies {
 
     //this dependency is used for establishing the database connection
     implementation 'org.xerial:sqlite-jdbc:3.50.3.0'
+
+    implementation 'org.controlsfx:controlsfx:11.2.2'
 }
 
 // Apply a specific Java toolchain to ease working on different environments.
