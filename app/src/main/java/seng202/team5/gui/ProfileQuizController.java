@@ -68,7 +68,7 @@ public class ProfileQuizController extends Controller {
 
     /**
      * Sets the sliders to the default position
-     * 
+     *
      * @param slider Slider object on quiz screen
      */
     @FXML
@@ -140,8 +140,8 @@ public class ProfileQuizController extends Controller {
         setUserPreferences();
         incrementQuizId();
         if (quizId < 10) {
-            super.getEnvironment().getNavigator().launchScreen(
-                    new ProfileQuizController(super.getEnvironment(), super.getEnvironment().getNavigator(), quizId));
+            super.getNavigator()
+                    .launchScreen(new ProfileQuizController(super.getEnvironment(), super.getNavigator(), quizId));
         }
         // TODO: add else clause to move to dashboard screen
     }
