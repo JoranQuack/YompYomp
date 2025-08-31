@@ -9,9 +9,16 @@ import seng202.team5.models.User;
 import java.util.ArrayList;
 import java.util.List;
 
-
+/**
+ * Controller class of the general profile setup screen
+ */
 public class ProfileSetupGeneralController extends Controller {
 
+    /**
+     * Launches the screen with environment
+     *
+     * @param environment application environment
+     */
     public ProfileSetupGeneralController(Environment environment, ScreenNavigator navigator) {
         super(environment, navigator);
     }
@@ -52,6 +59,7 @@ public class ProfileSetupGeneralController extends Controller {
 
     /**
      * Action method of continueButton
+     * Sets attributes of User object and launches the quiz screen
      */
     @FXML
     private void onContinueButtonClicked() {
@@ -61,6 +69,9 @@ public class ProfileSetupGeneralController extends Controller {
         );
     }
 
+    /**
+     * Gets user input and sets attributes of User object
+     */
     private void setUserPreferences() {
         User user = super.getEnvironment().getUser();
         if (usernameTextField.getText().isEmpty()) {
