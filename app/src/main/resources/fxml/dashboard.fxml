@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.FlowPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<VBox alignment="CENTER" minHeight="300.0" minWidth="400.0" stylesheets="@../styles/global.css" xmlns="http://javafx.com/javafx/21.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="seng202.team5.gui.DashboardController">
+   <children>
+      <Label alignment="CENTER" contentDisplay="CENTER" text="Recommended" textAlignment="CENTER">
+         <font>
+            <Font size="38.0" />
+         </font>
+      </Label>
+      <!-- Trails container -->
+      <ScrollPane fitToWidth="true" VBox.vgrow="ALWAYS">
+         <content>
+            <FlowPane fx:id="trailsContainer" hgap="15.0" prefWrapLength="0.0" vgap="15.0">
+               <padding>
+                  <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+               </padding>
+            </FlowPane>
+         </content>
+      </ScrollPane>
+      <HBox alignment="CENTER_RIGHT">
+         <children>
+            <HBox onMouseClicked="#onViewAllClicked" styleClass="view-all-button">
+               <children>
+                  <Label text="View all" />
+                  <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../images/Continue%20Arrow.png" />
+                     </image>
+                  </ImageView>
+               </children>
+            </HBox>
+         </children>
+      </HBox>
+   </children>
+</VBox>
