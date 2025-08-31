@@ -17,7 +17,7 @@ import seng202.team5.models.Trail;
 public class SearchService {
     private List<Trail> trails;
     private Map<String, List<String>> keywords;
-    private static final int MAX_RESULTS = 20;
+    private static final int MAX_RESULTS = 100;
 
     /**
      * Creates SearchService with injected DataService.
