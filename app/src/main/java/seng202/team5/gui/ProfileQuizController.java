@@ -143,6 +143,7 @@ public class ProfileQuizController extends Controller {
             super.getNavigator()
                     .launchScreen(new ProfileQuizController(super.getEnvironment(), super.getNavigator(), quizId));
         } else {
+            // TODO: maybe add buffer (loading) screen here while matchmaking
             super.getNavigator().launchScreen(new DashboardController(super.getEnvironment(), super.getNavigator()));
         }
     }
