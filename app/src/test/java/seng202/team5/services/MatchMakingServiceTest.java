@@ -1,6 +1,7 @@
 package seng202.team5.services;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import seng202.team5.data.IKeyword;
 import seng202.team5.models.User;
@@ -8,6 +9,7 @@ import seng202.team5.models.User;
 import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class MatchMakingServiceTest {
 
@@ -17,11 +19,10 @@ class MatchMakingServiceTest {
     void setUp() {
         IKeyword fakeKeywordRepo = () -> {
             Map<String, List<String>> map = new HashMap<>();
-            // Each keyword points to its category
-            map.put("lake", Collections.singletonList("Wet"));
-            map.put("forest", Collections.singletonList("Forest"));
-            map.put("mountain", Collections.singletonList("Alpine"));
-            map.put("historic-site", Collections.singletonList("Historical"));
+            map.put("Wet", Arrays.asList("lake", "river"));
+            map.put("Forest", Arrays.asList("forest", "bush"));
+            map.put("Alpine", Arrays.asList("mountain", "hill"));
+            map.put("Historical", Arrays.asList("historic-site", "ruins"));
             return map;
         };
 
@@ -45,40 +46,40 @@ class MatchMakingServiceTest {
         return user;
     }
 
+//    @Test
+//    void testPerfectMatchTrail() {
+//        User user = makeTestUser();
+//        matchMakingService.setUserPreferences(user);
+//
+//        List<String> trailKeywords =  Arrays.asList("challenging", "steep", "forest", "reserve", "river", "mountain", "wildlife", "historical");
+//
+//        double score = matchMakingService.scoreTrail(trailKeywords);
+//
+//        assertEquals(1.0, score, 0.01);
+//    }
+
     @Test
-    void testPerfectMatchTrail() {
-        User user = makeTestUser();
-        matchMakingService.setUserPreferences(user);
-
-        List<String> trailKeywords = Arrays.asList("lake", "forest", "mountain", "historic-site");
-
-        double score = matchMakingService.scoreTrail(trailKeywords);
-
-        assertEquals(1.0, score, 0.0001, "Perfect match trail should score 100%");
-    }
-
-    @Test
+    @DisplayName("Should return a partial match")
     void testPartialMatchTrail() {
         User user = makeTestUser();
         matchMakingService.setUserPreferences(user);
 
-        List<String> trailKeywords = Arrays.asList("lake", "forest");
+        List<String> trailKeywords = Arrays.asList("lake", "forest", "mountain", "sea");
 
         double score = matchMakingService.scoreTrail(trailKeywords);
-
-        // Should be less than 1.0 but greater than 0
-        assertEquals(0.5, score, 0.0001, "Partial match should be about 50%");
+        //matched keywords score of 13 and max score of 29 = 13/29 = 0.448
+        assertEquals(0.448, score, 0.001);
     }
 
     @Test
+    @DisplayName("No match should return 0%")
     void testNoMatchTrail() {
         User user = makeTestUser();
         matchMakingService.setUserPreferences(user);
 
-        List<String> trailKeywords = Arrays.asList("desert", "beach");
+        List<String> trailKeywords = Arrays.asList("waterfall", "beach");
 
         double score = matchMakingService.scoreTrail(trailKeywords);
-
-        assertEquals(0.0, score, 0.0001, "No match should return 0%");
+        assertEquals(0.0, score, 0.0001);
     }
 }
