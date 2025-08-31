@@ -17,7 +17,7 @@ import seng202.team5.models.Trail;
 public class SearchService {
     private List<Trail> trails;
     private Map<String, List<String>> keywords;
-    private static final int MAX_RESULTS = 100;
+    private int maxResults = 100;
 
     /**
      * Creates SearchService with injected DataService.
@@ -40,15 +40,15 @@ public class SearchService {
      * @param query The search query to filter trails by name
      * @param page  The page number (0-based) to retrieve results from
      * @return A list of trails matching the search query for the specified page,
-     *         limited to MAX_RESULTS
+     *         limited to maxResults
      */
     private List<Trail> searchTrails(String query, int page) {
-        int startIndex = page * MAX_RESULTS;
+        int startIndex = page * maxResults;
 
         if (query == null || query.isEmpty()) {
             return trails.stream()
                     .skip(startIndex)
-                    .limit(MAX_RESULTS)
+                    .limit(maxResults)
                     .collect(Collectors.toList());
         }
 
@@ -56,12 +56,12 @@ public class SearchService {
         return trails.stream()
                 .filter(trail -> trail.getName().toLowerCase().contains(query.toLowerCase()))
                 .skip(startIndex)
-                .limit(MAX_RESULTS)
+                .limit(maxResults)
                 .collect(Collectors.toList());
     }
 
     /**
-     * Alternative method for getting trails.
+     * Method for getting trails.
      *
      * @param searchQuery Search query to filter trails
      * @param page        Page number (0-based)
@@ -81,12 +81,12 @@ public class SearchService {
      */
     public int getNumberOfPages(String searchQuery) {
         if (searchQuery == null || searchQuery.isEmpty()) {
-            return (int) Math.ceil((double) trails.size() / MAX_RESULTS);
+            return (int) Math.ceil((double) trails.size() / maxResults);
         }
         long filteredCount = trails.stream()
                 .filter(trail -> trail.getName().toLowerCase().contains(searchQuery.toLowerCase()))
                 .count();
-        return (int) Math.ceil((double) filteredCount / MAX_RESULTS);
+        return (int) Math.ceil((double) filteredCount / maxResults);
     }
 
     /**
@@ -139,6 +139,24 @@ public class SearchService {
             Set<String> matchedCategories = categoriseTrail(trail);
             trail.setCategories(matchedCategories);
         }
+    }
+
+    /**
+     * Sets a new max results limit for pagination.
+     *
+     * @param maxResults The maximum number of results per page
+     */
+    public void setMaxResults(int maxResults) {
+        this.maxResults = maxResults;
+    }
+
+    /**
+     * Gets the current max results limit for pagination.
+     *
+     * @return The maximum number of results per page
+     */
+    public int getMaxResults() {
+        return maxResults;
     }
 
 }
