@@ -5,7 +5,6 @@ import java.util.List;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.scene.layout.FlowPane;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import seng202.team5.Environment;
 import seng202.team5.data.DatabaseService;
@@ -60,6 +59,7 @@ public class DashboardController extends Controller {
             initializeSearchService();
         }
 
+        // TODO: use proper recommended trail fetching once implemented
         List<Trail> trails = searchService.getTrails(null, 0);
         initializeRecommendedTrails(trails);
     }
