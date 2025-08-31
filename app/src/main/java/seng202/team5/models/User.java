@@ -1,10 +1,12 @@
 package seng202.team5.models;
 
+import java.util.List;
+
 public class User {
     // Some basic variables
     private String type; // guest or profiled
     private String name;
-    private String region; // all or specific region
+    private List<String> regions;
     private boolean isFamilyFriendly;
     private boolean isAccessible;
     private int experienceLevel;
@@ -29,8 +31,8 @@ public class User {
         return name;
     }
 
-    public String getRegion() {
-        return region;
+    public List<String> getRegion() {
+        return regions;
     }
 
     public boolean getIsFamilyFriendly() {
@@ -90,8 +92,8 @@ public class User {
         this.name = name;
     }
 
-    public void setRegion(String region) {
-        this.region = region;
+    public void setRegion(List<String> regions) {
+        this.regions = regions;
     }
 
     public void setIsFamilyFriendly(boolean isFamilyFriendly) {
