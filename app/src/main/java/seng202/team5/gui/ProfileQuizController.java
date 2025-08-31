@@ -5,12 +5,22 @@ import seng202.team5.Environment;
 import seng202.team5.models.Question;
 import seng202.team5.models.User;
 import javafx.scene.control.*;
-//import java.util.Arrays;
 
+/**
+ * Controller class for profile quiz screens
+ * Reuse the controller for the whole quiz
+ */
 public class ProfileQuizController extends Controller {
 
+    // To keep track of which question the user is on
     private int quizId;
 
+    /**
+     * Constructs the controller with environment
+     *
+     * @param environment application environment
+     * @param quizId quiz question id
+     */
     public ProfileQuizController(Environment environment, ScreenNavigator navigator, int quizId) {
         super(environment, navigator);
         this.quizId = quizId;
@@ -41,6 +51,9 @@ public class ProfileQuizController extends Controller {
     @FXML
     private ProgressBar quizProgressBar;
 
+    /**
+     * Initializes the quiz screen with the first two questions
+     */
     @FXML
     private void initialize() {
         setSliders(slider1);
@@ -53,6 +66,10 @@ public class ProfileQuizController extends Controller {
         continueButton.setOnAction(e -> onContinueButtonClicked());
     }
 
+    /**
+     * Sets the sliders to the default position
+     * @param slider Slider object on quiz screen
+     */
     @FXML
     private void setSliders(Slider slider) {
         slider.setSnapToTicks(true);
@@ -64,12 +81,18 @@ public class ProfileQuizController extends Controller {
         slider.setValue(3);
     }
 
+    /**
+     * Sets quiz progress shown on progress bar
+     */
     @FXML
     private void setProgressBar() {
         double progress = (quizId - 1) / 10.0;
         quizProgressBar.setProgress(progress);
     }
 
+    /**
+     * Sets labels of the questions based on quiz question id
+     */
     @FXML
     private void setQuestionLabel() {
         switch (quizId) {
@@ -106,6 +129,11 @@ public class ProfileQuizController extends Controller {
         }
     }
 
+    /**
+     * Action method for continue button
+     * Launches the quiz screen again with next questions if not at the end of quiz
+     * Launches the dashboard screen if at the end of quiz
+     */
     @FXML
     private void onContinueButtonClicked() {
         setUserPreferences();
@@ -118,6 +146,11 @@ public class ProfileQuizController extends Controller {
         // TODO: add else clause to move to dashboard screen
     }
 
+    /**
+     * Sets labels on the slider based on question shown
+     *
+     * @param sliderLabels array of labels based on question - taken from enum
+     */
     @FXML
     private void setSliderLabels(Label minLabel, Label medLabel, Label maxLabel, String[] sliderLabels) {
         minLabel.setText(sliderLabels[0]);
@@ -125,10 +158,16 @@ public class ProfileQuizController extends Controller {
         maxLabel.setText(sliderLabels[2]);
     }
 
+    /**
+     * Increments the quiz id
+     */
     private void incrementQuizId() {
         this.quizId += 2;
     }
 
+    /**
+     * Gets values from sliders and sets attributes of User object
+     */
     private void setUserPreferences() {
         User user = super.getEnvironment().getUser();
         switch (quizId) {
