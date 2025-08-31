@@ -50,7 +50,7 @@ public class WelcomeController extends Controller {
      */
     @FXML
     private void onSkipButtonClicked() {
-        super.getNavigator().launchScreen(new TrailsController(super.getEnvironment(), super.getNavigator()));
+        super.getNavigator().launchScreen(new DashboardController(super.getEnvironment(), super.getNavigator()));
     }
 
     @Override
