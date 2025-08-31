@@ -1,7 +1,8 @@
 package seng202.team5.services;
 
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
+
 import seng202.team5.models.Trail;
 import seng202.team5.data.DataService;
 
@@ -11,6 +12,7 @@ import seng202.team5.data.DataService;
  */
 public class SearchService {
     private List<Trail> trails;
+    private Map<String, List<String>> keywords;
     private static final int MAX_RESULTS = 20;
 
     /**
@@ -84,4 +86,47 @@ public class SearchService {
     public int getNumberOfTrails() {
         return trails.size();
     }
+
+    /**
+     * Checks if the description contains any of the keywords.
+     *
+     * @param description The description to check
+     * @param keywords The keywords to check against
+     * @return True if the description contains any of the keywords, false otherwise
+     */
+    private boolean containsKeyword(String description, List<String> keywords) {
+        String lowercaseDescription = description.toLowerCase();
+        return keywords.stream()
+                .anyMatch(keyword -> lowercaseDescription.contains(keyword.toLowerCase()));
+    }
+
+    /**
+     * Categorises the trail based on the keywords in the description.
+     *
+     * @param trail The trail to categorise
+     * @return A set of categories that the trail matches, or an empty set if no categories match
+     */
+    public Set<String> categoriseTrail(Trail trail) {
+        Set<String> matchedCategories = new HashSet<>();
+        String description = trail.getDescription();
+
+        for (Map.Entry<String, List<String>> entry : keywords.entrySet()) {
+            if (containsKeyword(description, entry.getValue())) {
+                matchedCategories.add(entry.getKey());
+            }
+        }
+
+        return matchedCategories;
+    }
+
+    /**
+     * Categorises all trails based on their descriptions.
+     */
+    public void categoriseAllTrails() {
+        for (Trail trail : trails) {
+            Set<String> matchedCategories = categoriseTrail(trail);
+            trail.setCategories(matchedCategories);
+        }
+    }
+
 }

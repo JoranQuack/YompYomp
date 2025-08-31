@@ -9,6 +9,7 @@ plugins {
     // Apply the application plugin to add support for building a CLI application in Java.
     id 'application'
     id 'java'
+    id 'jacoco'
     id 'org.openjfx.javafxplugin' version '0.1.0'
 }
 
@@ -62,4 +63,28 @@ jar {
     manifest {
         attributes 'Main-Class': 'seng202.team5.App'
     }
+}
+
+jacoco {
+    toolVersion = "0.8.13"
+}
+
+test {
+    finalizedBy jacocoTestReport
+}
+
+jacocoTestReport {
+    dependsOn test
+    reports {
+        xml.required = true
+        csv.required = false
+        html.required = true
+        html.outputLocation = layout.buildDirectory.dir('jacocoHtml')
+    }
+}
+
+javadoc {
+    options.encoding = 'UTF-8'
+    options.addStringOption('Xdoclint:none', '-quiet')
+    options.addBooleanOption('html5', true)
 }
