@@ -2,10 +2,10 @@ package seng202.team5.gui;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
-import javafx.scene.control.Label;
 import seng202.team5.Environment;
 
 public class WelcomeController extends Controller {
+
     /**
      * Creates controller with environment.
      *
@@ -28,11 +28,11 @@ public class WelcomeController extends Controller {
     @FXML
     private void initialize() {
         setUpProfileButton.setText("Set Up Profile");
-        skipButton.setText("Skip");
-        returningUserButton.setText("Returning User");
         setUpProfileButton.setOnAction(e -> onSetUpProfileButtonClicked());
-        // skipButton.setOnAction(e -> onSkipButtonClicked());
-        // setUpProfileButton.setOnAction(e -> onReturningUserButtonClicked());
+        skipButton.setText("Skip");
+        skipButton.setOnAction(e -> onSkipButtonClicked());
+        returningUserButton.setText("Returning User");
+        // returningUserButton.setOnAction(e -> onReturningUserButtonClicked());
     }
 
     /**
@@ -58,7 +58,7 @@ public class WelcomeController extends Controller {
     @FXML
     private void onSkipButtonClicked() {
         super.getEnvironment().getUser().setType("guest");
-        // TODO: launch dashboard screen
+        super.getNavigator().launchScreen(new DashboardController(super.getEnvironment(), super.getNavigator()));
     }
 
     @Override

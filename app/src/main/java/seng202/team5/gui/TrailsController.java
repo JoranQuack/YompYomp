@@ -3,25 +3,23 @@ package seng202.team5.gui;
 import java.util.List;
 
 import javafx.fxml.FXML;
+import javafx.geometry.Insets;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
-import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
-import javafx.scene.layout.GridPane;
-import javafx.scene.text.Text;
-import javafx.scene.text.TextFlow;
+import javafx.scene.layout.FlowPane;
+import javafx.scene.layout.VBox;
 import seng202.team5.Environment;
-import seng202.team5.models.Trail;
-import seng202.team5.data.DataService;
 import seng202.team5.data.DatabaseService;
+import seng202.team5.data.SqlBasedTrailRepo;
+import seng202.team5.gui.components.TrailCardController;
+import seng202.team5.models.Trail;
 import seng202.team5.services.SearchService;
 
 /**
  * Controller for the trails display screen.
- * Handles trail search, pagination, and grid display.
+ * Handles trail search, pagination, and card display.
  */
 public class TrailsController extends Controller {
     /** Service for searching and filtering trails */
@@ -34,7 +32,7 @@ public class TrailsController extends Controller {
     private TextField searchBarTextField;
 
     @FXML
-    private GridPane trailsGridPane;
+    private FlowPane trailsContainer;
 
     @FXML
     private Label resultsLabel;
@@ -43,12 +41,28 @@ public class TrailsController extends Controller {
     private ChoiceBox<String> pageChoiceBox;
 
     /**
+     * Default constructor required by JavaFX FXML loading.
+     */
+    public TrailsController() {
+        super();
+    }
+
+    /**
      * Creates controller with environment.
      *
-     * @param Environment Application environment
+     * @param environment Application environment
+     * @param navigator   Screen navigator
      */
-    protected TrailsController(Environment Environment, ScreenNavigator navigator) {
-        super(Environment, navigator);
+    public TrailsController(Environment environment, ScreenNavigator navigator) {
+        super(environment, navigator);
+        initializeSearchService();
+    }
+
+    /**
+     * Initializes the search service.
+     */
+    private void initializeSearchService() {
+        this.searchService = new SearchService(new SqlBasedTrailRepo(new DatabaseService()));
     }
 
     /**
@@ -56,41 +70,39 @@ public class TrailsController extends Controller {
      */
     @FXML
     private void initialize() {
+        // Initialize search service if not already done
+        if (searchService == null) {
+            initializeSearchService();
+        }
+
+        // Check if searchService is still null and handle gracefully
+        if (searchService == null) {
+            resultsLabel.setText("No trails available");
+            return;
+        }
+
         List<Trail> trails = searchService.getTrails(null, 0);
         initializePageChoiceBox();
-        updateTrailsGrid(trails);
+        updateTrailsDisplay(trails);
         resultsLabel.setText(trails.size() + "/" + searchService.getNumberOfTrails() + " trails loaded");
     }
 
     /**
-     * Clears grid and adds header row.
-     */
-    private void clearTrailsGrid() {
-        trailsGridPane.getChildren().clear();
-        trailsGridPane.addRow(0, new Label("Name"), new Label("Thumbnail URL"), new Label("Description"),
-                new Label("Difficulty"), new Label("Completion Time"), new Label("Webpage URL"));
-    }
-
-    /**
-     * Updates grid with trail data.
+     * Updates display with trail cards.
      *
      * @param trails List of trails to display
      */
-    private void updateTrailsGrid(List<Trail> trails) {
-        clearTrailsGrid();
-        for (int i = 0; i < trails.size(); i++) {
-            Trail trail = trails.get(i);
-            Hyperlink link = new Hyperlink("Link");
-            link.setOnAction(event -> {
-                getEnvironment().getNavigator().openWebPage(trail.getWebpageURL());
-            });
-            trailsGridPane.addRow(i + 1,
-                    new Label(trail.getName()),
-                    new ImageView(new Image(trail.getThumbnailURL())),
-                    new TextFlow(new Text(trail.getDescription())),
-                    new Label(trail.getDifficulty()),
-                    new Label(trail.getCompletionTime()),
-                    link);
+    private void updateTrailsDisplay(List<Trail> trails) {
+        trailsContainer.getChildren().clear();
+
+        for (Trail trail : trails) {
+            TrailCardController trailCard = new TrailCardController();
+            trailCard.setData(trail);
+
+            // Add some spacing between cards
+            VBox.setMargin(trailCard, new Insets(10));
+
+            trailsContainer.getChildren().add(trailCard);
         }
     }
 
@@ -98,35 +110,30 @@ public class TrailsController extends Controller {
      * Sets up pagination choice box.
      */
     private void initializePageChoiceBox() {
+        if (searchService == null)
+            return;
+
         for (int i = 0; i < searchService.getNumberOfPages(null); i++) {
             pageChoiceBox.getItems().add(String.valueOf(i + 1));
         }
         pageChoiceBox.setValue("1");
-        pageChoiceBox.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
-            onPageSelected();
-        });
+        pageChoiceBox.getSelectionModel().selectedItemProperty().addListener(
+                (observable, oldValue, newValue) -> onSearchButtonClickedOrPageSelected());
     }
 
     /**
-     * Handles search button click.
+     * Handles search button click or page selection change
      */
     @FXML
-    private void onSearchButtonClicked() {
-        String query = searchBarTextField.getText();
-        int page = Integer.parseInt(pageChoiceBox.getValue()) - 1;
-        List<Trail> filteredTrails = searchService.getTrails(query, page);
-        updateTrailsGrid(filteredTrails);
-    }
+    private void onSearchButtonClickedOrPageSelected() {
+        if (searchService == null) {
+            return;
+        }
 
-    /**
-     * Handles page selection change.
-     */
-    @FXML
-    private void onPageSelected() {
         String query = searchBarTextField.getText();
         int page = Integer.parseInt(pageChoiceBox.getValue()) - 1;
         List<Trail> filteredTrails = searchService.getTrails(query, page);
-        updateTrailsGrid(filteredTrails);
+        updateTrailsDisplay(filteredTrails);
     }
 
     @Override

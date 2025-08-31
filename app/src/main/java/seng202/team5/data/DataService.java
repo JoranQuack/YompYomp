@@ -47,22 +47,4 @@ public class DataService {
     public List<Trail> getTrails() {
         return trailRepo.getAllTrails();
     }
-
-    /**
-     * Saves a trail to the data source.
-     *
-     * @param trail Trail object to be saved
-     */
-    public void saveTrail(Trail trail) {
-        trailRepo.upsert(trail);
-    }
-
-    /**
-     * Saves all trails to the data source.
-     *
-     * @param trails List of trail objects to be saved
-     */
-    public void saveAllTrails(List<Trail> trails) {
-        trailRepo.upsertAll(trails);
-    }
 }
