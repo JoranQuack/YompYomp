@@ -46,18 +46,6 @@ class MatchMakingServiceTest {
         return user;
     }
 
-//    @Test
-//    void testPerfectMatchTrail() {
-//        User user = makeTestUser();
-//        matchMakingService.setUserPreferences(user);
-//
-//        List<String> trailKeywords =  Arrays.asList("challenging", "steep", "forest", "reserve", "river", "mountain", "wildlife", "historical");
-//
-//        double score = matchMakingService.scoreTrail(trailKeywords);
-//
-//        assertEquals(1.0, score, 0.01);
-//    }
-
     @Test
     @DisplayName("Should return a partial match")
     void testPartialMatchTrail() {
