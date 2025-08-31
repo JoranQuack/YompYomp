@@ -22,7 +22,7 @@ public class Environment {
 
     /**
      * Constructor for the Environment class. Initializes the environment
-     * with a ScreenNavigator instance.
+     * with a ScreenNavigator instance, filerepo, sqlrepo and db instance.
      *
      * @param navigator The ScreenNavigator instance for navigating between screens
      */
@@ -33,7 +33,6 @@ public class Environment {
         SqlBasedTrailRepo sqlTrailRepo = new SqlBasedTrailRepo(dbService);
         FileBasedTrailRepo fileTrailRepo = new FileBasedTrailRepo("/datasets/DOC_Walking_Experiences_7994760352369043452.csv");
         this.setupService = new SetupService(sqlTrailRepo, fileTrailRepo);
-
 
         WelcomeController welcome = new WelcomeController(this, navigator);
         navigator.launchScreen(welcome);
@@ -47,6 +46,10 @@ public class Environment {
         runSetupInBackground(welcome);
     }
 
+    /**
+     * This method is used to start the setup of the applciation on the second thread
+     * @param welcomeController
+     */
     private void runSetupInBackground(WelcomeController welcomeController) {
         Task<Void> setupTask = new Task<>() {
             @Override protected Void call() throws Exception {
@@ -58,7 +61,9 @@ public class Environment {
         };
 
         // TODO: add setOnFailed methods
-
+        /*
+        This sub method prints to the console when the background worker proccess is complete
+         */
         setupTask.setOnSucceeded(e -> {
             Platform.runLater(() -> {
                 System.out.println("Background worker completed");
