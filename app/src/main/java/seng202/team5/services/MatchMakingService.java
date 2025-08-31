@@ -1,5 +1,6 @@
 package seng202.team5.services;
 
+import seng202.team5.data.FileBasedKeywordRepo;
 import seng202.team5.data.IKeyword;
 import seng202.team5.models.User;
 
@@ -11,11 +12,25 @@ import java.util.*;
  */
 public class MatchMakingService {
 
-    private final Map<String, List<String>> keywordCategories; //category -> keywords
+    private final Map<String, List<String>> categoryToKeywords;//category -> keywords
+    private final Map<String, String> keywordToCategory = new HashMap<>();
     private final Map<String, Integer> userWeights = new HashMap<>();
 
     public MatchMakingService(IKeyword keywordRepo) {
-        this.keywordCategories = keywordRepo.getKeywords();
+        this.categoryToKeywords = keywordRepo.getKeywords();
+        buildReverseIndex();
+    }
+
+    /**
+     * Build keyword -> category map once from the CSV data
+     */
+    private void buildReverseIndex() {
+        for (Map.Entry<String, List<String>> entry : categoryToKeywords.entrySet()) {
+            String category = entry.getKey();
+            for (String keyword : entry.getValue()) {
+                keywordToCategory.put(keyword.toLowerCase(Locale.ROOT), category);
+            }
+        }
     }
 
     /**
@@ -46,18 +61,35 @@ public class MatchMakingService {
      * Calculates a score for a trail given its keywords based on the user's
      * answers to the setup questions. This is where a percentage match is calculated.
      * @param trailKeywords list of keywords for a trail
-     * @return weighted score for a trail
+     * @return weighted score for a trail between 0.0 and 1.0
      */
     public double scoreTrail(List<String> trailKeywords) {
-        int score = 0;
+        if (trailKeywords == null || trailKeywords.isEmpty()) {
+            return 0.0;
+        }
+
         //maximum possible score that a trail could get if it matches the user's preferences perfectly
         int maxScore = userWeights.values().stream().mapToInt(Integer::intValue).sum();
-        for (String keyword : trailKeywords) {
-            String category =  keywordCategories.get(keyword).get(0);
+        if (maxScore <= 0) {
+            return 0.0;
+        }
+
+        //Avoid double-counting categories
+        Set<String> matchedCategories = new HashSet<>();
+
+        for (String kw: trailKeywords) {
+            if (kw == null) {
+                continue;
+            }
+            String category = keywordToCategory.get(kw.toLowerCase(Locale.ROOT));
             if (category != null && userWeights.containsKey(category)) {
-                score += userWeights.get(category);
+                matchedCategories.add(category);
             }
         }
+
+        int score = matchedCategories.stream()
+                .mapToInt(cat -> userWeights.getOrDefault(cat, 0))
+                .sum();
         return (double) score/maxScore;
     }
 }
