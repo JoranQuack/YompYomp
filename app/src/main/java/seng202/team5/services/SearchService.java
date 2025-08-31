@@ -1,10 +1,14 @@
 package seng202.team5.services;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
-import seng202.team5.models.Trail;
 import seng202.team5.data.DataService;
+import seng202.team5.data.SqlBasedTrailRepo;
+import seng202.team5.models.Trail;
 
 /**
  * Service for searching and filtering trails with pagination support.
@@ -13,7 +17,7 @@ import seng202.team5.data.DataService;
 public class SearchService {
     private List<Trail> trails;
     private Map<String, List<String>> keywords;
-    private static final int MAX_RESULTS = 20;
+    private int maxResults = 100;
 
     /**
      * Creates SearchService with injected DataService.
@@ -23,21 +27,28 @@ public class SearchService {
     }
 
     /**
+     * Creates SearchService with injected SQLBasedTrailRepo.
+     */
+    public SearchService(SqlBasedTrailRepo sqlBasedTrailRepo) {
+        this.trails = sqlBasedTrailRepo.getAllTrails();
+    }
+
+    /**
      * Searches for trails based on the provided query with pagination support.
      * If the query is null or empty, it returns trails from the specified page.
      *
      * @param query The search query to filter trails by name
      * @param page  The page number (0-based) to retrieve results from
      * @return A list of trails matching the search query for the specified page,
-     *         limited to MAX_RESULTS
+     *         limited to maxResults
      */
     private List<Trail> searchTrails(String query, int page) {
-        int startIndex = page * MAX_RESULTS;
+        int startIndex = page * maxResults;
 
         if (query == null || query.isEmpty()) {
             return trails.stream()
                     .skip(startIndex)
-                    .limit(MAX_RESULTS)
+                    .limit(maxResults)
                     .collect(Collectors.toList());
         }
 
@@ -45,12 +56,12 @@ public class SearchService {
         return trails.stream()
                 .filter(trail -> trail.getName().toLowerCase().contains(query.toLowerCase()))
                 .skip(startIndex)
-                .limit(MAX_RESULTS)
+                .limit(maxResults)
                 .collect(Collectors.toList());
     }
 
     /**
-     * Alternative method for getting trails.
+     * Method for getting trails.
      *
      * @param searchQuery Search query to filter trails
      * @param page        Page number (0-based)
@@ -70,12 +81,12 @@ public class SearchService {
      */
     public int getNumberOfPages(String searchQuery) {
         if (searchQuery == null || searchQuery.isEmpty()) {
-            return (int) Math.ceil((double) trails.size() / MAX_RESULTS);
+            return (int) Math.ceil((double) trails.size() / maxResults);
         }
         long filteredCount = trails.stream()
                 .filter(trail -> trail.getName().toLowerCase().contains(searchQuery.toLowerCase()))
                 .count();
-        return (int) Math.ceil((double) filteredCount / MAX_RESULTS);
+        return (int) Math.ceil((double) filteredCount / maxResults);
     }
 
     /**
@@ -91,7 +102,7 @@ public class SearchService {
      * Checks if the description contains any of the keywords.
      *
      * @param description The description to check
-     * @param keywords The keywords to check against
+     * @param keywords    The keywords to check against
      * @return True if the description contains any of the keywords, false otherwise
      */
     private boolean containsKeyword(String description, List<String> keywords) {
@@ -104,7 +115,8 @@ public class SearchService {
      * Categorises the trail based on the keywords in the description.
      *
      * @param trail The trail to categorise
-     * @return A set of categories that the trail matches, or an empty set if no categories match
+     * @return A set of categories that the trail matches, or an empty set if no
+     *         categories match
      */
     public Set<String> categoriseTrail(Trail trail) {
         Set<String> matchedCategories = new HashSet<>();
@@ -127,6 +139,24 @@ public class SearchService {
             Set<String> matchedCategories = categoriseTrail(trail);
             trail.setCategories(matchedCategories);
         }
+    }
+
+    /**
+     * Sets a new max results limit for pagination.
+     *
+     * @param maxResults The maximum number of results per page
+     */
+    public void setMaxResults(int maxResults) {
+        this.maxResults = maxResults;
+    }
+
+    /**
+     * Gets the current max results limit for pagination.
+     *
+     * @return The maximum number of results per page
+     */
+    public int getMaxResults() {
+        return maxResults;
     }
 
 }

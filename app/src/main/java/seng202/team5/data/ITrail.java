@@ -9,34 +9,24 @@ import java.util.List;
 public interface ITrail {
     /**
      * Returns all trails available in the data source
-     * 
+     *
      * @return List of the trail objects
      */
     List<Trail> getAllTrails();
 
     /**
      * Finds a record by its ID
+     * 
      * @param id id of the object
      * @return the record
      */
     java.util.Optional<Trail> findById(int id);
 
     /**
-     * Upsets into the database
-     * @param trail trail that needs to be updated
+     * Counts all the rows in the trail table
+     *
+     * @return the count of trails
      */
-    void upsert(Trail trail);
-
-    /**
-     * upsert all the trails in the database
-     * @param trails
-     */
-    void upsertAll(List<Trail> trails);
-
-    /**
-     * delete a certain record by accessing it through its id
-     * @param id
-     */
-    void deleteById(int id);
+    int countTrails();
 
 }

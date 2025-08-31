@@ -5,7 +5,6 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
-import seng202.team5.Environment;
 
 import java.io.IOException;
 
@@ -34,7 +33,7 @@ public class ScreenNavigator {
 
         stage.setMinWidth(800);
         stage.setMinHeight(600);
-        
+
         stage.setResizable(true);
         rootPane.prefWidthProperty().bind(scene.widthProperty());
         rootPane.prefHeightProperty().bind(scene.heightProperty());
@@ -69,6 +68,7 @@ public class ScreenNavigator {
             stage.setTitle(controller.getTitle());
         } catch (IOException e) {
             System.err.println("Could not load screen: " + e.getMessage());
+            e.printStackTrace();
         }
     }
 }
