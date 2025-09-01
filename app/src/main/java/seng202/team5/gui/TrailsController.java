@@ -13,6 +13,7 @@ import javafx.scene.layout.VBox;
 import seng202.team5.Environment;
 import seng202.team5.data.DatabaseService;
 import seng202.team5.data.SqlBasedTrailRepo;
+import seng202.team5.gui.components.NavbarController;
 import seng202.team5.gui.components.TrailCardController;
 import seng202.team5.models.Trail;
 import seng202.team5.services.SearchService;
@@ -24,6 +25,9 @@ import seng202.team5.services.SearchService;
 public class TrailsController extends Controller {
     /** Service for searching and filtering trails */
     private SearchService searchService;
+
+    @FXML
+    private VBox navbarContainer;
 
     @FXML
     private Button searchButton;
@@ -70,6 +74,11 @@ public class TrailsController extends Controller {
      */
     @FXML
     private void initialize() {
+        // Initialize the navbar from parent coz you can't have your kid running around
+        NavbarController navbar = super.getNavbarController();
+        navbar.setPage(1);
+        navbarContainer.getChildren().add(navbar);
+
         // Initialize search service if not already done
         if (searchService == null) {
             initializeSearchService();
