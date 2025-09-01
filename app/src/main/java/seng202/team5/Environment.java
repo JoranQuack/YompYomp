@@ -11,10 +11,12 @@ import seng202.team5.data.FileBasedTrailRepo;
 import seng202.team5.data.SqlBasedTrailRepo;
 import seng202.team5.data.DatabaseService;
 import seng202.team5.services.SetupService;
+import seng202.team5.models.User;
 
 public class Environment {
 
     private final ScreenNavigator navigator;
+    private User user = new User();
 
     //background worker + setup
     private final ExecutorService setupExec;
@@ -87,5 +89,13 @@ public class Environment {
      */
     public ScreenNavigator getNavigator() {
         return navigator;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public User getUser() {
+        return user;
     }
 }
