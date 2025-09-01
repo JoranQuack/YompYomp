@@ -7,10 +7,16 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Button;
 import javafx.scene.layout.HBox;
+import seng202.team5.Environment;
+import seng202.team5.gui.ScreenNavigator;
+import seng202.team5.gui.DashboardController;
+import seng202.team5.gui.TrailsController;
 
 public class NavbarController extends HBox {
 
-    // UI Components
+    private List<Button> navButtons;
+
+    // Components
     @FXML
     private Button homeButton;
     @FXML
@@ -20,22 +26,24 @@ public class NavbarController extends HBox {
     @FXML
     private Button toDoButton;
 
-    private List<Button> navButtons;
-
     /**
      * Initialise the NavbarController and put the buttons into the list to easily
      * switch between them.
      */
-    public NavbarController() {
+    public NavbarController(Environment environment, ScreenNavigator navigator) {
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/components/navbar.fxml"));
         fxmlLoader.setRoot(this);
         fxmlLoader.setController(this);
         try {
             fxmlLoader.load();
-            navButtons = List.of(homeButton, trailsButton, loggedButton, toDoButton);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+
+        navButtons = List.of(homeButton, trailsButton, loggedButton, toDoButton);
+        homeButton.setOnAction(e -> navigator.launchScreen(new DashboardController(environment, navigator)));
+        trailsButton.setOnAction(e -> navigator.launchScreen(new TrailsController(environment, navigator)));
+        // TODO: Implement actions for the remaining buttons when we're ready to rock
     }
 
     /**
