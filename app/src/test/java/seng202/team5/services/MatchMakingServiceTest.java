@@ -68,6 +68,18 @@ class MatchMakingServiceTest {
     }
 
     @Test
+    @DisplayName("Should return the same score as partial match even with duplicate words")
+    void testDuplicateKeywords() {
+        User user = makeTestUser();
+        matchMakingService.setUserPreferences(user);
+
+        List<String> trailKeywords = Arrays.asList("lake", "forest", "mountain", "sea", "lake", "forest", "mountain", "sea");
+        double score = matchMakingService.scoreTrail(trailKeywords);
+        // matched keywords score of 13 and max score of 29 = 13/29 = 0.448
+        assertEquals(0.448, score, 0.001);
+    }
+
+    @Test
     @DisplayName("No match should return 0%")
     void testNoMatchTrail() {
         User user = makeTestUser();
