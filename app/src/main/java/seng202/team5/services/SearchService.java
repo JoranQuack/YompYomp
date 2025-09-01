@@ -3,8 +3,9 @@ package seng202.team5.services;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import seng202.team5.data.FileBasedKeywordRepo;
+import seng202.team5.data.IKeyword;
 import seng202.team5.models.Trail;
-import seng202.team5.data.DataService;
 
 /**
  * Service for searching and filtering trails with pagination support.
@@ -12,14 +13,15 @@ import seng202.team5.data.DataService;
  */
 public class SearchService {
     private List<Trail> trails;
-    private Map<String, List<String>> keywords;
+    private IKeyword keywordRepo;
     private static final int MAX_RESULTS = 20;
+    private String keywordCSVPath = "src/main/resources/keywords.csv";
 
     /**
      * Creates SearchService with injected DataService.
      */
-    public SearchService(DataService dataService) {
-        this.trails = dataService.getTrails();
+    public SearchService() {
+        this.keywordRepo = new FileBasedKeywordRepo(keywordCSVPath);
     }
 
     /**
@@ -110,7 +112,7 @@ public class SearchService {
         Set<String> matchedCategories = new HashSet<>();
         String description = trail.getDescription();
 
-        for (Map.Entry<String, List<String>> entry : keywords.entrySet()) {
+        for (Map.Entry<String, List<String>> entry : keywordRepo.getKeywords().entrySet()) {
             if (containsKeyword(description, entry.getValue())) {
                 matchedCategories.add(entry.getKey());
             }
@@ -128,5 +130,4 @@ public class SearchService {
             trail.setCategories(matchedCategories);
         }
     }
-
 }
