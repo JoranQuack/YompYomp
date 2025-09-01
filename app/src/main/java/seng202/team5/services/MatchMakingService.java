@@ -92,4 +92,8 @@ public class MatchMakingService {
                 .sum();
         return (double) score/maxScore;
     }
+
+    public Map<String, Integer> getUserWeights() {
+        return userWeights;
+    }
 }
