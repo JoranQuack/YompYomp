@@ -9,6 +9,7 @@ import javafx.scene.layout.VBox;
 import seng202.team5.Environment;
 import seng202.team5.data.DatabaseService;
 import seng202.team5.data.SqlBasedTrailRepo;
+import seng202.team5.gui.components.NavbarController;
 import seng202.team5.gui.components.TrailCardController;
 import seng202.team5.models.Trail;
 import seng202.team5.services.SearchService;
@@ -19,6 +20,9 @@ import seng202.team5.services.SearchService;
 public class DashboardController extends Controller {
     /** Service for searching and filtering trails */
     private SearchService searchService;
+
+    @FXML
+    private VBox navbarContainer;
 
     @FXML
     private FlowPane trailsContainer;
@@ -54,6 +58,11 @@ public class DashboardController extends Controller {
      */
     @FXML
     private void initialize() {
+        // Initialize the navbar
+        NavbarController navbar = super.getNavbarController();
+        navbar.setPage(0);
+        navbarContainer.getChildren().add(navbar);
+
         // Initialize search service if not already done
         if (searchService == null) {
             initializeSearchService();
@@ -95,6 +104,6 @@ public class DashboardController extends Controller {
 
     @Override
     protected String getTitle() {
-        return "Dashboard Screen";
+        return "Dashboard";
     }
 }
