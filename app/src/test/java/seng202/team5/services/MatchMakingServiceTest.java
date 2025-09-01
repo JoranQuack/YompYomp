@@ -55,6 +55,26 @@ class MatchMakingServiceTest {
     }
 
     @Test
+    @DisplayName("Should correctly map user preferences")
+    void testUserWeightsPopulatedCorrectly() {
+        User user  = makeTestUser();
+        matchMakingService.setUserPreferences(user);
+        Map<String, Integer> userWeights = matchMakingService.getUserWeights();
+        assertEquals(5, userWeights.get("FamilyFriendly"));
+        assertEquals(0, userWeights.get("Accessible"));
+        assertEquals(3, userWeights.get("Difficult"));
+        assertEquals(2, userWeights.get("Rocky"));
+        assertEquals(4, userWeights.get("Forest"));
+        assertEquals(1, userWeights.get("Reserve"));
+        assertEquals(5, userWeights.get("Wet"));
+        assertEquals(0, userWeights.get("Beach"));
+        assertEquals(4, userWeights.get("Alpine"));
+        assertEquals(2, userWeights.get("Wildlife"));
+        assertEquals(3, userWeights.get("Historical"));
+        assertEquals(0, userWeights.get("Waterfall"));
+    }
+
+    @Test
     @DisplayName("Should return a partial match")
     void testPartialMatchTrail() {
         User user = makeTestUser();
@@ -102,5 +122,30 @@ class MatchMakingServiceTest {
 
         double score = matchMakingService.scoreTrail(trailKeywords);
         assertEquals(1.0, score, 0.0001);
+    }
+
+    @Test
+    @DisplayName("Case-insensitive matching should still count keywords")
+    void testCaseSensitivity() {
+        User user = makeTestUser();
+        matchMakingService.setUserPreferences(user);
+
+        List<String> trailKeywords = Arrays.asList("FoReSt", "RiVeR");
+
+        double score = matchMakingService.scoreTrail(trailKeywords);
+        assertTrue(score > 0);
+    }
+
+    @Test
+    @DisplayName("Empty list should give match of 0%")
+    void testEmptyKeywords() {
+        User user = makeTestUser();
+        matchMakingService.setUserPreferences(user);
+
+        List<String> trailKeywords = Collections.emptyList();
+
+        double score = matchMakingService.scoreTrail(trailKeywords);
+        assertEquals(0, score, 0.0001);
+
     }
 }
