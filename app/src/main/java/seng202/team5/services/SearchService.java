@@ -6,7 +6,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import seng202.team5.data.FileBasedKeywordRepo;
 import seng202.team5.data.IKeyword;
 import seng202.team5.data.SqlBasedTrailRepo;
 import seng202.team5.models.Trail;
@@ -19,14 +18,24 @@ public class SearchService {
     private List<Trail> trails;
     private IKeyword keywordRepo;
     private int maxResults = 100;
-    private String keywordCSVPath = "src/main/resources/keywords.csv";
 
     /**
      * Creates SearchService with injected SQLBasedTrailRepo.
      */
     public SearchService(SqlBasedTrailRepo sqlBasedTrailRepo) {
         this.trails = sqlBasedTrailRepo.getAllTrails();
-        this.keywordRepo = new FileBasedKeywordRepo(keywordCSVPath);
+    }
+
+    /**
+     * Creates SearchService with injected SQLBasedTrailRepo and IKeyword.
+     * Used to search through trails using keywords for matchmaking.
+     *
+     * @param sqlBasedTrailRepo
+     * @param keywordRepo
+     */
+    public SearchService(SqlBasedTrailRepo sqlBasedTrailRepo, IKeyword keywordRepo) {
+        this.keywordRepo = keywordRepo;
+        this.trails = sqlBasedTrailRepo.getAllTrails();
     }
 
     /**
