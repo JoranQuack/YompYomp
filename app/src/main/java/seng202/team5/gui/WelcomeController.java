@@ -41,15 +41,14 @@ public class WelcomeController extends Controller {
     @FXML
     private void onSetUpProfileButtonClicked() {
         super.getEnvironment().getUser().setType("profiled");
-        super.getEnvironment().getNavigator().launchScreen(
-                new ProfileSetupGeneralController(super.getEnvironment(), super.getEnvironment().getNavigator())
-        );
+        super.getNavigator()
+                .launchScreen(new ProfileSetupGeneralController(super.getEnvironment(), super.getNavigator()));
     }
 
     @FXML
     private void onReturningUserButtonClicked() {
-        // TODO: get information from database and make User object
-        // TODO: launch dashboard screen
+        // Shouldn't returning users be put straight into the dashboard? (bypass this
+        // screen)
     }
 
     /**
