@@ -30,7 +30,7 @@ class MatchMakingServiceTest {
     }
 
     private User makeTestUser() {
-        User user = new User("profile");
+        User user = new User();
         user.setIsFamilyFriendly(true);
         user.setIsAccessible(false);
         user.setExperienceLevel(3);
@@ -55,7 +55,7 @@ class MatchMakingServiceTest {
         List<String> trailKeywords = Arrays.asList("lake", "forest", "mountain", "sea");
 
         double score = matchMakingService.scoreTrail(trailKeywords);
-        //matched keywords score of 13 and max score of 29 = 13/29 = 0.448
+        // matched keywords score of 13 and max score of 29 = 13/29 = 0.448
         assertEquals(0.448, score, 0.001);
     }
 
