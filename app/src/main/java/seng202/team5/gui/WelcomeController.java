@@ -2,9 +2,7 @@ package seng202.team5.gui;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
-import javafx.scene.control.Label;
 import seng202.team5.Environment;
-import seng202.team5.services.SetupService;
 
 public class WelcomeController extends Controller {
 
@@ -18,14 +16,11 @@ public class WelcomeController extends Controller {
     }
 
     @FXML
-    private Label kiaOraLabel;
-    @FXML
-    private Label welcomeTextLabel;
-    @FXML
     private Button setUpProfileButton;
     @FXML
     private Button skipButton;
-
+    @FXML
+    private Button returningUserButton;
 
     /**
      * Initializes the welcome screen
@@ -33,8 +28,11 @@ public class WelcomeController extends Controller {
     @FXML
     private void initialize() {
         setUpProfileButton.setText("Set Up Profile");
-        skipButton.setText("Skip");
         setUpProfileButton.setOnAction(e -> onSetUpProfileButtonClicked());
+        skipButton.setText("Skip");
+        skipButton.setOnAction(e -> onSkipButtonClicked());
+        returningUserButton.setText("Returning User");
+        // returningUserButton.setOnAction(e -> onReturningUserButtonClicked());
     }
 
     /**
@@ -42,9 +40,15 @@ public class WelcomeController extends Controller {
      */
     @FXML
     private void onSetUpProfileButtonClicked() {
-        super.getEnvironment().getNavigator().launchScreen(
-                new ProfileSetupGeneralController(super.getEnvironment(), super.getEnvironment().getNavigator())
-        );
+        super.getEnvironment().getUser().setType("profiled");
+        super.getNavigator()
+                .launchScreen(new ProfileSetupGeneralController(super.getEnvironment(), super.getNavigator()));
+    }
+
+    @FXML
+    private void onReturningUserButtonClicked() {
+        // Shouldn't returning users be put straight into the dashboard? (bypass this
+        // screen)
     }
 
     /**
@@ -52,7 +56,8 @@ public class WelcomeController extends Controller {
      */
     @FXML
     private void onSkipButtonClicked() {
-        // TODO: link to guest screen
+        super.getEnvironment().getUser().setType("guest");
+        super.getNavigator().launchScreen(new DashboardController(super.getEnvironment(), super.getNavigator()));
     }
 
     @Override

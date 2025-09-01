@@ -12,19 +12,19 @@ public class Trail {
     private String description;
     private String difficulty;
     private String completionTime;
-    //private String hasAlerts;
+    // private String hasAlerts;
     private String type;
     private String thumbnailURL;
     private String webpageURL;
     private String dateLoaded;
-    //private double shapeLength;
+    // private double shapeLength;
     private double x;
     private double y;
     private Set<String> categories = new HashSet<>();
 
     // Constructor for base variables
     public Trail(int id, String name, String difficulty, String description, String completionTime, String type,
-            String thumbnailURL, String webpageURL, String dateLoaded, double x, double y){//, double shapeLength) {
+            String thumbnailURL, String webpageURL, String dateLoaded, double x, double y) {// , double shapeLength) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -36,7 +36,7 @@ public class Trail {
         this.dateLoaded = dateLoaded;
         this.x = x;
         this.y = y;
-        //this.shapeLength = shapeLength;
+        // this.shapeLength = shapeLength;
         this.categories = categories;
     }
 
@@ -77,13 +77,14 @@ public class Trail {
         return dateLoaded;
     }
 
-    //public double getShapeLength() {
-        //return shapeLength;
-    //}
+    // public double getShapeLength() {
+    // return shapeLength;
+    // }
 
     public double getX() {
         return x;
     }
+
     public double getY() {
         return y;
     }
@@ -129,9 +130,9 @@ public class Trail {
         this.dateLoaded = dateLoaded;
     }
 
-    //public void setShapeLength(int shapeLength) {
-        //this.shapeLength = shapeLength;
-    //}
+    // public void setShapeLength(double shapeLength) {//this.shapeLength =
+    // shapeLength;
+    // }
 
     public void setX(double x) {
         this.x = x;

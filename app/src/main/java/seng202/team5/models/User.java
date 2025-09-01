@@ -1,10 +1,12 @@
 package seng202.team5.models;
 
+import java.util.List;
+
 public class User {
     // Some basic variables
-    private final String type; // guest or profile
+    private String type; // guest or profiled
     private String name;
-    private String region;
+    private List<String> regions;
     private boolean isFamilyFriendly;
     private boolean isAccessible;
     private int experienceLevel;
@@ -18,15 +20,7 @@ public class User {
     private int historicPreference;
     private int waterfallPreference;
 
-    public User(String type) {
-        this.type = type;
-    }
-
-    public User(String type, String name, String region) {
-        this.type = type;
-        this.name = name;
-        this.region = region;
-    }
+    public User() {}
 
     //getters
     public String getType() {
@@ -37,8 +31,8 @@ public class User {
         return name;
     }
 
-    public String getRegion() {
-        return region;
+    public List<String> getRegion() {
+        return regions;
     }
 
     public boolean getIsFamilyFriendly() {
@@ -90,12 +84,16 @@ public class User {
     }
 
     //setters
+    public void setType(String type) {
+        this.type = type;
+    }
+
     public void setName(String name) {
         this.name = name;
     }
 
-    public void setRegion(String region) {
-        this.region = region;
+    public void setRegion(List<String> regions) {
+        this.regions = regions;
     }
 
     public void setIsFamilyFriendly(boolean isFamilyFriendly) {

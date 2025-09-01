@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ProgressBar?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+
+<fx:root maxWidth="230.0" minWidth="230.0" spacing="8" type="javafx.scene.layout.VBox" xmlns="http://javafx.com/javafx/21.0.2" xmlns:fx="http://javafx.com/fxml/1">
+
+    <!-- VBox padding -->
+    <padding>
+        <Insets bottom="10" left="10" right="10" top="10" />
+    </padding>
+
+    <!-- Thumbnail image -->
+    <ImageView fx:id="thumbnail" fitHeight="126.0" fitWidth="218.0" preserveRatio="true">
+      <image>
+         <Image url="@../../images/Default%20Trail%20Image.png" />
+      </image></ImageView>
+
+    <!-- Title -->
+    <Label fx:id="title" style="-fx-font-size: 16px; -fx-font-weight: bold;" text="Trail Name" />
+   <HBox spacing="10.0">
+      <children>
+         <Label fx:id="difficultyLabel" text="Difficulty" />
+         <Label fx:id="durationLabel" text="Duration" />
+         <Label fx:id="regionLabel" text="Region" />
+      </children>
+      <padding>
+         <Insets bottom="5.0" right="10.0" top="5.0" />
+      </padding>
+   </HBox>
+
+    <StackPane>
+        <ProgressBar fx:id="matchBar" maxWidth="Infinity" progress="0.0" />
+        <Label fx:id="matchLabel" style="-fx-font-size: 12px; -fx-text-fill: black; -fx-font-weight: bold;" text="0% Match" />
+    </StackPane>
+
+</fx:root>
