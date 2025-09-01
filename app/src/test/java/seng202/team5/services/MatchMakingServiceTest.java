@@ -138,14 +138,16 @@ class MatchMakingServiceTest {
 
     @Test
     @DisplayName("Empty list should give match of 0%")
-    void testEmptyKeywords() {
+    void testNullOrEmptyKeywords() {
         User user = makeTestUser();
         matchMakingService.setUserPreferences(user);
 
         List<String> trailKeywords = Collections.emptyList();
+        double nullScore = matchMakingService.scoreTrail(null);
+        double emptyScore = matchMakingService.scoreTrail(trailKeywords);
 
-        double score = matchMakingService.scoreTrail(trailKeywords);
-        assertEquals(0, score, 0.0001);
+        assertEquals(0, nullScore, 0.0001);
+        assertEquals(0, emptyScore, 0.0001);
 
     }
 }
