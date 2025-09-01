@@ -18,7 +18,7 @@ public abstract class Controller {
     /**
      * The {@link Environment} instance used by this controller.
      */
-    private final Environment Environment;
+    private final Environment environment;
     private final ScreenNavigator navigator;
     private final NavbarController navbarController;
 
@@ -26,7 +26,7 @@ public abstract class Controller {
      * No-argument constructor for FXML compatibility
      */
     protected Controller() {
-        this.Environment = null; // Will be set later via setter
+        this.environment = null; // Will be set later via setter
         this.navigator = null; // Will be set later via setter
         this.navbarController = null; // Will be set later via setter
     }
@@ -35,12 +35,13 @@ public abstract class Controller {
      * Creates an instance of a ScreenController with the given
      * {@link GameEnvironment}
      *
-     * @param Environment The environment used by this ScreenController
+     * @param environment The environment used by this ScreenController
+     * @param navigator   The screen navigator used by this ScreenController
      */
-    protected Controller(final Environment Environment, final ScreenNavigator navigator) {
-        this.Environment = Environment;
+    protected Controller(final Environment environment, final ScreenNavigator navigator) {
+        this.environment = environment;
         this.navigator = navigator;
-        this.navbarController = new NavbarController();
+        this.navbarController = new NavbarController(environment, navigator);
     }
 
     /**
@@ -89,7 +90,7 @@ public abstract class Controller {
      * @return The environment for this controller
      */
     protected Environment getEnvironment() {
-        return Environment;
+        return environment;
     }
 
     /**
