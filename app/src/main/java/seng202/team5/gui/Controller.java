@@ -6,6 +6,7 @@ import javafx.scene.control.DialogPane;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import seng202.team5.Environment;
+import seng202.team5.gui.components.NavbarController;
 
 import java.util.Objects;
 
@@ -19,6 +20,7 @@ public abstract class Controller {
      */
     private final Environment Environment;
     private final ScreenNavigator navigator;
+    private final NavbarController navbarController;
 
     /**
      * No-argument constructor for FXML compatibility
@@ -26,6 +28,7 @@ public abstract class Controller {
     protected Controller() {
         this.Environment = null; // Will be set later via setter
         this.navigator = null; // Will be set later via setter
+        this.navbarController = null; // Will be set later via setter
     }
 
     /**
@@ -37,6 +40,7 @@ public abstract class Controller {
     protected Controller(final Environment Environment, final ScreenNavigator navigator) {
         this.Environment = Environment;
         this.navigator = navigator;
+        this.navbarController = new NavbarController();
     }
 
     /**
@@ -96,4 +100,14 @@ public abstract class Controller {
     protected ScreenNavigator getNavigator() {
         return navigator;
     }
+
+    /**
+     * Gets the navbar controller associated with this screen controller.
+     *
+     * @return The navbar controller for this controller
+     */
+    protected NavbarController getNavbarController() {
+        return navbarController;
+    }
+
 }
