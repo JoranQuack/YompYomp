@@ -17,6 +17,7 @@ public class Environment {
 
     private final ScreenNavigator navigator;
     private User user = new User();
+    private DatabaseService dbService;
 
     //background worker + setup
     private final ExecutorService setupExec;
@@ -31,7 +32,7 @@ public class Environment {
     public Environment(ScreenNavigator navigator) {
         this.navigator = navigator;
 
-        DatabaseService dbService = new DatabaseService();
+        dbService = new DatabaseService();
         SqlBasedTrailRepo sqlTrailRepo = new SqlBasedTrailRepo(dbService);
         FileBasedTrailRepo fileTrailRepo = new FileBasedTrailRepo("/datasets/DOC_Walking_Experiences_7994760352369043452.csv");
         this.setupService = new SetupService(sqlTrailRepo, fileTrailRepo);
@@ -97,5 +98,9 @@ public class Environment {
 
     public User getUser() {
         return user;
+    }
+
+    public DatabaseService getDatabaseService() {
+        return dbService;
     }
 }
