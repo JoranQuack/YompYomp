@@ -19,8 +19,16 @@ public class QueryHelperTest {
 
     @BeforeEach
     void setUp() throws SQLException {
-        testDbPath = TestPathHelper.getTestResourcePath("database/test.db");
-        databaseService = new DatabaseService(testDbPath);
+        try {
+            testDbPath = TestPathHelper.getTestResourcePath("database/test.db");
+            databaseService = new DatabaseService(testDbPath);
+        } catch (Exception e) {
+            // Fallback to in-memory database for CI environments
+            System.err.println(
+                    "Warning: Could not find test database file, using in-memory database. Error: " + e.getMessage());
+            testDbPath = ":memory:";
+            databaseService = new DatabaseService(testDbPath);
+        }
         queryHelper = new QueryHelper(databaseService);
 
         // Create a test table for tests

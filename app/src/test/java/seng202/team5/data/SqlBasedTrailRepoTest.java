@@ -21,8 +21,16 @@ public class SqlBasedTrailRepoTest {
 
     @BeforeEach
     void setUp() throws Exception {
-        testDbPath = TestPathHelper.getTestResourcePath("database/test.db");
-        databaseService = new DatabaseService(testDbPath);
+        try {
+            testDbPath = TestPathHelper.getTestResourcePath("database/test.db");
+            databaseService = new DatabaseService(testDbPath);
+        } catch (Exception e) {
+            // Fallback to in-memory database for CI environments
+            System.err.println(
+                    "Warning: Could not find test database file, using in-memory database. Error: " + e.getMessage());
+            testDbPath = ":memory:";
+            databaseService = new DatabaseService(testDbPath);
+        }
         sqlBasedTrailRepo = new SqlBasedTrailRepo(databaseService);
 
         // Create a 'Trail' table to test with
