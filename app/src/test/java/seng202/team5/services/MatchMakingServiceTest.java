@@ -23,7 +23,8 @@ class MatchMakingServiceTest {
 
     @BeforeEach
     void setUp() {
-        IKeyword keywordRepo = new FileBasedKeywordRepo("/resources/datasets/Categories_and_Keywords.csv");
+        IKeyword keywordRepo = new FileBasedKeywordRepo("/datasets/Categories_and_Keywords.csv");
+
         mockTrailRepo = mock(SqlBasedTrailRepo.class);
         mockTrails = Arrays.asList(
                 new Trail(1, "Alpine Trail", "Easy", "A beautiful alpine trail through the mountains",
@@ -63,7 +64,7 @@ class MatchMakingServiceTest {
         matchMakingService = new MatchMakingService(keywordRepo, mockTrailRepo);
     }
 
-    private User makeTestUser() {
+    private User makeTestUser() { // this does not match with what is in matchmakingservice?
         User user = new User();
         user.setIsFamilyFriendly(true);
         user.setIsAccessible(false);
@@ -134,14 +135,14 @@ class MatchMakingServiceTest {
         // Expected categories and weights based on descriptions and user weights
         // Max score = 5 + 0 + 3 + 2 + 4 + 1 + 5 + 0 + 4 + 2 + 3 + 0 = 29
         // Alpine Trail (Alpine:4) = 4/29 ~ 0.1379
-        // Forest Trail (Forest:4, Wildlife:2) = (4 + 2)/29 ≈ 0.2069
-        // Mountain Peak Trail (Alpine:4, Difficult:3) = (4 + 3)/29 ≈ 0.2414
-        // Coastal Walk (Beach:0) = 0/29 = 0.0
+        // Forest Trail (Forest:4, Wildlife:2) = (4 + 2)/29 ~ 0.2069
+        // Mountain Peak Trail (Alpine:4, Difficult:3) = (4 + 3)/29 ~ 0.2414
+        // Coastal Walk (Beach:0, FamilyFriendly:5) = 5/29 = 0.1724
         // River Trail (Wet:5) = 5/29 ~ 0.1724
         assertEquals(0.1379, weight1, 0.0001);
         assertEquals(0.2069, weight2, 0.0001);
         assertEquals(0.2414, weight3, 0.0001);
-        assertEquals(0.0, weight4, 0.0001);
+        assertEquals(0.1724, weight4, 0.0001);
         assertEquals(0.1724, weight5, 0.0001);
     }
 
