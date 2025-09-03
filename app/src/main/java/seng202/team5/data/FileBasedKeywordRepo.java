@@ -3,6 +3,7 @@ package seng202.team5.data;
 import java.io.*;
 import java.util.*;
 
+// TODO: aim to remove this class and replace with a database-backed implementation
 /**
  * Loads data from the keyword CSV file.
  * It stores the keywords in a map of category to a list of keywords.
@@ -14,6 +15,7 @@ public class FileBasedKeywordRepo implements IKeyword {
 
     /**
      * Constructor - loads keywords from the CSV file for keywords.
+     *
      * @param filePath path to the keywords CSV file
      */
     public FileBasedKeywordRepo(String filePath) {
@@ -21,8 +23,10 @@ public class FileBasedKeywordRepo implements IKeyword {
     }
 
     /**
-     * Reads the categories and all the keywords for that category in the created CSV.
-     * The CSV has one category per line at index 0, and all the keywords for that category
+     * Reads the categories and all the keywords for that category in the created
+     * CSV.
+     * The CSV has one category per line at index 0, and all the keywords for that
+     * category
      * follow in a comma-separated list.
      *
      * @param filePath The path to the CSV file
@@ -30,10 +34,11 @@ public class FileBasedKeywordRepo implements IKeyword {
      */
     private Map<String, List<String>> loadKeywordsFromCSV(String filePath) {
         // Using the filePath, open the CSV as a stream (in bytes) to read its contents.
-        try (InputStream inputstream = getClass().getResourceAsStream(filePath);
-             // InputStreamReader converts the stream to a character stream, and BufferedReader
-             // allows efficient line-by-line reading
-             BufferedReader reader = new BufferedReader(new InputStreamReader(inputstream))) {
+        try (InputStream inputStream = getClass().getResourceAsStream(filePath);
+                // InputStreamReader converts the stream to a character stream, and
+                // BufferedReader
+                // allows efficient line-by-line reading
+                BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream))) {
 
             String line;
             while ((line = reader.readLine()) != null) {
