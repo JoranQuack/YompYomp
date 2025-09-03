@@ -15,10 +15,11 @@ public class QueryHelperTest {
 
     private QueryHelper queryHelper;
     private DatabaseService databaseService;
-    private final String testDbPath = "src/test/resources/database/test.db";
+    private String testDbPath;
 
     @BeforeEach
     void setUp() throws SQLException {
+        testDbPath = TestPathHelper.getTestResourcePath("database/test.db");
         databaseService = new DatabaseService(testDbPath);
         queryHelper = new QueryHelper(databaseService);
 
