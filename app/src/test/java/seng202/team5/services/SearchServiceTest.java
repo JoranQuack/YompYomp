@@ -122,6 +122,6 @@ public class SearchServiceTest {
         List<Trail> page3 = searchService.getTrails("", 2);
         assertEquals(1, page3.size(), "Third page should have 1 trail");
 
-        assertNotEquals(page1.get(0).getId(), page2.get(0).getId(), "Pages should not overlap");
+        assertNotEquals(page1.getFirst().getId(), page2.getFirst().getId(), "Pages should not overlap");
     }
 }
