@@ -28,7 +28,7 @@ class MatchMakingServiceTest {
         IKeyword keywordRepo = new FileBasedKeywordRepo("/datasets/Categories_and_Keywords.csv");
 
         mockTrailRepo = mock(SqlBasedTrailRepo.class);
-        mockTrails = Arrays.asList(
+        mockTrails = new ArrayList<>(Arrays.asList(
                 new Trail(1, "Alpine Trail", "Easy", "A beautiful alpine trail through the mountains",
                         "2 hours", "Walking", "thumb1.jpg", "http://example.com/trail1",
                         "2024-01-01", 123.45, 67.89),
@@ -44,7 +44,7 @@ class MatchMakingServiceTest {
                 new Trail(5, "River Trail", "Medium", "Trail following the river through the valley",
                         "2.5 hours", "Walking", "thumb5.jpg", "http://example.com/trail5",
                         "2024-01-05", 567.89, 101.23)
-        );
+        ));
         when(mockTrailRepo.getAllTrails()).thenReturn(mockTrails);
 
 //        IKeyword fakeKeywordRepo = () -> {
@@ -157,6 +157,55 @@ class MatchMakingServiceTest {
         assertEquals("Coastal Walk", sortedTrails.get(2).getName()); // 0.1724 equal but alphabetical
         assertEquals("River Trail", sortedTrails.get(3).getName()); // 0.1724 ^^
         assertEquals("Alpine Trail", sortedTrails.getLast().getName()); // 0.1379
+    }
+
+    @Test
+    @DisplayName("Should return paginated personalised trails")
+    void testGetPersonalisedTrails() {
+        User user = makeTestUser();
+        matchMakingService.setUserPreferences(user);
+        matchMakingService.assignWeightsToTrails();
+
+        List<Trail> page0 = matchMakingService.getPersonalisedTrails(0);
+        assertEquals(5, page0.size());
+        assertEquals("Mountain Peak Trail", page0.getFirst().getName());
+        assertEquals("Forest Trail", page0.get(1).getName());
+        assertEquals("Coastal Walk", page0.get(2).getName()); //alphabetical again
+        assertEquals("River Trail", page0.get(3).getName());
+        assertEquals("Alpine Trail", page0.getLast().getName());
+
+        List<Trail> page1 = matchMakingService.getPersonalisedTrails(1);
+        assertEquals(0, page1.size());
+
+        // Test with a smaller maxResults for multipage test
+        MatchMakingService customMaxService = new MatchMakingService(
+                new FileBasedKeywordRepo("/datasets/Categories_and_Keywords.csv"), mockTrailRepo);
+        customMaxService.maxResults = 2; // Simulate smaller page size
+        customMaxService.setUserPreferences(user);
+        customMaxService.assignWeightsToTrails();
+
+        List<Trail> customPage0 = customMaxService.getPersonalisedTrails(0);
+        assertEquals(2, customPage0.size());
+        assertEquals("Mountain Peak Trail", customPage0.getFirst().getName());
+        assertEquals("Forest Trail", customPage0.getLast().getName());
+
+        List<Trail> customPage1 = customMaxService.getPersonalisedTrails(1);
+        assertEquals(2, customPage1.size());
+        assertEquals("Coastal Walk", customPage1.getFirst().getName());
+        assertEquals("River Trail", customPage1.getLast().getName());
+
+        List<Trail> customPage2 = customMaxService.getPersonalisedTrails(2);
+        assertEquals(1, customPage2.size());
+        assertEquals("Alpine Trail", customPage2.getFirst().getName());
+
+        List<Trail> customPage3 = customMaxService.getPersonalisedTrails(3);
+        assertEquals(0, customPage3.size());
+    }
+
+    @Test
+    @DisplayName("Should throw exception for invalid pagination")
+    void testInvalidPagination() {
+        assertThrows(IllegalArgumentException.class, () -> matchMakingService.getPersonalisedTrails(-1));
     }
 
     @Test
