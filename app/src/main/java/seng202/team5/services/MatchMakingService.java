@@ -131,7 +131,7 @@ public class MatchMakingService {
 
     /**
      * Assigns weights to each trail based on the categories and user preferences.
-     * Updates the trail models attributes, categories and userWeight.
+     * Updates the trail models attributes, categories, and userWeight.
      */
     public void assignWeightsToTrails() {
         List<Trail> trails = trailRepo.getAllTrails();
@@ -214,6 +214,14 @@ public class MatchMakingService {
      */
     public int getNumberOfPersonalisedPages(int pageSize) {
         return (int) Math.ceil((double) trailRepo.getAllTrails().size() / pageSize);
+    }
+
+    /**
+     * Returns a copy of the user weights map.
+     * @return a Map containing user preference weights
+     */
+    public Map<String, Integer> getUserWeights() {
+        return new HashMap<>(userWeights);
     }
 
 }
