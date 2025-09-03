@@ -21,7 +21,7 @@ public class MatchMakingService {
     private final Map<Integer, Double> trailWeights = new HashMap<>(); //Identified by trail ID
     private SqlBasedTrailRepo trailRepo;
     private boolean weightsCalculated = false;
-    public int maxResults = 100;
+    private int maxResults = 100;
 
     /**
      * Creates a MatchMakingService instance.
@@ -223,9 +223,6 @@ public class MatchMakingService {
         if (page < 0) {
             throw new IllegalArgumentException("Page number must be non-negative.");
         }
-        if (maxResults <= 0) {
-            throw new IllegalArgumentException("Max results must be positive.");
-        }
 
         List<Trail> sortedTrails = getSortedTrails();
         int startIndex = page * maxResults;
@@ -233,6 +230,23 @@ public class MatchMakingService {
                 .skip(startIndex)
                 .limit(maxResults)
                 .collect(Collectors.toList());
+    }
+
+    /**
+     * Gets max results
+     */
+    public int getMaxResults() {
+        return maxResults;
+    }
+
+    /**
+     * Set max results
+     */
+    public void setMaxResults(int maxResults) {
+        if (maxResults <= 0) {
+            throw new IllegalArgumentException("Max results must be positive.");
+        }
+        this.maxResults = maxResults;
     }
 
     /**
