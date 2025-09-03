@@ -4,7 +4,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import seng202.team5.data.FileBasedKeywordRepo;
 import seng202.team5.data.IKeyword;
 import seng202.team5.data.SqlBasedTrailRepo;
@@ -105,7 +104,7 @@ class MatchMakingServiceTest {
     @Test
     @DisplayName("Should categorise trail correctly based on description")
     void testCategoriseTrail() {
-        Trail trail = mockTrails.get(0);
+        Trail trail = mockTrails.getFirst();
         Set<String> categories = matchMakingService.categoriseTrail(trail);
         assertTrue(categories.contains("Alpine"));
         assertFalse(categories.contains("Wet"));
