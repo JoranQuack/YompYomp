@@ -47,6 +47,7 @@ class MatchMakingServiceTest {
         ));
         when(mockTrailRepo.getAllTrails()).thenReturn(mockTrails);
 
+        // Not sure if we need this if we test straight from the csv, keeping it just in case.
 //        IKeyword fakeKeywordRepo = () -> {
 //            Map<String, List<String>> map = new HashMap<>();
 //            map.put("FamilyFriendly", Arrays.asList("children", "easy"));
@@ -135,12 +136,12 @@ class MatchMakingServiceTest {
         double weight4 = matchMakingService.getTrailWeight(4); // Coastal Walk
         double weight5 = matchMakingService.getTrailWeight(5); // River Trail
 
-        final double MAX_SCORE = 29; // Max score = 5 + 0 + 3 + 2 + 4 + 1 + 5 + 0 + 4 + 2 + 3 + 0 = 29
-        assertEquals(4.0 / MAX_SCORE, weight1, 0.0001); // Alpine Trail (Alpine: 4)
-        assertEquals((4.0 + 2.0) / MAX_SCORE, weight2, 0.0001); // Forest Trail (Forest: 4, Wildlife: 2)
-        assertEquals((4.0 + 3.0) / MAX_SCORE, weight3, 0.0001); // Mountain Peak Trail (Alpine: 4, Difficult: 3)
-        assertEquals(5.0 / MAX_SCORE, weight4, 0.0001); // Coastal Walk (Beach: 0, FamilyFriendly: 5)
-        assertEquals(5.0 / MAX_SCORE, weight5, 0.0001); // River Trail (Wet: 5)
+        final double maxScore = matchMakingService.getMaxScore(); // Max score = 5 + 0 + 3 + 2 + 4 + 1 + 5 + 0 + 4 + 2 + 3 + 0 = 29
+        assertEquals(4.0 / maxScore, weight1, 0.0001); // Alpine Trail (Alpine: 4)
+        assertEquals((4.0 + 2.0) / maxScore, weight2, 0.0001); // Forest Trail (Forest: 4, Wildlife: 2)
+        assertEquals((4.0 + 3.0) / maxScore, weight3, 0.0001); // Mountain Peak Trail (Alpine: 4, Difficult: 3)
+        assertEquals(5.0 / maxScore, weight4, 0.0001); // Coastal Walk (Beach: 0, FamilyFriendly: 5)
+        assertEquals(5.0 / maxScore, weight5, 0.0001); // River Trail (Wet: 5)
     }
 
     @Test
