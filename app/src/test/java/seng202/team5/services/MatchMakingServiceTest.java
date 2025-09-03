@@ -43,27 +43,27 @@ class MatchMakingServiceTest {
                         "2024-01-04", 456.78, 90.12),
                 new Trail(5, "River Trail", "Medium", "Trail following the river through the valley",
                         "2.5 hours", "Walking", "thumb5.jpg", "http://example.com/trail5",
-                        "2024-01-05", 567.89, 101.23)
-        ));
+                        "2024-01-05", 567.89, 101.23)));
         when(mockTrailRepo.getAllTrails()).thenReturn(mockTrails);
 
-        // Not sure if we need this if we test straight from the csv, keeping it just in case.
-//        IKeyword fakeKeywordRepo = () -> {
-//            Map<String, List<String>> map = new HashMap<>();
-//            map.put("FamilyFriendly", Arrays.asList("children", "easy"));
-//            map.put("Accessible", Arrays.asList("accessible", "abilities"));
-//            map.put("Difficult", Arrays.asList("difficult", "challenging"));
-//            map.put("Rocky", Arrays.asList("steep", "gorge"));
-//            map.put("Reserve", Arrays.asList("reserve", "park"));
-//            map.put("Wet", Arrays.asList("lake", "river"));
-//            map.put("Forest", Arrays.asList("forest", "bush"));
-//            map.put("Coast", Arrays.asList("coast", "beach"));
-//            map.put("Wildlife", Arrays.asList("wildlife", "animal"));
-//            map.put("Alpine", Arrays.asList("mountain", "hill"));
-//            map.put("Historical", Arrays.asList("historic-site", "ruins"));
-//            map.put("Waterfall", Arrays.asList("waterfall", "falls"));
-//            return map;
-//        };
+        // Not sure if we need this if we test straight from the csv, keeping it just in
+        // case.
+        // IKeyword fakeKeywordRepo = () -> {
+        // Map<String, List<String>> map = new HashMap<>();
+        // map.put("FamilyFriendly", Arrays.asList("children", "easy"));
+        // map.put("Accessible", Arrays.asList("accessible", "abilities"));
+        // map.put("Difficult", Arrays.asList("difficult", "challenging"));
+        // map.put("Rocky", Arrays.asList("steep", "gorge"));
+        // map.put("Reserve", Arrays.asList("reserve", "park"));
+        // map.put("Wet", Arrays.asList("lake", "river"));
+        // map.put("Forest", Arrays.asList("forest", "bush"));
+        // map.put("Coast", Arrays.asList("coast", "beach"));
+        // map.put("Wildlife", Arrays.asList("wildlife", "animal"));
+        // map.put("Alpine", Arrays.asList("mountain", "hill"));
+        // map.put("Historical", Arrays.asList("historic-site", "ruins"));
+        // map.put("Waterfall", Arrays.asList("waterfall", "falls"));
+        // return map;
+        // };
 
         matchMakingService = new MatchMakingService(keywordRepo, mockTrailRepo);
     }
@@ -88,7 +88,7 @@ class MatchMakingServiceTest {
     @Test
     @DisplayName("Should correctly map user preferences")
     void testUserWeightsPopulatedCorrectly() {
-        User user  = makeTestUser();
+        User user = makeTestUser();
         matchMakingService.setUserPreferences(user);
 
         Map<String, Integer> userWeights = matchMakingService.getUserWeights();
@@ -136,7 +136,8 @@ class MatchMakingServiceTest {
         double weight4 = matchMakingService.getTrailWeight(4); // Coastal Walk
         double weight5 = matchMakingService.getTrailWeight(5); // River Trail
 
-        final double maxScore = matchMakingService.getMaxScore(); // Max score = 5 + 0 + 3 + 2 + 4 + 1 + 5 + 0 + 4 + 2 + 3 + 0 = 29
+        final double maxScore = matchMakingService.getMaxScore(); // Max score = 5 + 0 + 3 + 2 + 4 + 1 + 5 + 0 + 4 + 2 +
+                                                                  // 3 + 0 = 29
         assertEquals(4.0 / maxScore, weight1, 0.0001); // Alpine Trail (Alpine: 4)
         assertEquals((4.0 + 2.0) / maxScore, weight2, 0.0001); // Forest Trail (Forest: 4, Wildlife: 2)
         assertEquals((4.0 + 3.0) / maxScore, weight3, 0.0001); // Mountain Peak Trail (Alpine: 4, Difficult: 3)
@@ -171,7 +172,7 @@ class MatchMakingServiceTest {
         assertEquals(5, page0.size());
         assertEquals("Mountain Peak Trail", page0.getFirst().getName());
         assertEquals("Forest Trail", page0.get(1).getName());
-        assertEquals("Coastal Walk", page0.get(2).getName()); //alphabetical again
+        assertEquals("Coastal Walk", page0.get(2).getName()); // alphabetical again
         assertEquals("River Trail", page0.get(3).getName());
         assertEquals("Alpine Trail", page0.getLast().getName());
 
@@ -218,7 +219,8 @@ class MatchMakingServiceTest {
         Set<String> categories = new HashSet<>(Arrays.asList("Wet", "Forest", "Alpine"));
 
         double score = matchMakingService.scoreTrail(categories);
-        // Matched weights: Wet(5) + Forest(4) + Alpine(4) = 13, Max score = 29, 13/29 ≈ 0.4483
+        // Matched weights: Wet(5) + Forest(4) + Alpine(4) = 13, Max score = 29, 13/29 ≈
+        // 0.4483
         assertEquals(0.4483, score, 0.0001);
     }
 
@@ -252,7 +254,7 @@ class MatchMakingServiceTest {
         User user = makeTestUser();
         matchMakingService.setUserPreferences(user);
 
-        //trail contains all keywords in repo
+        // trail contains all keywords in repo
         Set<String> categories = new HashSet<>(Arrays.asList("FamilyFriendly", "Accessible", "Difficult", "Rocky",
                 "Forest", "Reserve", "Wet", "Beach", "Alpine", "Wildlife", "Historical", "Waterfall"));
         double score = matchMakingService.scoreTrail(categories);

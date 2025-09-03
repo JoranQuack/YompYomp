@@ -15,10 +15,10 @@ import java.util.stream.Collectors;
  * computes user-personalised scores, and sorts the trail page using pagination.
  */
 public class MatchMakingService {
-    private final Map<String, List<String>> categoryToKeywords; //category -> keywords
-    private final Map<String, String> keywordToCategory = new HashMap<>(); //keyword -> category
-    private final Map<String, Integer> userWeights = new HashMap<>(); //Higher weight is more favourable
-    private final Map<Integer, Double> trailWeights = new HashMap<>(); //Identified by trail ID
+    private final Map<String, List<String>> categoryToKeywords; // category -> keywords
+    private final Map<String, String> keywordToCategory = new HashMap<>(); // keyword -> category
+    private final Map<String, Integer> userWeights = new HashMap<>(); // Higher weight is more favourable
+    private final Map<Integer, Double> trailWeights = new HashMap<>(); // Identified by trail ID
     private SqlBasedTrailRepo trailRepo;
     private boolean weightsCalculated = false;
     private int maxResults = 100;
@@ -26,8 +26,10 @@ public class MatchMakingService {
     /**
      * Creates a MatchMakingService instance.
      *
-     * @param keywordRepo repository for category-to-keyword data. This is temporary until the database is implemented for this.
-     * @param trailRepo   repository for trail data which are used for scoring and sorting
+     * @param keywordRepo repository for category-to-keyword data. This is temporary
+     *                    until the database is implemented for this.
+     * @param trailRepo   repository for trail data which are used for scoring and
+     *                    sorting
      */
     public MatchMakingService(IKeyword keywordRepo, SqlBasedTrailRepo trailRepo) {
         this.categoryToKeywords = keywordRepo.getKeywords();
@@ -36,7 +38,8 @@ public class MatchMakingService {
     }
 
     /**
-     * Builds the keyword-to-category reverse index once from the categoryToKeywords map.
+     * Builds the keyword-to-category reverse index once from the categoryToKeywords
+     * map.
      * Case-insensitive matching.
      */
     private void buildReverseIndex() {
@@ -59,8 +62,10 @@ public class MatchMakingService {
     }
 
     /**
-     * Sets the user preferences from a User object and derives per-category weights.
-     * Boolean preferences are mapped to 0 or 5. Numeric preferences are mapped to their value.
+     * Sets the user preferences from a User object and derives per-category
+     * weights.
+     * Boolean preferences are mapped to 0 or 5. Numeric preferences are mapped to
+     * their value.
      * Each preference is maps to a keyword category.
      *
      * @param user the user whose preferences will be mapped into category weights.
@@ -68,7 +73,7 @@ public class MatchMakingService {
     public void setUserPreferences(User user) {
         resetWeights();
 
-        //Yes/No simplified to 0 or 5
+        // Yes/No simplified to 0 or 5
         userWeights.put("FamilyFriendly", user.getIsFamilyFriendly() ? 5 : 0);
         userWeights.put("Accessible", user.getIsAccessible() ? 5 : 0);
 
@@ -89,7 +94,8 @@ public class MatchMakingService {
      * Matching is case-insensitive.
      *
      * @param trail the trail to categorise
-     * @return a set of categories that match the trail's description or an empty set if no
+     * @return a set of categories that match the trail's description or an empty
+     *         set if no
      *         categories match
      */
     public Set<String> categoriseTrail(Trail trail) {
@@ -126,8 +132,10 @@ public class MatchMakingService {
     }
 
     /**
-     * Calculates a score for a trail given its categories it matches, based on the user's
-     * answers to the setup questions. This is where a percentage match is calculated.
+     * Calculates a score for a trail given its categories it matches, based on the
+     * user's
+     * answers to the setup questions. This is where a percentage match is
+     * calculated.
      *
      * @param trailCategories set of categories the trail matches
      * @return weighted score for the trail between 0.0 and 1.0
@@ -137,7 +145,8 @@ public class MatchMakingService {
             return 0.0;
         }
 
-        //maximum possible score that a trail could get if it matches the user's preferences perfectly
+        // maximum possible score that a trail could get if it matches the user's
+        // preferences perfectly
         double maxScore = calculateMaxScore();
 
         double score = trailCategories.stream()
@@ -167,7 +176,8 @@ public class MatchMakingService {
 
     /**
      * Retrieves a cached weight for a specific trail ID.
-     * If weights have not been calculated for the current user, they are computed first.
+     * If weights have not been calculated for the current user, they are computed
+     * first.
      *
      * @param trailId the ID of the trail to retrieve the weight for
      * @return the trail's cached weight
@@ -180,7 +190,8 @@ public class MatchMakingService {
     }
 
     /**
-     * Helper that returns all trails sorted by their personalised weight. (Highest first).
+     * Helper that returns all trails sorted by their personalised weight. (Highest
+     * first).
      * Weights are calculated and applied to each trail before sorting.
      * If weights are equal, they are ordered alphabetically (Lexicographically).
      *
@@ -198,13 +209,14 @@ public class MatchMakingService {
                     if (weightCompare != 0) {
                         return weightCompare; // descending order if weights are different
                     }
-                    return t1.getName().compareTo(t2.getName()); //orders alphabetically if weights are equal
+                    return t1.getName().compareTo(t2.getName()); // orders alphabetically if weights are equal
                 })
                 .collect(Collectors.toList());
     }
 
     /**
-     * Returns all trails sorted by their personalised weight. (Recommending trails).
+     * Returns all trails sorted by their personalised weight. (Recommending
+     * trails).
      * Personalised to the user's preferences.
      *
      * @return list of trails sorted (descending) by personalised weight
@@ -250,7 +262,8 @@ public class MatchMakingService {
     }
 
     /**
-     * Calculate the number of personalised pages based on the number of trails, given a page size.
+     * Calculate the number of personalised pages based on the number of trails,
+     * given a page size.
      *
      * @param pageSize number of trails per page
      * @return total page count
@@ -261,6 +274,7 @@ public class MatchMakingService {
 
     /**
      * Returns a copy of the user weights map.
+     * 
      * @return a Map containing user preference weights
      */
     public Map<String, Integer> getUserWeights() {
