@@ -21,6 +21,7 @@ public class Trail {
     private double x;
     private double y;
     private Set<String> categories = new HashSet<>();
+    private double userWeight;
 
     // Constructor for base variables
     public Trail(int id, String name, String difficulty, String description, String completionTime, String type,
@@ -37,7 +38,6 @@ public class Trail {
         this.x = x;
         this.y = y;
         // this.shapeLength = shapeLength;
-        this.categories = categories;
     }
 
     // Getters
@@ -93,6 +93,10 @@ public class Trail {
         return categories;
     }
 
+    public double getUserWeight() {
+        return userWeight;
+    }
+
     // Setters
     public void setId(int id) {
         this.id = id;
@@ -138,11 +142,15 @@ public class Trail {
         this.x = x;
     }
 
+    public void setY(double y) {
+        this.y = y;
+    }
+
     public void setCategories(Set<String> categories) {
         this.categories = categories;
     }
 
-    public void setY(double y) {
-        this.y = y;
+    public void setUserWeight(double userWeight) {
+        this.userWeight = userWeight;
     }
 }

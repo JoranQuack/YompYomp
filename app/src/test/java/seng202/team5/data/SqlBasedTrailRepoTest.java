@@ -17,34 +17,45 @@ public class SqlBasedTrailRepoTest {
 
     private SqlBasedTrailRepo sqlBasedTrailRepo;
     private DatabaseService databaseService;
-    private final String testDbPath = "src/test/resources/database/test.db";
+    private String testDbPath;
 
     @BeforeEach
     void setUp() throws Exception {
-        databaseService = new DatabaseService(testDbPath);
+        try {
+            testDbPath = TestPathHelper.getTestResourcePath("database/test.db");
+            databaseService = new DatabaseService(testDbPath);
+        } catch (Exception e) {
+            // Fallback to in-memory database for CI environments
+            System.err.println(
+                    "Warning: Could not find test database file, using in-memory database. Error: " + e.getMessage());
+            testDbPath = ":memory:";
+            databaseService = new DatabaseService(testDbPath);
+        }
         sqlBasedTrailRepo = new SqlBasedTrailRepo(databaseService);
 
-        //Create a 'Trail' table to test with
+        // Create a 'Trail' table to test with
         try (Connection connection = databaseService.getConnection();
-             Statement stmt = connection.createStatement()) {
+                Statement stmt = connection.createStatement()) {
             stmt.execute("""
-                CREATE TABLE IF NOT EXISTS trail (
-                  id INTEGER PRIMARY KEY,
-                  name TEXT NOT NULL,
-                  description TEXT,
-                  difficulty TEXT,
-                  completion_time TEXT,
-                  type TEXT,
-                  thumb_url TEXT,
-                  web_url TEXT,
-                  date_loaded_raw TEXT,
-                  x REAL,
-                  y REAL
-                )
-            """);
+                        CREATE TABLE IF NOT EXISTS trail (
+                          id INTEGER PRIMARY KEY,
+                          name TEXT NOT NULL,
+                          description TEXT,
+                          difficulty TEXT,
+                          completion_time TEXT,
+                          type TEXT,
+                          thumb_url TEXT,
+                          web_url TEXT,
+                          date_loaded_raw TEXT,
+                          x REAL,
+                          y REAL
+                        )
+                    """);
             stmt.execute("DELETE FROM trail");
-            stmt.execute("INSERT INTO trail (id, name, description, difficulty) VALUES (1, 'Test1', 'Test Trail 1', 'Hard')");
-            stmt.execute("INSERT INTO trail (id, name, description, difficulty) VALUES (2, 'Test2', 'Test Trail 2', 'Easy')");
+            stmt.execute(
+                    "INSERT INTO trail (id, name, description, difficulty) VALUES (1, 'Test1', 'Test Trail 1', 'Hard')");
+            stmt.execute(
+                    "INSERT INTO trail (id, name, description, difficulty) VALUES (2, 'Test2', 'Test Trail 2', 'Easy')");
         }
     }
 
@@ -52,7 +63,7 @@ public class SqlBasedTrailRepoTest {
     void tearDown() throws SQLException {
         // Get rid of table after testing
         try (Connection conn = databaseService.getConnection();
-        Statement stmt = conn.createStatement()) {
+                Statement stmt = conn.createStatement()) {
             stmt.execute("DROP TABLE IF EXISTS trail");
         }
     }
@@ -90,10 +101,9 @@ public class SqlBasedTrailRepoTest {
                 new Trail(4, "Test4", "Test Trail 4", "Easy",
                         null, null, null, null, null, 0, 0),
                 new Trail(5, "Test5", "Test Trail 5", "Medium",
-                null, null, null, null, null, 0, 0),
+                        null, null, null, null, null, 0, 0),
                 new Trail(6, "Test6", "Test Trail 6", "Medium",
-                        null, null, null, null, null, 0, 0)
-        ));
+                        null, null, null, null, null, 0, 0)));
         assertEquals(5, sqlBasedTrailRepo.countTrails());
         assertTrue(sqlBasedTrailRepo.findById(5).isPresent());
     }

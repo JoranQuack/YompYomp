@@ -20,9 +20,10 @@ public class User {
     private int historicPreference;
     private int waterfallPreference;
 
-    public User() {}
+    public User() {
+    }
 
-    //getters
+    // getters
     public String getType() {
         return type;
     }
@@ -83,7 +84,7 @@ public class User {
         return waterfallPreference;
     }
 
-    //setters
+    // setters
     public void setType(String type) {
         this.type = type;
     }

@@ -13,11 +13,20 @@ import java.sql.ResultSet;
 public class DatabaseServiceTest {
 
     private DatabaseService databaseService;
-    private final String testDbPath = "src/test/resources/database/test.db";
+    private String testDbPath;
 
     @BeforeEach
     void setUp() {
-        databaseService = new DatabaseService(testDbPath);
+        try {
+            testDbPath = TestPathHelper.getTestResourcePath("database/test.db");
+            databaseService = new DatabaseService(testDbPath);
+        } catch (Exception e) {
+            // Fallback to in-memory database for CI environments
+            System.err.println(
+                    "Warning: Could not find test database file, using in-memory database. Error: " + e.getMessage());
+            testDbPath = ":memory:";
+            databaseService = new DatabaseService(testDbPath);
+        }
     }
 
     @AfterEach
@@ -59,7 +68,7 @@ public class DatabaseServiceTest {
         DatabaseService customService = new DatabaseService(testDbPath);
         Connection connection = customService.getConnection();
 
-        assertNotNull(connection);
+        assertNotNull(connection, "Connection should not be null for valid database path");
         assertFalse(connection.isClosed());
 
         connection.close();
@@ -82,13 +91,12 @@ public class DatabaseServiceTest {
     }
 
     @Test
-    @DisplayName("Should handle invalid database path *gracefully* by returning null and printing error")
+    @DisplayName("Should handle invalid database path by throwing SQLException")
     void testInvalidDatabasePath() {
         DatabaseService invalidService = new DatabaseService("invalid/path/database.db");
 
-        assertDoesNotThrow(() -> {
-            Connection connection = invalidService.getConnection();
-            assertNull(connection);
+        assertThrows(SQLException.class, () -> {
+            invalidService.getConnection();
         });
     }
 
