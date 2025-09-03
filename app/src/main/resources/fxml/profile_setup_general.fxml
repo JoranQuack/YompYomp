@@ -14,7 +14,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import org.controlsfx.control.CheckComboBox?>
 
-<HBox alignment="CENTER" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="seng202.team5.gui.ProfileSetupGeneralController">
+<HBox alignment="CENTER" xmlns="http://javafx.com/javafx/21.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="seng202.team5.gui.ProfileSetupGeneralController">
    <children>
       <VBox alignment="CENTER">
          <children>
