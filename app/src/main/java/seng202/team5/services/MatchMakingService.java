@@ -143,7 +143,7 @@ public class MatchMakingService {
         double score = trailCategories.stream()
                 .mapToInt(category -> userWeights.getOrDefault(category, 0))
                 .sum();
-        return (double) score / maxScore;
+        return score / maxScore;
     }
 
     /**
