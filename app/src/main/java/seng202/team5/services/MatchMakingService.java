@@ -21,6 +21,7 @@ public class MatchMakingService {
     private final SqlBasedTrailRepo trailRepo;
     private final Map<Integer, Double> trailWeights = new HashMap<>(); //Identified by trail ID
     private boolean weightsCalculated = false;
+    int maxResults = 100;
 
     /**
      * Creates a MatchMakingService instance.
@@ -200,16 +201,19 @@ public class MatchMakingService {
      * Returns a page of trails sorted by their personalised weight.
      *
      * @param page the page number (0-based)
-     * @param pageSize the number of trails to return per page
      * @return a list containing up to pageSize trails for the specified page
      */
-    public List<Trail> getPersonalisedTrails(int page, int pageSize) {
+    public List<Trail> getPersonalisedTrails(int page) {
+        if (page < 0 || maxResults <= 0) {
+            throw new IllegalArgumentException("Page number must be greater than 0");
+        }
+
         List<Trail> sortedTrails = getSortedTrails();
-        int startIndex = page * pageSize;
+        int startIndex = page * maxResults;
 
         return sortedTrails.stream()
                 .skip(startIndex)
-                .limit(pageSize)
+                .limit(maxResults)
                 .collect(Collectors.toList());
     }
 
