@@ -181,7 +181,7 @@ class MatchMakingServiceTest {
         // Test with a smaller maxResults for multipage test
         MatchMakingService customMaxService = new MatchMakingService(
                 new FileBasedKeywordRepo("/datasets/Categories_and_Keywords.csv"), mockTrailRepo);
-        customMaxService.maxResults = 2; // Simulate smaller page size
+        customMaxService.setMaxResults(2); // Simulate smaller page size
         customMaxService.setUserPreferences(user);
         customMaxService.assignWeightsToTrails();
 
