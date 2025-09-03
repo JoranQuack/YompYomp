@@ -4,6 +4,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 import seng202.team5.data.FileBasedKeywordRepo;
 import seng202.team5.data.IKeyword;
 import seng202.team5.data.SqlBasedTrailRepo;
@@ -23,6 +24,7 @@ class MatchMakingServiceTest {
 
     @BeforeEach
     void setUp() {
+        MockitoAnnotations.openMocks(this);
         IKeyword keywordRepo = new FileBasedKeywordRepo("/datasets/Categories_and_Keywords.csv");
 
         mockTrailRepo = mock(SqlBasedTrailRepo.class);
@@ -41,7 +43,8 @@ class MatchMakingServiceTest {
                         "2024-01-04", 456.78, 90.12),
                 new Trail(5, "River Trail", "Medium", "Trail following the river through the valley",
                         "2.5 hours", "Walking", "thumb5.jpg", "http://example.com/trail5",
-                        "2024-01-05", 567.89, 101.23));
+                        "2024-01-05", 567.89, 101.23)
+        );
         when(mockTrailRepo.getAllTrails()).thenReturn(mockTrails);
 
 //        IKeyword fakeKeywordRepo = () -> {
@@ -64,7 +67,7 @@ class MatchMakingServiceTest {
         matchMakingService = new MatchMakingService(keywordRepo, mockTrailRepo);
     }
 
-    private User makeTestUser() { // this does not match with what is in matchmakingservice?
+    private User makeTestUser() {
         User user = new User();
         user.setIsFamilyFriendly(true);
         user.setIsAccessible(false);
@@ -132,18 +135,28 @@ class MatchMakingServiceTest {
         double weight4 = matchMakingService.getTrailWeight(4); // Coastal Walk
         double weight5 = matchMakingService.getTrailWeight(5); // River Trail
 
-        // Expected categories and weights based on descriptions and user weights
-        // Max score = 5 + 0 + 3 + 2 + 4 + 1 + 5 + 0 + 4 + 2 + 3 + 0 = 29
-        // Alpine Trail (Alpine:4) = 4/29 ~ 0.1379
-        // Forest Trail (Forest:4, Wildlife:2) = (4 + 2)/29 ~ 0.2069
-        // Mountain Peak Trail (Alpine:4, Difficult:3) = (4 + 3)/29 ~ 0.2414
-        // Coastal Walk (Beach:0, FamilyFriendly:5) = 5/29 = 0.1724
-        // River Trail (Wet:5) = 5/29 ~ 0.1724
-        assertEquals(0.1379, weight1, 0.0001);
-        assertEquals(0.2069, weight2, 0.0001);
-        assertEquals(0.2414, weight3, 0.0001);
-        assertEquals(0.1724, weight4, 0.0001);
-        assertEquals(0.1724, weight5, 0.0001);
+        final double MAX_SCORE = 29; // Max score = 5 + 0 + 3 + 2 + 4 + 1 + 5 + 0 + 4 + 2 + 3 + 0 = 29
+        assertEquals(4.0 / MAX_SCORE, weight1, 0.0001); // Alpine Trail (Alpine: 4)
+        assertEquals((4.0 + 2.0) / MAX_SCORE, weight2, 0.0001); // Forest Trail (Forest: 4, Wildlife: 2)
+        assertEquals((4.0 + 3.0) / MAX_SCORE, weight3, 0.0001); // Mountain Peak Trail (Alpine: 4, Difficult: 3)
+        assertEquals(5.0 / MAX_SCORE, weight4, 0.0001); // Coastal Walk (Beach: 0, FamilyFriendly: 5)
+        assertEquals(5.0 / MAX_SCORE, weight5, 0.0001); // River Trail (Wet: 5)
+    }
+
+    @Test
+    @DisplayName("Should return recommended trails sorted by weight")
+    void testGetTrailsSortedByWeight() {
+        User user = makeTestUser();
+        matchMakingService.setUserPreferences(user);
+        matchMakingService.assignWeightsToTrails();
+
+        List<Trail> sortedTrails = matchMakingService.getTrailsSortedByWeight();
+        assertEquals(5, sortedTrails.size());
+        assertEquals("Mountain Peak Trail", sortedTrails.getFirst().getName()); // 0.2414
+        assertEquals("Forest Trail", sortedTrails.get(1).getName()); // 0.2069
+        assertEquals("Coastal Walk", sortedTrails.get(2).getName()); // 0.1724 equal but alphabetical
+        assertEquals("River Trail", sortedTrails.get(3).getName()); // 0.1724 ^^
+        assertEquals("Alpine Trail", sortedTrails.getLast().getName()); // 0.1379
     }
 
     @Test
