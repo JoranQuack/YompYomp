@@ -5,7 +5,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import seng202.team5.data.IKeyword;
 import seng202.team5.data.SqlBasedTrailRepo;
 import seng202.team5.models.Trail;
 import static org.junit.jupiter.api.Assertions.*;
@@ -17,9 +16,6 @@ public class SearchServiceTest {
 
     @Mock
     private SqlBasedTrailRepo mockTrailRepo;
-
-    @Mock
-    private IKeyword mockKeywordRepo;
 
     private SearchService searchService;
     private List<Trail> mockTrails;
@@ -48,7 +44,7 @@ public class SearchServiceTest {
 
         when(mockTrailRepo.getAllTrails()).thenReturn(mockTrails);
 
-        searchService = new SearchService(mockTrailRepo, mockKeywordRepo);
+        searchService = new SearchService(mockTrailRepo);
         searchService.setMaxResults(20); // testing 20 results per page, but there are only 5 trails
     }
 
