@@ -165,6 +165,7 @@ public class MatchMakingService {
     /**
      * Helper that returns all trails sorted by their personalised weight. (Highest first).
      * Weights are calculated and applied to each trail before sorting.
+     * If weights are equal, they are ordered alphabetically (Lexicographically).
      *
      * @return list of trails sorted (descending) by personalised weight
      */
@@ -175,7 +176,13 @@ public class MatchMakingService {
 
         return trailRepo.getAllTrails().stream()
                 .peek(trail -> trail.setUserWeight(getTrailWeight(trail.getId())))
-                .sorted((t1, t2) -> Double.compare(t2.getUserWeight(), t1.getUserWeight()))
+                .sorted((t1, t2) -> {
+                    int weightCompare = Double.compare(t2.getUserWeight(), t1.getUserWeight());
+                    if (weightCompare != 0) {
+                        return weightCompare; // descending order if weights are different
+                    }
+                    return t1.getName().compareTo(t2.getName()); //orders alphabetically if weights are equal
+                })
                 .collect(Collectors.toList());
     }
 
