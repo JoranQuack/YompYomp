@@ -18,15 +18,15 @@ public class MatchMakingService {
     private final Map<String, List<String>> categoryToKeywords; //category -> keywords
     private final Map<String, String> keywordToCategory = new HashMap<>(); //keyword -> category
     private final Map<String, Integer> userWeights = new HashMap<>(); //Higher weight is more favourable
-    private final SqlBasedTrailRepo trailRepo;
     private final Map<Integer, Double> trailWeights = new HashMap<>(); //Identified by trail ID
+    private SqlBasedTrailRepo trailRepo;
     private boolean weightsCalculated = false;
-    int maxResults = 100;
+    public int maxResults = 100;
 
     /**
      * Creates a MatchMakingService instance.
      *
-     * @param keywordRepo repository for category-to-keyword data. This is temporary until database implemented for this.
+     * @param keywordRepo repository for category-to-keyword data. This is temporary until the database is implemented for this.
      * @param trailRepo   repository for trail data which are used for scoring and sorting
      */
     public MatchMakingService(IKeyword keywordRepo, SqlBasedTrailRepo trailRepo) {
@@ -107,6 +107,25 @@ public class MatchMakingService {
     }
 
     /**
+     * Calculates the max score used for calculating the weight of a trail.
+     * Helper function!
+     */
+    private double calculateMaxScore() {
+        double maxScore = userWeights.values().stream().mapToInt(Integer::intValue).sum();
+        if (maxScore <= 0) {
+            return 0.0;
+        }
+        return maxScore;
+    }
+
+    /**
+     * Gets the max score used for calculating the weight of a trail.
+     */
+    public double getMaxScore() {
+        return calculateMaxScore();
+    }
+
+    /**
      * Calculates a score for a trail given its categories it matches, based on the user's
      * answers to the setup questions. This is where a percentage match is calculated.
      *
@@ -119,12 +138,9 @@ public class MatchMakingService {
         }
 
         //maximum possible score that a trail could get if it matches the user's preferences perfectly
-        int maxScore = userWeights.values().stream().mapToInt(Integer::intValue).sum();
-        if (maxScore <= 0) {
-            return 0.0;
-        }
+        double maxScore = calculateMaxScore();
 
-        int score = trailCategories.stream()
+        double score = trailCategories.stream()
                 .mapToInt(category -> userWeights.getOrDefault(category, 0))
                 .sum();
         return (double) score / maxScore;
@@ -204,13 +220,15 @@ public class MatchMakingService {
      * @return a list containing up to pageSize trails for the specified page
      */
     public List<Trail> getPersonalisedTrails(int page) {
-        if (page < 0 || maxResults <= 0) {
-            throw new IllegalArgumentException("Page number must be greater than 0");
+        if (page < 0) {
+            throw new IllegalArgumentException("Page number must be non-negative.");
+        }
+        if (maxResults <= 0) {
+            throw new IllegalArgumentException("Max results must be positive.");
         }
 
         List<Trail> sortedTrails = getSortedTrails();
         int startIndex = page * maxResults;
-
         return sortedTrails.stream()
                 .skip(startIndex)
                 .limit(maxResults)
