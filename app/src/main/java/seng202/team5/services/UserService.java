@@ -101,11 +101,16 @@ public class UserService {
      */
     private User mapRowToUser(ResultSet row) {
         try {
+            String regionsString = row.getString("regions");
+            List<String> regions = (regionsString != null && !regionsString.isEmpty())
+                    ? List.of(regionsString.split(","))
+                    : List.of();
+
             return new User(
                     row.getInt("id"),
                     row.getString("type"),
                     row.getString("name"),
-                    List.of(row.getString("regions").split(",")),
+                    regions,
                     row.getBoolean("isFamilyFriendly"),
                     row.getBoolean("isAccessible"),
                     row.getInt("experienceLevel"),
@@ -134,7 +139,7 @@ public class UserService {
         stmt.setInt(1, user.getId());
         stmt.setString(2, user.getType());
         stmt.setString(3, user.getName());
-        stmt.setString(4, String.join(",", user.getRegion()));
+        stmt.setString(4, user.getRegion() != null ? String.join(",", user.getRegion()) : "");
         stmt.setBoolean(5, user.isFamilyFriendly());
         stmt.setBoolean(6, user.isAccessible());
         stmt.setInt(7, user.getExperienceLevel());
