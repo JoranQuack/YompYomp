@@ -1,5 +1,9 @@
 package seng202.team5.services;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.List;
+
 import javax.management.Query;
 
 import seng202.team5.data.DatabaseService;
@@ -37,7 +41,8 @@ public class UserService {
         DatabaseService dbService = new DatabaseService();
         QueryHelper queryHelper = new QueryHelper(dbService);
 
-        // TODO: load user from database
+        List<User> users = queryHelper.executeQuery("SELECT * FROM users LIMIT 1", null, this::mapRowToUser);
+        return users.isEmpty() ? null : users.get(0);
     }
 
     /**
@@ -52,5 +57,36 @@ public class UserService {
 
         // TODO: update user in database if needed
 
+    }
+
+    /**
+     * Maps a database row to a User object.
+     *
+     * @param row the database row
+     * @return the User object
+     */
+    private User mapRowToUser(ResultSet row) {
+        try {
+            return new User(
+                    row.getInt("id"),
+                    row.getString("type"),
+                    row.getString("name"),
+                    List.of(row.getString("regions").split(",")),
+                    row.getBoolean("isFamilyFriendly"),
+                    row.getBoolean("isAccessible"),
+                    row.getInt("experienceLevel"),
+                    row.getInt("gradientPreference"),
+                    row.getInt("bushPreference"),
+                    row.getInt("reservePreference"),
+                    row.getInt("lakeRiverPreference"),
+                    row.getInt("coastPreference"),
+                    row.getInt("mountainPreference"),
+                    row.getInt("wildlifePreference"),
+                    row.getInt("historicPreference"),
+                    row.getInt("waterfallPreference"));
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 }
