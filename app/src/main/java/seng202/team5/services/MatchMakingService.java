@@ -74,8 +74,8 @@ public class MatchMakingService {
         resetWeights();
 
         // Yes/No simplified to 0 or 5
-        userWeights.put("FamilyFriendly", user.getIsFamilyFriendly() ? 5 : 0);
-        userWeights.put("Accessible", user.getIsAccessible() ? 5 : 0);
+        userWeights.put("FamilyFriendly", user.isFamilyFriendly() ? 5 : 0);
+        userWeights.put("Accessible", user.isAccessible() ? 5 : 0);
 
         userWeights.put("Difficult", user.getExperienceLevel());
         userWeights.put("Rocky", user.getGradientPreference());
@@ -274,7 +274,7 @@ public class MatchMakingService {
 
     /**
      * Returns a copy of the user weights map.
-     * 
+     *
      * @return a Map containing user preference weights
      */
     public Map<String, Integer> getUserWeights() {
