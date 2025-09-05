@@ -94,7 +94,7 @@ public class UserServiceTest {
             assertEquals(testUser.getName(), retrievedUser.getName());
 
             assertEquals(1, queryMock.constructed().size());
-            verify(queryMock.constructed().get(0)).executeQuery(eq("SELECT * FROM users LIMIT 1"), isNull(), any());
+            verify(queryMock.constructed().get(0)).executeQuery(eq("SELECT * FROM user LIMIT 1"), isNull(), any());
         }
     }
 
