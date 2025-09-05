@@ -4,14 +4,39 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
-import javax.management.Query;
-
 import seng202.team5.data.DatabaseService;
 import seng202.team5.data.QueryHelper;
 import seng202.team5.models.User;
 
 public class UserService {
     User user;
+
+    // SQL Constants
+    private static final String UPSERT_SQL = """
+            INSERT INTO users (
+                id, type, name, regions, isFamilyFriendly, isAccessible,
+                experienceLevel, gradientPreference, bushPreference,
+                reservePreference, lakeRiverPreference, coastPreference,
+                mountainPreference, wildlifePreference, historicPreference,
+                waterfallPreference
+            ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
+            ON CONFLICT(id) DO UPDATE SET
+                type=excluded.type,
+                name=excluded.name,
+                regions=excluded.regions,
+                isFamilyFriendly=excluded.isFamilyFriendly,
+                isAccessible=excluded.isAccessible,
+                experienceLevel=excluded.experienceLevel,
+                gradientPreference=excluded.gradientPreference,
+                bushPreference=excluded.bushPreference,
+                reservePreference=excluded.reservePreference,
+                lakeRiverPreference=excluded.lakeRiverPreference,
+                coastPreference=excluded.coastPreference,
+                mountainPreference=excluded.mountainPreference,
+                wildlifePreference=excluded.wildlifePreference,
+                historicPreference=excluded.historicPreference,
+                waterfallPreference=excluded.waterfallPreference
+            """;
 
     /**
      * Constructor for UserService
@@ -52,11 +77,10 @@ public class UserService {
      */
     public void setUser(User user) {
         this.user = user;
-
         DatabaseService dbService = new DatabaseService();
+        QueryHelper queryHelper = new QueryHelper(dbService);
 
-        // TODO: update user in database if needed
-
+        queryHelper.executeUpdate(UPSERT_SQL, stmt -> setUserParameters(stmt, user));
     }
 
     /**
@@ -88,5 +112,30 @@ public class UserService {
             e.printStackTrace();
             return null;
         }
+    }
+
+    /**
+     * Binds user fields to the prepared statement. The order must match.
+     *
+     * @param stmt prepared statement to bind
+     * @param user source of values
+     */
+    private void setUserParameters(java.sql.PreparedStatement stmt, User user) throws java.sql.SQLException {
+        stmt.setInt(1, user.getId());
+        stmt.setString(2, user.getType());
+        stmt.setString(3, user.getName());
+        stmt.setString(4, String.join(",", user.getRegion()));
+        stmt.setBoolean(5, user.isFamilyFriendly());
+        stmt.setBoolean(6, user.isAccessible());
+        stmt.setInt(7, user.getExperienceLevel());
+        stmt.setInt(8, user.getGradientPreference());
+        stmt.setInt(9, user.getBushPreference());
+        stmt.setInt(10, user.getReservePreference());
+        stmt.setInt(11, user.getLakeRiverPreference());
+        stmt.setInt(12, user.getCoastPreference());
+        stmt.setInt(13, user.getMountainPreference());
+        stmt.setInt(14, user.getWildlifePreference());
+        stmt.setInt(15, user.getHistoricPreference());
+        stmt.setInt(16, user.getWaterfallPreference());
     }
 }

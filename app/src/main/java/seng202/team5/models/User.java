@@ -26,7 +26,7 @@ public class User {
 
     /**
      * Constructor for User class with all parameters.
-     * 
+     *
      * @param id
      * @param type
      * @param name
@@ -67,6 +67,10 @@ public class User {
     }
 
     // getters
+    public int getId() {
+        return id;
+    }
+
     public String getType() {
         return type;
     }
@@ -79,11 +83,11 @@ public class User {
         return regions;
     }
 
-    public boolean getIsFamilyFriendly() {
+    public boolean isFamilyFriendly() {
         return isFamilyFriendly;
     }
 
-    public boolean getIsAccessible() {
+    public boolean isAccessible() {
         return isAccessible;
     }
 
