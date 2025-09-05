@@ -14,7 +14,7 @@ public class UserService {
 
     // SQL Constants
     private static final String UPSERT_SQL = """
-            INSERT INTO users (
+            INSERT INTO user (
                 id, type, name, regions, isFamilyFriendly, isAccessible,
                 experienceLevel, gradientPreference, bushPreference,
                 reservePreference, lakeRiverPreference, coastPreference,
@@ -77,7 +77,7 @@ public class UserService {
     private User loadUserFromDatabase() {
         QueryHelper queryHelper = new QueryHelper(databaseService);
 
-        List<User> users = queryHelper.executeQuery("SELECT * FROM users LIMIT 1", null, this::mapRowToUser);
+        List<User> users = queryHelper.executeQuery("SELECT * FROM user LIMIT 1", null, this::mapRowToUser);
         return users.isEmpty() ? null : users.get(0);
     }
 
