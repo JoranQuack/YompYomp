@@ -10,6 +10,7 @@ import seng202.team5.models.User;
 
 public class UserService {
     User user;
+    private final DatabaseService databaseService;
 
     // SQL Constants
     private static final String UPSERT_SQL = """
@@ -43,6 +44,17 @@ public class UserService {
      */
     public UserService() {
         this.user = null;
+        this.databaseService = new DatabaseService();
+    }
+
+    /**
+     * Constructor for UserService with custom DatabaseService (for testing)
+     *
+     * @param databaseService the database service to use
+     */
+    public UserService(DatabaseService databaseService) {
+        this.user = null;
+        this.databaseService = databaseService;
     }
 
     /**
@@ -63,8 +75,7 @@ public class UserService {
      * @return the user loaded from the database, or guest user if none found
      */
     private User loadUserFromDatabase() {
-        DatabaseService dbService = new DatabaseService();
-        QueryHelper queryHelper = new QueryHelper(dbService);
+        QueryHelper queryHelper = new QueryHelper(databaseService);
 
         List<User> users = queryHelper.executeQuery("SELECT * FROM users LIMIT 1", null, this::mapRowToUser);
         return users.isEmpty() ? null : users.get(0);
@@ -77,8 +88,7 @@ public class UserService {
      */
     public void setUser(User user) {
         this.user = user;
-        DatabaseService dbService = new DatabaseService();
-        QueryHelper queryHelper = new QueryHelper(dbService);
+        QueryHelper queryHelper = new QueryHelper(databaseService);
 
         queryHelper.executeUpdate(UPSERT_SQL, stmt -> setUserParameters(stmt, user));
     }
