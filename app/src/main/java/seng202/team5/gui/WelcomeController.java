@@ -2,17 +2,17 @@ package seng202.team5.gui;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
-import seng202.team5.Environment;
+import seng202.team5.models.User;
 
 public class WelcomeController extends Controller {
 
     /**
-     * Creates controller with environment.
+     * Creates controller with navigator.
      *
-     * @param Environment Application environment
+     * @param navigator ScreenNavigator for navigation
      */
-    public WelcomeController(Environment Environment, ScreenNavigator navigator) {
-        super(Environment, navigator);
+    public WelcomeController(ScreenNavigator navigator) {
+        super(navigator);
     }
 
     @FXML
@@ -40,9 +40,14 @@ public class WelcomeController extends Controller {
      */
     @FXML
     private void onSetUpProfileButtonClicked() {
-        super.getEnvironment().getUser().setType("profiled");
+        User user = super.getUserService().getUser();
+        if (user == null) {
+            user = new User();
+        }
+        user.setType("profiled");
+        super.getUserService().setUser(user);
         super.getNavigator()
-                .launchScreen(new ProfileSetupGeneralController(super.getEnvironment(), super.getNavigator()));
+                .launchScreen(new ProfileSetupGeneralController(super.getNavigator()));
     }
 
     @FXML
@@ -56,8 +61,13 @@ public class WelcomeController extends Controller {
      */
     @FXML
     private void onSkipButtonClicked() {
-        super.getEnvironment().getUser().setType("guest");
-        super.getNavigator().launchScreen(new DashboardController(super.getEnvironment(), super.getNavigator()));
+        User user = super.getUserService().getUser();
+        if (user == null) {
+            user = new User();
+        }
+        user.setType("guest");
+        super.getUserService().setUser(user);
+        super.getNavigator().launchScreen(new DashboardController(super.getNavigator()));
     }
 
     @Override
