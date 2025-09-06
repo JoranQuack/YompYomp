@@ -42,7 +42,7 @@ public class SetupService {
     public SetupService() {
         this.databaseService = new DatabaseService();
         this.DbTrailRepo = new SqlBasedTrailRepo(databaseService);
-        this.FileTrailRepo = new FileBasedTrailRepo("/datasets/DOC_Walking_Experiences_7994760352369043452.csv")
+        this.FileTrailRepo = new FileBasedTrailRepo("/datasets/DOC_Walking_Experiences_7994760352369043452.csv");
     }
 
     /**
