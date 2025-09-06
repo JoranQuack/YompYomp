@@ -10,7 +10,6 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.VBox;
-import seng202.team5.Environment;
 import seng202.team5.data.DatabaseService;
 import seng202.team5.data.SqlBasedTrailRepo;
 import seng202.team5.gui.components.NavbarController;
@@ -52,13 +51,12 @@ public class TrailsController extends Controller {
     }
 
     /**
-     * Creates controller with environment.
+     * Creates controller with navigator.
      *
-     * @param environment Application environment
-     * @param navigator   Screen navigator
+     * @param navigator Screen navigator
      */
-    public TrailsController(Environment environment, ScreenNavigator navigator) {
-        super(environment, navigator);
+    public TrailsController(ScreenNavigator navigator) {
+        super(navigator);
         initializeSearchService();
     }
 

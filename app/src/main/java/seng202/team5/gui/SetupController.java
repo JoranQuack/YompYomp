@@ -1,10 +1,8 @@
 package seng202.team5.gui;
 
-import seng202.team5.Environment;
-
 public class SetupController extends Controller {
-    public SetupController(Environment Environment, ScreenNavigator navigator) {
-        super(Environment, navigator);
+    public SetupController(ScreenNavigator navigator) {
+        super(navigator);
     }
 
     @Override

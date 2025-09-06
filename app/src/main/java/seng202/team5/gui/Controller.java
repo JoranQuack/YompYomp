@@ -5,43 +5,38 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.DialogPane;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
-import seng202.team5.Environment;
 import seng202.team5.gui.components.NavbarController;
+import seng202.team5.services.UserService;
 
 import java.util.Objects;
 
 /**
- * Abstract parent class for all {@link Environment} UI controller classes.
+ * Abstract parent class for all UI controller classes.
  */
 public abstract class Controller {
 
-    /**
-     * The {@link Environment} instance used by this controller.
-     */
-    private final Environment environment;
     private final ScreenNavigator navigator;
     private final NavbarController navbarController;
+    private final UserService userService;
 
     /**
      * No-argument constructor for FXML compatibility
      */
     protected Controller() {
-        this.environment = null; // Will be set later via setter
         this.navigator = null; // Will be set later via setter
         this.navbarController = null; // Will be set later via setter
+        this.userService = new UserService(); // Create new instance for FXML controllers
     }
 
     /**
-     * Creates an instance of a ScreenController with the given
-     * {@link GameEnvironment}
+     * Creates an instance of a ScreenController with the given ScreenNavigator
      *
-     * @param environment The environment used by this ScreenController
-     * @param navigator   The screen navigator used by this ScreenController
+     * @param navigator The screen navigator used by this ScreenController
      */
-    protected Controller(final Environment environment, final ScreenNavigator navigator) {
-        this.environment = environment;
+    protected Controller(final ScreenNavigator navigator) {
         this.navigator = navigator;
-        this.navbarController = new NavbarController(environment, navigator);
+        this.userService = new UserService();
+        this.navbarController = new NavbarController(navigator, userService);
     }
 
     /**
@@ -85,12 +80,12 @@ public abstract class Controller {
     protected abstract String getTitle();
 
     /**
-     * Gets the environment associated with this screen controller.
+     * Gets the user service associated with this screen controller.
      *
-     * @return The environment for this controller
+     * @return The user service for this controller
      */
-    protected Environment getEnvironment() {
-        return environment;
+    protected UserService getUserService() {
+        return userService;
     }
 
     /**
