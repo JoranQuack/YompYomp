@@ -1,6 +1,7 @@
 package seng202.team5.services;
 
 import seng202.team5.data.AppDataManager;
+import seng202.team5.data.DatabaseService;
 import seng202.team5.data.FileBasedTrailRepo;
 import seng202.team5.data.SqlBasedTrailRepo;
 import seng202.team5.models.Trail;
@@ -20,13 +21,28 @@ import java.util.List;
  * needed.
  */
 public class SetupService {
-
+    private final DatabaseService databaseService;
     private final SqlBasedTrailRepo DbTrailRepo;
     private final FileBasedTrailRepo FileTrailRepo;
 
+    /**
+     * Constructor for setup service with custom SQLBasedRepo and FileBasedRepo for testing
+     * @param sqlBasedTrailRepo
+     * @param fileTrailRepo
+     */
     public SetupService(SqlBasedTrailRepo sqlBasedTrailRepo, FileBasedTrailRepo fileTrailRepo) {
         this.DbTrailRepo = sqlBasedTrailRepo;
         this.FileTrailRepo = fileTrailRepo;
+        databaseService = null;
+    }
+
+    /**
+     * Constructor for setup service
+     */
+    public SetupService() {
+        this.databaseService = new DatabaseService();
+        this.DbTrailRepo = new SqlBasedTrailRepo(databaseService);
+        this.FileTrailRepo = new FileBasedTrailRepo("/datasets/DOC_Walking_Experiences_7994760352369043452.csv")
     }
 
     /**
