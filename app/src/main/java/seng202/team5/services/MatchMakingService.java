@@ -1,6 +1,6 @@
 package seng202.team5.services;
 
-import seng202.team5.data.IKeyword;
+import seng202.team5.data.SqlBasedKeywordRepo;
 import seng202.team5.data.SqlBasedTrailRepo;
 import seng202.team5.models.Trail;
 import seng202.team5.models.User;
@@ -26,12 +26,11 @@ public class MatchMakingService {
     /**
      * Creates a MatchMakingService instance.
      *
-     * @param keywordRepo repository for category-to-keyword data. This is temporary
-     *                    until the database is implemented for this.
+     * @param keywordRepo repository for category-to-keyword data from the database
      * @param trailRepo   repository for trail data which are used for scoring and
      *                    sorting
      */
-    public MatchMakingService(IKeyword keywordRepo, SqlBasedTrailRepo trailRepo) {
+    public MatchMakingService(SqlBasedKeywordRepo keywordRepo, SqlBasedTrailRepo trailRepo) {
         this.categoryToKeywords = keywordRepo.getKeywords();
         this.trailRepo = trailRepo;
         buildReverseIndex();

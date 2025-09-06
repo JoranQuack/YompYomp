@@ -38,15 +38,12 @@ public class SqlBasedKeywordRepo {
             String categoryName = rs.getString("category_name");
             String keywordValue = rs.getString("keyword_value");
 
-            // Ensure category exists in map
             categoryKeywords.putIfAbsent(categoryName, new ArrayList<>());
-
-            // Add keyword if it's not null (categories might not have keywords)
             if (keywordValue != null && !keywordValue.trim().isEmpty()) {
                 categoryKeywords.get(categoryName).add(keywordValue);
             }
 
-            return null; // We're building the map as a side effect
+            return null;
         });
 
         return categoryKeywords;
