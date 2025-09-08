@@ -6,7 +6,6 @@ import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.VBox;
-import seng202.team5.Environment;
 import seng202.team5.data.DatabaseService;
 import seng202.team5.data.SqlBasedTrailRepo;
 import seng202.team5.gui.components.NavbarController;
@@ -35,13 +34,12 @@ public class DashboardController extends Controller {
     }
 
     /**
-     * Creates controller with environment.
+     * Creates controller with navigator.
      *
-     * @param environment Application environment
-     * @param navigator   Screen navigator
+     * @param navigator Screen navigator
      */
-    public DashboardController(Environment environment, ScreenNavigator navigator) {
-        super(environment, navigator);
+    public DashboardController(ScreenNavigator navigator) {
+        super(navigator);
         initializeSearchService();
     }
 
@@ -75,7 +73,7 @@ public class DashboardController extends Controller {
 
     @FXML
     private void onViewAllClicked() {
-        super.getNavigator().launchScreen(new TrailsController(super.getEnvironment(), super.getNavigator()));
+        super.getNavigator().launchScreen(new TrailsController(super.getNavigator()));
     }
 
     /**

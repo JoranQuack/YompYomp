@@ -5,8 +5,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import seng202.team5.data.FileBasedKeywordRepo;
-import seng202.team5.data.IKeyword;
+import seng202.team5.data.SqlBasedKeywordRepo;
 import seng202.team5.data.SqlBasedTrailRepo;
 import seng202.team5.models.Trail;
 import seng202.team5.models.User;
@@ -20,12 +19,16 @@ class MatchMakingServiceTest {
     private MatchMakingService matchMakingService;
     @Mock
     private SqlBasedTrailRepo mockTrailRepo;
+    @Mock
+    private SqlBasedKeywordRepo mockKeywordRepo;
     private List<Trail> mockTrails;
 
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
-        IKeyword keywordRepo = new FileBasedKeywordRepo("/datasets/Categories_and_Keywords.csv");
+
+        Map<String, List<String>> mockKeywords = createMockKeywordData();
+        when(mockKeywordRepo.getKeywords()).thenReturn(mockKeywords);
 
         mockTrailRepo = mock(SqlBasedTrailRepo.class);
         mockTrails = new ArrayList<>(Arrays.asList(
@@ -46,26 +49,27 @@ class MatchMakingServiceTest {
                         "2024-01-05", 567.89, 101.23)));
         when(mockTrailRepo.getAllTrails()).thenReturn(mockTrails);
 
-        // Not sure if we need this if we test straight from the csv, keeping it just in
-        // case.
-        // IKeyword fakeKeywordRepo = () -> {
-        // Map<String, List<String>> map = new HashMap<>();
-        // map.put("FamilyFriendly", Arrays.asList("children", "easy"));
-        // map.put("Accessible", Arrays.asList("accessible", "abilities"));
-        // map.put("Difficult", Arrays.asList("difficult", "challenging"));
-        // map.put("Rocky", Arrays.asList("steep", "gorge"));
-        // map.put("Reserve", Arrays.asList("reserve", "park"));
-        // map.put("Wet", Arrays.asList("lake", "river"));
-        // map.put("Forest", Arrays.asList("forest", "bush"));
-        // map.put("Coast", Arrays.asList("coast", "beach"));
-        // map.put("Wildlife", Arrays.asList("wildlife", "animal"));
-        // map.put("Alpine", Arrays.asList("mountain", "hill"));
-        // map.put("Historical", Arrays.asList("historic-site", "ruins"));
-        // map.put("Waterfall", Arrays.asList("waterfall", "falls"));
-        // return map;
-        // };
+        matchMakingService = new MatchMakingService(mockKeywordRepo, mockTrailRepo);
+    }
 
-        matchMakingService = new MatchMakingService(keywordRepo, mockTrailRepo);
+    /**
+     * Creates mock keyword data for testing that matches the expected categories
+     */
+    private Map<String, List<String>> createMockKeywordData() {
+        Map<String, List<String>> mockKeywords = new HashMap<>();
+        mockKeywords.put("FamilyFriendly", Arrays.asList("children", "easy"));
+        mockKeywords.put("Accessible", Arrays.asList("accessible", "abilities"));
+        mockKeywords.put("Difficult", Arrays.asList("difficult", "challenging"));
+        mockKeywords.put("Rocky", Arrays.asList("steep", "gorge"));
+        mockKeywords.put("Forest", Arrays.asList("forest", "bush"));
+        mockKeywords.put("Reserve", Arrays.asList("reserve", "park"));
+        mockKeywords.put("Wet", Arrays.asList("lake", "river"));
+        mockKeywords.put("Beach", Arrays.asList("coast", "beach"));
+        mockKeywords.put("Alpine", Arrays.asList("mountain", "alpine"));
+        mockKeywords.put("Wildlife", Arrays.asList("wildlife", "animal"));
+        mockKeywords.put("Historical", Arrays.asList("historic", "ruins"));
+        mockKeywords.put("Waterfall", Arrays.asList("waterfall", "falls"));
+        return mockKeywords;
     }
 
     private User makeTestUser() {
@@ -180,8 +184,7 @@ class MatchMakingServiceTest {
         assertEquals(0, page1.size());
 
         // Test with a smaller maxResults for multipage test
-        MatchMakingService customMaxService = new MatchMakingService(
-                new FileBasedKeywordRepo("/datasets/Categories_and_Keywords.csv"), mockTrailRepo);
+        MatchMakingService customMaxService = new MatchMakingService(mockKeywordRepo, mockTrailRepo);
         customMaxService.setMaxResults(2); // Simulate smaller page size
         customMaxService.setUserPreferences(user);
         customMaxService.assignWeightsToTrails();

@@ -3,7 +3,6 @@ package seng202.team5.gui;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import org.controlsfx.control.CheckComboBox;
-import seng202.team5.Environment;
 import seng202.team5.models.User;
 
 import java.util.ArrayList;
@@ -15,12 +14,12 @@ import java.util.List;
 public class ProfileSetupGeneralController extends Controller {
 
     /**
-     * Launches the screen with environment
+     * Launches the screen with navigator
      *
-     * @param environment application environment
+     * @param navigator screen navigator
      */
-    public ProfileSetupGeneralController(Environment environment, ScreenNavigator navigator) {
-        super(environment, navigator);
+    public ProfileSetupGeneralController(ScreenNavigator navigator) {
+        super(navigator);
     }
 
     @FXML
@@ -65,14 +64,17 @@ public class ProfileSetupGeneralController extends Controller {
     @FXML
     private void onContinueButtonClicked() {
         setUserPreferences();
-        super.getNavigator().launchScreen(new ProfileQuizController(super.getEnvironment(), super.getNavigator(), 1));
+        super.getNavigator().launchScreen(new ProfileQuizController(super.getNavigator(), 1));
     }
 
     /**
      * Gets user input and sets attributes of User object
      */
     private void setUserPreferences() {
-        User user = super.getEnvironment().getUser();
+        User user = super.getUserService().getUser();
+        if (user == null) {
+            user = new User();
+        }
         if (usernameTextField.getText().isEmpty()) {
             user.setName("YompYomp User");
         } else {
@@ -81,7 +83,7 @@ public class ProfileSetupGeneralController extends Controller {
         user.setRegion(regionCheckComboBox.getCheckModel().getCheckedItems());
         user.setIsFamilyFriendly(familyFriendlyCheckBox.isSelected());
         user.setIsAccessible(accessibleCheckBox.isSelected());
-        // TODO: Save user preferences to database (and Environment?)
+        super.getUserService().setUser(user);
     }
 
     @Override

@@ -1,7 +1,6 @@
 package seng202.team5.gui;
 
 import javafx.fxml.FXML;
-import seng202.team5.Environment;
 import seng202.team5.models.Question;
 import seng202.team5.models.User;
 import javafx.scene.control.*;
@@ -16,13 +15,13 @@ public class ProfileQuizController extends Controller {
     private int quizId;
 
     /**
-     * Constructs the controller with environment
+     * Constructs the controller with navigator
      *
-     * @param environment application environment
-     * @param quizId      quiz question id
+     * @param navigator screen navigator
+     * @param quizId    quiz question id
      */
-    public ProfileQuizController(Environment environment, ScreenNavigator navigator, int quizId) {
-        super(environment, navigator);
+    public ProfileQuizController(ScreenNavigator navigator, int quizId) {
+        super(navigator);
         this.quizId = quizId;
     }
 
@@ -141,10 +140,10 @@ public class ProfileQuizController extends Controller {
         incrementQuizId();
         if (quizId < 10) {
             super.getNavigator()
-                    .launchScreen(new ProfileQuizController(super.getEnvironment(), super.getNavigator(), quizId));
+                    .launchScreen(new ProfileQuizController(super.getNavigator(), quizId));
         } else {
             // TODO: maybe add buffer (loading) screen here while matchmaking
-            super.getNavigator().launchScreen(new DashboardController(super.getEnvironment(), super.getNavigator()));
+            super.getNavigator().launchScreen(new DashboardController(super.getNavigator()));
         }
     }
 
@@ -171,7 +170,10 @@ public class ProfileQuizController extends Controller {
      * Gets values from sliders and sets attributes of User object
      */
     private void setUserPreferences() {
-        User user = super.getEnvironment().getUser();
+        User user = super.getUserService().getUser();
+        if (user == null) {
+            user = new User();
+        }
         switch (quizId) {
             case 1:
                 user.setExperienceLevel((int) slider1.getValue());
@@ -194,7 +196,7 @@ public class ProfileQuizController extends Controller {
                 user.setWaterfallPreference((int) slider2.getValue());
                 break;
         }
-        // TODO: Save user preferences to database (and Environment?)
+        super.getUserService().setUser(user);
     }
 
     @Override

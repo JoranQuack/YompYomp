@@ -4,6 +4,7 @@ import java.util.List;
 
 public class User {
     // Some basic variables
+    private int id;
     private String type; // guest or profiled
     private String name;
     private List<String> regions;
@@ -23,7 +24,53 @@ public class User {
     public User() {
     }
 
+    /**
+     * Constructor for User class with all parameters.
+     *
+     * @param id
+     * @param type
+     * @param name
+     * @param regions
+     * @param isFamilyFriendly
+     * @param isAccessible
+     * @param experienceLevel
+     * @param gradientPreference
+     * @param bushPreference
+     * @param reservePreference
+     * @param lakeRiverPreference
+     * @param coastPreference
+     * @param mountainPreference
+     * @param wildlifePreference
+     * @param historicPreference
+     * @param waterfallPreference
+     */
+    public User(int id, String type, String name, List<String> regions, boolean isFamilyFriendly, boolean isAccessible,
+            int experienceLevel, int gradientPreference, int bushPreference, int reservePreference,
+            int lakeRiverPreference, int coastPreference, int mountainPreference, int wildlifePreference,
+            int historicPreference, int waterfallPreference) {
+        this.id = id;
+        this.type = type;
+        this.name = name;
+        this.regions = regions;
+        this.isFamilyFriendly = isFamilyFriendly;
+        this.isAccessible = isAccessible;
+        this.experienceLevel = experienceLevel;
+        this.gradientPreference = gradientPreference;
+        this.bushPreference = bushPreference;
+        this.reservePreference = reservePreference;
+        this.lakeRiverPreference = lakeRiverPreference;
+        this.coastPreference = coastPreference;
+        this.mountainPreference = mountainPreference;
+        this.wildlifePreference = wildlifePreference;
+        this.historicPreference = historicPreference;
+        this.waterfallPreference = waterfallPreference;
+    }
+
     // getters
+    public int getId() {
+        return id;
+    }
+
     public String getType() {
         return type;
     }
@@ -36,11 +83,11 @@ public class User {
         return regions;
     }
 
-    public boolean getIsFamilyFriendly() {
+    public boolean isFamilyFriendly() {
         return isFamilyFriendly;
     }
 
-    public boolean getIsAccessible() {
+    public boolean isAccessible() {
         return isAccessible;
     }
 

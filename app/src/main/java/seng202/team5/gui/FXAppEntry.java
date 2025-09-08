@@ -1,19 +1,28 @@
 package seng202.team5.gui;
 
 import java.util.Objects;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import javafx.application.Application;
+import javafx.application.Platform;
+import javafx.concurrent.Task;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
-import seng202.team5.Environment;
+import seng202.team5.data.DatabaseService;
+import seng202.team5.data.FileBasedTrailRepo;
+import seng202.team5.data.SqlBasedTrailRepo;
+import seng202.team5.services.SetupService;
 
 /**
  * Class that starts the JavaFX application thread.
  */
 public class FXAppEntry extends Application {
 
+    private ExecutorService setupExec;
+
     /**
-     * Creates the {@link Environment} with a {@link ScreenNavigator} for the
+     * Creates the application with a {@link ScreenNavigator} for the
      * given {@link Stage}
      *
      * @param primaryStage The current fxml stage, handled by this JavaFX
@@ -26,6 +35,8 @@ public class FXAppEntry extends Application {
         primaryStage.setTitle("YompYomp");
         primaryStage.show();
 
-        new Environment(new ScreenNavigator(primaryStage));
+        ScreenNavigator navigator = new ScreenNavigator(primaryStage);
+        WelcomeController welcome = new WelcomeController(navigator);
+        navigator.launchScreen(welcome);
     }
 }
