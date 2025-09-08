@@ -22,8 +22,8 @@ public class SqlBasedTrailRepo implements ITrail {
     private static final String UPSERT_SQL = """
             INSERT INTO trail (
                 id, name, description, difficulty, completion_time,
-                type, thumb_url, web_url, date_loaded_raw, x, y
-            ) VALUES (?,?,?,?,?,?,?,?,?,?,?)
+                type, thumb_url, web_url, date_loaded_raw, x, y, user_weight
+            ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)
             ON CONFLICT(id) DO UPDATE SET
                 name=excluded.name,
                 description=excluded.description,
@@ -34,7 +34,8 @@ public class SqlBasedTrailRepo implements ITrail {
                 web_url=excluded.web_url,
                 date_loaded_raw=excluded.date_loaded_raw,
                 x=excluded.x,
-                y=excluded.y
+                y=excluded.y,
+                user_weight=excluded.user_weight
             """;
 
     private static final String DELETE_SQL = "DELETE FROM trail WHERE id = ?";
@@ -135,7 +136,8 @@ public class SqlBasedTrailRepo implements ITrail {
                 rs.getString("web_url"),
                 rs.getString("date_loaded_raw"),
                 rs.getDouble("x"),
-                rs.getDouble("y"));
+                rs.getDouble("y"),
+                rs.getDouble("user_weight"));
     }
 
     /**
@@ -157,5 +159,6 @@ public class SqlBasedTrailRepo implements ITrail {
         stmt.setString(9, trail.getDateLoaded());
         stmt.setDouble(10, trail.getX());
         stmt.setDouble(11, trail.getY());
+        stmt.setDouble(12, trail.getUserWeight());
     }
 }

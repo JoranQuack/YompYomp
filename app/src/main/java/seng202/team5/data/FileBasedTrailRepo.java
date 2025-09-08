@@ -81,7 +81,7 @@ public class FileBasedTrailRepo implements ITrail {
 
                 // create the new trail object
                 Trail newTrail = new Trail(id, name, difficulty, description, completionTime, type,
-                        thumbnailURL, webpageURL, dateLoaded, x, y);
+                        thumbnailURL, webpageURL, dateLoaded, x, y, 0.0);
 
                 // add the new trail object to the list
                 trails.add(newTrail);
