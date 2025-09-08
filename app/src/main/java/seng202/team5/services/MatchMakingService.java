@@ -33,7 +33,18 @@ public class MatchMakingService {
     public MatchMakingService(SqlBasedKeywordRepo keywordRepo, SqlBasedTrailRepo trailRepo) {
         this.categoryToKeywords = keywordRepo.getKeywords();
         this.trailRepo = trailRepo;
+    }
+
+    /**
+     * Generates trail weights based on user preferences.
+     *
+     * @param user the user whose preferences will be used to generate trail weights
+     */
+    public void generateTrailWeights(User user) {
+        setUserPreferences(user);
         buildReverseIndex();
+        assignWeightsToTrails();
+        trailRepo.upsertAll(getSortedTrails());
     }
 
     /**

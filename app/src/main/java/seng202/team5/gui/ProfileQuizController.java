@@ -1,8 +1,12 @@
 package seng202.team5.gui;
 
 import javafx.fxml.FXML;
+import seng202.team5.data.DatabaseService;
+import seng202.team5.data.SqlBasedKeywordRepo;
+import seng202.team5.data.SqlBasedTrailRepo;
 import seng202.team5.models.Question;
 import seng202.team5.models.User;
+import seng202.team5.services.MatchMakingService;
 import javafx.scene.control.*;
 
 /**
@@ -142,7 +146,12 @@ public class ProfileQuizController extends Controller {
             super.getNavigator()
                     .launchScreen(new ProfileQuizController(super.getNavigator(), quizId));
         } else {
-            // TODO: maybe add buffer (loading) screen here while matchmaking
+            DatabaseService databaseService = new DatabaseService();
+            MatchMakingService matchMakingService = new MatchMakingService(
+                    new SqlBasedKeywordRepo(databaseService),
+                    new SqlBasedTrailRepo(databaseService));
+            matchMakingService.generateTrailWeights(super.getUserService().getUser());
+
             super.getNavigator().launchScreen(new DashboardController(super.getNavigator()));
         }
     }

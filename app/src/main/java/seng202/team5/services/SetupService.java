@@ -26,7 +26,9 @@ public class SetupService {
     private final FileBasedTrailRepo FileTrailRepo;
 
     /**
-     * Constructor for setup service with custom SQLBasedRepo and FileBasedRepo for testing
+     * Constructor for setup service with custom SQLBasedRepo and FileBasedRepo for
+     * testing
+     * 
      * @param sqlBasedTrailRepo
      * @param fileTrailRepo
      */
