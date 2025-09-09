@@ -238,9 +238,11 @@ class MatchMakingServiceTest {
         Set<String> categories = new HashSet<>(Arrays.asList("Wet", "Forest", "Alpine"));
 
         double score = matchMakingService.scoreTrail(categories);
-        // Matched weights: Wet(5) + Forest(4) + Alpine(4) = 13, Max score = 29, 13/29 ≈
-        // 0.4483
-        assertEquals(0.4483, score, 0.0001);
+        // Matched weights: Wet(5) + Forest(4) + Alpine(4) = 13, Max score = 29, 13/29 ≈ 0.4483
+        // 3 matched categories / 3 total categories for the trail
+        // 0.8 * 13/29 + 0.2 * 3/3 ≈
+        // 0.5586
+        assertEquals(expectedScore(5.0 + 4.0 + 4.0, 3, 3, matchMakingService.getMaxScore()), score, 0.0001);
     }
 
     @Test
@@ -251,8 +253,8 @@ class MatchMakingServiceTest {
 
         Set<String> categories = new HashSet<>(Arrays.asList("Wet", "Forest", "Alpine", "Wet", "Forest"));
         double score = matchMakingService.scoreTrail(categories);
-        // Duplicates are ignored in a Set, so same as partial match: 13/29 ≈ 0.4483
-        assertEquals(0.4483, score, 0.0001);
+        // Duplicates are ignored in a Set, so same as partial match: 0.5586
+        assertEquals(expectedScore(5.0 + 4.0 + 4.0, 3, 3, matchMakingService.getMaxScore()), score, 0.0001);
     }
 
     @Test
@@ -261,9 +263,9 @@ class MatchMakingServiceTest {
         User user = makeTestUser();
         matchMakingService.setUserPreferences(user);
 
-        Set<String> categories = new HashSet<>(Arrays.asList("Waterfall", "Beach"));
+        Set<String> categories = new HashSet<>(Arrays.asList("Gorge", "Biking"));
         double score = matchMakingService.scoreTrail(categories);
-        // No matching categories, score = 0/29 = 0.0
+        // No matching categories, score = 0/29 * 0.8 + 0 * 0.2 = 0.0
         assertEquals(0.0, score, 0.0001);
     }
 
@@ -277,7 +279,7 @@ class MatchMakingServiceTest {
         Set<String> categories = new HashSet<>(Arrays.asList("FamilyFriendly", "Accessible", "Difficult", "Rocky",
                 "Forest", "Reserve", "Wet", "Beach", "Alpine", "Wildlife", "Historical", "Waterfall"));
         double score = matchMakingService.scoreTrail(categories);
-        // All categories match, max score = 29/29 = 1.0
+        // All categories match, max score = 29/29 * 0.8 + 12/12 * 0.2= 1.0
         assertEquals(1.0, score, 0.0001);
     }
 
