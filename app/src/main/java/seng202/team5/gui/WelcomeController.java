@@ -2,6 +2,7 @@ package seng202.team5.gui;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import seng202.team5.models.User;
 
 public class WelcomeController extends Controller {
@@ -16,23 +17,30 @@ public class WelcomeController extends Controller {
     }
 
     @FXML
+    private Label titleLabel;
+
+    @FXML
+    private Label subtitleLabel;
+
+    @FXML
     private Button setUpProfileButton;
+
     @FXML
     private Button skipButton;
-    @FXML
-    private Button returningUserButton;
 
     /**
      * Initializes the welcome screen
      */
     @FXML
     private void initialize() {
-        setUpProfileButton.setText("Set Up Profile");
-        setUpProfileButton.setOnAction(e -> onSetUpProfileButtonClicked());
-        skipButton.setText("Skip");
-        skipButton.setOnAction(e -> onSkipButtonClicked());
-        returningUserButton.setText("Returning User");
-        // returningUserButton.setOnAction(e -> onReturningUserButtonClicked());
+        User existingUser = super.getUserService().getUser();
+        if (existingUser != null) {
+            titleLabel.setText("Welcome back, " + existingUser.getName() + "!");
+            subtitleLabel.setText("Create a new profile or continue to the dashboard.");
+            skipButton.setText("Continue");
+            setUpProfileButton.setText("Create new profile");
+            return;
+        }
     }
 
     /**
@@ -50,12 +58,6 @@ public class WelcomeController extends Controller {
                 .launchScreen(new ProfileSetupGeneralController(super.getNavigator()));
     }
 
-    @FXML
-    private void onReturningUserButtonClicked() {
-        // Shouldn't returning users be put straight into the dashboard? (bypass this
-        // screen)
-    }
-
     /**
      * onClicked action for skipButton
      */
@@ -64,9 +66,9 @@ public class WelcomeController extends Controller {
         User user = super.getUserService().getUser();
         if (user == null) {
             user = new User();
+            user.setType("guest");
+            super.getUserService().setUser(user);
         }
-        user.setType("guest");
-        super.getUserService().setUser(user);
         super.getNavigator().launchScreen(new DashboardController(super.getNavigator()));
     }
 
