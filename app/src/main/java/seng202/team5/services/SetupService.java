@@ -2,7 +2,9 @@ package seng202.team5.services;
 
 import seng202.team5.data.AppDataManager;
 import seng202.team5.data.DatabaseService;
+import seng202.team5.data.FileBasedKeywordRepo;
 import seng202.team5.data.FileBasedTrailRepo;
+import seng202.team5.data.SqlBasedKeywordRepo;
 import seng202.team5.data.SqlBasedTrailRepo;
 import seng202.team5.models.Trail;
 
@@ -67,7 +69,13 @@ public class SetupService {
 
         try {
             if (!databaseService.databaseExists()) {
+                // Create the database and tables
                 databaseService.createDatabaseIfNotExists();
+
+                // Populate keywords table coz we need dat stuff later
+                FileBasedKeywordRepo fileBasedKeywordRepo = new FileBasedKeywordRepo("/datasets/keywords.csv");
+                SqlBasedKeywordRepo sqlBasedKeywordRepo = new SqlBasedKeywordRepo(databaseService);
+                sqlBasedKeywordRepo.insertCategoriesAndKeywords(fileBasedKeywordRepo.getKeywords());
             }
         } catch (Exception e) {
             System.err.println("Error setting up database: " + e.getMessage());
