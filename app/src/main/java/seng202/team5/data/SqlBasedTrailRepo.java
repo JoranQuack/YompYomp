@@ -61,6 +61,16 @@ public class SqlBasedTrailRepo implements ITrail {
     }
 
     /**
+     * Retrieves recommended trails from database
+     *
+     * @return a list of recommended trails
+     */
+    public List<Trail> getRecommendedTrails() {
+        String sql = SELECT_ALL + " ORDER BY user_weight DESC LIMIT 8";
+        return queryHelper.executeQuery(sql, null, this::mapRowToTrail);
+    }
+
+    /**
      * Finds a single trail by its primary key
      *
      * @param id id of the object
