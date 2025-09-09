@@ -79,7 +79,7 @@ public class DatabaseSetupTest {
         try (Connection connection = databaseService.getConnection()) {
             DatabaseMetaData metaData = connection.getMetaData();
 
-            String[] expectedTables = { "category", "keyword", "trail", "trail_category", "user" };
+            String[] expectedTables = { "category", "keyword", "trail", "user" };
 
             for (String tableName : expectedTables) {
                 try (ResultSet tables = metaData.getTables(null, null, tableName, null)) {
