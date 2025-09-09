@@ -49,6 +49,23 @@ public class SqlBasedKeywordRepo implements IKeyword {
         return categoryKeywords;
     }
 
+    /**
+     * Counts the number of categories in the database.
+     *
+     * @return the number of categories
+     */
+    public int countCategories() {
+        List<Integer> results = queryHelper.executeQuery("SELECT COUNT(*) AS count FROM category", null, rs -> {
+            if (rs.next()) {
+                return rs.getInt("count");
+            } else {
+                return 0;
+            }
+        });
+
+        return results.get(0);
+    }
+
     public void insertCategoriesAndKeywords(Map<String, List<String>> keywords) {
         for (Map.Entry<String, List<String>> entry : keywords.entrySet()) {
             String category = entry.getKey();

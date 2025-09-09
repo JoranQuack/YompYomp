@@ -7,6 +7,7 @@ import java.sql.Statement;
 
 public class DatabaseService {
     private final String customDatabasePath;
+    private static final String CURRENT_SCHEMA_VERSION = "1.0";
 
     public DatabaseService() {
         this.customDatabasePath = null;
@@ -81,6 +82,38 @@ public class DatabaseService {
     }
 
     /**
+     * Checks if the database schema is up to date.
+     *
+     * @return true if schema matches current version, false otherwise
+     */
+    public boolean isSchemaUpToDate() {
+        if (!databaseExists()) {
+            return false;
+        }
+
+        try (Connection connection = getConnection()) {
+            // Check if schema_version table exists
+            var metaData = connection.getMetaData();
+            var tables = metaData.getTables(null, null, "schema_version", null);
+
+            if (!tables.next()) {
+                return false; // If there's no version table, it's outdated
+            }
+
+            // Check the version matches our beautiful constant
+            try (var stmt = connection.prepareStatement("SELECT version FROM schema_version LIMIT 1")) {
+                var rs = stmt.executeQuery();
+                if (rs.next()) {
+                    return CURRENT_SCHEMA_VERSION.equals(rs.getString("version"));
+                }
+            }
+            return false;
+        } catch (SQLException e) {
+            return false;
+        }
+    }
+
+    /**
      * Executes the schema script to create all the tables we need
      *
      * @param connection the database connection
@@ -97,6 +130,11 @@ public class DatabaseService {
                     statement.execute(sql);
                 }
             }
+
+            // Insert schema version
+            statement.execute("CREATE TABLE IF NOT EXISTS schema_version (version TEXT PRIMARY KEY)");
+            statement.execute(
+                    "INSERT OR REPLACE INTO schema_version (version) VALUES ('" + CURRENT_SCHEMA_VERSION + "')");
         }
     }
 

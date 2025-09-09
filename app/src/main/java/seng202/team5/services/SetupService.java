@@ -59,6 +59,16 @@ public class SetupService {
     }
 
     /**
+     * Checks if the category table is populated.
+     *
+     * @param sqlBasedKeywordRepo
+     * @return true if the category table is populated, false otherwise.
+     */
+    boolean isCategoryTablePopulated(SqlBasedKeywordRepo sqlBasedKeywordRepo) {
+        return sqlBasedKeywordRepo.countCategories() > 0;
+    }
+
+    /**
      * Sets up the database by creating it if it doesn't exist.
      */
     public void setupDatabase() {
@@ -68,18 +78,26 @@ public class SetupService {
         }
 
         try {
-            if (!databaseService.databaseExists()) {
+            // Check if database exists and schema is up to date
+            if (!databaseService.databaseExists() || !databaseService.isSchemaUpToDate()) {
+                if (databaseService.databaseExists()) {
+                    databaseService.deleteDatabase();
+                }
+
                 // Create the database and tables
                 databaseService.createDatabaseIfNotExists();
-
-                // Populate keywords table coz we need dat stuff later
-                FileBasedKeywordRepo fileBasedKeywordRepo = new FileBasedKeywordRepo("/datasets/keywords.csv");
-                SqlBasedKeywordRepo sqlBasedKeywordRepo = new SqlBasedKeywordRepo(databaseService);
-                sqlBasedKeywordRepo.insertCategoriesAndKeywords(fileBasedKeywordRepo.getKeywords());
             }
         } catch (Exception e) {
             System.err.println("Error setting up database: " + e.getMessage());
             e.printStackTrace();
+        }
+
+        // Populate keywords table coz we need dat stuff later
+        SqlBasedKeywordRepo sqlBasedKeywordRepo = new SqlBasedKeywordRepo(databaseService);
+        if (!isCategoryTablePopulated(sqlBasedKeywordRepo)) {
+            FileBasedKeywordRepo fileBasedKeywordRepo = new FileBasedKeywordRepo(
+                    "/datasets/Categories_and_Keywords.csv");
+            sqlBasedKeywordRepo.insertCategoriesAndKeywords(fileBasedKeywordRepo.getKeywords());
         }
     }
 
