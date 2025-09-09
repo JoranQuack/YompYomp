@@ -28,7 +28,7 @@ public class SetupService {
     /**
      * Constructor for setup service with custom SQLBasedRepo and FileBasedRepo for
      * testing
-     * 
+     *
      * @param sqlBasedTrailRepo
      * @param fileTrailRepo
      */
@@ -54,6 +54,25 @@ public class SetupService {
      */
     boolean isTrailTablePopulated() {
         return DbTrailRepo.countTrails() >= FileTrailRepo.countTrails();
+    }
+
+    /**
+     * Sets up the database by creating it if it doesn't exist.
+     */
+    public void setupDatabase() {
+        if (databaseService == null) {
+            System.err.println("Database service is null - cannot setup database");
+            return;
+        }
+
+        try {
+            if (!databaseService.databaseExists()) {
+                databaseService.createDatabaseIfNotExists();
+            }
+        } catch (Exception e) {
+            System.err.println("Error setting up database: " + e.getMessage());
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -104,13 +123,18 @@ public class SetupService {
      * Upserts into DB if not up to date
      */
     public void syncDbFromTrailFile() {
-        if (!isTrailTablePopulated()) {
-            System.out.println("Trail table being populated");
-            List<Trail> source = FileTrailRepo.getAllTrails();
-            DbTrailRepo.upsertAll(source);
-            if (isTrailTablePopulated()) {
-                System.out.println("Trail table populated");
+        try {
+            if (!isTrailTablePopulated()) {
+                System.out.println("Trail table being populated");
+                List<Trail> source = FileTrailRepo.getAllTrails();
+                DbTrailRepo.upsertAll(source);
+                if (isTrailTablePopulated()) {
+                    System.out.println("Trail table populated");
+                }
             }
+        } catch (Exception e) {
+            System.err.println("Error syncing database from trail file: " + e.getMessage());
+            e.printStackTrace();
         }
     }
 
@@ -118,6 +142,7 @@ public class SetupService {
      * Calls key functions to set up application
      */
     public void setupApplication() {
+        setupDatabase();
         syncDbFromTrailFile();
         scrapeAllTrailImages();
     }
