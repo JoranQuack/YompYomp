@@ -51,16 +51,6 @@ CREATE TABLE IF NOT EXISTS trail (
 );
 
 
--- Table: trail_category
-DROP TABLE IF EXISTS trail_category;
-
-CREATE TABLE IF NOT EXISTS trail_category (
-    id          INTEGER PRIMARY KEY,
-    trail_id    INTEGER REFERENCES trail (id),
-    category_id INTEGER REFERENCES category (id) 
-);
-
-
 -- Table: user
 DROP TABLE IF EXISTS user;
 
