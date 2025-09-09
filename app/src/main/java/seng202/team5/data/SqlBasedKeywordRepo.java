@@ -72,34 +72,19 @@ public class SqlBasedKeywordRepo implements IKeyword {
             List<String> keywordList = entry.getValue();
 
             // Insert category
-            queryHelper.executeUpdate("INSERT INTO category (name) VALUES (?)", stmt -> stmt.setString(1, category));
+            queryHelper.executeUpdate("INSERT OR IGNORE INTO category (name) VALUES (?)",
+                    stmt -> stmt.setString(1, category));
 
             // Insert keywords
             for (String keyword : keywordList) {
-                queryHelper.executeUpdate("INSERT INTO keyword (value, category_id) VALUES (?, ?)", stmt -> {
-                    stmt.setString(1, keyword);
-                    stmt.setInt(2, getCategoryId(category));
-                });
+                queryHelper.executeUpdate(
+                        "INSERT OR IGNORE INTO keyword (value, category_id) " +
+                                "SELECT ?, id FROM category WHERE name = ?",
+                        stmt -> {
+                            stmt.setString(1, keyword);
+                            stmt.setString(2, category);
+                        });
             }
         }
-    }
-
-    /**
-     * Helper method to get the ID of a category by its name.
-     *
-     * @param category
-     * @return
-     */
-    private int getCategoryId(String category) {
-        List<Integer> results = queryHelper
-                .executeQuery("SELECT id FROM category WHERE name = ?", ps -> ps.setString(1, category), rs -> {
-                    if (rs.next()) {
-                        return rs.getInt("id");
-                    } else {
-                        throw new RuntimeException("Category not found: " + category);
-                    }
-                });
-
-        return results.get(0);
     }
 }
