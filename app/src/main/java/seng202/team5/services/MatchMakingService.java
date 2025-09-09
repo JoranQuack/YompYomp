@@ -168,13 +168,21 @@ public class MatchMakingService {
             return 0.0;
         }
 
-        // Calculate score as sum of matched category weights divided by max possible
-        // score
-        double score = trailCategories.stream()
+        // strength part
+        double strength = trailCategories.stream()
                 .mapToInt(category -> userWeights.getOrDefault(category, 0))
                 .sum() / maxScore;
 
-        return score;
+        // coverage part
+        long matched = trailCategories.stream()
+                .filter(category -> userWeights.containsKey(category))
+                .count();
+        double coverage = (double) matched / trailCategories.size();
+
+        // blend of strength and coverage
+        double weight = 0.8; // 80% strength 20% coverage
+
+        return weight * strength + (1 - weight) * coverage;
     }
 
     /**
