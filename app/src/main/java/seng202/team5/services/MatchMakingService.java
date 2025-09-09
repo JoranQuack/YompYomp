@@ -109,6 +109,11 @@ public class MatchMakingService {
      *         categories match
      */
     public Set<String> categoriseTrail(Trail trail) {
+        // Make sure we have the reverse index built, else categorisation problems arise
+        if (keywordToCategory.isEmpty()) {
+            buildReverseIndex();
+        }
+
         Set<String> matchedCategories = new HashSet<>();
         String description = trail.getDescription().toLowerCase(Locale.ROOT);
 
@@ -159,21 +164,17 @@ public class MatchMakingService {
         // preferences perfectly
         double maxScore = calculateMaxScore();
 
-        // strength part
-        double strength = trailCategories.stream()
+        if (maxScore <= 0) {
+            return 0.0;
+        }
+
+        // Calculate score as sum of matched category weights divided by max possible
+        // score
+        double score = trailCategories.stream()
                 .mapToInt(category -> userWeights.getOrDefault(category, 0))
                 .sum() / maxScore;
 
-        // coverage part
-        long matched = trailCategories.stream()
-                .filter(category -> userWeights.containsKey(category))
-                .count();
-        double coverage = (double) matched / trailCategories.size();
-
-        //blend of strength and coverage
-        double weight = 0.8; //80% strength 20% coverage
-
-        return weight * strength + (1 - weight) * coverage;
+        return score;
     }
 
     /**
