@@ -15,6 +15,7 @@ import java.util.stream.Collectors;
  * computes user-personalised scores, and sorts the trail page using pagination.
  */
 public class MatchMakingService {
+    public static final double STRENGTH_WEIGHT = 0.8; //80% strength 20% coverage
     private final Map<String, List<String>> categoryToKeywords; // category -> keywords
     private final Map<String, String> keywordToCategory = new HashMap<>(); // keyword -> category
     private final Map<String, Integer> userWeights = new HashMap<>(); // Higher weight is more favourable
@@ -180,9 +181,7 @@ public class MatchMakingService {
         double coverage = (double) matched / trailCategories.size();
 
         // blend of strength and coverage
-        double weight = 0.8; // 80% strength 20% coverage
-
-        return weight * strength + (1 - weight) * coverage;
+        return STRENGTH_WEIGHT * strength + (1 - STRENGTH_WEIGHT) * coverage;
     }
 
     /**
