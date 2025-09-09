@@ -155,7 +155,7 @@ class MatchMakingServiceTest {
         double weight3 = matchMakingService.getTrailWeight(3); // Mountain Peak Trail
         double weight4 = matchMakingService.getTrailWeight(4); // Coastal Walk
         double weight5 = matchMakingService.getTrailWeight(5); // River Trail
-
+        System.out.println(weight5);
         final double maxScore = matchMakingService.getMaxScore(); // Max score = 5 + 0 + 3 + 2 + 4 + 1 + 5 + 0 + 4 + 2 +
                                                                   // 3 + 0 = 29
         assertEquals(expectedScore(4.0, 1, 1, maxScore), weight1, 0.0001); // Alpine Trail (Alpine: 4)
@@ -174,11 +174,11 @@ class MatchMakingServiceTest {
 
         List<Trail> sortedTrails = matchMakingService.getTrailsSortedByWeight();
         assertEquals(5, sortedTrails.size());
-        assertEquals("Mountain Peak Trail", sortedTrails.getFirst().getName()); // 0.2414
-        assertEquals("Forest Trail", sortedTrails.get(1).getName()); // 0.2069
-        assertEquals("Coastal Walk", sortedTrails.get(2).getName()); // 0.1724 equal but alphabetical
-        assertEquals("River Trail", sortedTrails.get(3).getName()); // 0.1724 ^^
-        assertEquals("Alpine Trail", sortedTrails.getLast().getName()); // 0.1379
+        assertEquals("Mountain Peak Trail", sortedTrails.getFirst().getName()); // 0.3931
+        assertEquals("Forest Trail", sortedTrails.get(1).getName()); // 0.3656
+        assertEquals("Coastal Walk", sortedTrails.get(2).getName()); // 0.3379 equal but alphabetical
+        assertEquals("River Trail", sortedTrails.get(3).getName()); // 0.3379 ^^
+        assertEquals("Alpine Trail", sortedTrails.getLast().getName()); // 0.3103
     }
 
     @Test
