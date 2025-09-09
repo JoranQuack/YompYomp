@@ -24,7 +24,7 @@ public class Trail {
     private double userWeight;
 
     /**
-     * Constructor for Trail class
+     * Constructor for Trail class with userWeight
      *
      * @param id
      * @param name
@@ -53,6 +53,27 @@ public class Trail {
         this.x = x;
         this.y = y;
         this.userWeight = userWeight;
+    }
+
+    /**
+     * Constructor for Trail class without userWeight (backward compatibility)
+     * Sets userWeight to default value of 0.0
+     *
+     * @param id
+     * @param name
+     * @param difficulty
+     * @param description
+     * @param completionTime
+     * @param type
+     * @param thumbnailURL
+     * @param webpageURL
+     * @param dateLoaded
+     * @param x
+     * @param y
+     */
+    public Trail(int id, String name, String difficulty, String description, String completionTime, String type,
+            String thumbnailURL, String webpageURL, String dateLoaded, double x, double y) {
+        this(id, name, difficulty, description, completionTime, type, thumbnailURL, webpageURL, dateLoaded, x, y, 0.0);
     }
 
     // Getters
