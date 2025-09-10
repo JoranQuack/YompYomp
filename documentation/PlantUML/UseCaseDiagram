@@ -3,29 +3,37 @@ left to right direction
 title YompYomp Use Case Diagram
 
 actor "Guest User" as Guest
-actor "Profiled User" as User
 
-rectangle "YompYomp App" {
+' This is someone who has already set up and saved their profile
+actor "Profiled User" as Profiled
 
-  ' Guest user use cases
-  Guest -- (View Recommended Trails)
-  (View Recommended Trails) -- (View All Trails)
-  (View All Trails) -- (View Trail)
+actor "Users" as Users
+actor "Weather API" as Weather
+actor "Map API" as Map_
 
-  (View Trail) -- (View Relevant Huts)
-  (View Trail) ..> (Rate/Log Trail) : <<extend>>
+Users <|-up- Guest
+Users <|-up- Profiled
 
-  (View Relevant Huts) ..> (Rate/Log Hut) : <<extend>>
 
-  (View Trail) ..> (Modify/Add Missing/Existing Trail) : <<extend>>
-  (View Relevant Huts) ..> (Modify/Add Missing/Existing Huts) : <<extend>>
+rectangle "YompYomp App System" {
+  Users --> (Complete Profile Quiz)
 
-  ' Registered user use cases (independent of Guest)
+  Profiled -down-> (Log Trip)
+  (Log Trip) <.left. (Rate Trip) : <<extend>>
+  Profiled --> (View Personalised Recommended Trails)
 
-  User -- (Profile Setup)
-  User -- (View Recommended Trails)
-  User -- (Log Book)
-  (Profile Setup) ..> (Customise Profile) : <<include>>
+  Guest --> (View Recommended Trails)
 
+  Users --> (View All Trails)
+  Users --> (Search Trails)
+
+  Users --> (Add Missing Trail)
+  Users --> (Modify Existing Trail)
+
+  (View All Trails) ..> (View Single Trail) : <<include>>
+  (View Recommended Trails) ..> (View Single Trail) : <<include>>
+  (View Personalised Recommended Trails) ..> (View Single Trail) : <<include>>
+  Map_ -up-> (View Single Trail)
+  Weather -up-> (View Single Trail)
 }
 @enduml
