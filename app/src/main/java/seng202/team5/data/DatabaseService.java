@@ -33,7 +33,7 @@ public class DatabaseService {
 
     private String getDatabasePath() {
         // Use custom path if provided (for testing)
-        if (customDatabasePath != null) {
+        if (customDatabasePath != null && !customDatabasePath.isEmpty()) {
             return customDatabasePath;
         }
         return AppDataManager.getAppData("database/main.db");

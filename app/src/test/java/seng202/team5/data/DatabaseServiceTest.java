@@ -51,6 +51,10 @@ public class DatabaseServiceTest {
     @DisplayName("Should create a database connection using the default constructor")
     void testDefaultConstructor() throws SQLException {
         DatabaseService defaultService = new DatabaseService();
+
+        // Make sure DB exists to avoid issues in CI
+        defaultService.createDatabaseIfNotExists();
+
         Connection connection = defaultService.getConnection();
 
         assertNotNull(connection);
@@ -103,6 +107,9 @@ public class DatabaseServiceTest {
         DatabaseService nullPathService = new DatabaseService(null);
 
         assertDoesNotThrow(() -> {
+            // Make sure DB exists to avoid issues in CI
+            nullPathService.createDatabaseIfNotExists();
+
             Connection connection = nullPathService.getConnection();
             assertNotNull(connection);
             connection.close();
@@ -115,6 +122,9 @@ public class DatabaseServiceTest {
         DatabaseService emptyPathService = new DatabaseService("");
 
         assertDoesNotThrow(() -> {
+            // Make sure DB exists to avoid issues in CI
+            emptyPathService.createDatabaseIfNotExists();
+
             Connection connection = emptyPathService.getConnection();
             assertNotNull(connection);
             connection.close();
