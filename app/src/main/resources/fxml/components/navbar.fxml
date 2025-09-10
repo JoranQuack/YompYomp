@@ -7,7 +7,6 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Region?>
 
-
 <fx:root alignment="CENTER_LEFT" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minWidth="400.0" spacing="10.0" type="HBox" xmlns="http://javafx.com/javafx/21.0.2" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <ImageView fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true">
@@ -19,8 +18,8 @@
          <children>
             <Button fx:id="homeButton" mnemonicParsing="false" text="Home" />
             <Button fx:id="trailsButton" mnemonicParsing="false" text="Trails" />
-            <Button fx:id="loggedButton" mnemonicParsing="false" text="Logged" />
-            <Button fx:id="toDoButton" mnemonicParsing="false" text="To Do" />
+            <Button fx:id="loggedButton" disable="true" mnemonicParsing="false" text="Logged" />
+            <Button fx:id="toDoButton" disable="true" mnemonicParsing="false" text="To Do" />
          </children>
       </HBox>
       <Region prefHeight="50.0" prefWidth="50.0" />
