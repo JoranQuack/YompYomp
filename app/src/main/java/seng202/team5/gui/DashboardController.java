@@ -66,8 +66,8 @@ public class DashboardController extends Controller {
             initializeSearchService();
         }
 
-        // TODO: use proper recommended trail fetching once implemented
-        List<Trail> trails = searchService.getTrails(null, 0);
+        SqlBasedTrailRepo repo = new SqlBasedTrailRepo(new DatabaseService());
+        List<Trail> trails = repo.getRecommendedTrails();
         initializeRecommendedTrails(trails);
     }
 

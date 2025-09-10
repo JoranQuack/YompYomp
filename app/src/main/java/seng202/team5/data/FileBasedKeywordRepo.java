@@ -3,7 +3,6 @@ package seng202.team5.data;
 import java.io.*;
 import java.util.*;
 
-// TODO: aim to remove this class and replace with a database-backed implementation
 /**
  * Loads data from the keyword CSV file.
  * It stores the keywords in a map of category to a list of keywords.
@@ -36,8 +35,7 @@ public class FileBasedKeywordRepo implements IKeyword {
         // Using the filePath, open the CSV as a stream (in bytes) to read its contents.
         try (InputStream inputStream = getClass().getResourceAsStream(filePath);
                 // InputStreamReader converts the stream to a character stream, and
-                // BufferedReader
-                // allows efficient line-by-line reading
+                // BufferedReader allows efficient line-by-line reading
                 BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream))) {
 
             String line;

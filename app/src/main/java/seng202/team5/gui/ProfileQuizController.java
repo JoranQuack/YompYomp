@@ -132,7 +132,7 @@ public class ProfileQuizController extends Controller {
     /**
      * Action method for continue button
      * Launches the quiz screen again with next questions if not at the end of quiz
-     * Launches the dashboard screen if at the end of quiz
+     * Launches the matchmaking screen if at the end of quiz
      */
     @FXML
     private void onContinueButtonClicked() {
@@ -142,8 +142,7 @@ public class ProfileQuizController extends Controller {
             super.getNavigator()
                     .launchScreen(new ProfileQuizController(super.getNavigator(), quizId));
         } else {
-            // TODO: maybe add buffer (loading) screen here while matchmaking
-            super.getNavigator().launchScreen(new DashboardController(super.getNavigator()));
+            super.getNavigator().launchScreen(new MatchmakingController(super.getNavigator()));
         }
     }
 

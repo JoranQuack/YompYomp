@@ -89,6 +89,22 @@ class MatchMakingServiceTest {
         return user;
     }
 
+    /**
+     *Calculated the expected weighted score for a trail, based on the given
+     * strength contribution and coverage values. This helper function is used in tests
+     * to independently verify the scoring logic in {@link MatchMakingService}.
+     * @param strengthSum the total weighted sum of matched trail categories
+     * @param matched the number of trail categories that match user preferences
+     * @param total the total number of categories in the trail
+     * @param maxScore the maximum possible weight sum across all user preferences
+     * @return the expected weighted score (combination of user-weighted strength and category coverage)
+     */
+    private double expectedScore(double strengthSum, int matched, int total, double maxScore) {
+        double strength = strengthSum/maxScore;
+        double coverage = (double) matched/total;
+        return MatchMakingService.STRENGTH_WEIGHT * strength + (1 - MatchMakingService.STRENGTH_WEIGHT) * coverage;
+    }
+
     @Test
     @DisplayName("Should correctly map user preferences")
     void testUserWeightsPopulatedCorrectly() {
@@ -139,14 +155,14 @@ class MatchMakingServiceTest {
         double weight3 = matchMakingService.getTrailWeight(3); // Mountain Peak Trail
         double weight4 = matchMakingService.getTrailWeight(4); // Coastal Walk
         double weight5 = matchMakingService.getTrailWeight(5); // River Trail
-
+        System.out.println(weight5);
         final double maxScore = matchMakingService.getMaxScore(); // Max score = 5 + 0 + 3 + 2 + 4 + 1 + 5 + 0 + 4 + 2 +
                                                                   // 3 + 0 = 29
-        assertEquals(4.0 / maxScore, weight1, 0.0001); // Alpine Trail (Alpine: 4)
-        assertEquals((4.0 + 2.0) / maxScore, weight2, 0.0001); // Forest Trail (Forest: 4, Wildlife: 2)
-        assertEquals((4.0 + 3.0) / maxScore, weight3, 0.0001); // Mountain Peak Trail (Alpine: 4, Difficult: 3)
-        assertEquals(5.0 / maxScore, weight4, 0.0001); // Coastal Walk (Beach: 0, FamilyFriendly: 5)
-        assertEquals(5.0 / maxScore, weight5, 0.0001); // River Trail (Wet: 5)
+        assertEquals(expectedScore(4.0, 1, 1, maxScore), weight1, 0.0001); // Alpine Trail (Alpine: 4)
+        assertEquals(expectedScore((4.0 + 2.0), 2, 2, maxScore), weight2, 0.0001); // Forest Trail (Forest: 4, Wildlife: 2)
+        assertEquals(expectedScore(4.0 + 3.0, 2, 2, maxScore), weight3, 0.0001); // Mountain Peak Trail (Alpine: 4, Difficult: 3)
+        assertEquals(expectedScore(5.0, 2, 2, maxScore), weight4, 0.0001); // Coastal Walk (Beach: 0, FamilyFriendly: 5)
+        assertEquals(expectedScore(5.0, 1, 1, maxScore), weight5, 0.0001); // River Trail (Wet: 5)
     }
 
     @Test
@@ -158,11 +174,11 @@ class MatchMakingServiceTest {
 
         List<Trail> sortedTrails = matchMakingService.getTrailsSortedByWeight();
         assertEquals(5, sortedTrails.size());
-        assertEquals("Mountain Peak Trail", sortedTrails.getFirst().getName()); // 0.2414
-        assertEquals("Forest Trail", sortedTrails.get(1).getName()); // 0.2069
-        assertEquals("Coastal Walk", sortedTrails.get(2).getName()); // 0.1724 equal but alphabetical
-        assertEquals("River Trail", sortedTrails.get(3).getName()); // 0.1724 ^^
-        assertEquals("Alpine Trail", sortedTrails.getLast().getName()); // 0.1379
+        assertEquals("Mountain Peak Trail", sortedTrails.getFirst().getName()); // 0.3931
+        assertEquals("Forest Trail", sortedTrails.get(1).getName()); // 0.3656
+        assertEquals("Coastal Walk", sortedTrails.get(2).getName()); // 0.3379 equal but alphabetical
+        assertEquals("River Trail", sortedTrails.get(3).getName()); // 0.3379 ^^
+        assertEquals("Alpine Trail", sortedTrails.getLast().getName()); // 0.3103
     }
 
     @Test
@@ -222,9 +238,11 @@ class MatchMakingServiceTest {
         Set<String> categories = new HashSet<>(Arrays.asList("Wet", "Forest", "Alpine"));
 
         double score = matchMakingService.scoreTrail(categories);
-        // Matched weights: Wet(5) + Forest(4) + Alpine(4) = 13, Max score = 29, 13/29 ≈
-        // 0.4483
-        assertEquals(0.4483, score, 0.0001);
+        // Matched weights: Wet(5) + Forest(4) + Alpine(4) = 13, Max score = 29, 13/29 ≈ 0.4483
+        // 3 matched categories / 3 total categories for the trail
+        // 0.8 * 13/29 + 0.2 * 3/3 ≈
+        // 0.5586
+        assertEquals(expectedScore(5.0 + 4.0 + 4.0, 3, 3, matchMakingService.getMaxScore()), score, 0.0001);
     }
 
     @Test
@@ -235,8 +253,8 @@ class MatchMakingServiceTest {
 
         Set<String> categories = new HashSet<>(Arrays.asList("Wet", "Forest", "Alpine", "Wet", "Forest"));
         double score = matchMakingService.scoreTrail(categories);
-        // Duplicates are ignored in a Set, so same as partial match: 13/29 ≈ 0.4483
-        assertEquals(0.4483, score, 0.0001);
+        // Duplicates are ignored in a Set, so same as partial match: 0.5586
+        assertEquals(expectedScore(5.0 + 4.0 + 4.0, 3, 3, matchMakingService.getMaxScore()), score, 0.0001);
     }
 
     @Test
@@ -245,9 +263,9 @@ class MatchMakingServiceTest {
         User user = makeTestUser();
         matchMakingService.setUserPreferences(user);
 
-        Set<String> categories = new HashSet<>(Arrays.asList("Waterfall", "Beach"));
+        Set<String> categories = new HashSet<>(Arrays.asList("Gorge", "Biking"));
         double score = matchMakingService.scoreTrail(categories);
-        // No matching categories, score = 0/29 = 0.0
+        // No matching categories, score = 0/29 * 0.8 + 0 * 0.2 = 0.0
         assertEquals(0.0, score, 0.0001);
     }
 
@@ -261,7 +279,7 @@ class MatchMakingServiceTest {
         Set<String> categories = new HashSet<>(Arrays.asList("FamilyFriendly", "Accessible", "Difficult", "Rocky",
                 "Forest", "Reserve", "Wet", "Beach", "Alpine", "Wildlife", "Historical", "Waterfall"));
         double score = matchMakingService.scoreTrail(categories);
-        // All categories match, max score = 29/29 = 1.0
+        // All categories match, max score = 29/29 * 0.8 + 12/12 * 0.2= 1.0
         assertEquals(1.0, score, 0.0001);
     }
 

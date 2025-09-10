@@ -2,7 +2,9 @@ package seng202.team5.services;
 
 import seng202.team5.data.AppDataManager;
 import seng202.team5.data.DatabaseService;
+import seng202.team5.data.FileBasedKeywordRepo;
 import seng202.team5.data.FileBasedTrailRepo;
+import seng202.team5.data.SqlBasedKeywordRepo;
 import seng202.team5.data.SqlBasedTrailRepo;
 import seng202.team5.models.Trail;
 
@@ -26,7 +28,9 @@ public class SetupService {
     private final FileBasedTrailRepo FileTrailRepo;
 
     /**
-     * Constructor for setup service with custom SQLBasedRepo and FileBasedRepo for testing
+     * Constructor for setup service with custom SQLBasedRepo and FileBasedRepo for
+     * testing
+     *
      * @param sqlBasedTrailRepo
      * @param fileTrailRepo
      */
@@ -52,6 +56,49 @@ public class SetupService {
      */
     boolean isTrailTablePopulated() {
         return DbTrailRepo.countTrails() >= FileTrailRepo.countTrails();
+    }
+
+    /**
+     * Checks if the category table is populated.
+     *
+     * @param sqlBasedKeywordRepo
+     * @return true if the category table is populated, false otherwise.
+     */
+    boolean isCategoryTablePopulated(SqlBasedKeywordRepo sqlBasedKeywordRepo) {
+        return sqlBasedKeywordRepo.countCategories() > 0;
+    }
+
+    /**
+     * Sets up the database by creating it if it doesn't exist.
+     */
+    public void setupDatabase() {
+        if (databaseService == null) {
+            System.err.println("Database service is null - cannot setup database");
+            return;
+        }
+
+        try {
+            // Check if database exists and schema is up to date
+            if (!databaseService.databaseExists() || !databaseService.isSchemaUpToDate()) {
+                if (databaseService.databaseExists()) {
+                    databaseService.deleteDatabase();
+                }
+
+                // Create the database and tables
+                databaseService.createDatabaseIfNotExists();
+            }
+        } catch (Exception e) {
+            System.err.println("Error setting up database: " + e.getMessage());
+            e.printStackTrace();
+        }
+
+        // Populate keywords table coz we need dat stuff later
+        SqlBasedKeywordRepo sqlBasedKeywordRepo = new SqlBasedKeywordRepo(databaseService);
+        if (!isCategoryTablePopulated(sqlBasedKeywordRepo)) {
+            FileBasedKeywordRepo fileBasedKeywordRepo = new FileBasedKeywordRepo(
+                    "/datasets/Categories_and_Keywords.csv");
+            sqlBasedKeywordRepo.insertCategoriesAndKeywords(fileBasedKeywordRepo.getKeywords());
+        }
     }
 
     /**
@@ -102,13 +149,18 @@ public class SetupService {
      * Upserts into DB if not up to date
      */
     public void syncDbFromTrailFile() {
-        if (!isTrailTablePopulated()) {
-            System.out.println("Trail table being populated");
-            List<Trail> source = FileTrailRepo.getAllTrails();
-            DbTrailRepo.upsertAll(source);
-            if (isTrailTablePopulated()) {
-                System.out.println("Trail table populated");
+        try {
+            if (!isTrailTablePopulated()) {
+                System.out.println("Trail table being populated");
+                List<Trail> source = FileTrailRepo.getAllTrails();
+                DbTrailRepo.upsertAll(source);
+                if (isTrailTablePopulated()) {
+                    System.out.println("Trail table populated");
+                }
             }
+        } catch (Exception e) {
+            System.err.println("Error syncing database from trail file: " + e.getMessage());
+            e.printStackTrace();
         }
     }
 
@@ -116,6 +168,7 @@ public class SetupService {
      * Calls key functions to set up application
      */
     public void setupApplication() {
+        setupDatabase();
         syncDbFromTrailFile();
         scrapeAllTrailImages();
     }

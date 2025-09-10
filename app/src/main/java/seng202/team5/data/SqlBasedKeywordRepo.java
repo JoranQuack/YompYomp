@@ -7,7 +7,7 @@ import java.util.*;
  * This class provides methods to retrieve keywords grouped by categories from
  * the SQL database.
  */
-public class SqlBasedKeywordRepo {
+public class SqlBasedKeywordRepo implements IKeyword {
     private final QueryHelper queryHelper;
 
     private static final String SELECT_ALL_CATEGORIES_WITH_KEYWORDS = """
@@ -47,5 +47,44 @@ public class SqlBasedKeywordRepo {
         });
 
         return categoryKeywords;
+    }
+
+    /**
+     * Counts the number of categories in the database.
+     *
+     * @return the number of categories
+     */
+    public int countCategories() {
+        List<Integer> results = queryHelper.executeQuery("SELECT COUNT(*) AS count FROM category", null, rs -> {
+            if (rs.next()) {
+                return rs.getInt("count");
+            } else {
+                return 0;
+            }
+        });
+
+        return results.get(0);
+    }
+
+    public void insertCategoriesAndKeywords(Map<String, List<String>> keywords) {
+        for (Map.Entry<String, List<String>> entry : keywords.entrySet()) {
+            String category = entry.getKey();
+            List<String> keywordList = entry.getValue();
+
+            // Insert category
+            queryHelper.executeUpdate("INSERT OR IGNORE INTO category (name) VALUES (?)",
+                    stmt -> stmt.setString(1, category));
+
+            // Insert keywords
+            for (String keyword : keywordList) {
+                queryHelper.executeUpdate(
+                        "INSERT OR IGNORE INTO keyword (value, category_id) " +
+                                "SELECT ?, id FROM category WHERE name = ?",
+                        stmt -> {
+                            stmt.setString(1, keyword);
+                            stmt.setString(2, category);
+                        });
+            }
+        }
     }
 }

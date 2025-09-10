@@ -1,10 +1,13 @@
 package seng202.team5.data;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.AfterEach;
 import static org.junit.jupiter.api.Assertions.*;
+
+import java.nio.file.Path;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -17,18 +20,13 @@ public class QueryHelperTest {
     private DatabaseService databaseService;
     private String testDbPath;
 
+    @TempDir
+    Path tempDir;
+
     @BeforeEach
     void setUp() throws SQLException {
-        try {
-            testDbPath = TestPathHelper.getTestResourcePath("database/test.db");
-            databaseService = new DatabaseService(testDbPath);
-        } catch (Exception e) {
-            // Fallback to in-memory database for CI environments
-            System.err.println(
-                    "Warning: Could not find test database file, using in-memory database. Error: " + e.getMessage());
-            testDbPath = ":memory:";
-            databaseService = new DatabaseService(testDbPath);
-        }
+        testDbPath = tempDir.resolve("test.db").toString();
+        databaseService = new DatabaseService(testDbPath);
         queryHelper = new QueryHelper(databaseService);
 
         // Create a test table for tests

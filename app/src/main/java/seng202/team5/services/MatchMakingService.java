@@ -15,6 +15,7 @@ import java.util.stream.Collectors;
  * computes user-personalised scores, and sorts the trail page using pagination.
  */
 public class MatchMakingService {
+    public static final double STRENGTH_WEIGHT = 0.8; //80% strength 20% coverage
     private final Map<String, List<String>> categoryToKeywords; // category -> keywords
     private final Map<String, String> keywordToCategory = new HashMap<>(); // keyword -> category
     private final Map<String, Integer> userWeights = new HashMap<>(); // Higher weight is more favourable
@@ -33,7 +34,18 @@ public class MatchMakingService {
     public MatchMakingService(SqlBasedKeywordRepo keywordRepo, SqlBasedTrailRepo trailRepo) {
         this.categoryToKeywords = keywordRepo.getKeywords();
         this.trailRepo = trailRepo;
+    }
+
+    /**
+     * Generates trail weights based on user preferences.
+     *
+     * @param user the user whose preferences will be used to generate trail weights
+     */
+    public void generateTrailWeights(User user) {
+        setUserPreferences(user);
         buildReverseIndex();
+        assignWeightsToTrails();
+        trailRepo.upsertAll(getSortedTrails());
     }
 
     /**
@@ -98,6 +110,11 @@ public class MatchMakingService {
      *         categories match
      */
     public Set<String> categoriseTrail(Trail trail) {
+        // Make sure we have the reverse index built, else categorisation problems arise
+        if (keywordToCategory.isEmpty()) {
+            buildReverseIndex();
+        }
+
         Set<String> matchedCategories = new HashSet<>();
         String description = trail.getDescription().toLowerCase(Locale.ROOT);
 
@@ -148,10 +165,23 @@ public class MatchMakingService {
         // preferences perfectly
         double maxScore = calculateMaxScore();
 
-        double score = trailCategories.stream()
+        if (maxScore <= 0) {
+            return 0.0;
+        }
+
+        // strength part
+        double strength = trailCategories.stream()
                 .mapToInt(category -> userWeights.getOrDefault(category, 0))
-                .sum();
-        return score / maxScore;
+                .sum() / maxScore;
+
+        // coverage part
+        long matched = trailCategories.stream()
+                .filter(category -> userWeights.containsKey(category))
+                .count();
+        double coverage = (double) matched / trailCategories.size();
+
+        // blend of strength and coverage
+        return STRENGTH_WEIGHT * strength + (1 - STRENGTH_WEIGHT) * coverage;
     }
 
     /**

@@ -4,7 +4,10 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.io.TempDir;
 import static org.junit.jupiter.api.Assertions.*;
+import java.io.File;
+import java.nio.file.Path;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -15,26 +18,20 @@ public class DatabaseServiceTest {
     private DatabaseService databaseService;
     private String testDbPath;
 
+    @TempDir
+    Path tempDir;
+
     @BeforeEach
     void setUp() {
-        try {
-            testDbPath = TestPathHelper.getTestResourcePath("database/test.db");
-            databaseService = new DatabaseService(testDbPath);
-        } catch (Exception e) {
-            // Fallback to in-memory database for CI environments
-            System.err.println(
-                    "Warning: Could not find test database file, using in-memory database. Error: " + e.getMessage());
-            testDbPath = ":memory:";
-            databaseService = new DatabaseService(testDbPath);
-        }
+        testDbPath = tempDir.resolve("test.db").toString();
+        databaseService = new DatabaseService(testDbPath);
     }
 
     @AfterEach
     void tearDown() throws SQLException {
-        // Clean up any open connections
-        Connection connection = databaseService.getConnection();
-        if (connection != null && !connection.isClosed()) {
-            connection.close();
+        File dbFile = new File(testDbPath);
+        if (dbFile.exists()) {
+            dbFile.delete();
         }
     }
 
@@ -54,6 +51,10 @@ public class DatabaseServiceTest {
     @DisplayName("Should create a database connection using the default constructor")
     void testDefaultConstructor() throws SQLException {
         DatabaseService defaultService = new DatabaseService();
+
+        // Make sure DB exists to avoid issues in CI
+        defaultService.createDatabaseIfNotExists();
+
         Connection connection = defaultService.getConnection();
 
         assertNotNull(connection);
@@ -106,6 +107,9 @@ public class DatabaseServiceTest {
         DatabaseService nullPathService = new DatabaseService(null);
 
         assertDoesNotThrow(() -> {
+            // Make sure DB exists to avoid issues in CI
+            nullPathService.createDatabaseIfNotExists();
+
             Connection connection = nullPathService.getConnection();
             assertNotNull(connection);
             connection.close();
@@ -118,6 +122,9 @@ public class DatabaseServiceTest {
         DatabaseService emptyPathService = new DatabaseService("");
 
         assertDoesNotThrow(() -> {
+            // Make sure DB exists to avoid issues in CI
+            emptyPathService.createDatabaseIfNotExists();
+
             Connection connection = emptyPathService.getConnection();
             assertNotNull(connection);
             connection.close();

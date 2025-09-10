@@ -4,8 +4,11 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 import seng202.team5.models.Trail;
 
+import java.io.File;
+import java.nio.file.Path;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -19,18 +22,13 @@ public class SqlBasedTrailRepoTest {
     private DatabaseService databaseService;
     private String testDbPath;
 
+    @TempDir
+    Path tempDir;
+
     @BeforeEach
     void setUp() throws Exception {
-        try {
-            testDbPath = TestPathHelper.getTestResourcePath("database/test.db");
-            databaseService = new DatabaseService(testDbPath);
-        } catch (Exception e) {
-            // Fallback to in-memory database for CI environments
-            System.err.println(
-                    "Warning: Could not find test database file, using in-memory database. Error: " + e.getMessage());
-            testDbPath = ":memory:";
-            databaseService = new DatabaseService(testDbPath);
-        }
+        testDbPath = tempDir.resolve("test.db").toString();
+        databaseService = new DatabaseService(testDbPath);
         sqlBasedTrailRepo = new SqlBasedTrailRepo(databaseService);
 
         // Create a 'Trail' table to test with
@@ -48,7 +46,8 @@ public class SqlBasedTrailRepoTest {
                           web_url TEXT,
                           date_loaded_raw TEXT,
                           x REAL,
-                          y REAL
+                          y REAL,
+                          user_weight REAL
                         )
                     """);
             stmt.execute("DELETE FROM trail");
@@ -65,6 +64,11 @@ public class SqlBasedTrailRepoTest {
         try (Connection conn = databaseService.getConnection();
                 Statement stmt = conn.createStatement()) {
             stmt.execute("DROP TABLE IF EXISTS trail");
+        }
+
+        File dbFile = new File(testDbPath);
+        if (dbFile.exists()) {
+            dbFile.delete();
         }
     }
 

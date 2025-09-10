@@ -41,7 +41,7 @@
       <!-- Trails container -->
       <ScrollPane fitToWidth="true" VBox.vgrow="ALWAYS">
          <content>
-            <FlowPane fx:id="trailsContainer" hgap="15.0" prefWrapLength="0.0" vgap="15.0">
+            <FlowPane fx:id="trailsContainer" alignment="CENTER" columnHalignment="CENTER" hgap="15.0" prefWrapLength="0.0" vgap="15.0">
                <padding>
                   <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                </padding>

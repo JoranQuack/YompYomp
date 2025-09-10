@@ -1,25 +1,14 @@
 package seng202.team5.gui;
 
 import java.util.Objects;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-
 import javafx.application.Application;
-import javafx.application.Platform;
-import javafx.concurrent.Task;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
-import seng202.team5.data.DatabaseService;
-import seng202.team5.data.FileBasedTrailRepo;
-import seng202.team5.data.SqlBasedTrailRepo;
-import seng202.team5.services.SetupService;
 
 /**
  * Class that starts the JavaFX application thread.
  */
 public class FXAppEntry extends Application {
-
-    private ExecutorService setupExec;
 
     /**
      * Creates the application with a {@link ScreenNavigator} for the

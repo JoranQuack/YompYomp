@@ -191,4 +191,26 @@ public class User {
     public void setWaterfallPreference(int waterfallPreference) {
         this.waterfallPreference = waterfallPreference;
     }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", type='" + type + '\'' +
+                ", name='" + name + '\'' +
+                ", regions=" + regions +
+                ", isFamilyFriendly=" + isFamilyFriendly +
+                ", isAccessible=" + isAccessible +
+                ", experienceLevel=" + experienceLevel +
+                ", gradientPreference=" + gradientPreference +
+                ", bushPreference=" + bushPreference +
+                ", reservePreference=" + reservePreference +
+                ", lakeRiverPreference=" + lakeRiverPreference +
+                ", coastPreference=" + coastPreference +
+                ", mountainPreference=" + mountainPreference +
+                ", wildlifePreference=" + wildlifePreference +
+                ", historicPreference=" + historicPreference +
+                ", waterfallPreference=" + waterfallPreference +
+                '}';
+    }
 }

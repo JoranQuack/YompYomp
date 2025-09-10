@@ -58,5 +58,9 @@ public class TrailCardController extends VBox {
         difficultyLabel.setText(trail.getDifficulty());
         durationLabel.setText(trail.getType());
         regionLabel.setText("Region");
+        double weight = trail.getUserWeight();
+        matchBar.setProgress(weight);
+        int matchPercent = (int) Math.round(weight * 100);
+        matchLabel.setText(matchPercent + "% match");
     }
 }
