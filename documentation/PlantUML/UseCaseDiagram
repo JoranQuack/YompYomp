@@ -22,7 +22,7 @@ rectangle "YompYomp App System" {
   (Log Trip) <.left. (Rate Trip) : <<extend>>
   Profiled --> (View Personalised Recommended Trails)
 
-  Guest --> (View Recommended Trails)
+  Guest --> (View General Recommended Trails)
 
   Users --> (View All Trails)
   Users --> (Search Trails)
@@ -31,7 +31,7 @@ rectangle "YompYomp App System" {
   Users --> (Modify Existing Trail)
 
   (View All Trails) ..> (View Single Trail) : <<include>>
-  (View Recommended Trails) ..> (View Single Trail) : <<include>>
+  (View General Recommended Trails) ..> (View Single Trail) : <<include>>
   (View Personalised Recommended Trails) ..> (View Single Trail) : <<include>>
   Map_ -up-> (View Single Trail)
   Weather -up-> (View Single Trail)
