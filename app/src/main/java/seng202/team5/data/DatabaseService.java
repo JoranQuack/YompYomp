@@ -7,7 +7,7 @@ import java.sql.Statement;
 
 public class DatabaseService {
     private final String customDatabasePath;
-    private static final String CURRENT_SCHEMA_VERSION = "1.0";
+    private static final String CURRENT_SCHEMA_VERSION = "1.1";
 
     public DatabaseService() {
         this.customDatabasePath = null;
