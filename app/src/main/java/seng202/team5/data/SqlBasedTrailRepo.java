@@ -21,13 +21,14 @@ public class SqlBasedTrailRepo implements ITrail {
 
     private static final String UPSERT_SQL = """
             INSERT INTO trail (
-                id, name, description, difficulty, completion_time,
+                id, name, description, difficulty, completion_info, completion_time,
                 type, thumb_url, web_url, date_loaded_raw, x, y, user_weight
-            ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)
+            ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)
             ON CONFLICT(id) DO UPDATE SET
                 name=excluded.name,
                 description=excluded.description,
                 difficulty=excluded.difficulty,
+                completion_info=excluded.completion_info,
                 completion_time=excluded.completion_time,
                 type=excluded.type,
                 thumb_url=excluded.thumb_url,
@@ -140,7 +141,8 @@ public class SqlBasedTrailRepo implements ITrail {
                 rs.getString("name"),
                 rs.getString("difficulty"),
                 rs.getString("description"),
-                rs.getString("completion_time"),
+                rs.getString("completion_info"),
+                rs.getInt("completion_time"),
                 rs.getString("type"),
                 rs.getString("thumb_url"),
                 rs.getString("web_url"),
@@ -162,13 +164,14 @@ public class SqlBasedTrailRepo implements ITrail {
         stmt.setString(2, trail.getName());
         stmt.setString(3, trail.getDescription());
         stmt.setString(4, trail.getDifficulty());
-        stmt.setString(5, trail.getCompletionTime());
-        stmt.setString(6, trail.getType());
-        stmt.setString(7, trail.getThumbnailURL());
-        stmt.setString(8, trail.getWebpageURL());
-        stmt.setString(9, trail.getDateLoaded());
-        stmt.setDouble(10, trail.getX());
-        stmt.setDouble(11, trail.getY());
-        stmt.setDouble(12, trail.getUserWeight());
+        stmt.setString(5, trail.getCompletionInfo());
+        stmt.setInt(6, trail.getCompletionTime());
+        stmt.setString(7, trail.getType());
+        stmt.setString(8, trail.getThumbnailURL());
+        stmt.setString(9, trail.getWebpageURL());
+        stmt.setString(10, trail.getDateLoaded());
+        stmt.setDouble(11, trail.getX());
+        stmt.setDouble(12, trail.getY());
+        stmt.setDouble(13, trail.getUserWeight());
     }
 }

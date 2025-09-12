@@ -11,8 +11,8 @@ public class Trail {
     private String name;
     private String description;
     private String difficulty;
-    private String completionTime;
-    // private String hasAlerts;
+    private String completionInfo;
+    private int completionTime;
     private String type;
     private String thumbnailURL;
     private String webpageURL;
@@ -30,6 +30,7 @@ public class Trail {
      * @param name
      * @param difficulty
      * @param description
+     * @param completionInfo
      * @param completionTime
      * @param type
      * @param thumbnailURL
@@ -39,12 +40,14 @@ public class Trail {
      * @param y
      * @param userWeight
      */
-    public Trail(int id, String name, String difficulty, String description, String completionTime, String type,
-            String thumbnailURL, String webpageURL, String dateLoaded, double x, double y, double userWeight) {
+    public Trail(int id, String name, String difficulty, String description, String completionInfo, int completionTime,
+            String type, String thumbnailURL, String webpageURL, String dateLoaded, double x, double y,
+            double userWeight) {
         this.id = id;
         this.name = name;
         this.description = description;
         this.difficulty = difficulty;
+        this.completionInfo = completionInfo;
         this.completionTime = completionTime;
         this.type = type;
         this.thumbnailURL = thumbnailURL;
@@ -56,14 +59,15 @@ public class Trail {
     }
 
     /**
-     * Constructor for Trail class without userWeight (backward compatibility)
+     * Constructor for Trail class using just dataset values.
      * Sets userWeight to default value of 0.0
+     * Sets the completionTime to default value of 0
      *
      * @param id
      * @param name
      * @param difficulty
      * @param description
-     * @param completionTime
+     * @param completionInfo
      * @param type
      * @param thumbnailURL
      * @param webpageURL
@@ -71,9 +75,11 @@ public class Trail {
      * @param x
      * @param y
      */
-    public Trail(int id, String name, String difficulty, String description, String completionTime, String type,
+    public Trail(int id, String name, String difficulty, String description, String completionInfo,
+            String type,
             String thumbnailURL, String webpageURL, String dateLoaded, double x, double y) {
-        this(id, name, difficulty, description, completionTime, type, thumbnailURL, webpageURL, dateLoaded, x, y, 0.0);
+        this(id, name, difficulty, description, completionInfo, 0, type, thumbnailURL, webpageURL,
+                dateLoaded, x, y, 0.0);
     }
 
     // Getters
@@ -93,7 +99,11 @@ public class Trail {
         return difficulty;
     }
 
-    public String getCompletionTime() {
+    public String getCompletionInfo() {
+        return completionInfo;
+    }
+
+    public int getCompletionTime() {
         return completionTime;
     }
 
@@ -150,7 +160,11 @@ public class Trail {
         this.difficulty = difficulty;
     }
 
-    public void setCompletionTime(String completionTime) {
+    public void setCompletionInfo(String completionInfo) {
+        this.completionInfo = completionInfo;
+    }
+
+    public void setCompletionTime(int completionTime) {
         this.completionTime = completionTime;
     }
 
