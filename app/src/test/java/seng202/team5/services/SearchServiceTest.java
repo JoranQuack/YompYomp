@@ -51,7 +51,8 @@ public class SearchServiceTest {
     @Test
     @DisplayName("Should return all of the trails (showing only 20 per page) if search query is empty")
     void testSearchTrailsEmptyQuery() {
-        List<Trail> trails = searchService.getTrails("", 0);
+        searchService.updateSearch("");
+        List<Trail> trails = searchService.getPage(0);
 
         assertNotNull(trails);
         assertFalse(trails.isEmpty(), "Expected at least one trail in database");
@@ -62,9 +63,14 @@ public class SearchServiceTest {
     @Test
     @DisplayName("Should return trails independently of case")
     void testSearchTrailsCaseInsensitive() {
-        List<Trail> lowerCase = searchService.getTrails("trail", 0);
-        List<Trail> upperCase = searchService.getTrails("TRAIL", 0);
-        List<Trail> mixedCase = searchService.getTrails("Trail", 0);
+        searchService.updateSearch("trail");
+        List<Trail> lowerCase = searchService.getPage(0);
+
+        searchService.updateSearch("TRAIL");
+        List<Trail> upperCase = searchService.getPage(0);
+
+        searchService.updateSearch("Trail");
+        List<Trail> mixedCase = searchService.getPage(0);
 
         assertEquals(lowerCase.size(), upperCase.size(), "Case-insensitive search should return same results");
         assertEquals(lowerCase.size(), mixedCase.size(),
@@ -80,7 +86,8 @@ public class SearchServiceTest {
     @Test
     @DisplayName("Should return empty list when no trails match search query")
     void testSearchTrailsNoMatches() {
-        List<Trail> trails = searchService.getTrails("nonexistent", 0);
+        searchService.updateSearch("nonexistent");
+        List<Trail> trails = searchService.getPage(0);
 
         assertNotNull(trails);
         assertTrue(trails.isEmpty(), "Should return empty list when no trails match");
@@ -91,13 +98,16 @@ public class SearchServiceTest {
     void testGetNumberOfPages() {
         searchService.setMaxResults(2);
 
-        int pages = searchService.getNumberOfPages("");
+        searchService.updateSearch("");
+        int pages = searchService.getNumberOfPages();
         assertEquals(3, pages, "need 3 pages for 5 with 2 per page");
 
-        int pagesFiltered = searchService.getNumberOfPages("trail");
+        searchService.updateSearch("trail");
+        int pagesFiltered = searchService.getNumberOfPages();
         assertEquals(2, pagesFiltered, "need 2 pages for 4 with 2 per page");
 
-        int pagesNoMatch = searchService.getNumberOfPages("nonexistent");
+        searchService.updateSearch("nonexistent");
+        int pagesNoMatch = searchService.getNumberOfPages();
         assertEquals(0, pagesNoMatch, "need 0 pages when no trails match");
     }
 
@@ -112,14 +122,15 @@ public class SearchServiceTest {
     @DisplayName("Should handle pagination correctly")
     void testPagination() {
         searchService.setMaxResults(2);
+        searchService.updateSearch("");
 
-        List<Trail> page1 = searchService.getTrails("", 0);
+        List<Trail> page1 = searchService.getPage(0);
         assertEquals(2, page1.size(), "First page should have 2 trails");
 
-        List<Trail> page2 = searchService.getTrails("", 1);
+        List<Trail> page2 = searchService.getPage(1);
         assertEquals(2, page2.size(), "Second page should have 2 trails");
 
-        List<Trail> page3 = searchService.getTrails("", 2);
+        List<Trail> page3 = searchService.getPage(2);
         assertEquals(1, page3.size(), "Third page should have 1 trail");
 
         assertNotEquals(page1.getFirst().getId(), page2.getFirst().getId(), "Pages should not overlap");
