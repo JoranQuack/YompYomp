@@ -47,17 +47,6 @@ public class SetupServiceTest {
     }
 
     @Test
-    @DisplayName("Should return false when DB has fewer trails than file")
-    void testIsTrailTablePopulated() {
-        when(mockDbTrailRepo.countTrails()).thenReturn(3);
-        when(mockFileTrailRepo.countTrails()).thenReturn(10);
-
-        boolean result = setupService.isTrailTablePopulated();
-
-        assertFalse(result);
-    }
-
-    @Test
     @DisplayName("Should download image when file doesn't exist")
     void testScrapeTrailImage() throws Exception {
         String testUrl = "https://example.com/test.jpg";

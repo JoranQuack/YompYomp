@@ -50,15 +50,6 @@ public class SetupService {
     }
 
     /**
-     * Checks if the trail table is populated.
-     *
-     * @return true if the trail table is populated, false otherwise.
-     */
-    boolean isTrailTablePopulated() {
-        return DbTrailRepo.countTrails() >= FileTrailRepo.countTrails();
-    }
-
-    /**
      * Checks if the category table is populated.
      *
      * @param sqlBasedKeywordRepo
@@ -146,18 +137,12 @@ public class SetupService {
     }
 
     /**
-     * Upserts into DB if not up to date
+     * Upserts into DB to keep up to date
      */
     public void syncDbFromTrailFile() {
         try {
-            if (!isTrailTablePopulated()) {
-                System.out.println("Trail table being populated");
-                List<Trail> source = FileTrailRepo.getAllTrails();
-                DbTrailRepo.upsertAll(source);
-                if (isTrailTablePopulated()) {
-                    System.out.println("Trail table populated");
-                }
-            }
+            List<Trail> source = FileTrailRepo.getAllTrails();
+            DbTrailRepo.upsertAll(source);
         } catch (Exception e) {
             System.err.println("Error syncing database from trail file: " + e.getMessage());
             e.printStackTrace();
