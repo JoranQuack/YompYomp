@@ -31,17 +31,15 @@ public class ImageService {
 
             // Convert file path to file URI for JavaFX Image
             File imageFile = new File(imagePath);
+            Image image = new Image(thumbnailUrl, true);
             if (imageFile.exists()) {
                 String fileUri = imageFile.toURI().toString();
-                Image image = new Image(fileUri, true);
-
-                if (!image.isError()) {
-                    return image;
-                } else {
-                    System.err.println("Image loading error for: " + imagePath);
-                }
+                image = new Image(fileUri, true);
+            }
+            if (!image.isError()) {
+                return image;
             } else {
-                System.err.println("Image file does not exist: " + imagePath);
+                System.err.println("Image loading error for URL: " + thumbnailUrl);
             }
         } catch (Exception e) {
             System.err.println("Error loading trail image: " + e.getMessage());
