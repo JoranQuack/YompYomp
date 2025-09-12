@@ -31,7 +31,7 @@ CREATE TABLE
         description TEXT,
         difficulty TEXT,
         completion_info TEXT,
-        completion_time REAL, -- in hours
+        completion_time INTEGER, -- in minutes
         type TEXT,
         thumb_URL TEXT,
         web_URL TEXT,
