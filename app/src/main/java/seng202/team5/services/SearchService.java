@@ -12,24 +12,17 @@ import seng202.team5.models.Trail;
  */
 public class SearchService {
     private List<Trail> trails;
-    private int maxResults = 100;
+    private List<Trail> filteredTrails;
+    private String currentQuery;
+    private int maxResults = 50;
 
     /**
      * Creates SearchService with injected SQLBasedTrailRepo.
      */
     public SearchService(SqlBasedTrailRepo sqlBasedTrailRepo) {
         this.trails = sqlBasedTrailRepo.getAllTrails();
-    }
-
-    /**
-     * Method for getting trails.
-     *
-     * @param searchQuery Search query to filter trails
-     * @param page        Page number (0-based)
-     * @return List of trails for the specified page
-     */
-    public List<Trail> getTrails(String searchQuery, int page) {
-        return searchTrails(searchQuery, page);
+        this.filteredTrails = trails;
+        this.currentQuery = "";
     }
 
     /**
@@ -40,14 +33,8 @@ public class SearchService {
      * @param searchQuery The search query to filter trails by name
      * @return The total number of pages required to display the trails
      */
-    public int getNumberOfPages(String searchQuery) {
-        if (searchQuery == null || searchQuery.isEmpty()) {
-            return (int) Math.ceil((double) trails.size() / maxResults);
-        }
-        long filteredCount = trails.stream()
-                .filter(trail -> trail.getName().toLowerCase().contains(searchQuery.toLowerCase()))
-                .count();
-        return (int) Math.ceil((double) filteredCount / maxResults);
+    public int getNumberOfPages() {
+        return (int) Math.ceil((double) filteredTrails.size() / maxResults);
     }
 
     /**
@@ -60,27 +47,31 @@ public class SearchService {
     }
 
     /**
-     * Searches for trails based on the provided query with pagination support.
-     * If the query is null or empty, it returns trails from the specified page.
+     * Updates the filtered trails based on the search query.
      *
      * @param query The search query to filter trails by name
-     * @param page  The page number (0-based) to retrieve results from
-     * @return A list of trails matching the search query for the specified page,
-     *         limited to maxResults
      */
-    private List<Trail> searchTrails(String query, int page) {
-        int startIndex = page * maxResults;
-
-        if (query == null || query.isEmpty()) {
-            return trails.stream()
-                    .skip(startIndex)
-                    .limit(maxResults)
+    public void updateSearch(String query) {
+        currentQuery = query;
+        if (currentQuery == null || currentQuery.isEmpty()) {
+            this.filteredTrails = trails;
+        } else {
+            this.filteredTrails = trails.stream()
+                    .filter(trail -> trail.getName().toLowerCase().contains(currentQuery.strip().toLowerCase()))
                     .collect(Collectors.toList());
         }
+    }
 
-        // Filter trails based on the search query with pagination
-        return trails.stream()
-                .filter(trail -> trail.getName().toLowerCase().contains(query.toLowerCase()))
+    /**
+     * Gets the trails for the specified page.
+     *
+     * @param page The page number (0-based)
+     * @return List of trails for the specified page
+     */
+    public List<Trail> getPage(int page) {
+        int startIndex = page * maxResults;
+
+        return filteredTrails.stream()
                 .skip(startIndex)
                 .limit(maxResults)
                 .collect(Collectors.toList());

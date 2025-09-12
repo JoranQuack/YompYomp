@@ -18,7 +18,7 @@
       <HBox alignment="CENTER_LEFT" spacing="10.0">
          <children>
             <TextField fx:id="searchBarTextField" prefWidth="300.0" promptText="Search trails..." />
-            <Button fx:id="searchButton" onAction="#onSearchButtonClickedOrPageSelected" text="Search" />
+            <Button fx:id="searchButton" onAction="#onSearchButtonClicked" text="Search" />
          </children>
          <padding>
             <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />

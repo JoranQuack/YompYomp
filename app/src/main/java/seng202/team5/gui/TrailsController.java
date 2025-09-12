@@ -88,10 +88,19 @@ public class TrailsController extends Controller {
             return;
         }
 
-        List<Trail> trails = searchService.getTrails(null, 0);
-        initializePageChoiceBox();
+        pageChoiceBox.getSelectionModel().selectedItemProperty().addListener(
+                (observable, oldValue, newValue) -> onPageSelected());
+        updateSearchDisplay();
+    }
+
+    /**
+     * Method to update the search results display.
+     */
+    private void updateSearchDisplay() {
+        List<Trail> trails = searchService.getPage(0);
         updateTrailsDisplay(trails);
         resultsLabel.setText(trails.size() + "/" + searchService.getNumberOfTrails() + " trails loaded");
+        resetPageChoiceBox();
     }
 
     /**
@@ -116,31 +125,35 @@ public class TrailsController extends Controller {
     /**
      * Sets up pagination choice box.
      */
-    private void initializePageChoiceBox() {
-        if (searchService == null)
-            return;
-
-        for (int i = 0; i < searchService.getNumberOfPages(null); i++) {
+    private void resetPageChoiceBox() {
+        pageChoiceBox.getItems().clear();
+        for (int i = 0; i < searchService.getNumberOfPages(); i++) {
             pageChoiceBox.getItems().add(String.valueOf(i + 1));
         }
         pageChoiceBox.setValue("1");
-        pageChoiceBox.getSelectionModel().selectedItemProperty().addListener(
-                (observable, oldValue, newValue) -> onSearchButtonClickedOrPageSelected());
     }
 
     /**
      * Handles search button click or page selection change
      */
     @FXML
-    private void onSearchButtonClickedOrPageSelected() {
-        if (searchService == null) {
-            return;
-        }
-
+    private void onSearchButtonClicked() {
         String query = searchBarTextField.getText();
-        int page = Integer.parseInt(pageChoiceBox.getValue()) - 1;
-        List<Trail> filteredTrails = searchService.getTrails(query, page);
-        updateTrailsDisplay(filteredTrails);
+        searchService.updateSearch(query);
+        updateSearchDisplay();
+    }
+
+    /**
+     * Handles page selection change.
+     */
+    private void onPageSelected() {
+        String selectedPage = pageChoiceBox.getValue();
+        if (selectedPage != null) {
+            int pageIndex = Integer.parseInt(selectedPage) - 1;
+            List<Trail> trails = searchService.getPage(pageIndex);
+            updateTrailsDisplay(trails);
+            resultsLabel.setText(trails.size() + "/" + searchService.getNumberOfTrails() + " trails loaded");
+        }
     }
 
     @Override
