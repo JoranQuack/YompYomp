@@ -38,6 +38,16 @@ dependencies {
     implementation 'org.xerial:sqlite-jdbc:3.50.3.0'
 
     implementation 'org.controlsfx:controlsfx:11.2.2'
+
+    //Cucumber for acceptance testing
+    // https://mvnrepository.com/artifact/io.cucumber/cucumber-junit-platform-engine
+    testImplementation 'io.cucumber:cucumber-junit-platform-engine:7.5.0'
+
+    // https://mvnrepository.com/artifact/io.cucumber/cucumber-java
+    testImplementation 'io.cucumber:cucumber-java:7.5.0'
+
+    // https://mvnrepository.com/artifact/io.cucumber/cucumber-junit
+    testImplementation "io.cucumber:cucumber-junit:7.5.0"
 }
 
 // Apply a specific Java toolchain to ease working on different environments.
