@@ -89,7 +89,7 @@ public class MatchmakingController extends Controller {
     }
 
     @Override
-    protected String getTitle() {
+    public String getTitle() {
         return "Matchmaking In Progress";
     }
 
