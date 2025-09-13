@@ -13,10 +13,12 @@ Scenario: View recommended trails as a profiled user (basic flow)
   And 8 recommended trails are displayed
   And the trails are ordered by highest to lowest match
 
-#Scenario: View previously calculated personalised trails (alternate flow)
-#  Given the user has previously completed matchmaking
-#  When the user selects "Continue" on the start screen
-#  Then the system displays the previously calculated personalised recommended trails
+Scenario: View recommended trails as a returning profiled user with saved match making results (Alternative Flow)
+  Given the user had previously completed the profile quiz and has matchmaking results saved
+  And the user opens the application and selects “Returning user” button
+  When the system loads the personalised recommendations
+  Then the user is shown the previously calculated personalised recommended trails screen directly
+  And the trails are ordered from highest match to lowest
 #
 #Scenario: Matchmaking fails (exceptional flow)
 #  Given the matchmaking process fails 3 times
