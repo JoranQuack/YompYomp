@@ -1,7 +1,7 @@
 package seng202.team5.services;
 
 import javafx.scene.image.Image;
-import seng202.team5.data.AppDataManager;
+import seng202.team5.utils.AppDataManager;
 
 import java.io.File;
 

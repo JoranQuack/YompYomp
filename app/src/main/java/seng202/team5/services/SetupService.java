@@ -1,6 +1,6 @@
 package seng202.team5.services;
 
-import seng202.team5.data.AppDataManager;
+import seng202.team5.utils.AppDataManager;
 import seng202.team5.data.DatabaseService;
 import seng202.team5.data.FileBasedKeywordRepo;
 import seng202.team5.data.FileBasedTrailRepo;

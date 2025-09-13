@@ -9,8 +9,8 @@ import org.mockito.MockedConstruction;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import seng202.team5.data.DatabaseService;
-import seng202.team5.data.QueryHelper;
 import seng202.team5.models.User;
+import seng202.team5.utils.QueryHelper;
 
 import java.util.Arrays;
 import java.util.Collections;
