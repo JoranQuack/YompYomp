@@ -72,6 +72,18 @@ public class SqlBasedTrailRepo implements ITrail {
     }
 
     /**
+     * Returns if the trail has been processed or not
+     *
+     * @param trail
+     * @return boolean indicating if trail has been processed
+     */
+    public boolean isTrailProcessed(Trail trail) {
+        String sql = "SELECT COUNT(*) FROM trail WHERE id = ? AND completion_type IS NOT NULL AND completion_type != 'unknown'";
+        Integer count = queryHelper.executeCountQuery(sql, stmt -> stmt.setInt(1, trail.getId()));
+        return count != null && count > 0;
+    }
+
+    /**
      * Finds a single trail by its primary key
      *
      * @param id id of the object
@@ -142,7 +154,12 @@ public class SqlBasedTrailRepo implements ITrail {
                 rs.getString("difficulty"),
                 rs.getString("description"),
                 rs.getString("completion_info"),
-                rs.getInt("completion_time"),
+                rs.getInt("min_completion_time_minutes"),
+                rs.getInt("max_completion_time_minutes"),
+                rs.getString("completion_type"),
+                rs.getString("time_unit"),
+                rs.getBoolean("is_multi_day"),
+                rs.getBoolean("has_variable_time"),
                 rs.getString("type"),
                 rs.getString("thumb_url"),
                 rs.getString("web_url"),
@@ -165,13 +182,18 @@ public class SqlBasedTrailRepo implements ITrail {
         stmt.setString(3, trail.getDescription());
         stmt.setString(4, trail.getDifficulty());
         stmt.setString(5, trail.getCompletionInfo());
-        stmt.setInt(6, trail.getCompletionTime());
-        stmt.setString(7, trail.getType());
-        stmt.setString(8, trail.getThumbnailURL());
-        stmt.setString(9, trail.getWebpageURL());
-        stmt.setString(10, trail.getDateLoaded());
-        stmt.setDouble(11, trail.getX());
-        stmt.setDouble(12, trail.getY());
-        stmt.setDouble(13, trail.getUserWeight());
+        stmt.setInt(6, trail.getMinCompletionTimeMinutes());
+        stmt.setInt(7, trail.getMaxCompletionTimeMinutes());
+        stmt.setString(8, trail.getCompletionType());
+        stmt.setString(9, trail.getTimeUnit());
+        stmt.setBoolean(10, trail.isMultiDay());
+        stmt.setBoolean(11, trail.hasVariableTime());
+        stmt.setString(12, trail.getType());
+        stmt.setString(13, trail.getThumbnailURL());
+        stmt.setString(14, trail.getWebpageURL());
+        stmt.setString(15, trail.getDateLoaded());
+        stmt.setDouble(16, trail.getX());
+        stmt.setDouble(17, trail.getY());
+        stmt.setDouble(18, trail.getUserWeight());
     }
 }
