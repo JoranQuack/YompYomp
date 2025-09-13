@@ -4,10 +4,14 @@ I want to view my personalised recommended trails
 So that I can see trails that best match my preferences
 
 
-Scenario: View personalised recommended trails (basic flow)
-  Given the user completes the quiz
-  When the system shows a loading screen with "Matchmaking in progress..."
-  Then the system displays 8 personalised trails ordered by best match
+Scenario: View recommended trails as a profiled user (basic flow)
+  Given the user has completed the profile quiz
+  And all trail data is available and has been loaded
+  When the system begins match making
+  Then the user sees a loading screen for between 1 and 10 seconds with the message "Matchmaking in progress..."
+#  And the system calculates personalised trail scores based on their preferences
+  And 8 recommended trails are displayed
+  And the trails are ordered by highest to lowest match
 
 #Scenario: View previously calculated personalised trails (alternate flow)
 #  Given the user has previously completed matchmaking
