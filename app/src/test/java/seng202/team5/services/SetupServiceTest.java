@@ -210,43 +210,36 @@ public class SetupServiceTest {
 
         List<Trail> fileTrails = Arrays.asList(trail1, trail2);
 
-        when(mockDbTrailRepo.countTrails()).thenReturn(0).thenReturn(2);
-        when(mockFileTrailRepo.countTrails()).thenReturn(2);
         when(mockFileTrailRepo.getAllTrails()).thenReturn(fileTrails);
 
         setupService.syncDbFromTrailFile();
 
-        verify(mockDbTrailRepo, times(2)).countTrails();
-        verify(mockFileTrailRepo, times(2)).countTrails();
         verify(mockFileTrailRepo).getAllTrails();
         verify(mockDbTrailRepo).upsertAll(fileTrails);
     }
 
     @Test
-    @DisplayName("Should not sync DB when table is already populated")
+    @DisplayName("Should always sync DB regardless of current population")
     void testSyncDbFromTrailFile_WhenTableAlreadyPopulated() {
-        when(mockDbTrailRepo.countTrails()).thenReturn(5);
-        when(mockFileTrailRepo.countTrails()).thenReturn(5);
+        Trail trail1 = new Trail(1, "Trail1", "Easy", "Description1", "1hr",
+                "Walking", "url1", "url1", "2023-01-01", 0.0, 0.0);
+
+        List<Trail> fileTrails = Arrays.asList(trail1);
+        when(mockFileTrailRepo.getAllTrails()).thenReturn(fileTrails);
 
         setupService.syncDbFromTrailFile();
 
-        verify(mockDbTrailRepo).countTrails();
-        verify(mockFileTrailRepo).countTrails();
-        verify(mockFileTrailRepo, never()).getAllTrails();
-        verify(mockDbTrailRepo, never()).upsertAll(any());
+        verify(mockFileTrailRepo).getAllTrails();
+        verify(mockDbTrailRepo).upsertAll(fileTrails);
     }
 
     @Test
     @DisplayName("Should handle empty file trail list during sync")
     void testSyncDbFromTrailFile_WithEmptyFileTrails() {
-        when(mockDbTrailRepo.countTrails()).thenReturn(0).thenReturn(0);
-        when(mockFileTrailRepo.countTrails()).thenReturn(1); // File claims to have 1 trail
-        when(mockFileTrailRepo.getAllTrails()).thenReturn(Collections.emptyList()); // But returns empty list
+        when(mockFileTrailRepo.getAllTrails()).thenReturn(Collections.emptyList());
 
         setupService.syncDbFromTrailFile();
 
-        verify(mockDbTrailRepo, times(2)).countTrails(); // Called twice: once for check, once after sync
-        verify(mockFileTrailRepo, times(2)).countTrails(); // Called twice: once for initial check, once for final check
         verify(mockFileTrailRepo).getAllTrails();
         verify(mockDbTrailRepo).upsertAll(Collections.emptyList());
     }
