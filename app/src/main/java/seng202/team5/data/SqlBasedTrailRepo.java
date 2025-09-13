@@ -21,15 +21,21 @@ public class SqlBasedTrailRepo implements ITrail {
 
     private static final String UPSERT_SQL = """
             INSERT INTO trail (
-                id, name, description, difficulty, completion_info, completion_time,
+                id, name, description, difficulty, completion_info, min_completion_time_minutes,
+                max_completion_time_minutes, completion_type, time_unit, is_multi_day, has_variable_time,
                 type, thumb_url, web_url, date_loaded_raw, x, y, user_weight
-            ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)
+            ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
             ON CONFLICT(id) DO UPDATE SET
                 name=excluded.name,
                 description=excluded.description,
                 difficulty=excluded.difficulty,
                 completion_info=excluded.completion_info,
-                completion_time=excluded.completion_time,
+                min_completion_time_minutes=excluded.min_completion_time_minutes,
+                max_completion_time_minutes=excluded.max_completion_time_minutes,
+                completion_type=excluded.completion_type,
+                time_unit=excluded.time_unit,
+                is_multi_day=excluded.is_multi_day,
+                has_variable_time=excluded.has_variable_time,
                 type=excluded.type,
                 thumb_url=excluded.thumb_url,
                 web_url=excluded.web_url,
