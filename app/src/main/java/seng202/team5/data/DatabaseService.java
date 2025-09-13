@@ -7,10 +7,11 @@ import java.sql.Statement;
 
 public class DatabaseService {
     private final String customDatabasePath;
-    private static final String CURRENT_SCHEMA_VERSION = "1.1";
+    private static String currentSchemaVersion;
 
     public DatabaseService() {
         this.customDatabasePath = null;
+        currentSchemaVersion = getCurrentSchemaVersion();
     }
 
     // Testing constructor with custom path
@@ -55,6 +56,7 @@ public class DatabaseService {
      * @return true on success, false otherwise (duh)
      */
     public boolean deleteDatabase() {
+        System.out.println("Deleting database");
         String databasePath = getDatabasePath();
         java.io.File dbFile = new java.io.File(databasePath);
         if (dbFile.exists()) {
@@ -100,11 +102,11 @@ public class DatabaseService {
                 return false; // If there's no version table, it's outdated
             }
 
-            // Check the version matches our beautiful constant
+            // Check the version matches our current version
             try (var stmt = connection.prepareStatement("SELECT version FROM schema_version LIMIT 1")) {
                 var rs = stmt.executeQuery();
                 if (rs.next()) {
-                    return CURRENT_SCHEMA_VERSION.equals(rs.getString("version"));
+                    return currentSchemaVersion.equals(rs.getString("version"));
                 }
             }
             return false;
@@ -133,15 +135,35 @@ public class DatabaseService {
 
             // Insert schema version
             statement.execute("CREATE TABLE IF NOT EXISTS schema_version (version TEXT PRIMARY KEY)");
-            statement.execute(
-                    "INSERT OR REPLACE INTO schema_version (version) VALUES ('" + CURRENT_SCHEMA_VERSION + "')");
+            try (var preparedStmt = connection
+                    .prepareStatement("INSERT OR REPLACE INTO schema_version (version) VALUES (?)")) {
+                preparedStmt.setString(1, currentSchemaVersion);
+                preparedStmt.execute();
+            }
         }
+    }
+
+    /**
+     * Get the current schema version from the schema file.
+     *
+     * @return the current schema version
+     */
+    private String getCurrentSchemaVersion() {
+        String schema = readSchemaFile();
+        String version = null;
+        for (String line : schema.split("\n")) {
+            if (line.startsWith("-- Schema version:")) {
+                version = line.substring("-- Schema version:".length()).trim();
+                break;
+            }
+        }
+        return version;
     }
 
     /**
      * Reads the schema file from resources.
      *
-     * @return the schema file content aS a string
+     * @return the schema file content as a string
      */
     private String readSchemaFile() {
         try {

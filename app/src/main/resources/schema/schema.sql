@@ -1,6 +1,5 @@
---
--- Remember to increment the schema version in the DatabaseService class when making changes here!
---
+-- Remember to increment the schema version here when making changes!
+-- Schema version: 1.2
 PRAGMA foreign_keys = off;
 
 BEGIN TRANSACTION;
@@ -31,7 +30,12 @@ CREATE TABLE
         description TEXT,
         difficulty TEXT,
         completion_info TEXT,
-        completion_time INTEGER, -- in minutes
+        min_completion_time_minutes INTEGER,
+        max_completion_time_minutes INTEGER,
+        completion_type TEXT,
+        time_unit TEXT,
+        is_multi_day BOOL,
+        has_variable_time BOOL,
         type TEXT,
         thumb_URL TEXT,
         web_URL TEXT,
