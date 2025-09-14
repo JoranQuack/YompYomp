@@ -54,12 +54,12 @@
                   </ImageView>
                   <CheckBox fx:id="familyFriendlyCheckBox" mnemonicParsing="false" text="Family Friendly" GridPane.columnSpan="2" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.valignment="BOTTOM">
                      <GridPane.margin>
-                        <Insets bottom="30.0" />
+                        <Insets bottom="20.0" left="20.0" />
                      </GridPane.margin>
                   </CheckBox>
                   <CheckBox fx:id="accessibleCheckBox" mnemonicParsing="false" text="Accessible" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.valignment="BOTTOM">
                      <GridPane.margin>
-                        <Insets bottom="30.0" />
+                        <Insets bottom="20.0" right="20.0" />
                      </GridPane.margin>
                   </CheckBox>
                   <CheckComboBox fx:id="regionCheckComboBox" prefWidth="207.0" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.valignment="TOP">
@@ -67,6 +67,11 @@
                         <Insets top="85.0" />
                      </GridPane.margin>
                   </CheckComboBox>
+                  <Label text="Your tramp preferences" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.valignment="BOTTOM">
+                     <GridPane.margin>
+                        <Insets bottom="45.0" />
+                     </GridPane.margin>
+                  </Label>
                </children>
             </GridPane>
          </children>

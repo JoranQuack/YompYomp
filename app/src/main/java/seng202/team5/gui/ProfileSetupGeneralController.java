@@ -48,8 +48,8 @@ public class ProfileSetupGeneralController extends Controller {
                 "Manawatu-Whanganui", "Tasman", "Wellington", "Nelson", "Marlborough", "West Coast",
                 "Canterbury", "Otago", "Southland"));
 
-        usernameLabel.setText("Username");
-        regionLabel.setText("Choose your region");
+        usernameLabel.setText("Choose a username");
+        regionLabel.setText("Choose your region to view tramps of");
         usernameTextField.setPromptText("YompYomp User");
         regionCheckComboBox.getItems().addAll(regionList);
         familyFriendlyCheckBox.setSelected(false);
