@@ -9,13 +9,12 @@ Scenario: View recommended trails as a profiled user (basic flow)
   And all trail data is available and has been loaded
   When the system begins match making
   Then the user sees a loading screen for between 1 and 10 seconds with the message "Matchmaking in progress..."
-#  And the system calculates personalised trail scores based on their preferences
   And 8 recommended trails are displayed
   And the trails are ordered by highest to lowest match
 
 Scenario: View recommended trails as a returning profiled user with saved match making results (Alternative Flow)
   Given the user had previously completed the profile quiz and has matchmaking results saved
-  And the user opens the application and selects “Returning user” button
+  And the user opens the application and selects “Continue” button
   When the system loads the personalised recommendations
   Then the user is shown the previously calculated personalised recommended trails screen directly
   And the trails are ordered from highest match to lowest
