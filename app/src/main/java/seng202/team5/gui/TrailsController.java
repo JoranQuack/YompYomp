@@ -89,20 +89,23 @@ public class TrailsController extends Controller {
 
         pageChoiceBox.getSelectionModel().selectedItemProperty().addListener(
                 (observable, oldValue, newValue) -> onPageSelected());
-        // completionTimeChoiceBox.getSelectionModel().selectedItemProperty().addListener(
-        // (observable, oldValue, newValue) -> onFilterChanged());
-        updateFilterChoiceBoxes();
+        initializeFilterChoiceBoxes();
 
         updateSearchDisplay();
     }
 
     /**
-     * Updates the filter choice boxes with available options.
+     * Initialises the filter choice boxes.
      */
-    private void updateFilterChoiceBoxes() {
-        completionTypeChoiceBox.getItems().clear();
+    private void initializeFilterChoiceBoxes() {
+        completionTypeChoiceBox.getSelectionModel().selectedItemProperty().addListener(
+                (observable, oldValue, newValue) -> onFilterChanged());
+
+        completionTypeChoiceBox.getItems().add("All types");
+        completionTypeChoiceBox.setValue("All types");
         for (String completionType : searchService.getAllCompletionTypes()) {
-            completionTypeChoiceBox.getItems().add(completionType);
+            completionTypeChoiceBox.getItems()
+                    .add(completionType.substring(0, 1).toUpperCase() + completionType.substring(1));
         }
     }
 
@@ -149,26 +152,23 @@ public class TrailsController extends Controller {
     /**
      * Handles filter change event.
      */
-    // private void onFilterChanged() {
-    // String selectedCompletionType = completionTimeChoiceBox.getValue();
-    // if (selectedCompletionType != null && !selectedCompletionType.equals("All"))
-    // {
-    // searchService.updateFilterByCompletionType(selectedCompletionType);
-    // } else {
-    // searchService.updateFilterByCompletionType(null);
-    // }
-    // updateSearchDisplay();
-    // }
+    private void onFilterChanged() {
+        String selectedCompletionType = completionTypeChoiceBox.getValue();
+        if (selectedCompletionType != null && !selectedCompletionType.equals("All types")) {
+            searchService.updateFilter("completionType", selectedCompletionType.toLowerCase());
+        } else {
+            searchService.updateFilter("completionType", null);
+        }
+        updateSearchDisplay();
+    }
 
     /**
      * Handles search button click or page selection change
      */
     @FXML
     private void onSearchButtonClicked() {
-        String query = searchBarTextField.getText();
-        searchService.updateSearch(query);
+        searchService.setCurrentQuery(searchBarTextField.getText());
         updateSearchDisplay();
-        updateFilterChoiceBoxes();
     }
 
     /**

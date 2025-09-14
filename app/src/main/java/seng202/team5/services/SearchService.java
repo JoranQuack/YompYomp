@@ -1,6 +1,9 @@
 package seng202.team5.services;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.function.BiPredicate;
 import java.util.stream.Collectors;
 
 import seng202.team5.data.SqlBasedTrailRepo;
@@ -13,8 +16,15 @@ import seng202.team5.models.Trail;
 public class SearchService {
     private List<Trail> trails;
     private List<Trail> filteredTrails;
-    private String currentQuery;
+    private Map<String, String> filters;
     private int maxResults = 50;
+
+    // Define filter predicates for each filter type
+    private final Map<String, BiPredicate<Trail, String>> filterPredicates = Map.of(
+            "query", (trail, value) -> isNullOrEmpty(value) ||
+                    trail.getName().toLowerCase().contains(value.strip().toLowerCase()),
+            "completionType", (trail, value) -> isNullOrEmpty(value) ||
+                    trail.getCompletionType().equalsIgnoreCase(value));
 
     /**
      * Creates SearchService with injected SQLBasedTrailRepo.
@@ -22,7 +32,7 @@ public class SearchService {
     public SearchService(SqlBasedTrailRepo sqlBasedTrailRepo) {
         this.trails = sqlBasedTrailRepo.getAllTrails();
         this.filteredTrails = trails;
-        this.currentQuery = "";
+        this.filters = new HashMap<>();
     }
 
     /**
@@ -34,6 +44,7 @@ public class SearchService {
      * @return The total number of pages required to display the trails
      */
     public int getNumberOfPages() {
+        updateTrails(); // Ensure filteredTrails is up to date
         return (int) Math.ceil((double) filteredTrails.size() / maxResults);
     }
 
@@ -47,19 +58,52 @@ public class SearchService {
     }
 
     /**
-     * Updates the filtered trails based on the search query.
+     * Updates the filtered trails based on all active filters.
+     */
+    private void updateTrails() {
+        this.filteredTrails = trails.stream()
+                .filter(trail -> filterPredicates.entrySet().stream()
+                        .allMatch(entry -> entry.getValue().test(trail, filters.get(entry.getKey()))))
+                .collect(Collectors.toList());
+    }
+
+    /**
+     * Utility method to check if a string is null or empty after trimming.
+     */
+    private boolean isNullOrEmpty(String str) {
+        return str == null || str.strip().isEmpty();
+    }
+
+    /**
+     * Updates a specific filter with the given value.
      *
-     * @param query The search query to filter trails by name
+     * @param filter       The filter type (e.g., "completionType", "difficulty")
+     * @param filterString The value to filter by
+     */
+    public void updateFilter(String filter, String filterString) {
+        if (!filterPredicates.containsKey(filter)) {
+            throw new IllegalArgumentException("Unknown filter: " + filter);
+        }
+        filters.put(filter, filterString);
+    }
+
+    /**
+     * Updates the current search query.
+     *
+     * @param query The search query to filter trail names by
+     */
+    public void setCurrentQuery(String query) {
+        filters.put("query", query);
+    }
+
+    /**
+     * Updates the search query (alias for setCurrentQuery for backward
+     * compatibility).
+     *
+     * @param query The search query to filter trail names by
      */
     public void updateSearch(String query) {
-        currentQuery = query;
-        if (currentQuery == null || currentQuery.isEmpty()) {
-            this.filteredTrails = trails;
-        } else {
-            this.filteredTrails = trails.stream()
-                    .filter(trail -> trail.getName().toLowerCase().contains(currentQuery.strip().toLowerCase()))
-                    .collect(Collectors.toList());
-        }
+        setCurrentQuery(query);
     }
 
     /**
@@ -69,6 +113,7 @@ public class SearchService {
      * @return List of trails for the specified page
      */
     public List<Trail> getPage(int page) {
+        updateTrails();
         int startIndex = page * maxResults;
 
         return filteredTrails.stream()
