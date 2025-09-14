@@ -78,6 +78,19 @@ public class SearchService {
     }
 
     /**
+     * Gets the distinct completion types from the trails.
+     *
+     * @return List of all completion types
+     */
+    public List<String> getAllCompletionTypes() {
+        return filteredTrails.stream()
+                .map(Trail::getCompletionType)
+                .distinct()
+                .filter(completionType -> !completionType.equals("unknown"))
+                .collect(Collectors.toList());
+    }
+
+    /**
      * Sets a new max results limit for pagination.
      *
      * @param maxResults The maximum number of results per page

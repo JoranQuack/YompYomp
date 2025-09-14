@@ -160,10 +160,9 @@ public class SetupService {
     private List<Trail> processTrails(List<Trail> trails) {
         for (Trail trail : trails) {
             String completionInfo = trail.getCompletionInfo();
-            if (sqlTrailRepo.isTrailProcessed(trail)) {
-                // Trail already has time info in DB, skip processing
-                continue;
-            }
+
+            // Always process all trails from CSV to ensure data consistency
+            // Not too resource intensive so it's fine to run every time
             if (completionInfo != null && !completionInfo.trim().isEmpty()) {
                 try {
                     CompletionTimeParser.CompletionTimeResult result = CompletionTimeParser

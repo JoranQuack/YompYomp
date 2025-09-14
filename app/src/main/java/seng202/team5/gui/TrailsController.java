@@ -43,6 +43,9 @@ public class TrailsController extends Controller {
     @FXML
     private ChoiceBox<String> pageChoiceBox;
 
+    @FXML
+    private ChoiceBox<String> completionTypeChoiceBox;
+
     /**
      * Default constructor required by JavaFX FXML loading.
      */
@@ -57,7 +60,6 @@ public class TrailsController extends Controller {
      */
     public TrailsController(ScreenNavigator navigator) {
         super(navigator);
-        initializeSearchService();
     }
 
     /**
@@ -77,10 +79,7 @@ public class TrailsController extends Controller {
         navbar.setPage(1);
         navbarContainer.getChildren().add(navbar);
 
-        // Initialize search service if not already done
-        if (searchService == null) {
-            initializeSearchService();
-        }
+        initializeSearchService();
 
         // Check if searchService is still null and handle gracefully
         if (searchService == null) {
@@ -90,7 +89,21 @@ public class TrailsController extends Controller {
 
         pageChoiceBox.getSelectionModel().selectedItemProperty().addListener(
                 (observable, oldValue, newValue) -> onPageSelected());
+        // completionTimeChoiceBox.getSelectionModel().selectedItemProperty().addListener(
+        // (observable, oldValue, newValue) -> onFilterChanged());
+        updateFilterChoiceBoxes();
+
         updateSearchDisplay();
+    }
+
+    /**
+     * Updates the filter choice boxes with available options.
+     */
+    private void updateFilterChoiceBoxes() {
+        completionTypeChoiceBox.getItems().clear();
+        for (String completionType : searchService.getAllCompletionTypes()) {
+            completionTypeChoiceBox.getItems().add(completionType);
+        }
     }
 
     /**
@@ -134,6 +147,20 @@ public class TrailsController extends Controller {
     }
 
     /**
+     * Handles filter change event.
+     */
+    // private void onFilterChanged() {
+    // String selectedCompletionType = completionTimeChoiceBox.getValue();
+    // if (selectedCompletionType != null && !selectedCompletionType.equals("All"))
+    // {
+    // searchService.updateFilterByCompletionType(selectedCompletionType);
+    // } else {
+    // searchService.updateFilterByCompletionType(null);
+    // }
+    // updateSearchDisplay();
+    // }
+
+    /**
      * Handles search button click or page selection change
      */
     @FXML
@@ -141,6 +168,7 @@ public class TrailsController extends Controller {
         String query = searchBarTextField.getText();
         searchService.updateSearch(query);
         updateSearchDisplay();
+        updateFilterChoiceBoxes();
     }
 
     /**
