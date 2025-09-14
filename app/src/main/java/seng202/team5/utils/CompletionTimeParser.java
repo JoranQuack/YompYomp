@@ -185,6 +185,8 @@ public class CompletionTimeParser {
             switch (type) {
                 case "each way":
                     return "one way";
+                case "circuit":
+                    return "loop";
                 default:
                     return type;
             }
