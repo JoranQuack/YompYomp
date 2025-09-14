@@ -169,10 +169,10 @@ public class SetupServiceTest {
     @Test
     @DisplayName("Should scrape images for all trails")
     void testScrapeAllTrailImages() {
-        Trail trail1 = new Trail(1, "Trail1", "Easy", "Description1", "1hr",
-                "Walking", "https://example.com/image1.jpg", "url1", "2023-01-01", 0.0, 0.0);
-        Trail trail2 = new Trail(2, "Trail2", "Medium", "Description2", "2hr",
-                "Hiking", "https://example.com/image2.jpg", "url2", "2023-01-02", 1.0, 1.0);
+        Trail trail1 = new Trail(1, "Trail1", "Description1", "Easy", "1hr",
+                "https://example.com/image1.jpg", "url1");
+        Trail trail2 = new Trail(2, "Trail2", "Description2", "Medium", "2hr",
+                "https://example.com/image2.jpg", "url2");
 
         List<Trail> trails = Arrays.asList(trail1, trail2);
         when(mockDbTrailRepo.getAllTrails()).thenReturn(trails);
@@ -203,10 +203,10 @@ public class SetupServiceTest {
     @Test
     @DisplayName("Should sync DB from file when table is not populated")
     void testSyncDbFromTrailFile() {
-        Trail trail1 = new Trail(1, "Trail1", "Easy", "Description1", "1hr",
-                "Walking", "url1", "url1", "2023-01-01", 0.0, 0.0);
-        Trail trail2 = new Trail(2, "Trail2", "Medium", "Description2", "2hr",
-                "Hiking", "url2", "url2", "2023-01-02", 1.0, 1.0);
+        Trail trail1 = new Trail(1, "Trail1", "Description1", "Easy", "1hr",
+                "url1", "url1");
+        Trail trail2 = new Trail(2, "Trail2", "Description2", "Medium", "2hr",
+                "url2", "url2");
 
         List<Trail> fileTrails = Arrays.asList(trail1, trail2);
 
@@ -221,8 +221,8 @@ public class SetupServiceTest {
     @Test
     @DisplayName("Should always sync DB regardless of current population")
     void testSyncDbFromTrailFile_WhenTableAlreadyPopulated() {
-        Trail trail1 = new Trail(1, "Trail1", "Easy", "Description1", "1hr",
-                "Walking", "url1", "url1", "2023-01-01", 0.0, 0.0);
+        Trail trail1 = new Trail(1, "Trail1", "Description1", "Easy", "1hr",
+                "url1", "url1");
 
         List<Trail> fileTrails = Arrays.asList(trail1);
         when(mockFileTrailRepo.getAllTrails()).thenReturn(fileTrails);
@@ -260,8 +260,8 @@ public class SetupServiceTest {
     @Test
     @DisplayName("Should handle null thumbnail URL in scrapeAllTrailImages")
     void testScrapeAllTrailImages_WithNullThumbnailURL() {
-        Trail trailWithNullUrl = new Trail(1, "Trail1", "Easy", "Description1", "1hr",
-                "Walking", null, "url1", "2023-01-01", 0.0, 0.0);
+        Trail trailWithNullUrl = new Trail(1, "Trail1", "Description1", "Easy", "1hr",
+                null, "url1");
 
         List<Trail> trails = Arrays.asList(trailWithNullUrl);
         when(mockDbTrailRepo.getAllTrails()).thenReturn(trails);

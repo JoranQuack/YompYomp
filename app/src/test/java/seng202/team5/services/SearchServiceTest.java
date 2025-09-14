@@ -26,21 +26,16 @@ public class SearchServiceTest {
 
         // mock trail data
         mockTrails = Arrays.asList(
-                new Trail(1, "Alpine Trail", "Easy", "A beautiful alpine trail through the mountains",
-                        "2 hours", "Walking", "thumb1.jpg", "http://example.com/trail1",
-                        "2024-01-01", 123.45, 67.89),
-                new Trail(2, "Forest Trail", "Medium", "A scenic forest trail with wildlife viewing",
-                        "3 hours", "Walking", "thumb2.jpg", "http://example.com/trail2",
-                        "2024-01-02", 234.56, 78.90),
-                new Trail(3, "Mountain Peak Trail", "Hard", "Challenging trail to the mountain peak",
-                        "5 hours", "Hiking", "thumb3.jpg", "http://example.com/trail3",
-                        "2024-01-03", 345.67, 89.01),
-                new Trail(4, "Coastal Walk", "Easy", "Easy coastal walk with ocean views",
-                        "1.5 hours", "Walking", "thumb4.jpg", "http://example.com/trail4",
-                        "2024-01-04", 456.78, 90.12),
-                new Trail(5, "River Trail", "Medium", "Trail following the river through the valley",
-                        "2.5 hours", "Walking", "thumb5.jpg", "http://example.com/trail5",
-                        "2024-01-05", 567.89, 101.23));
+                new Trail(1, "Alpine Trail", "A beautiful alpine trail through the mountains", "Easy",
+                        "2 hours", "thumb1.jpg", "http://example.com/trail1"),
+                new Trail(2, "Forest Trail", "A scenic forest trail with wildlife viewing", "Medium",
+                        "3 hours", "thumb2.jpg", "http://example.com/trail2"),
+                new Trail(3, "Mountain Peak Trail", "Challenging trail to the mountain peak", "Hard",
+                        "5 hours", "thumb3.jpg", "http://example.com/trail3"),
+                new Trail(4, "Coastal Walk", "Easy coastal walk with ocean views", "Easy",
+                        "1.5 hours", "thumb4.jpg", "http://example.com/trail4"),
+                new Trail(5, "River Trail", "Trail following the river through the valley", "Medium",
+                        "2.5 hours", "thumb5.jpg", "http://example.com/trail5"));
 
         when(mockTrailRepo.getAllTrails()).thenReturn(mockTrails);
 

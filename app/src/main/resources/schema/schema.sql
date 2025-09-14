@@ -1,5 +1,5 @@
 -- Remember to increment the schema version here when making changes!
--- Schema version: 1.2
+-- Schema version: 1.3
 PRAGMA foreign_keys = off;
 
 BEGIN TRANSACTION;
@@ -36,12 +36,8 @@ CREATE TABLE
         time_unit TEXT,
         is_multi_day BOOL,
         has_variable_time BOOL,
-        type TEXT,
         thumb_URL TEXT,
         web_URL TEXT,
-        date_loaded_raw TEXT,
-        x REAL,
-        y REAL,
         user_weight REAL,
         PRIMARY KEY (id)
     );

@@ -18,13 +18,8 @@ public class Trail {
     private String timeUnit;
     private boolean isMultiDay;
     private boolean hasVariableTime;
-    private String type;
     private String thumbnailURL;
     private String webpageURL;
-    private String dateLoaded;
-    // private double shapeLength;
-    private double x;
-    private double y;
     private Set<String> categories = new HashSet<>();
     private double userWeight;
 
@@ -42,22 +37,17 @@ public class Trail {
      * @param timeUnit
      * @param isMultiDay
      * @param hasVariableTime
-     * @param type
      * @param thumbnailURL
      * @param webpageURL
-     * @param dateLoaded
-     * @param x
-     * @param y
      * @param userWeight
      */
     public Trail(int id, String name, String difficulty, String description, String completionInfo,
             int minCompletionTimeMinutes, int maxCompletionTimeMinutes, String completionType, String timeUnit,
-            boolean isMultiDay, boolean hasVariableTime, String type, String thumbnailURL, String webpageURL,
-            String dateLoaded, double x, double y, double userWeight) {
+            boolean isMultiDay, boolean hasVariableTime, String thumbnailURL, String webpageURL, double userWeight) {
         this.id = id;
         this.name = name;
-        this.description = description;
         this.difficulty = difficulty;
+        this.description = description;
         this.completionInfo = completionInfo;
         this.minCompletionTimeMinutes = minCompletionTimeMinutes;
         this.maxCompletionTimeMinutes = maxCompletionTimeMinutes;
@@ -65,12 +55,8 @@ public class Trail {
         this.timeUnit = timeUnit;
         this.isMultiDay = isMultiDay;
         this.hasVariableTime = hasVariableTime;
-        this.type = type;
         this.thumbnailURL = thumbnailURL;
         this.webpageURL = webpageURL;
-        this.dateLoaded = dateLoaded;
-        this.x = x;
-        this.y = y;
         this.userWeight = userWeight;
     }
 
@@ -85,18 +71,13 @@ public class Trail {
      * @param difficulty
      * @param description
      * @param completionInfo
-     * @param type
      * @param thumbnailURL
      * @param webpageURL
-     * @param dateLoaded
-     * @param x
-     * @param y
      */
-    public Trail(int id, String name, String difficulty, String description, String completionInfo,
-            String type,
-            String thumbnailURL, String webpageURL, String dateLoaded, double x, double y) {
-        this(id, name, difficulty, description, completionInfo, 0, 0, "unknown", "unknown",
-                false, false, type, thumbnailURL, webpageURL, dateLoaded, x, y, 0.0);
+    public Trail(int id, String name, String description, String difficulty, String completionInfo,
+            String thumbnailURL, String webpageURL) {
+        this(id, name, description, difficulty, completionInfo, 0, 0, "unknown", "unknown",
+                false, false, thumbnailURL, webpageURL, 0.0);
     }
 
     // Getters
@@ -144,28 +125,12 @@ public class Trail {
         return hasVariableTime;
     }
 
-    public String getType() {
-        return type;
-    }
-
     public String getThumbnailURL() {
         return thumbnailURL;
     }
 
     public String getWebpageURL() {
         return webpageURL;
-    }
-
-    public String getDateLoaded() {
-        return dateLoaded;
-    }
-
-    public double getX() {
-        return x;
-    }
-
-    public double getY() {
-        return y;
     }
 
     public Set<String> getCategories() {
@@ -221,28 +186,12 @@ public class Trail {
         this.hasVariableTime = hasVariableTime;
     }
 
-    public void setType(String type) {
-        this.type = type;
-    }
-
     public void setThumbnailURL(String thumbnailURL) {
         this.thumbnailURL = thumbnailURL;
     }
 
     public void setWebpageURL(String webpageURL) {
         this.webpageURL = webpageURL;
-    }
-
-    public void setDateLoaded(String dateLoaded) {
-        this.dateLoaded = dateLoaded;
-    }
-
-    public void setX(double x) {
-        this.x = x;
-    }
-
-    public void setY(double y) {
-        this.y = y;
     }
 
     public void setCategories(Set<String> categories) {

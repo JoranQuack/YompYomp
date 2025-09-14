@@ -25,8 +25,8 @@ public class SqlBasedTrailRepo implements ITrail {
             INSERT INTO trail (
                 id, name, description, difficulty, completion_info, min_completion_time_minutes,
                 max_completion_time_minutes, completion_type, time_unit, is_multi_day, has_variable_time,
-                type, thumb_url, web_url, date_loaded_raw, x, y, user_weight
-            ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
+                thumb_url, web_url, user_weight
+            ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)
             ON CONFLICT(id) DO UPDATE SET
                 name=excluded.name,
                 description=excluded.description,
@@ -38,12 +38,8 @@ public class SqlBasedTrailRepo implements ITrail {
                 time_unit=excluded.time_unit,
                 is_multi_day=excluded.is_multi_day,
                 has_variable_time=excluded.has_variable_time,
-                type=excluded.type,
                 thumb_url=excluded.thumb_url,
                 web_url=excluded.web_url,
-                date_loaded_raw=excluded.date_loaded_raw,
-                x=excluded.x,
-                y=excluded.y,
                 user_weight=excluded.user_weight
             """;
 
@@ -168,12 +164,8 @@ public class SqlBasedTrailRepo implements ITrail {
                 rs.getString("time_unit"),
                 rs.getBoolean("is_multi_day"),
                 rs.getBoolean("has_variable_time"),
-                rs.getString("type"),
                 rs.getString("thumb_url"),
                 rs.getString("web_url"),
-                rs.getString("date_loaded_raw"),
-                rs.getDouble("x"),
-                rs.getDouble("y"),
                 rs.getDouble("user_weight"));
     }
 
@@ -196,12 +188,8 @@ public class SqlBasedTrailRepo implements ITrail {
         stmt.setString(9, trail.getTimeUnit());
         stmt.setBoolean(10, trail.isMultiDay());
         stmt.setBoolean(11, trail.hasVariableTime());
-        stmt.setString(12, trail.getType());
-        stmt.setString(13, trail.getThumbnailURL());
-        stmt.setString(14, trail.getWebpageURL());
-        stmt.setString(15, trail.getDateLoaded());
-        stmt.setDouble(16, trail.getX());
-        stmt.setDouble(17, trail.getY());
-        stmt.setDouble(18, trail.getUserWeight());
+        stmt.setString(12, trail.getThumbnailURL());
+        stmt.setString(13, trail.getWebpageURL());
+        stmt.setDouble(14, trail.getUserWeight());
     }
 }

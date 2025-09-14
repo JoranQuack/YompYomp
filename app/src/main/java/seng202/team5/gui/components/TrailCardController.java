@@ -56,7 +56,7 @@ public class TrailCardController extends VBox {
         thumbnail.setImage(trailImage);
 
         difficultyLabel.setText(trail.getDifficulty());
-        durationLabel.setText(trail.getType());
+        durationLabel.setText(trail.getCompletionType());
         regionLabel.setText("Region");
         double weight = trail.getUserWeight();
         matchBar.setProgress(weight);
