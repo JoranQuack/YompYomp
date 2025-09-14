@@ -210,7 +210,7 @@ public class CompletionTimeParser {
      * Creates a default result for unparseable strings
      */
     private static CompletionTimeResult createDefaultResult() {
-        return new CompletionTimeResult(0, 0, "unknown", "unknown", false, true);
+        return new CompletionTimeResult(0, 0, "unknown", "unknown", false, false);
     }
 
     /**
