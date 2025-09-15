@@ -31,10 +31,12 @@ public class ImageService {
 
             // Convert file path to file URI for JavaFX Image
             File imageFile = new File(imagePath);
-            Image image = new Image(thumbnailUrl, true);
+            Image image;
             if (imageFile.exists()) {
                 String fileUri = imageFile.toURI().toString();
                 image = new Image(fileUri, true);
+            } else {
+                image = new Image(thumbnailUrl, true);
             }
             if (!image.isError()) {
                 return image;
