@@ -93,7 +93,23 @@ public class TrailsController extends Controller {
                 (observable, oldValue, newValue) -> onPageSelected());
         initializeFilterChoiceBoxes();
 
-        updateSearchDisplay();
+        //check if the user searched from dashboard
+        if (searchText != null) {
+            executeDashboardSearch();
+        }
+        else {
+            updateSearchDisplay();
+        }
+
+    }
+
+    /**
+     * This method is used to populate and click the search button on the trails page a search is made from
+     * the dashboard page
+     */
+    private void executeDashboardSearch() {
+        searchBarTextField.setText(searchText);
+        searchButton.fire();
     }
 
     /**
