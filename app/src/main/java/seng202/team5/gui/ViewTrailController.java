@@ -56,8 +56,15 @@ public class ViewTrailController extends Controller {
         int matchPercent = (int) Math.round(weight * 100);
         matchLabel.setText(matchPercent + "% match");
         descriptionLabel.setText(trail.getDescription());
+        backButton.setOnAction(e -> onBackButtonClicked());
         // TODO: add icon for map
         // TODO: action method for edit info button
+    }
+
+    @FXML
+    private void onBackButtonClicked() {
+        Controller lastController = super.getNavigator().getLastController();
+        super.getNavigator().launchScreen(lastController, null);
     }
 
     @Override

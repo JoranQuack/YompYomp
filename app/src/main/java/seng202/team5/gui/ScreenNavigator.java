@@ -73,4 +73,8 @@ public class ScreenNavigator {
             e.printStackTrace();
         }
     }
+
+    public Controller getLastController() {
+        return lastController;
+    }
 }
