@@ -60,7 +60,9 @@ public class ProfileQuizController extends Controller {
         setProgressBar();
         setQuestionLabel();
         if (quizId == 9) {
-            continueButton.setText("Complete");
+            continueButton.setText("Complete Quiz");
+        } else {
+            continueButton.setText("Continue");
         }
         continueButton.setOnAction(e -> onContinueButtonClicked());
     }
