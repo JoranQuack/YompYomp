@@ -92,7 +92,13 @@ public class DashboardController extends Controller {
             VBox.setMargin(trailCard, new Insets(10));
 
             trailsContainer.getChildren().add(trailCard);
+            trailCard.setOnMouseClicked(e -> onTrailCardClicked(trail));
         }
+    }
+
+    @FXML
+    private void onTrailCardClicked(Trail trail) {
+        super.getNavigator().launchScreen(new ViewTrailController(super.getNavigator(), trail), this);
     }
 
     @Override
