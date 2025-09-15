@@ -66,7 +66,7 @@ public class MatchmakingController extends Controller {
 
             @Override
             protected void succeeded() {
-                navigator.launchScreen(new DashboardController(navigator));
+                navigator.launchScreen(new DashboardController(navigator), null);
             }
 
             @Override
@@ -74,7 +74,7 @@ public class MatchmakingController extends Controller {
                 Throwable exception = getException();
                 System.err.println("Matchmaking failed: " + exception.getMessage());
                 exception.printStackTrace();
-                navigator.launchScreen(new DashboardController(navigator));
+                navigator.launchScreen(new DashboardController(navigator), null);
             }
         };
 

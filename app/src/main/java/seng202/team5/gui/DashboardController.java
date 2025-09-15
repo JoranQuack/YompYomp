@@ -73,7 +73,7 @@ public class DashboardController extends Controller {
 
     @FXML
     private void onViewAllClicked() {
-        super.getNavigator().launchScreen(new TrailsController(super.getNavigator()));
+        super.getNavigator().launchScreen(new TrailsController(super.getNavigator()), null);
     }
 
     /**

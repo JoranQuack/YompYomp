@@ -140,9 +140,9 @@ public class ProfileQuizController extends Controller {
         incrementQuizId();
         if (quizId < 10) {
             super.getNavigator()
-                    .launchScreen(new ProfileQuizController(super.getNavigator(), quizId));
+                    .launchScreen(new ProfileQuizController(super.getNavigator(), quizId), null);
         } else {
-            super.getNavigator().launchScreen(new MatchmakingController(super.getNavigator()));
+            super.getNavigator().launchScreen(new MatchmakingController(super.getNavigator()), null);
         }
     }
 

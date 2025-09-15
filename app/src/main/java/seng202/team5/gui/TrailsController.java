@@ -116,7 +116,7 @@ public class TrailsController extends Controller {
 
     @FXML
     private void onTrailCardClicked(Trail trail) {
-        super.getNavigator().launchScreen(new ViewTrailController(super.getNavigator(), trail));
+        super.getNavigator().launchScreen(new ViewTrailController(super.getNavigator(), trail), this);
     }
 
     /**
@@ -131,7 +131,8 @@ public class TrailsController extends Controller {
         }
         pageChoiceBox.setValue("1");
         pageChoiceBox.getSelectionModel().selectedItemProperty().addListener(
-                (observable, oldValue, newValue) -> onSearchButtonClickedOrPageSelected());
+                (observable, oldValue,
+                 newValue) -> onSearchButtonClickedOrPageSelected());
     }
 
     /**

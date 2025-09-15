@@ -64,7 +64,7 @@ public class ProfileSetupGeneralController extends Controller {
     @FXML
     private void onContinueButtonClicked() {
         setUserPreferences();
-        super.getNavigator().launchScreen(new ProfileQuizController(super.getNavigator(), 1));
+        super.getNavigator().launchScreen(new ProfileQuizController(super.getNavigator(), 1), null);
     }
 
     /**

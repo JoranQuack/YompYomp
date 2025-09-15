@@ -57,6 +57,7 @@ public class ViewTrailController extends Controller {
         matchLabel.setText(matchPercent + "% match");
         descriptionLabel.setText(trail.getDescription());
         // TODO: add icon for map
+        // TODO: action method for edit info button
     }
 
     @Override

@@ -54,7 +54,7 @@ public class WelcomeController extends Controller {
         user.setType("profiled");
         super.getUserService().setUser(user);
         super.getNavigator()
-                .launchScreen(new ProfileSetupGeneralController(super.getNavigator()));
+                .launchScreen(new ProfileSetupGeneralController(super.getNavigator()), null);
     }
 
     /**
@@ -68,7 +68,7 @@ public class WelcomeController extends Controller {
             user.setType("guest");
             super.getUserService().setUser(user);
         }
-        super.getNavigator().launchScreen(new DashboardController(super.getNavigator()));
+        super.getNavigator().launchScreen(new DashboardController(super.getNavigator()), null);
     }
 
     @Override

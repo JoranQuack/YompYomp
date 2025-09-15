@@ -41,8 +41,8 @@ public class NavbarController extends HBox {
         }
 
         navButtons = List.of(homeButton, trailsButton, loggedButton, toDoButton);
-        homeButton.setOnAction(e -> navigator.launchScreen(new DashboardController(navigator)));
-        trailsButton.setOnAction(e -> navigator.launchScreen(new TrailsController(navigator)));
+        homeButton.setOnAction(e -> navigator.launchScreen(new DashboardController(navigator), null));
+        trailsButton.setOnAction(e -> navigator.launchScreen(new TrailsController(navigator), null));
         // TODO: Implement actions for the remaining buttons when we're ready to rock
     }
 
