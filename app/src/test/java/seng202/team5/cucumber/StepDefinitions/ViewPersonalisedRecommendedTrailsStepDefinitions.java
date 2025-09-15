@@ -254,14 +254,9 @@ public class ViewPersonalisedRecommendedTrailsStepDefinitions {
         }
     }
 
-    @Given("the user has completed the profile quiz")
-    public void userHasCompletedTheProfileQuiz() {
-
-    }
-
     @And("matchmaking fails on the first attempt")
     public void matchmakingFailsOnTheFirstAttempt() {
-
+        //simulate matchmaking failing
     }
 
     @When("the system retries matchmaking")
