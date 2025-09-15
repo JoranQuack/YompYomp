@@ -1,32 +1,29 @@
 Feature: Complete Profile Quiz (UC_1)
-I would like to complete a profile set up quiz so I can see
-which trails match my preferences and how much they match my
-preferences
+  I would like to complete a profile set up quiz so I can see
+  which trails match my preferences and how much they match my
+  preferences
 
 
-Scenario: View recommended trails as a profiled user (basic flow) (AT_1)
+Scenario: User completes profile quiz for the first time (basic flow) (AT_1)
   Given the user has completed the profile quiz
   And all trail data is available and has been loaded
   When the system begins match making
   Then the user sees a loading screen for between 1 and 10 seconds with the message "Matchmaking in progress..."
-  And 8 recommended trails are displayed
-  And the trails are ordered by highest to lowest match
 
-Scenario: View recommended trails as a returning profiled user with saved match making results (Alternative Flow) (AT_2)
+Scenario: User selected to redo quiz (Alternative Flow) (AT_2)
   Given the user had previously completed the profile quiz and has matchmaking results saved
-  And the user opens the application and selects “Continue” button
-  When the system loads the personalised recommendations
-  Then the user is shown the previously calculated personalised recommended trails screen directly
-  And the trails are ordered from highest match to lowest
+  When the user selects the "Redo Quiz" button on the dashboard
+  Then the user will be taken back to original questions for the profile
+  And the basic flow of the application is followed
 
-Scenario: View recommended trails as a profiled user. Matchmaking fails once (Exceptional Flow) (AT_3)
+Scenario: Completed profile quiz. Matchmaking fails once (Exceptional Flow) (AT_3)
   Given the user has completed the profile quiz
   And matchmaking fails on the first attempt
   When the system retries matchmaking
   Then user sees the error message "Matchmaking failed, please try again."
   And system attempts matchmaking again automatically up to 3 times
 
-Scenario: View recommended trails as a profiled user. Matchmaking fails more than 3 times (Exceptional flow) (AT_4)
+Scenario: Completed profile quiz. Matchmaking fails more than 3 times (Exceptional flow) (AT_4)
   Given the user has completed the profile quiz
   And matchmaking fails on the first attempt
   When the system retries matchmaking

@@ -24,7 +24,6 @@ public class CompleteProfileQuizStepDefinitions {
     private Map<String, Integer> userWeights;
     private Map<String, Integer> retrievedWeights;
     private List<Trail> orderedTrails;
-    private Set<String> categories;
 
     @Given("the user has completed the profile quiz")
     public void userHasCompletedProfileQuiz() {
@@ -125,25 +124,6 @@ public class CompleteProfileQuizStepDefinitions {
         assertEquals(message, actualTitle);
     }
 
-    @And("{int} recommended trails are displayed")
-    public void recommendedTrailsDisplayed(int count) {
-        searchService.setMaxResults(count);
-        assertEquals(count, searchService.getMaxResults());
-    }
-
-    @And("the trails are ordered by highest to lowest match")
-    public void trailsOrderedByHighestToLowest() {
-        orderedTrails = matchMakingService.getTrailsSortedByWeight();
-
-        //check ordering
-        for (int i = 0; i < orderedTrails.size() - 1; i++) {
-            double currentWeight = orderedTrails.get(i).getUserWeight();
-            double nextWeight = orderedTrails.get(i + 1).getUserWeight();
-            assertTrue(currentWeight >= nextWeight,
-                    "Trail at index " + i + " should have weight >= next trail");
-        }
-    }
-
     @Given("the user had previously completed the profile quiz and has matchmaking results saved")
     public void userHasPreviouslyCompletedQuiz() {
         // Mock the repos
@@ -227,30 +207,19 @@ public class CompleteProfileQuizStepDefinitions {
         userWeights = matchMakingService.getUserWeights();
     }
 
-    @And("the user opens the application and selects “Continue” button")
-    public void userOpensTheApplicationAndSelectsUser() {
+    @When("the user selects the \"Redo Quiz\" button on the dashboard")
+    public void userSelectsRedoQuiz() {
         retrievedWeights = userWeights;
     }
 
-    @When("the system loads the personalised recommendations")
-    public void systemLoadRecommendations() {
-        assertNotNull(retrievedWeights);
+    @Then("the user will be taken back to original questions for the profile")
+    public void userTakenBackToOriginalQuestions() {
+
     }
 
-    @Then("the user is shown the previously calculated personalised recommended trails screen directly")
-    public void userShownCalculatedRecommendations() {
-        orderedTrails = matchMakingService.getTrailsSortedByWeight();
-        assertNotNull(orderedTrails);
-    }
-
-    @And("the trails are ordered from highest match to lowest")
-    public void trailsAreOrderedFromHighestToLowest() {
-        for (int i = 0; i < orderedTrails.size() - 1; i++) {
-            double currentWeight = orderedTrails.get(i).getUserWeight();
-            double nextWeight = orderedTrails.get(i + 1).getUserWeight();
-            assertTrue(currentWeight >= nextWeight,
-                    "Trail at index " + i + " should have weight >= next trail");
-        }
+    @And("the basic flow of the application is followed")
+    public void basicFlowOfApplicationFollowed() {
+        //call functions for first scenario??
     }
 
     @And("matchmaking fails on the first attempt")
@@ -260,7 +229,7 @@ public class CompleteProfileQuizStepDefinitions {
 
     @When("the system retries matchmaking")
     public void systemRetriesMatchmaking() {
-
+        //simulate retrying
     }
 
     @Then("user sees the error message {string}")
