@@ -14,9 +14,18 @@
    <children>
       <VBox prefHeight="400.0" prefWidth="218.0" spacing="10.0">
          <children>
+            <HBox prefHeight="20.0" prefWidth="200.0" spacing="10.0">
+               <children>
+                  <Button fx:id="backButton" mnemonicParsing="false" text="Back">
+                     <HBox.margin>
+                        <Insets top="10.0" />
+                     </HBox.margin>
+                  </Button>
+               </children>
+            </HBox>
             <ImageView fx:id="trailThumbnail" fitHeight="120.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true">
                <VBox.margin>
-                  <Insets top="10.0" />
+                  <Insets />
                </VBox.margin>
             </ImageView>
             <HBox prefHeight="30.0" prefWidth="200.0">
@@ -54,7 +63,7 @@
                   </Label>
                </children>
             </StackPane>
-            <Label fx:id="descriptionLabel" prefHeight="16.0" prefWidth="200.0" text="Label" wrapText="true">
+            <Label fx:id="descriptionLabel" alignment="TOP_LEFT" prefHeight="60.0" prefWidth="200.0" text="Label" wrapText="true">
                <font>
                   <Font size="11.0" />
                </font>
@@ -62,11 +71,11 @@
                   <Insets top="20.0" />
                </VBox.margin>
             </Label>
-            <Button fx:id="editInfoButton" mnemonicParsing="false" text="Edit Info">
-               <VBox.margin>
-                  <Insets top="80.0" />
-               </VBox.margin>
-            </Button>
+            <HBox alignment="BOTTOM_LEFT" prefHeight="20.0" prefWidth="200.0" spacing="10.0">
+               <children>
+                  <Button fx:id="editInfoButton" mnemonicParsing="false" text="Edit Info" />
+               </children>
+            </HBox>
          </children>
          <padding>
             <Insets left="10.0" right="10.0" />
