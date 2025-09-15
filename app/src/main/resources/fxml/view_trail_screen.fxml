@@ -49,19 +49,22 @@
                   </VBox>
                </children>
             </HBox>
-            <StackPane prefHeight="19.0" prefWidth="200.0">
+            <StackPane prefHeight="40.0" prefWidth="200.0">
                <children>
-                  <ProgressBar fx:id="matchBar" prefHeight="20.0" prefWidth="270.0" progress="0.0">
+                  <ProgressBar fx:id="matchBar" prefHeight="25.0" prefWidth="270.0" progress="0.0">
                      <StackPane.margin>
-                        <Insets top="20.0" />
+                        <Insets />
                      </StackPane.margin>
                   </ProgressBar>
                   <Label fx:id="matchLabel" style="-fx-font-size: 12px; -fx-text-fill: black; -fx-font-weight: bold;" text="0% Match">
                      <StackPane.margin>
-                        <Insets top="20.0" />
+                        <Insets />
                      </StackPane.margin>
                   </Label>
                </children>
+               <VBox.margin>
+                  <Insets top="10.0" />
+               </VBox.margin>
             </StackPane>
             <Label fx:id="descriptionLabel" alignment="TOP_LEFT" prefHeight="175.0" prefWidth="280.0" text="Label" wrapText="true">
                <font>
