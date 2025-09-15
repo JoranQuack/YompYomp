@@ -1,7 +1,7 @@
 Feature: Complete Profile Quiz (UC_1)
-As a profiled user
-I want to view my personalised recommended trails
-So that I can see trails that best match my preferences
+I would like to complete a profile set up quiz so I can see
+which trails match my preferences and how much they match my
+preferences
 
 
 Scenario: View recommended trails as a profiled user (basic flow) (AT_1)
