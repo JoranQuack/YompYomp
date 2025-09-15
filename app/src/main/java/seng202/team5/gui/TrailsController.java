@@ -47,13 +47,6 @@ public class TrailsController extends Controller {
     private ChoiceBox<String> completionTypeChoiceBox;
 
     /**
-     * Default constructor required by JavaFX FXML loading.
-     */
-    public TrailsController() {
-        super();
-    }
-
-    /**
      * Creates controller with navigator.
      *
      * @param navigator Screen navigator
