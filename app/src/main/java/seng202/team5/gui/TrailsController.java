@@ -24,6 +24,7 @@ import seng202.team5.services.SearchService;
 public class TrailsController extends Controller {
     /** Service for searching and filtering trails */
     private SearchService searchService;
+    private String searchText;
 
     @FXML
     private VBox navbarContainer;
@@ -53,6 +54,14 @@ public class TrailsController extends Controller {
      */
     public TrailsController(ScreenNavigator navigator) {
         super(navigator);
+    }
+
+    /**
+     *
+     */
+    public TrailsController(ScreenNavigator navigator, String searchText) {
+        super(navigator);
+        this.searchText = searchText;
     }
 
     /**
