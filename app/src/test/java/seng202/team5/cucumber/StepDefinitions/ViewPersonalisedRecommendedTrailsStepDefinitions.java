@@ -1,5 +1,6 @@
 package seng202.team5.cucumber.StepDefinitions;
 
+import io.cucumber.java.PendingException;
 import io.cucumber.java.en.*;
 import seng202.team5.data.SqlBasedKeywordRepo;
 import seng202.team5.data.SqlBasedTrailRepo;
@@ -252,4 +253,44 @@ public class ViewPersonalisedRecommendedTrailsStepDefinitions {
                     "Trail at index " + i + " should have weight >= next trail");
         }
     }
+
+    @Given("the user has completed the profile quiz")
+    public void userHasCompletedTheProfileQuiz() {
+
+    }
+
+    @And("matchmaking fails on the first attempt")
+    public void matchmakingFailsOnTheFirstAttempt() {
+
+    }
+
+    @When("the system retries matchmaking")
+    public void systemRetriesMatchmaking() {
+
+    }
+
+    @Then("user sees the error message {string}")
+    public void userSeesErrorMessage(String message) {
+    }
+
+    @And("system attempts matchmaking again automatically up to 3 times")
+    public void systemAttemptsMatchmakingAgain() {
+
+    }
+
+    @And("the matchmaking retries over 3 times")
+    public void matchmakingRetriesOver3Times() {
+
+    }
+
+    @Then("an error message of {string} is displayed")
+    public void errorMessageDisplayed(String message) {
+
+    }
+
+    @And("the user is directed to the general recommended trail screen used for guest mode")
+    public void userDirectedToTheGeneralRecommendedTrailScreenForGuestMode() {
+
+    }
+
 }
