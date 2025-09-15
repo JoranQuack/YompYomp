@@ -4,6 +4,8 @@ import java.util.List;
 
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
+import javafx.scene.control.Button;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.VBox;
 import seng202.team5.data.DatabaseService;
@@ -25,6 +27,12 @@ public class DashboardController extends Controller {
 
     @FXML
     private FlowPane trailsContainer;
+
+    @FXML
+    private Button searchButton;
+
+    @FXML
+    private TextField searchBarTextField;
 
     /**
      * Default constructor required by JavaFX FXML loading.
@@ -74,6 +82,11 @@ public class DashboardController extends Controller {
     @FXML
     private void onViewAllClicked() {
         super.getNavigator().launchScreen(new TrailsController(super.getNavigator()));
+    }
+
+    @FXML
+    private void onSearchButtonClicked() {
+        super.getNavigator().launchScreen(new TrailsController(super.getNavigator(), searchBarTextField.getText()));
     }
 
     /**
