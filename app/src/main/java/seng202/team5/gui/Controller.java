@@ -2,6 +2,7 @@ package seng202.team5.gui;
 
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.DialogPane;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
@@ -9,6 +10,7 @@ import seng202.team5.gui.components.NavbarController;
 import seng202.team5.services.UserService;
 
 import java.util.Objects;
+import java.util.Optional;
 
 /**
  * Abstract parent class for all UI controller classes.
@@ -40,17 +42,19 @@ public abstract class Controller {
     }
 
     /**
-     * Shows an alert dialog to the user
+     * Shows an alert dialogue to the user with given parameters.
+     * Returns the button the user pressed, if any.
      *
      * @param type    the type of alert (ERROR, INFORMATION, etc.)
      * @param title   the title of the alert
      * @param content the content message
+     * @return an {@code Optional<ButtonType>} containing the button that was pressed by the user,
+     *         or an empty {@code Optional<ButtonType>} if the user closed the dialog without pressing a button.
      */
-    public void showAlert(AlertType type, String title, String content) {
-        Alert alert = new Alert(type);
+    public Optional<ButtonType> showAlert(AlertType type, String title, String content) {
+        Alert alert = new Alert(type, content, ButtonType.OK);
 
         alert.setTitle(title);
-        alert.setContentText(content);
 
         alert.setHeaderText(null);
         alert.setGraphic(null);
@@ -62,7 +66,7 @@ public abstract class Controller {
         dialogPane.getStylesheets().add(
                 Objects.requireNonNull(getClass().getResource("/styles/global.css")).toExternalForm());
 
-        alert.showAndWait();
+        return alert.showAndWait();
     }
 
     /**
