@@ -5,16 +5,20 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.image.ImageView;
+import seng202.team5.models.Trail;
 
 public class ViewTrailController extends Controller {
+
+    private Trail trail;
 
     /**
      * Launches the screen with navigator
      *
      * @param navigator screen navigator
      */
-    public ViewTrailController(ScreenNavigator navigator) {
+    public ViewTrailController(ScreenNavigator navigator, Trail trail) {
         super(navigator);
+        this.trail = trail;
     }
 
     @FXML
@@ -34,6 +38,11 @@ public class ViewTrailController extends Controller {
     @FXML
     private ImageView trailThumbnail;
     // hut labels and images currently invisible
+
+    @FXML
+    private void initialize() {
+
+    }
 
     @Override
     protected String getFxmlFile() {

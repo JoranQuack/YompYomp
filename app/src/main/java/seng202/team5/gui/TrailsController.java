@@ -110,7 +110,13 @@ public class TrailsController extends Controller {
             VBox.setMargin(trailCard, new Insets(10));
 
             trailsContainer.getChildren().add(trailCard);
+            trailCard.setOnMouseClicked(e -> onTrailCardClicked(trail));
         }
+    }
+
+    @FXML
+    private void onTrailCardClicked(Trail trail) {
+        super.getNavigator().launchScreen(new ViewTrailController(super.getNavigator(), trail));
     }
 
     /**
@@ -142,6 +148,8 @@ public class TrailsController extends Controller {
         List<Trail> filteredTrails = searchService.getTrails(query, page);
         updateTrailsDisplay(filteredTrails);
     }
+
+
 
     @Override
     protected String getFxmlFile() {

@@ -39,7 +39,6 @@ public class WelcomeController extends Controller {
             subtitleLabel.setText("Create a new profile or continue to the dashboard.");
             skipButton.setText("Continue");
             setUpProfileButton.setText("Create new profile");
-            return;
         }
     }
 
