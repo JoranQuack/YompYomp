@@ -11,6 +11,7 @@ import seng202.team5.utils.QueryHelper;
 public class UserService {
     User user;
     private final DatabaseService databaseService;
+    private final QueryHelper queryHelper;
 
     // SQL Constants
     private static final String UPSERT_SQL = """
@@ -45,6 +46,8 @@ public class UserService {
     public UserService() {
         this.user = null;
         this.databaseService = new DatabaseService();
+        this.queryHelper = new QueryHelper(databaseService);
+        removeLastGuestUserIfExists();
     }
 
     /**
@@ -55,6 +58,7 @@ public class UserService {
     public UserService(DatabaseService databaseService) {
         this.user = null;
         this.databaseService = databaseService;
+        this.queryHelper = new QueryHelper(databaseService);
     }
 
     /**
@@ -75,8 +79,6 @@ public class UserService {
      * @return the user loaded from the database, or guest user if none found
      */
     private User loadUserFromDatabase() {
-        QueryHelper queryHelper = new QueryHelper(databaseService);
-
         List<User> users = queryHelper.executeQuery("SELECT * FROM user LIMIT 1", null, this::mapRowToUser);
         return users.isEmpty() ? null : users.get(0);
     }
@@ -88,9 +90,14 @@ public class UserService {
      */
     public void setUser(User user) {
         this.user = user;
-        QueryHelper queryHelper = new QueryHelper(databaseService);
-
         queryHelper.executeUpdate(UPSERT_SQL, stmt -> setUserParameters(stmt, user));
+    }
+
+    /**
+     * Removes last guest user if exists.
+     */
+    private void removeLastGuestUserIfExists() {
+        queryHelper.executeUpdate("DELETE FROM user WHERE type = 'guest'", null);
     }
 
     /**
