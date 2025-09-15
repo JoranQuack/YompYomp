@@ -43,17 +43,30 @@ public class ProfileSetupGeneralController extends Controller {
     @FXML
     private void initialize() {
         // TODO: use regions based on trail data in DB
+        User user = super.getUserService().getUser();
+
         List<String> regionList = new ArrayList<>(List.of("Northland", "Auckland",
                 "Waikato", "Bay of Plenty", "Gisborne", "Hawke's Bay", "Taranaki",
                 "Manawatu-Whanganui", "Tasman", "Wellington", "Nelson", "Marlborough", "West Coast",
                 "Canterbury", "Otago", "Southland"));
-
-        usernameLabel.setText("Username");
-        regionLabel.setText("Choose your region");
-        usernameTextField.setPromptText("YompYomp User");
         regionCheckComboBox.getItems().addAll(regionList);
-        familyFriendlyCheckBox.setSelected(false);
-        accessibleCheckBox.setSelected(false);
+
+        if (user != null) {
+            usernameTextField.setText(user.getName());
+            regionCheckComboBox.getCheckModel().clearChecks();
+            if (user.getRegion() != null) {
+                for (String region : user.getRegion()) {
+                    regionCheckComboBox.getCheckModel().check(region);
+                }
+            }
+            familyFriendlyCheckBox.setSelected(user.isFamilyFriendly());
+            accessibleCheckBox.setSelected(user.isAccessible());
+        } else {
+            usernameTextField.setPromptText("YompYomp User");
+            familyFriendlyCheckBox.setSelected(false);
+            accessibleCheckBox.setSelected(false);
+        }
+
         continueButton.setOnAction(e -> onContinueButtonClicked());
     }
 
