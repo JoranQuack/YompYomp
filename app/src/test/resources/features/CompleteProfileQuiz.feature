@@ -1,4 +1,4 @@
-Feature: View personalised recommended trails
+Feature: Complete Profile Quiz (UC_1)
 As a profiled user
 I want to view my personalised recommended trails
 So that I can see trails that best match my preferences

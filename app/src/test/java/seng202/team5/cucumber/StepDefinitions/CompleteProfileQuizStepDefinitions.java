@@ -1,6 +1,5 @@
 package seng202.team5.cucumber.StepDefinitions;
 
-import io.cucumber.java.PendingException;
 import io.cucumber.java.en.*;
 import seng202.team5.data.SqlBasedKeywordRepo;
 import seng202.team5.data.SqlBasedTrailRepo;
@@ -16,7 +15,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-public class ViewPersonalisedRecommendedTrailsStepDefinitions {
+public class CompleteProfileQuizStepDefinitions {
     private SqlBasedKeywordRepo mockKeywordRepo;
     private SqlBasedTrailRepo mockTrailRepo;
     private MatchMakingService matchMakingService;
