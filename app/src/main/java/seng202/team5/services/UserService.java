@@ -82,11 +82,26 @@ public class UserService {
     }
 
     /**
-     * Set the current user, and updates it in the database if needed.
+     * Checks if a user's name choice is valid.
+     * @param name the name to validate
+     * @return true if the name is not null, not empty, and not "Guest User"
+     */
+    public boolean isValidName(String name) {
+        return name != null && !name.trim().isEmpty() && !name.equalsIgnoreCase("Guest User") && !name.equalsIgnoreCase("null");
+    }
+
+    /**
+     * Checks if the user's chosen name is valid, if so,
+     * it sets the current user and updates it in the database if needed.
+     * Otherwise, it does nothing and lets the controllers handle the invalid input.
      *
      * @param user the user to set
      */
     public void setUser(User user) {
+        if (!isValidName(user.getName())) {
+            return;
+        }
+
         this.user = user;
         QueryHelper queryHelper = new QueryHelper(databaseService);
 
