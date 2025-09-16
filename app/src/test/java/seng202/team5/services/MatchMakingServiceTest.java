@@ -7,6 +7,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import seng202.team5.data.SqlBasedKeywordRepo;
 import seng202.team5.data.SqlBasedTrailRepo;
+import seng202.team5.exceptions.MatchMakingFailedException;
 import seng202.team5.models.Trail;
 import seng202.team5.models.User;
 
@@ -107,7 +108,7 @@ class MatchMakingServiceTest {
 
     @Test
     @DisplayName("Should correctly map user preferences")
-    void testUserWeightsPopulatedCorrectly() {
+    void testUserWeightsPopulatedCorrectly() throws MatchMakingFailedException {
         User user = makeTestUser();
         matchMakingService.setUserPreferences(user);
 
@@ -128,7 +129,7 @@ class MatchMakingServiceTest {
 
     @Test
     @DisplayName("Should categorise trail correctly based on description")
-    void testCategoriseTrail() {
+    void testCategoriseTrail() throws MatchMakingFailedException {
         Trail trail = mockTrails.getFirst();
         Set<String> categories = matchMakingService.categoriseTrail(trail);
         assertTrue(categories.contains("Alpine"));
@@ -145,7 +146,7 @@ class MatchMakingServiceTest {
 
     @Test
     @DisplayName("Should assign weights to trails correctly, according to their category")
-    void testAssignWeightsToTrails() {
+    void testAssignWeightsToTrails() throws MatchMakingFailedException {
         User user = makeTestUser();
         matchMakingService.setUserPreferences(user);
         matchMakingService.assignWeightsToTrails();
@@ -167,7 +168,7 @@ class MatchMakingServiceTest {
 
     @Test
     @DisplayName("Should return recommended trails sorted by weight")
-    void testGetTrailsSortedByWeight() {
+    void testGetTrailsSortedByWeight() throws MatchMakingFailedException {
         User user = makeTestUser();
         matchMakingService.setUserPreferences(user);
         matchMakingService.assignWeightsToTrails();
@@ -183,7 +184,7 @@ class MatchMakingServiceTest {
 
     @Test
     @DisplayName("Should return paginated personalised trails")
-    void testGetPersonalisedTrails() {
+    void testGetPersonalisedTrails() throws MatchMakingFailedException {
         User user = makeTestUser();
         matchMakingService.setUserPreferences(user);
         matchMakingService.assignWeightsToTrails();
@@ -231,7 +232,7 @@ class MatchMakingServiceTest {
 
     @Test
     @DisplayName("Should return a partial match")
-    void testPartialMatchTrail() {
+    void testPartialMatchTrail() throws MatchMakingFailedException {
         User user = makeTestUser();
         matchMakingService.setUserPreferences(user);
 
@@ -247,7 +248,7 @@ class MatchMakingServiceTest {
 
     @Test
     @DisplayName("Should return the same score as partial match even with duplicate words")
-    void testDuplicateKeywords() {
+    void testDuplicateKeywords() throws MatchMakingFailedException {
         User user = makeTestUser();
         matchMakingService.setUserPreferences(user);
 
@@ -259,7 +260,7 @@ class MatchMakingServiceTest {
 
     @Test
     @DisplayName("No match should return 0%")
-    void testNoMatchTrail() {
+    void testNoMatchTrail() throws MatchMakingFailedException {
         User user = makeTestUser();
         matchMakingService.setUserPreferences(user);
 
@@ -271,7 +272,7 @@ class MatchMakingServiceTest {
 
     @Test
     @DisplayName("Perfect match should return 100%")
-    void TestPerfectMatch() {
+    void TestPerfectMatch() throws MatchMakingFailedException {
         User user = makeTestUser();
         matchMakingService.setUserPreferences(user);
 
@@ -285,7 +286,7 @@ class MatchMakingServiceTest {
 
     @Test
     @DisplayName("Case-insensitive matching should still count keywords")
-    void testCaseSensitivity() {
+    void testCaseSensitivity() throws MatchMakingFailedException {
         User user = makeTestUser();
         matchMakingService.setUserPreferences(user);
 
@@ -300,7 +301,7 @@ class MatchMakingServiceTest {
 
     @Test
     @DisplayName("Empty list should give match of 0%")
-    void testNullOrEmptyKeywords() {
+    void testNullOrEmptyKeywords() throws MatchMakingFailedException {
         User user = makeTestUser();
         matchMakingService.setUserPreferences(user);
 
