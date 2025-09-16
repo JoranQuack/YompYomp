@@ -118,6 +118,15 @@ public class MatchmakingService {
      *         categories match
      */
     public Set<String> categoriseTrail(Trail trail) throws MatchMakingFailedException {
+        // Make sure we have the reverse index built, else categorisation problems arise
+
+        try {
+            if (keywordToCategory.isEmpty()) {
+                buildReverseIndex();
+            }
+        } catch (MatchMakingFailedException e) {
+            throw new MatchMakingFailedException("Keyword to category file is empty");
+        }
         Set<String> matchedCategories = new HashSet<>();
         String description = trail.getDescription().toLowerCase(Locale.ROOT);
 
