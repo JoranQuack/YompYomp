@@ -1,0 +1,54 @@
+@startuml
+skinparam packageStyle rectangle
+title Services Package
+
+package "services" {
+
+  class ImageService {
+    + loadTrailImage(url : String) : Image
+  }
+
+  class MatchMakingService {
+    + generateTrailWeights(user : User) : void
+    + getRecommendedTrails(user : User, limit : int) : List<Trail>
+    + categoriseTrail(trail : Trail) : Set<String>
+    + scoreTrail(trailCategories : Set<String>) : double
+    + getPersonalisedTrails(page : int) : List<Trail>
+  }
+
+  class SearchService {
+    + setMaxResults(n : int) : void
+    + getNumberOfTrails() : int
+    + getNumberOfPages(query : String) : int
+    + getPage(page : int) : List<Trail>
+    + search(query : String, page : int) : List<Trail>
+  }
+
+  class SetupService {
+    + start() : void
+    + saveGeneral(username : String, prefs : Preferences) : void
+    + finish() : void
+  }
+
+  class UserService {
+    + getUser() : User
+    + updatePreferences(prefs : Preferences) : void
+  }
+
+  class DatabaseService {
+    + DatabaseService()
+    + DatabaseService(databasePath : String)
+    + getConnection() : Connection
+    + databaseExists() : boolean
+    + deleteDatabase() : boolean
+    + createDatabaseIfNotExists() : void
+    + isSchemaUpToDate() : boolean
+  }
+
+}
+
+SearchService --> DatabaseService
+MatchMakingService --> DatabaseService
+UserService --> DatabaseService
+SetupService --> DatabaseService
+@enduml
