@@ -26,6 +26,8 @@ public class TrailsController extends Controller {
     private SearchService searchService;
     private String searchText;
 
+    /** Ordered list of difficulty levels for proper sorting */
+    private final List<String> difficultyOrder = List.of("easiest", "easy", "intermediate", "advanced", "expert");
     @FXML
     private VBox navbarContainer;
 
@@ -138,8 +140,38 @@ public class TrailsController extends Controller {
                 (observable, oldValue, newValue) -> onFilterChanged());
 
         List<String> options = searchService.getFilterOptions(filterType);
+
+        // Special sorting for difficulty
+        if (filterType.equals("difficulty")) {
+            sortDifficultyOptions(options);
+        }
+
         choiceBox.getItems().addAll(options);
         choiceBox.setValue(searchService.getDefaultFilterValue(filterType));
+    }
+
+    /**
+     * Difficulty sorting logic
+     */
+    private void sortDifficultyOptions(List<String> options) {
+        options.sort((a, b) -> {
+            if (a.equals("All difficulties"))
+                return -1;
+            if (b.equals("All difficulties"))
+                return 1;
+
+            int indexA = difficultyOrder.indexOf(a.toLowerCase());
+            int indexB = difficultyOrder.indexOf(b.toLowerCase());
+
+            if (indexA != -1 && indexB != -1) {
+                return Integer.compare(indexA, indexB);
+            }
+            if (indexA != -1)
+                return -1;
+            if (indexB != -1)
+                return 1;
+            return a.compareToIgnoreCase(b);
+        });
     }
 
     /**
