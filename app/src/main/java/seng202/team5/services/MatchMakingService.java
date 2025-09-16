@@ -42,8 +42,7 @@ public class MatchMakingService {
      *
      * @param user the user whose preferences will be used to generate trail weights
      */
-    public void generateTrailWeights(User user) {
-        throw new MatchMakingFailedException("Test");
+    public void generateTrailWeights(User user) throws MatchMakingFailedException {
         setUserPreferences(user);
         buildReverseIndex();
         assignWeightsToTrails();
@@ -118,16 +117,7 @@ public class MatchMakingService {
      *         set if no
      *         categories match
      */
-    public Set<String> categoriseTrail(Trail trail) {
-        // Make sure we have the reverse index built, else categorisation problems arise
-        if (keywordToCategory.isEmpty()) {
-            try {
-                buildReverseIndex();
-            } catch (MatchMakingFailedException e) {
-                throw new RuntimeException(e); //TODO handle exception
-            }
-        }
-
+    public Set<String> categoriseTrail(Trail trail) throws MatchMakingFailedException {
         Set<String> matchedCategories = new HashSet<>();
         String description = trail.getDescription().toLowerCase(Locale.ROOT);
 
@@ -203,7 +193,7 @@ public class MatchMakingService {
      */
     public void assignWeightsToTrails() throws MatchMakingFailedException {
         List<Trail> trails = trailRepo.getAllTrails();
-        if (trails.isEmpty()) {
+        if (!trails.isEmpty()) {
             trailWeights.clear();
 
             for (Trail trail : trails) {
@@ -229,13 +219,6 @@ public class MatchMakingService {
      * @return the trail's cached weight
      */
     public double getTrailWeight(int trailId) {
-        if (!weightsCalculated) {
-            try {
-                assignWeightsToTrails();
-            } catch (MatchMakingFailedException e) {
-                throw new RuntimeException(e); //TODO handle exception
-            }
-        }
         return trailWeights.getOrDefault(trailId, 0.0);
     }
 
@@ -248,14 +231,6 @@ public class MatchMakingService {
      * @return list of trails sorted (descending) by personalised weight
      */
     private List<Trail> getSortedTrails() {
-        if (!weightsCalculated) {
-            try {
-                assignWeightsToTrails();
-            } catch (MatchMakingFailedException e) {
-                throw new RuntimeException(e); //TODO handle exception
-            }
-        }
-
         return trailRepo.getAllTrails().stream()
                 .peek(trail -> trail.setUserWeight(getTrailWeight(trail.getId())))
                 .sorted((t1, t2) -> {
