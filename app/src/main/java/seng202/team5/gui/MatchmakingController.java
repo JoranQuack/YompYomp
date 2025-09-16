@@ -2,10 +2,12 @@ package seng202.team5.gui;
 
 import javafx.concurrent.Task;
 import javafx.fxml.FXML;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ProgressIndicator;
 import seng202.team5.data.DatabaseService;
 import seng202.team5.data.SqlBasedKeywordRepo;
 import seng202.team5.data.SqlBasedTrailRepo;
+import seng202.team5.exceptions.MatchMakingFailedException;
 import seng202.team5.models.User;
 import seng202.team5.services.MatchMakingService;
 
@@ -59,14 +61,12 @@ public class MatchmakingController extends Controller {
                     return null;
                 }
 
-                try {
+
                     // Run the matchmaking process
                     matchMakingService.generateTrailWeights(user);
                     return null;
-                }
-                catch (MatchMakingFailedException exception) {
-                    showAlert(AlertType.ERROR, "Matchmaking failed", "Matchmaking failed, please close the application and try again");
-                }
+
+
             }
 
             @Override
@@ -78,8 +78,9 @@ public class MatchmakingController extends Controller {
             protected void failed() {
                 Throwable exception = getException();
                 System.err.println("Matchmaking failed: " + exception.getMessage());
-                exception.printStackTrace();
-                navigator.launchScreen(new DashboardController(navigator));
+                exitThread();
+//                showAlert(AlertType.ERROR, "Matchmaking Failed", exception.getMessage());
+
             }
         };
 
@@ -96,6 +97,12 @@ public class MatchmakingController extends Controller {
     @Override
     protected String getTitle() {
         return "Matchmaking In Progress";
+    }
+
+    private void exitThread() {
+        Thread.currentThread().interrupt();
+        showAlert(AlertType.ERROR, "Matchmaking Failed", "Matchmaking failed, please close the application and try again.");
+        super.getNavigator().launchScreen(new DashboardController(super.getNavigator())); //TODO this should take user to guest dashboard screen
     }
 
 }
