@@ -85,7 +85,7 @@ public class DashboardController extends Controller {
         trailsContainer.getChildren().clear();
 
         for (Trail trail : trails) {
-            TrailCardController trailCard = new TrailCardController();
+            TrailCardController trailCard = new TrailCardController(super.getUserService().getUser() == null);
             trailCard.setData(trail);
 
             // Add some spacing between cards

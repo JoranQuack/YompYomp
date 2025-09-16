@@ -142,6 +142,7 @@ public class ProfileQuizController extends Controller {
             super.getNavigator()
                     .launchScreen(new ProfileQuizController(super.getNavigator(), quizId));
         } else {
+            super.getUserService().saveUserToDatabase();
             super.getNavigator().launchScreen(new MatchmakingController(super.getNavigator()));
         }
     }

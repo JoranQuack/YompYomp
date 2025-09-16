@@ -32,7 +32,10 @@ public class TrailCardController extends VBox {
 
     private final ImageService imageService;
 
-    public TrailCardController() {
+    private boolean isUnmatched;
+
+    public TrailCardController(boolean isUnmatched) {
+        this.isUnmatched = isUnmatched;
         this.imageService = new ImageService();
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/components/trail_card.fxml"));
         fxmlLoader.setRoot(this);
@@ -58,6 +61,21 @@ public class TrailCardController extends VBox {
         difficultyLabel.setText(trail.getDifficulty());
         durationLabel.setText(trail.getCompletionType());
         regionLabel.setText("Region");
+
+        if (isUnmatched) {
+            matchBar.setVisible(false);
+            matchLabel.setVisible(false);
+        } else {
+            updateMatchBar(trail);
+        }
+    }
+
+    /**
+     * Updates the match bar based on the trail's user weight.
+     *
+     * @param trail The trail object
+     */
+    private void updateMatchBar(Trail trail) {
         double weight = trail.getUserWeight();
         matchBar.setProgress(weight);
         int matchPercent = (int) Math.round(weight * 100);

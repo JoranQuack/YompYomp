@@ -135,6 +135,13 @@ public class SqlBasedTrailRepo implements ITrail {
     }
 
     /**
+     * Clears all user weight values from database
+     */
+    public void clearUserWeights() {
+        queryHelper.executeUpdate("UPDATE trail SET user_weight = NULL", null);
+    }
+
+    /**
      * Counts all the rows in the trail table
      *
      * @return

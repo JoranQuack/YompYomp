@@ -5,11 +5,12 @@ import java.sql.SQLException;
 import java.util.List;
 
 import seng202.team5.data.DatabaseService;
+import seng202.team5.data.SqlBasedTrailRepo;
 import seng202.team5.models.User;
 import seng202.team5.utils.QueryHelper;
 
 public class UserService {
-    User user;
+    private User user;
     private final DatabaseService databaseService;
     private final QueryHelper queryHelper;
 
@@ -47,7 +48,6 @@ public class UserService {
         this.user = null;
         this.databaseService = new DatabaseService();
         this.queryHelper = new QueryHelper(databaseService);
-        removeLastGuestUserIfExists();
     }
 
     /**
@@ -84,20 +84,30 @@ public class UserService {
     }
 
     /**
+     * Put current user into database.
+     */
+    public void saveUserToDatabase() {
+        if (user != null) {
+            queryHelper.executeUpdate(UPSERT_SQL, stmt -> setUserParameters(stmt, user));
+        }
+    }
+
+    /**
      * Set the current user, and updates it in the database if needed.
      *
      * @param user the user to set
      */
     public void setUser(User user) {
         this.user = user;
-        queryHelper.executeUpdate(UPSERT_SQL, stmt -> setUserParameters(stmt, user));
     }
 
     /**
-     * Removes last guest user if exists.
+     * Removes last user if exists.
      */
-    private void removeLastGuestUserIfExists() {
-        queryHelper.executeUpdate("DELETE FROM user WHERE type = 'guest'", null);
+    public void clearUser() {
+        SqlBasedTrailRepo trailRepo = new SqlBasedTrailRepo(databaseService);
+        trailRepo.clearUserWeights();
+        queryHelper.executeUpdate("DELETE FROM user", null);
     }
 
     /**
