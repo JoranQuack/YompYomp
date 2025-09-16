@@ -1,5 +1,5 @@
 -- Remember to increment the schema version here when making changes!
--- Schema version: 1.3
+-- Schema version: 1.4
 PRAGMA foreign_keys = off;
 
 BEGIN TRANSACTION;
@@ -48,7 +48,6 @@ DROP TABLE IF EXISTS user;
 CREATE TABLE
     IF NOT EXISTS user (
         id INTEGER PRIMARY KEY,
-        type TEXT,
         name TEXT,
         regions TEXT,
         isFamilyFriendly BOOL,
@@ -62,7 +61,8 @@ CREATE TABLE
         mountainPreference INTEGER,
         wildlifePreference INTEGER,
         historicPreference INTEGER,
-        waterfallPreference INTEGER
+        waterfallPreference INTEGER,
+        isProfileComplete BOOL DEFAULT 0
     );
 
 COMMIT TRANSACTION;

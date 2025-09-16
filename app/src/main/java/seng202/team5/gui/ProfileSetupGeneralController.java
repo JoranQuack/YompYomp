@@ -72,9 +72,6 @@ public class ProfileSetupGeneralController extends Controller {
      */
     private void setUserPreferences() {
         User user = super.getUserService().getUser();
-        if (user == null) {
-            user = new User();
-        }
         if (usernameTextField.getText().isEmpty()) {
             user.setName("YompYomp User");
         } else {

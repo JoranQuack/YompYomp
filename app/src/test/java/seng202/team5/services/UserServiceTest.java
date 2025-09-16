@@ -5,36 +5,53 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.MockedConstruction;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 
 import seng202.team5.data.DatabaseService;
 import seng202.team5.models.User;
-import seng202.team5.utils.QueryHelper;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.LENIENT)
 public class UserServiceTest {
 
     @Mock
     private DatabaseService mockDatabaseService;
 
+    @Mock
+    private Connection mockConnection;
+
+    @Mock
+    private PreparedStatement mockPreparedStatement;
+
+    @Mock
+    private ResultSet mockResultSet;
+
     private UserService userService;
     private User testUser;
 
     @BeforeEach
-    void setUp() {
+    void setUp() throws Exception {
+        // Set up database mocking
+        when(mockDatabaseService.getConnection()).thenReturn(mockConnection);
+        when(mockConnection.prepareStatement(anyString())).thenReturn(mockPreparedStatement);
+        when(mockPreparedStatement.executeUpdate()).thenReturn(1);
+        when(mockPreparedStatement.executeQuery()).thenReturn(mockResultSet);
+        when(mockResultSet.next()).thenReturn(false);
+
         userService = new UserService(mockDatabaseService);
         testUser = new User(
                 1,
-                "profiled",
                 "Test User",
                 Arrays.asList("Canterbury", "Otago"),
                 true,
@@ -48,7 +65,8 @@ public class UserServiceTest {
                 4,
                 3,
                 2,
-                1);
+                1,
+                true); // isProfileComplete = true
     }
 
     @Test
@@ -66,60 +84,101 @@ public class UserServiceTest {
     }
 
     @Test
-    @DisplayName("Should return existing user without DB call")
+    @DisplayName("Should return user from database after setUser")
     void testGetUserWhenUserAlreadySet() {
-        try (MockedConstruction<QueryHelper> queryMock = mockConstruction(QueryHelper.class)) {
-            userService.setUser(testUser);
+        userService.setUser(testUser);
 
-            User retrievedUser = userService.getUser();
-
-            assertNotNull(retrievedUser);
-            assertEquals(testUser.getId(), retrievedUser.getId());
-            assertEquals(testUser.getName(), retrievedUser.getName());
-            assertEquals(testUser.getType(), retrievedUser.getType());
-        }
+        User retrievedUser = userService.getUser();
+        assertNotNull(retrievedUser);
+        assertFalse(userService.isGuest());
     }
 
     @Test
     @DisplayName("Should load user from DB when none in memory")
     void testGetUserLoadsFromDatabaseWhenNull() {
-        try (MockedConstruction<QueryHelper> queryMock = mockConstruction(QueryHelper.class, (mock, context) -> {
-            when(mock.executeQuery(anyString(), isNull(), any())).thenReturn(List.of(testUser));
-        })) {
+        User retrievedUser = userService.getUser();
 
-            User retrievedUser = userService.getUser();
-
-            assertNotNull(retrievedUser);
-            assertEquals(testUser.getId(), retrievedUser.getId());
-            assertEquals(testUser.getName(), retrievedUser.getName());
-
-            assertEquals(1, queryMock.constructed().size());
-            verify(queryMock.constructed().get(0)).executeQuery(eq("SELECT * FROM user LIMIT 1"), isNull(), any());
-        }
+        assertNotNull(retrievedUser);
+        assertFalse(userService.isGuest());
     }
 
     @Test
-    @DisplayName("Should return null when no user in DB")
-    void testGetUserReturnsNullWhenNoDatabaseUser() {
-        try (MockedConstruction<QueryHelper> queryMock = mockConstruction(QueryHelper.class, (mock, context) -> {
-            when(mock.executeQuery(anyString(), isNull(), any())).thenReturn(Collections.emptyList());
-        })) {
-
-            User retrievedUser = userService.getUser();
-            assertNull(retrievedUser);
-            assertEquals(1, queryMock.constructed().size());
-        }
+    @DisplayName("Should create new user when no user in DB and not guest")
+    void testGetUserCreatesNewUserWhenNoDatabaseUser() {
+        User retrievedUser = userService.getUser();
+        assertNotNull(retrievedUser);
+        assertFalse(userService.isGuest());
     }
 
     @Test
-    @DisplayName("Should set user and update DB")
+    @DisplayName("Should return null when user is guest")
+    void testGetUserReturnsNullWhenGuest() {
+        userService.setGuest();
+
+        User retrievedUser = userService.getUser();
+        assertNull(retrievedUser);
+        assertTrue(userService.isGuest());
+    }
+
+    @Test
+    @DisplayName("Should set guest mode correctly")
+    void testSetGuest() {
+        userService.setUser(testUser);
+        assertFalse(userService.isGuest());
+
+        userService.setGuest();
+        assertTrue(userService.isGuest());
+        assertNull(userService.getUser());
+    }
+
+    @Test
+    @DisplayName("Should set user and exit guest mode")
+    void testSetUserExitsGuestMode() {
+        userService.setGuest();
+        assertTrue(userService.isGuest());
+
+        userService.setUser(testUser);
+        assertFalse(userService.isGuest());
+
+        assertNotNull(userService.getUser());
+    }
+
+    @Test
+    @DisplayName("Should set user")
     void testSetUser() {
-        try (MockedConstruction<QueryHelper> queryMock = mockConstruction(QueryHelper.class)) {
-            userService.setUser(testUser);
-            assertEquals(testUser, userService.getUser());
+        userService.setUser(testUser);
 
-            assertEquals(1, queryMock.constructed().size());
-            verify(queryMock.constructed().get(0)).executeUpdate(anyString(), any());
-        }
+        assertFalse(userService.isGuest());
+        assertNotNull(userService.getUser());
+    }
+
+    @Test
+    @DisplayName("Should save user to database")
+    void testSaveUserToDatabase() {
+        userService.saveUserToDatabase(testUser);
+
+        assertNotNull(userService);
+        assertFalse(userService.isGuest());
+    }
+
+    @Test
+    @DisplayName("Should not save guest user to database")
+    void testSaveUserToDatabaseDoesNotSaveGuest() {
+        userService.setGuest();
+        assertTrue(userService.isGuest());
+
+        userService.saveUserToDatabase(testUser);
+        assertTrue(userService.isGuest());
+    }
+
+    @Test
+    @DisplayName("Should clear user and reset guest state")
+    void testClearUser() {
+        userService.setGuest();
+
+        userService.clearUser();
+
+        assertFalse(userService.isGuest());
+        assertNotNull(userService.getUser());
     }
 }

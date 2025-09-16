@@ -33,8 +33,10 @@ public class WelcomeController extends Controller {
      */
     @FXML
     private void initialize() {
+        super.getUserService().cleanupIncompleteProfiles();
+
         User existingUser = super.getUserService().getUser();
-        if (existingUser != null) {
+        if (existingUser != null && existingUser.isProfileComplete()) {
             titleLabel.setText("Welcome back, " + existingUser.getName() + "!");
             subtitleLabel.setText("Create a new profile or continue to the dashboard.");
             setUpProfileButton.setText("Create new profile");
@@ -60,6 +62,9 @@ public class WelcomeController extends Controller {
      */
     @FXML
     private void onSkipButtonClicked() {
+        if (super.getUserService().getUser() == null) {
+            super.getUserService().setGuest();
+        }
         super.getNavigator().launchScreen(new DashboardController(super.getNavigator()));
     }
 
