@@ -121,7 +121,7 @@ public class TrailsController extends Controller {
         trailsContainer.getChildren().clear();
 
         for (Trail trail : trails) {
-            TrailCardController trailCard = new TrailCardController(super.getUserService().getUser() == null);
+            TrailCardController trailCard = new TrailCardController(super.getUserService().isGuest());
             trailCard.setData(trail);
 
             // Add some spacing between cards

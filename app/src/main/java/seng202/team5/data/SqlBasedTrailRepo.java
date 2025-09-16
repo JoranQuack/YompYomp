@@ -71,7 +71,7 @@ public class SqlBasedTrailRepo implements ITrail {
      * @return a list of recommended trails
      */
     public List<Trail> getRecommendedTrails() {
-        String sql = SELECT_ALL + " ORDER BY user_weight DESC, name DESC LIMIT 8";
+        String sql = SELECT_ALL + " ORDER BY user_weight DESC, name ASC LIMIT 8";
         return queryHelper.executeQuery(sql, null, this::mapRowToTrail);
     }
 

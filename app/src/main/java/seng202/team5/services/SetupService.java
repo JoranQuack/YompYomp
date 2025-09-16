@@ -73,11 +73,13 @@ public class SetupService {
             // Check if database exists and schema is up to date
             if (!databaseService.databaseExists() || !databaseService.isSchemaUpToDate()) {
                 if (databaseService.databaseExists()) {
+                    System.out.println("Database schema is outdated. Deleting database.");
                     databaseService.deleteDatabase();
                 }
 
                 // Create the database and tables
                 databaseService.createDatabaseIfNotExists();
+                syncDbFromTrailFile();
             }
         } catch (Exception e) {
             System.err.println("Error setting up database: " + e.getMessage());
@@ -191,7 +193,6 @@ public class SetupService {
      */
     public void setupApplication() {
         setupDatabase();
-        syncDbFromTrailFile();
         scrapeAllTrailImages();
     }
 }

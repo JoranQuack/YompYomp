@@ -140,6 +140,12 @@ public class UserService {
      * @return true if user is a guest, false otherwise
      */
     public boolean isGuest() {
+        if (!isGuest) {
+            User existingUser = loadUserFromDatabase();
+            if (existingUser == null) {
+                isGuest = true;
+            }
+        }
         return isGuest;
     }
 
