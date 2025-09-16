@@ -100,11 +100,12 @@ public class ProfileSetupGeneralController extends Controller {
             usernameLabel.setText("Username");
         }
 
-        User user = userService.getUser();
-        if (user == null) {
-            user = new User();
+        User user = super.getUserService().getUser();
+        if (usernameTextField.getText().isEmpty()) {
+            user.setName("YompYomp User");
+        } else {
+            user.setName(usernameTextField.getText());
         }
-        user.setName(name);
         user.setRegion(regionCheckComboBox.getCheckModel().getCheckedItems());
         user.setIsFamilyFriendly(familyFriendlyCheckBox.isSelected());
         user.setIsAccessible(accessibleCheckBox.isSelected());

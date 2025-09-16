@@ -71,7 +71,7 @@ public class SqlBasedTrailRepo implements ITrail {
      * @return a list of recommended trails
      */
     public List<Trail> getRecommendedTrails() {
-        String sql = SELECT_ALL + " ORDER BY user_weight DESC LIMIT 8";
+        String sql = SELECT_ALL + " ORDER BY user_weight DESC, name ASC LIMIT 8";
         return queryHelper.executeQuery(sql, null, this::mapRowToTrail);
     }
 
@@ -132,6 +132,13 @@ public class SqlBasedTrailRepo implements ITrail {
      */
     public void deleteById(int id) {
         queryHelper.executeUpdate(DELETE_SQL, stmt -> stmt.setInt(1, id));
+    }
+
+    /**
+     * Clears all user weight values from database
+     */
+    public void clearUserWeights() {
+        queryHelper.executeUpdate("UPDATE trail SET user_weight = NULL", null);
     }
 
     /**

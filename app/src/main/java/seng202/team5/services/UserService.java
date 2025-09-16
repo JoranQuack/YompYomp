@@ -5,24 +5,25 @@ import java.sql.SQLException;
 import java.util.List;
 
 import seng202.team5.data.DatabaseService;
+import seng202.team5.data.SqlBasedTrailRepo;
 import seng202.team5.models.User;
 import seng202.team5.utils.QueryHelper;
 
 public class UserService {
-    User user;
+    private boolean isGuest;
     private final DatabaseService databaseService;
+    private final QueryHelper queryHelper;
 
     // SQL Constants
     private static final String UPSERT_SQL = """
             INSERT INTO user (
-                id, type, name, regions, isFamilyFriendly, isAccessible,
+                id, name, regions, isFamilyFriendly, isAccessible,
                 experienceLevel, gradientPreference, bushPreference,
                 reservePreference, lakeRiverPreference, coastPreference,
                 mountainPreference, wildlifePreference, historicPreference,
-                waterfallPreference
+                waterfallPreference, isProfileComplete
             ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
             ON CONFLICT(id) DO UPDATE SET
-                type=excluded.type,
                 name=excluded.name,
                 regions=excluded.regions,
                 isFamilyFriendly=excluded.isFamilyFriendly,
@@ -36,15 +37,17 @@ public class UserService {
                 mountainPreference=excluded.mountainPreference,
                 wildlifePreference=excluded.wildlifePreference,
                 historicPreference=excluded.historicPreference,
-                waterfallPreference=excluded.waterfallPreference
+                waterfallPreference=excluded.waterfallPreference,
+                isProfileComplete=excluded.isProfileComplete
             """;
 
     /**
      * Constructor for UserService
      */
     public UserService() {
-        this.user = null;
+        this.isGuest = false;
         this.databaseService = new DatabaseService();
+        this.queryHelper = new QueryHelper(databaseService);
     }
 
     /**
@@ -53,20 +56,30 @@ public class UserService {
      * @param databaseService the database service to use
      */
     public UserService(DatabaseService databaseService) {
-        this.user = null;
+        this.isGuest = false;
         this.databaseService = databaseService;
+        this.queryHelper = new QueryHelper(databaseService);
     }
 
     /**
-     * Get the current user.
+     * Get the current user from database.
      *
-     * @return the current user
+     * @return the current user loaded from database, or null if user is guest or no
+     *         user exists
      */
     public User getUser() {
-        if (user == null) {
-            user = loadUserFromDatabase();
+        if (isGuest) {
+            return null;
         }
-        return user;
+
+        User existingUser = loadUserFromDatabase();
+        if (existingUser == null) {
+            // Create new user for profile creation flow
+            User newUser = new User();
+            newUser.setName("");
+            return newUser;
+        }
+        return existingUser;
     }
 
     /**
@@ -75,37 +88,106 @@ public class UserService {
      * @return the user loaded from the database, or guest user if none found
      */
     private User loadUserFromDatabase() {
-        QueryHelper queryHelper = new QueryHelper(databaseService);
-
         List<User> users = queryHelper.executeQuery("SELECT * FROM user LIMIT 1", null, this::mapRowToUser);
         return users.isEmpty() ? null : users.get(0);
     }
 
     /**
-     * Checks if a user's name choice is valid.
-     * @param name the name to validate
-     * @return true if the name is not null, not empty, and not "Guest User"
+     * Save user to database immediately.
+     *
+     * @param user the user to save
      */
-    public boolean isValidName(String name) {
-        return name != null && !name.trim().isEmpty() && !name.equalsIgnoreCase("Guest User") && !name.equalsIgnoreCase("null");
+    public void saveUserToDatabase(User user) {
+        if (user != null && !isGuest) {
+            queryHelper.executeUpdate(UPSERT_SQL, stmt -> setUserParameters(stmt, user));
+        }
     }
 
     /**
-     * Checks if the user's chosen name is valid, if so,
-     * it sets the current user and updates it in the database if needed.
-     * Otherwise, it does nothing and lets the controllers handle the invalid input.
+     * Save user to database after each preference update to ensure persistence.
      *
-     * @param user the user to set
+     * @param user the user to save
+     */
+    public void saveUserImmediately(User user) {
+        if (user != null && !isGuest) {
+            saveUserToDatabase(user);
+        }
+    }
+
+    /**
+     * Set the current user by saving it directly to the database.
+     *
+     * @param user the user to set and save
      */
     public void setUser(User user) {
-        if (!isValidName(user.getName())) {
-            return;
+        this.isGuest = false; // Setting a user means no longer a guest
+        if (user != null) {
+            saveUserToDatabase(user);
         }
+    }
 
-        this.user = user;
-        QueryHelper queryHelper = new QueryHelper(databaseService);
+    /**
+     * Set the service to guest mode.
+     */
+    public void setGuest() {
+        clearUser();
+        this.isGuest = true;
+    }
 
-        queryHelper.executeUpdate(UPSERT_SQL, stmt -> setUserParameters(stmt, user));
+    /**
+     * Check if current user is a guest.
+     *
+     * @return true if user is a guest, false otherwise
+     */
+    public boolean isGuest() {
+        if (!isGuest) {
+            User existingUser = loadUserFromDatabase();
+            if (existingUser == null) {
+                isGuest = true;
+            }
+        }
+        return isGuest;
+    }
+
+    /**
+     * Removes last user if exists and resets to clean state.
+     */
+    public void clearUser() {
+        SqlBasedTrailRepo trailRepo = new SqlBasedTrailRepo(databaseService);
+        trailRepo.clearUserWeights();
+        queryHelper.executeUpdate("DELETE FROM user", null);
+        this.isGuest = false;
+    }
+
+    /**
+     * Clean up incomplete profiles on app startup.
+     * This removes any user profiles that were not fully completed.
+     */
+    public void cleanupIncompleteProfiles() {
+        queryHelper.executeUpdate("DELETE FROM user WHERE isProfileComplete = 0", null);
+    }
+
+    /**
+     * Mark the current user's profile as complete.
+     * This should be called when the user finishes the quiz.
+     */
+    public void markProfileComplete() {
+        User user = loadUserFromDatabase();
+        if (user != null && !isGuest) {
+            user.setProfileComplete(true);
+            saveUserToDatabase(user);
+        }
+    }
+
+    /**
+     * Check if there's a user in the database with an incomplete profile.
+     *
+     * @return true if an incomplete profile exists
+     */
+    public boolean hasIncompleteProfile() {
+        List<User> incompleteUsers = queryHelper.executeQuery(
+                "SELECT * FROM user WHERE isProfileComplete = 0 LIMIT 1", null, this::mapRowToUser);
+        return !incompleteUsers.isEmpty();
     }
 
     /**
@@ -123,7 +205,6 @@ public class UserService {
 
             return new User(
                     row.getInt("id"),
-                    row.getString("type"),
                     row.getString("name"),
                     regions,
                     row.getBoolean("isFamilyFriendly"),
@@ -137,7 +218,8 @@ public class UserService {
                     row.getInt("mountainPreference"),
                     row.getInt("wildlifePreference"),
                     row.getInt("historicPreference"),
-                    row.getInt("waterfallPreference"));
+                    row.getInt("waterfallPreference"),
+                    row.getBoolean("isProfileComplete"));
         } catch (SQLException e) {
             e.printStackTrace();
             return null;
@@ -152,20 +234,20 @@ public class UserService {
      */
     private void setUserParameters(java.sql.PreparedStatement stmt, User user) throws java.sql.SQLException {
         stmt.setInt(1, user.getId());
-        stmt.setString(2, user.getType());
-        stmt.setString(3, user.getName());
-        stmt.setString(4, user.getRegion() != null ? String.join(",", user.getRegion()) : "");
-        stmt.setBoolean(5, user.isFamilyFriendly());
-        stmt.setBoolean(6, user.isAccessible());
-        stmt.setInt(7, user.getExperienceLevel());
-        stmt.setInt(8, user.getGradientPreference());
-        stmt.setInt(9, user.getBushPreference());
-        stmt.setInt(10, user.getReservePreference());
-        stmt.setInt(11, user.getLakeRiverPreference());
-        stmt.setInt(12, user.getCoastPreference());
-        stmt.setInt(13, user.getMountainPreference());
-        stmt.setInt(14, user.getWildlifePreference());
-        stmt.setInt(15, user.getHistoricPreference());
-        stmt.setInt(16, user.getWaterfallPreference());
+        stmt.setString(2, user.getName());
+        stmt.setString(3, user.getRegion() != null ? String.join(",", user.getRegion()) : "");
+        stmt.setBoolean(4, user.isFamilyFriendly());
+        stmt.setBoolean(5, user.isAccessible());
+        stmt.setInt(6, user.getExperienceLevel());
+        stmt.setInt(7, user.getGradientPreference());
+        stmt.setInt(8, user.getBushPreference());
+        stmt.setInt(9, user.getReservePreference());
+        stmt.setInt(10, user.getLakeRiverPreference());
+        stmt.setInt(11, user.getCoastPreference());
+        stmt.setInt(12, user.getMountainPreference());
+        stmt.setInt(13, user.getWildlifePreference());
+        stmt.setInt(14, user.getHistoricPreference());
+        stmt.setInt(15, user.getWaterfallPreference());
+        stmt.setBoolean(16, user.isProfileComplete());
     }
 }

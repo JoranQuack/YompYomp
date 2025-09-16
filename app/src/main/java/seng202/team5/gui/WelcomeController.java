@@ -33,13 +33,17 @@ public class WelcomeController extends Controller {
      */
     @FXML
     private void initialize() {
+        super.getUserService().cleanupIncompleteProfiles();
+
         User existingUser = super.getUserService().getUser();
-        if (existingUser != null) {
+        if (existingUser != null && existingUser.isProfileComplete()) {
             titleLabel.setText("Welcome back, " + existingUser.getName() + "!");
             subtitleLabel.setText("Create a new profile or continue to the dashboard.");
-            skipButton.setText("Continue");
             setUpProfileButton.setText("Create new profile");
+            skipButton.setText("Continue");
             return;
+        } else {
+            super.getUserService().clearUser();
         }
     }
 
@@ -48,12 +52,7 @@ public class WelcomeController extends Controller {
      */
     @FXML
     private void onSetUpProfileButtonClicked() {
-        User user = super.getUserService().getUser();
-        if (user == null) {
-            user = new User();
-        }
-        user.setType("profiled");
-        super.getUserService().setUser(user);
+        super.getUserService().clearUser();
         super.getNavigator()
                 .launchScreen(new ProfileSetupGeneralController(super.getNavigator()));
     }
@@ -63,12 +62,8 @@ public class WelcomeController extends Controller {
      */
     @FXML
     private void onSkipButtonClicked() {
-        User user = super.getUserService().getUser();
-        if (user == null) {
-            user = new User();
-            user.setType("guest");
-            user.setName("Guest User");
-            super.getUserService().setUser(user);
+        if (super.getUserService().getUser() == null) {
+            super.getUserService().setGuest();
         }
         super.getNavigator().launchScreen(new DashboardController(super.getNavigator()));
     }
