@@ -7,12 +7,11 @@ import javafx.scene.control.ProgressIndicator;
 import seng202.team5.data.DatabaseService;
 import seng202.team5.data.SqlBasedKeywordRepo;
 import seng202.team5.data.SqlBasedTrailRepo;
-import seng202.team5.exceptions.MatchMakingFailedException;
 import seng202.team5.models.User;
-import seng202.team5.services.MatchMakingService;
+import seng202.team5.services.MatchmakingService;
 
 public class MatchmakingController extends Controller {
-    private MatchMakingService matchMakingService;
+    private MatchmakingService matchMakingService;
 
     @FXML
     private ProgressIndicator progressIndicator;
@@ -25,7 +24,7 @@ public class MatchmakingController extends Controller {
     public MatchmakingController(ScreenNavigator navigator) {
         super(navigator);
         DatabaseService databaseService = new DatabaseService();
-        matchMakingService = new MatchMakingService(
+        matchMakingService = new MatchmakingService(
                 new SqlBasedKeywordRepo(databaseService),
                 new SqlBasedTrailRepo(databaseService));
 

@@ -16,8 +16,8 @@ import java.util.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-class MatchMakingServiceTest {
-    private MatchMakingService matchMakingService;
+class MatchmakingServiceTest {
+    private MatchmakingService matchMakingService;
     @Mock
     private SqlBasedTrailRepo mockTrailRepo;
     @Mock
@@ -50,7 +50,7 @@ class MatchMakingServiceTest {
                         "2024-01-05", 567.89, 101.23)));
         when(mockTrailRepo.getAllTrails()).thenReturn(mockTrails);
 
-        matchMakingService = new MatchMakingService(mockKeywordRepo, mockTrailRepo);
+        matchMakingService = new MatchmakingService(mockKeywordRepo, mockTrailRepo);
     }
 
     /**
@@ -93,7 +93,7 @@ class MatchMakingServiceTest {
     /**
      *Calculated the expected weighted score for a trail, based on the given
      * strength contribution and coverage values. This helper function is used in tests
-     * to independently verify the scoring logic in {@link MatchMakingService}.
+     * to independently verify the scoring logic in {@link MatchmakingService}.
      * @param strengthSum the total weighted sum of matched trail categories
      * @param matched the number of trail categories that match user preferences
      * @param total the total number of categories in the trail
@@ -103,7 +103,7 @@ class MatchMakingServiceTest {
     private double expectedScore(double strengthSum, int matched, int total, double maxScore) {
         double strength = strengthSum/maxScore;
         double coverage = (double) matched/total;
-        return MatchMakingService.STRENGTH_WEIGHT * strength + (1 - MatchMakingService.STRENGTH_WEIGHT) * coverage;
+        return MatchmakingService.STRENGTH_WEIGHT * strength + (1 - MatchmakingService.STRENGTH_WEIGHT) * coverage;
     }
 
     @Test
@@ -201,7 +201,7 @@ class MatchMakingServiceTest {
         assertEquals(0, page1.size());
 
         // Test with a smaller maxResults for multipage test
-        MatchMakingService customMaxService = new MatchMakingService(mockKeywordRepo, mockTrailRepo);
+        MatchmakingService customMaxService = new MatchmakingService(mockKeywordRepo, mockTrailRepo);
         customMaxService.setMaxResults(2); // Simulate smaller page size
         customMaxService.setUserPreferences(user);
         customMaxService.assignWeightsToTrails();

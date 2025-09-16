@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
  * It categorises trails based on the keywords in the description,
  * computes user-personalised scores, and sorts the trail page using pagination.
  */
-public class MatchMakingService {
+public class MatchmakingService {
     public static final double STRENGTH_WEIGHT = 0.8; //80% strength 20% coverage
     private final Map<String, List<String>> categoryToKeywords; // category -> keywords
     private final Map<String, String> keywordToCategory = new HashMap<>(); // keyword -> category
@@ -32,7 +32,7 @@ public class MatchMakingService {
      * @param trailRepo   repository for trail data which are used for scoring and
      *                    sorting
      */
-    public MatchMakingService(SqlBasedKeywordRepo keywordRepo, SqlBasedTrailRepo trailRepo) {
+    public MatchmakingService(SqlBasedKeywordRepo keywordRepo, SqlBasedTrailRepo trailRepo) {
         this.categoryToKeywords = keywordRepo.getKeywords();
         this.trailRepo = trailRepo;
     }
