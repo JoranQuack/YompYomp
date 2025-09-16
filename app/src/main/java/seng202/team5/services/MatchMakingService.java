@@ -2,6 +2,7 @@ package seng202.team5.services;
 
 import seng202.team5.data.SqlBasedKeywordRepo;
 import seng202.team5.data.SqlBasedTrailRepo;
+import seng202.team5.exceptions.MatchMakingFailedException;
 import seng202.team5.models.Trail;
 import seng202.team5.models.User;
 
@@ -42,10 +43,15 @@ public class MatchMakingService {
      * @param user the user whose preferences will be used to generate trail weights
      */
     public void generateTrailWeights(User user) {
-        setUserPreferences(user);
-        buildReverseIndex();
-        assignWeightsToTrails();
-        trailRepo.upsertAll(getSortedTrails());
+        try {
+            setUserPreferences(user);
+            buildReverseIndex();
+            assignWeightsToTrails();
+            trailRepo.upsertAll(getSortedTrails());
+        }
+        catch (MatchMakingFailedException e) {
+            e.printStackTrace(); //TODO handle exception
+        }
     }
 
     /**
@@ -53,12 +59,15 @@ public class MatchMakingService {
      * map.
      * Case-insensitive matching.
      */
-    private void buildReverseIndex() {
-        for (Map.Entry<String, List<String>> entry : categoryToKeywords.entrySet()) {
-            String category = entry.getKey();
-            for (String keyword : entry.getValue()) {
-                keywordToCategory.put(keyword.toLowerCase(Locale.ROOT), category);
-            }
+    private void buildReverseIndex() throws MatchMakingFailedException {
+        if (!categoryToKeywords.isEmpty()) {
+            for (Map.Entry<String, List<String>> entry : categoryToKeywords.entrySet()) {
+                String category = entry.getKey();
+                for (String keyword : entry.getValue()) {
+                    keywordToCategory.put(keyword.toLowerCase(Locale.ROOT), category);
+                }
+        }} else {
+            throw new MatchMakingFailedException("Category file is empty");
         }
     }
 
@@ -81,23 +90,27 @@ public class MatchMakingService {
      *
      * @param user the user whose preferences will be mapped into category weights.
      */
-    public void setUserPreferences(User user) {
-        resetWeights();
+    public void setUserPreferences(User user) throws MatchMakingFailedException {
+        if (user != null) {
+            resetWeights();
 
-        // Yes/No simplified to 0 or 5
-        userWeights.put("FamilyFriendly", user.isFamilyFriendly() ? 5 : 0);
-        userWeights.put("Accessible", user.isAccessible() ? 5 : 0);
+            // Yes/No simplified to 0 or 5
+            userWeights.put("FamilyFriendly", user.isFamilyFriendly() ? 5 : 0);
+            userWeights.put("Accessible", user.isAccessible() ? 5 : 0);
 
-        userWeights.put("Difficult", user.getExperienceLevel());
-        userWeights.put("Rocky", user.getGradientPreference());
-        userWeights.put("Forest", user.getBushPreference());
-        userWeights.put("Wet", user.getLakeRiverPreference());
-        userWeights.put("Beach", user.getCoastPreference());
-        userWeights.put("Alpine", user.getMountainPreference());
-        userWeights.put("Wildlife", user.getWildlifePreference());
-        userWeights.put("Historical", user.getHistoricPreference());
-        userWeights.put("Waterfall", user.getWaterfallPreference());
-        userWeights.put("Reserve", user.getReservePreference());
+            userWeights.put("Difficult", user.getExperienceLevel());
+            userWeights.put("Rocky", user.getGradientPreference());
+            userWeights.put("Forest", user.getBushPreference());
+            userWeights.put("Wet", user.getLakeRiverPreference());
+            userWeights.put("Beach", user.getCoastPreference());
+            userWeights.put("Alpine", user.getMountainPreference());
+            userWeights.put("Wildlife", user.getWildlifePreference());
+            userWeights.put("Historical", user.getHistoricPreference());
+            userWeights.put("Waterfall", user.getWaterfallPreference());
+            userWeights.put("Reserve", user.getReservePreference());
+        } else {
+            throw new MatchMakingFailedException("User not specified");
+        }
     }
 
     /**
@@ -112,7 +125,11 @@ public class MatchMakingService {
     public Set<String> categoriseTrail(Trail trail) {
         // Make sure we have the reverse index built, else categorisation problems arise
         if (keywordToCategory.isEmpty()) {
-            buildReverseIndex();
+            try {
+                buildReverseIndex();
+            } catch (MatchMakingFailedException e) {
+                throw new RuntimeException(e); //TODO handle exception
+            }
         }
 
         Set<String> matchedCategories = new HashSet<>();
@@ -188,19 +205,23 @@ public class MatchMakingService {
      * Assigns weights to each trail based on the categories and user preferences.
      * Updates the trail models attributes, categories, and userWeight.
      */
-    public void assignWeightsToTrails() {
+    public void assignWeightsToTrails() throws MatchMakingFailedException {
         List<Trail> trails = trailRepo.getAllTrails();
-        trailWeights.clear();
+        if (trails.isEmpty()) {
+            trailWeights.clear();
 
-        for (Trail trail : trails) {
-            Set<String> categories = categoriseTrail(trail);
-            double weight = scoreTrail(categories);
-            trail.setCategories(categories);
-            trail.setUserWeight(weight);
-            trailWeights.put(trail.getId(), weight);
+            for (Trail trail : trails) {
+                Set<String> categories = categoriseTrail(trail);
+                double weight = scoreTrail(categories);
+                trail.setCategories(categories);
+                trail.setUserWeight(weight);
+                trailWeights.put(trail.getId(), weight);
+            }
+
+            weightsCalculated = true; }
+        else {
+            throw new MatchMakingFailedException("Trails is empty");
         }
-
-        weightsCalculated = true;
     }
 
     /**
@@ -213,7 +234,11 @@ public class MatchMakingService {
      */
     public double getTrailWeight(int trailId) {
         if (!weightsCalculated) {
-            assignWeightsToTrails();
+            try {
+                assignWeightsToTrails();
+            } catch (MatchMakingFailedException e) {
+                throw new RuntimeException(e); //TODO handle exception
+            }
         }
         return trailWeights.getOrDefault(trailId, 0.0);
     }
@@ -228,7 +253,11 @@ public class MatchMakingService {
      */
     private List<Trail> getSortedTrails() {
         if (!weightsCalculated) {
-            assignWeightsToTrails();
+            try {
+                assignWeightsToTrails();
+            } catch (MatchMakingFailedException e) {
+                throw new RuntimeException(e); //TODO handle exception
+            }
         }
 
         return trailRepo.getAllTrails().stream()
