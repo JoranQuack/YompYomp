@@ -8,6 +8,7 @@ import seng202.team5.data.SqlBasedKeywordRepo;
 import seng202.team5.data.SqlBasedTrailRepo;
 import seng202.team5.models.Trail;
 import seng202.team5.utils.CompletionTimeParser;
+import seng202.team5.utils.DifficultyParser;
 
 import java.io.File;
 import java.io.IOException;
@@ -69,22 +70,24 @@ public class SetupService {
             return;
         }
 
-        try {
-            // Check if database exists and schema is up to date
-            if (!databaseService.databaseExists() || !databaseService.isSchemaUpToDate()) {
-                if (databaseService.databaseExists()) {
-                    System.out.println("Database schema is outdated. Deleting database.");
-                    databaseService.deleteDatabase();
-                }
+        if (databaseService.databaseExists() || databaseService.isSchemaUpToDate()) {
+            return;
+        }
 
-                // Create the database and tables
-                databaseService.createDatabaseIfNotExists();
-                syncDbFromTrailFile();
+        try {
+            if (databaseService.databaseExists()) {
+                System.out.println("Database schema is outdated. Deleting database.");
+                databaseService.deleteDatabase();
             }
+
+            // Create the database and tables
+            databaseService.createDatabaseIfNotExists();
         } catch (Exception e) {
             System.err.println("Error setting up database: " + e.getMessage());
             e.printStackTrace();
         }
+
+        syncDbFromTrailFile();
 
         // Populate keywords table coz we need dat stuff later
         SqlBasedKeywordRepo sqlBasedKeywordRepo = new SqlBasedKeywordRepo(databaseService);
@@ -163,8 +166,6 @@ public class SetupService {
         for (Trail trail : trails) {
             String completionInfo = trail.getCompletionInfo();
 
-            // Always process all trails from CSV to ensure data consistency
-            // Not too resource intensive so it's fine to run every time
             if (completionInfo != null && !completionInfo.trim().isEmpty()) {
                 try {
                     CompletionTimeParser.CompletionTimeResult result = CompletionTimeParser
@@ -184,6 +185,8 @@ public class SetupService {
                     // Keep default values if parsing fails
                 }
             }
+
+            trail.setDifficulty(DifficultyParser.parseDifficulty(trail.getDifficulty()));
         }
         return trails;
     }
