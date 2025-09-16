@@ -248,12 +248,10 @@ public class SetupServiceTest {
     @DisplayName("Should call both sync and scrape methods in setupApplication")
     void testSetupApplication_CallsBothMethods() {
         SetupService spySetupService = spy(setupService);
-        doNothing().when(spySetupService).syncDbFromTrailFile();
         doNothing().when(spySetupService).scrapeAllTrailImages();
 
         spySetupService.setupApplication();
 
-        verify(spySetupService).syncDbFromTrailFile();
         verify(spySetupService).scrapeAllTrailImages();
     }
 

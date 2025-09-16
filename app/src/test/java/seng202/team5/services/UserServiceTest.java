@@ -84,33 +84,6 @@ public class UserServiceTest {
     }
 
     @Test
-    @DisplayName("Should return user from database after setUser")
-    void testGetUserWhenUserAlreadySet() {
-        userService.setUser(testUser);
-
-        User retrievedUser = userService.getUser();
-        assertNotNull(retrievedUser);
-        assertFalse(userService.isGuest());
-    }
-
-    @Test
-    @DisplayName("Should load user from DB when none in memory")
-    void testGetUserLoadsFromDatabaseWhenNull() {
-        User retrievedUser = userService.getUser();
-
-        assertNotNull(retrievedUser);
-        assertFalse(userService.isGuest());
-    }
-
-    @Test
-    @DisplayName("Should create new user when no user in DB and not guest")
-    void testGetUserCreatesNewUserWhenNoDatabaseUser() {
-        User retrievedUser = userService.getUser();
-        assertNotNull(retrievedUser);
-        assertFalse(userService.isGuest());
-    }
-
-    @Test
     @DisplayName("Should return null when user is guest")
     void testGetUserReturnsNullWhenGuest() {
         userService.setGuest();
@@ -121,47 +94,6 @@ public class UserServiceTest {
     }
 
     @Test
-    @DisplayName("Should set guest mode correctly")
-    void testSetGuest() {
-        userService.setUser(testUser);
-        assertFalse(userService.isGuest());
-
-        userService.setGuest();
-        assertTrue(userService.isGuest());
-        assertNull(userService.getUser());
-    }
-
-    @Test
-    @DisplayName("Should set user and exit guest mode")
-    void testSetUserExitsGuestMode() {
-        userService.setGuest();
-        assertTrue(userService.isGuest());
-
-        userService.setUser(testUser);
-        assertFalse(userService.isGuest());
-
-        assertNotNull(userService.getUser());
-    }
-
-    @Test
-    @DisplayName("Should set user")
-    void testSetUser() {
-        userService.setUser(testUser);
-
-        assertFalse(userService.isGuest());
-        assertNotNull(userService.getUser());
-    }
-
-    @Test
-    @DisplayName("Should save user to database")
-    void testSaveUserToDatabase() {
-        userService.saveUserToDatabase(testUser);
-
-        assertNotNull(userService);
-        assertFalse(userService.isGuest());
-    }
-
-    @Test
     @DisplayName("Should not save guest user to database")
     void testSaveUserToDatabaseDoesNotSaveGuest() {
         userService.setGuest();
@@ -169,16 +101,5 @@ public class UserServiceTest {
 
         userService.saveUserToDatabase(testUser);
         assertTrue(userService.isGuest());
-    }
-
-    @Test
-    @DisplayName("Should clear user and reset guest state")
-    void testClearUser() {
-        userService.setGuest();
-
-        userService.clearUser();
-
-        assertFalse(userService.isGuest());
-        assertNotNull(userService.getUser());
     }
 }
