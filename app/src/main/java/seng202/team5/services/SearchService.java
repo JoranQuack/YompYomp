@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.BiPredicate;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import seng202.team5.data.SqlBasedTrailRepo;
@@ -19,14 +20,37 @@ public class SearchService {
     private Map<String, String> filters;
     private int maxResults = 50;
 
-    // Define filter predicates for each filter type
-    private final Map<String, BiPredicate<Trail, String>> filterPredicates = Map.of(
-            "query", (trail, value) -> isNullOrEmpty(value) ||
-                    trail.getName().toLowerCase().contains(value.strip().toLowerCase()),
-            "completionType", (trail, value) -> isNullOrEmpty(value) || value.equals("All types") ||
-                    trail.getCompletionType().equalsIgnoreCase(value),
-            "timeUnit", (trail, value) -> isNullOrEmpty(value) ||
-                    value.equals("All durations") || trail.getTimeUnit().equalsIgnoreCase(value));
+    /**
+     * Configuration for a filter type containing all necessary metadata.
+     */
+    private static class FilterConfig {
+        final String allOptionText;
+        final Function<Trail, String> fieldExtractor;
+        final BiPredicate<Trail, String> predicate;
+
+        FilterConfig(String allOptionText, Function<Trail, String> fieldExtractor,
+                BiPredicate<Trail, String> predicate) {
+            this.allOptionText = allOptionText;
+            this.fieldExtractor = fieldExtractor;
+            this.predicate = predicate;
+        }
+    }
+
+    // Centralized filter configuration - adding a new filter only requires one line
+    // here!
+    private final Map<String, FilterConfig> filterConfigs = Map.of(
+            "query", new FilterConfig("", Trail::getName,
+                    (trail, value) -> isNullOrEmpty(value) ||
+                            trail.getName().toLowerCase().contains(value.strip().toLowerCase())),
+            "completionType", new FilterConfig("All types", Trail::getCompletionType,
+                    (trail, value) -> isNullOrEmpty(value) || value.equals("All types") ||
+                            trail.getCompletionType().equalsIgnoreCase(value)),
+            "timeUnit", new FilterConfig("All durations", Trail::getTimeUnit,
+                    (trail, value) -> isNullOrEmpty(value) || value.equals("All durations") ||
+                            trail.getTimeUnit().equalsIgnoreCase(value)),
+            "difficulty", new FilterConfig("All difficulties", Trail::getDifficulty,
+                    (trail, value) -> isNullOrEmpty(value) || value.equals("All difficulties") ||
+                            trail.getDifficulty().equalsIgnoreCase(value)));
 
     /**
      * Creates SearchService with injected SQLBasedTrailRepo.
@@ -64,8 +88,8 @@ public class SearchService {
      */
     private void updateTrails() {
         this.filteredTrails = trails.stream()
-                .filter(trail -> filterPredicates.entrySet().stream()
-                        .allMatch(entry -> entry.getValue().test(trail, filters.get(entry.getKey()))))
+                .filter(trail -> filterConfigs.entrySet().stream()
+                        .allMatch(entry -> entry.getValue().predicate.test(trail, filters.get(entry.getKey()))))
                 .collect(Collectors.toList());
     }
 
@@ -83,7 +107,7 @@ public class SearchService {
      * @param filterString The value to filter by
      */
     public void updateFilter(String filter, String filterString) {
-        if (!filterPredicates.containsKey(filter)) {
+        if (!filterConfigs.containsKey(filter)) {
             throw new IllegalArgumentException("Unknown filter: " + filter);
         }
         filters.put(filter, filterString);
@@ -125,16 +149,56 @@ public class SearchService {
     }
 
     /**
-     * Gets the distinct completion types from the trails.
+     * Generic method to get distinct values from trails based on a field extractor.
      *
-     * @return List of all completion types
+     * @param fieldExtractor Function to extract the desired field from a Trail
+     * @return List of distinct values excluding "unknown"
      */
-    public List<String> getAllCompletionTypes() {
-        return filteredTrails.stream()
-                .map(Trail::getCompletionType)
+    public List<String> getDistinctTrailValues(Function<Trail, String> fieldExtractor) {
+        return trails.stream()
+                .map(fieldExtractor)
                 .distinct()
-                .filter(completionType -> !completionType.equals("unknown"))
+                .filter(value -> !value.equals("unknown"))
                 .collect(Collectors.toList());
+    }
+
+    /**
+     * Gets filter options for a filter type
+     *
+     * @param filterType The filter type
+     * @return List of filter options with "All" option first
+     */
+    public List<String> getFilterOptions(String filterType) {
+        FilterConfig config = filterConfigs.get(filterType);
+        if (config == null) {
+            throw new IllegalArgumentException("Unknown filter type: " + filterType);
+        }
+
+        List<String> options = new java.util.ArrayList<>();
+
+        if (!config.allOptionText.isEmpty()) {
+            options.add(config.allOptionText);
+        }
+
+        getDistinctTrailValues(config.fieldExtractor).stream()
+                .map(value -> value.substring(0, 1).toUpperCase() + value.substring(1))
+                .forEach(options::add);
+
+        return options;
+    }
+
+    /**
+     * Gets the default "All" value for a specific filter type.
+     *
+     * @param filterType The filter type
+     * @return The default "All" value for the filter
+     */
+    public String getDefaultFilterValue(String filterType) {
+        FilterConfig config = filterConfigs.get(filterType);
+        if (config == null) {
+            throw new IllegalArgumentException("Unknown filter type: " + filterType);
+        }
+        return config.allOptionText;
     }
 
     /**

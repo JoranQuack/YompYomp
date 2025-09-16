@@ -50,6 +50,9 @@ public class TrailsController extends Controller {
     @FXML
     private ChoiceBox<String> timeUnitChoiceBox;
 
+    @FXML
+    private ChoiceBox<String> difficultyChoiceBox;
+
     /**
      * Creates controller with navigator.
      *
@@ -119,20 +122,24 @@ public class TrailsController extends Controller {
      * Initialises the filter choice boxes.
      */
     private void initializeFilterChoiceBoxes() {
-        completionTypeChoiceBox.getSelectionModel().selectedItemProperty().addListener(
-                (observable, oldValue, newValue) -> onFilterChanged());
-        timeUnitChoiceBox.getSelectionModel().selectedItemProperty().addListener(
+        initializeChoiceBox(completionTypeChoiceBox, "completionType");
+        initializeChoiceBox(timeUnitChoiceBox, "timeUnit");
+        initializeChoiceBox(difficultyChoiceBox, "difficulty");
+    }
+
+    /**
+     * Generic method to initialise a choice box
+     *
+     * @param choiceBox  The ChoiceBox to initialise
+     * @param filterType The filter type identifier
+     */
+    private void initializeChoiceBox(ChoiceBox<String> choiceBox, String filterType) {
+        choiceBox.getSelectionModel().selectedItemProperty().addListener(
                 (observable, oldValue, newValue) -> onFilterChanged());
 
-        completionTypeChoiceBox.getItems().add("All types");
-        completionTypeChoiceBox.setValue("All types");
-        for (String completionType : searchService.getAllCompletionTypes()) {
-            completionTypeChoiceBox.getItems()
-                    .add(completionType.substring(0, 1).toUpperCase() + completionType.substring(1));
-        }
-
-        timeUnitChoiceBox.getItems().addAll("All durations", "Minutes", "Hours", "Days");
-        timeUnitChoiceBox.setValue("All durations");
+        List<String> options = searchService.getFilterOptions(filterType);
+        choiceBox.getItems().addAll(options);
+        choiceBox.setValue(searchService.getDefaultFilterValue(filterType));
     }
 
     /**
@@ -181,6 +188,7 @@ public class TrailsController extends Controller {
     private void onFilterChanged() {
         searchService.updateFilter("completionType", completionTypeChoiceBox.getValue());
         searchService.updateFilter("timeUnit", timeUnitChoiceBox.getValue());
+        searchService.updateFilter("difficulty", difficultyChoiceBox.getValue());
         updateSearchDisplay();
     }
 
