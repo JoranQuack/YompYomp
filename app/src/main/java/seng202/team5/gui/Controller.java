@@ -67,7 +67,16 @@ public abstract class Controller {
         alert.showAndWait();
     }
 
-    //TODO add javadoc
+    /**
+     * Called when the navigator fails to load the FXML file associated
+     * with this controller
+     *
+     * By default, this method logs the exception details to the error
+     * output. Controllers may override this method to provide
+     * screen-specific error handling, such as displaying an alert
+     * message to the user
+     * @param e the exception thrown while attempting to load the screen
+     */
     public void onLoadFailed(Exception e) {
         // default: just log
         System.err.println("Failed to load screen: " + e.getMessage());
