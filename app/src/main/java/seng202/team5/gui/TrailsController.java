@@ -47,6 +47,9 @@ public class TrailsController extends Controller {
     @FXML
     private ChoiceBox<String> completionTypeChoiceBox;
 
+    @FXML
+    private ChoiceBox<String> timeUnitChoiceBox;
+
     /**
      * Creates controller with navigator.
      *
@@ -93,18 +96,18 @@ public class TrailsController extends Controller {
                 (observable, oldValue, newValue) -> onPageSelected());
         initializeFilterChoiceBoxes();
 
-        //check if the user searched from dashboard
+        // check if the user searched from dashboard
         if (searchText != null) {
             executeDashboardSearch();
-        }
-        else {
+        } else {
             updateSearchDisplay();
         }
 
     }
 
     /**
-     * This method is used to populate and click the search button on the trails page a search is made from
+     * This method is used to populate and click the search button on the trails
+     * page a search is made from
      * the dashboard page
      */
     private void executeDashboardSearch() {
@@ -118,6 +121,8 @@ public class TrailsController extends Controller {
     private void initializeFilterChoiceBoxes() {
         completionTypeChoiceBox.getSelectionModel().selectedItemProperty().addListener(
                 (observable, oldValue, newValue) -> onFilterChanged());
+        timeUnitChoiceBox.getSelectionModel().selectedItemProperty().addListener(
+                (observable, oldValue, newValue) -> onFilterChanged());
 
         completionTypeChoiceBox.getItems().add("All types");
         completionTypeChoiceBox.setValue("All types");
@@ -125,6 +130,9 @@ public class TrailsController extends Controller {
             completionTypeChoiceBox.getItems()
                     .add(completionType.substring(0, 1).toUpperCase() + completionType.substring(1));
         }
+
+        timeUnitChoiceBox.getItems().addAll("All durations", "Minutes", "Hours", "Days");
+        timeUnitChoiceBox.setValue("All durations");
     }
 
     /**
@@ -171,12 +179,8 @@ public class TrailsController extends Controller {
      * Handles filter change event.
      */
     private void onFilterChanged() {
-        String selectedCompletionType = completionTypeChoiceBox.getValue();
-        if (selectedCompletionType != null && !selectedCompletionType.equals("All types")) {
-            searchService.updateFilter("completionType", selectedCompletionType.toLowerCase());
-        } else {
-            searchService.updateFilter("completionType", null);
-        }
+        searchService.updateFilter("completionType", completionTypeChoiceBox.getValue());
+        searchService.updateFilter("timeUnit", timeUnitChoiceBox.getValue());
         updateSearchDisplay();
     }
 

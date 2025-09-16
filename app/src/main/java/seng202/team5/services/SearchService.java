@@ -23,8 +23,10 @@ public class SearchService {
     private final Map<String, BiPredicate<Trail, String>> filterPredicates = Map.of(
             "query", (trail, value) -> isNullOrEmpty(value) ||
                     trail.getName().toLowerCase().contains(value.strip().toLowerCase()),
-            "completionType", (trail, value) -> isNullOrEmpty(value) ||
-                    trail.getCompletionType().equalsIgnoreCase(value));
+            "completionType", (trail, value) -> isNullOrEmpty(value) || value.equals("All types") ||
+                    trail.getCompletionType().equalsIgnoreCase(value),
+            "timeUnit", (trail, value) -> isNullOrEmpty(value) ||
+                    value.equals("All durations") || trail.getTimeUnit().equalsIgnoreCase(value));
 
     /**
      * Creates SearchService with injected SQLBasedTrailRepo.
