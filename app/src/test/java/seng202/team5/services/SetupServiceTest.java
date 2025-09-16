@@ -10,6 +10,7 @@ import org.mockito.MockitoAnnotations;
 import seng202.team5.data.AppDataManager;
 import seng202.team5.data.FileBasedTrailRepo;
 import seng202.team5.data.SqlBasedTrailRepo;
+import seng202.team5.exceptions.MatchMakingFailedException;
 import seng202.team5.models.Trail;
 
 import java.io.ByteArrayInputStream;
@@ -213,7 +214,7 @@ public class SetupServiceTest {
 
     @Test
     @DisplayName("Should sync DB from file when table is not populated")
-    void testSyncDbFromTrailFile() {
+    void testSyncDbFromTrailFile() throws MatchMakingFailedException {
         Trail trail1 = new Trail(1, "Trail1", "Easy", "Description1", "1hr",
                 "Walking", "url1", "url1", "2023-01-01", 0.0, 0.0);
         Trail trail2 = new Trail(2, "Trail2", "Medium", "Description2", "2hr",
@@ -235,7 +236,7 @@ public class SetupServiceTest {
 
     @Test
     @DisplayName("Should not sync DB when table is already populated")
-    void testSyncDbFromTrailFile_WhenTableAlreadyPopulated() {
+    void testSyncDbFromTrailFile_WhenTableAlreadyPopulated() throws MatchMakingFailedException {
         when(mockDbTrailRepo.countTrails()).thenReturn(5);
         when(mockFileTrailRepo.countTrails()).thenReturn(5);
 
@@ -249,7 +250,7 @@ public class SetupServiceTest {
 
     @Test
     @DisplayName("Should handle empty file trail list during sync")
-    void testSyncDbFromTrailFile_WithEmptyFileTrails() {
+    void testSyncDbFromTrailFile_WithEmptyFileTrails() throws MatchMakingFailedException {
         when(mockDbTrailRepo.countTrails()).thenReturn(0).thenReturn(0);
         when(mockFileTrailRepo.countTrails()).thenReturn(1); // File claims to have 1 trail
         when(mockFileTrailRepo.getAllTrails()).thenReturn(Collections.emptyList()); // But returns empty list

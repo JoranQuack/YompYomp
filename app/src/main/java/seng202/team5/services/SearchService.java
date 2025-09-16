@@ -33,7 +33,7 @@ public class SearchService {
         List<Trail> trails = searchTrails(searchQuery, page);
         if (trails == null) {
             throw new LoadingTrailsFailedException("Failed to get trails");
-        };
+        }
         return trails;
     }
 
