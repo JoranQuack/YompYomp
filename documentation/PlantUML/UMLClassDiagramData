@@ -1,0 +1,67 @@
+@startuml
+skinparam packageStyle rectangle
+title Data Package
+
+package "data" {
+
+  interface ITrail {
+    + getAllTrails() : List<Trail>
+    + findById(id : int) : Optional<Trail>
+    + countTrails() : int
+  }
+
+  interface IKeyword {
+    + getKeywords() : Map<String, List<String>>
+  }
+
+  class FileBasedTrailRepo {
+    + FileBasedTrailRepo(csvFilePath : String)
+    + getAllTrails() : List<Trail>
+    + findById(id : int) : Optional<Trail>
+    + countTrails() : int
+  }
+
+  class FileBasedKeywordRepo {
+    + FileBasedKeywordRepo(filePath : String)
+    + getKeywords() : Map<String, List<String>>
+  }
+
+  class SqlBasedTrailRepo {
+    + SqlBasedTrailRepo(databaseService : DatabaseService)
+    + getAllTrails() : List<Trail>
+    + getRecommendedTrails() : List<Trail>
+    + findById(id : int) : Optional<Trail>
+    + upsert(trail : Trail) : void
+    + upsertAll(trails : List<Trail>) : void
+    + deleteById(id : int) : void
+    + countTrails() : int
+  }
+
+  class SqlBasedKeywordRepo {
+    + SqlBasedKeywordRepo(databaseService : DatabaseService)
+    + getKeywords() : Map<String, List<String>>
+  }
+
+  class AppDataManager {
+    + getAppData(subDirectory : String) : String
+  }
+
+  class QueryHelper {
+    + QueryHelper(databaseService : DatabaseService)
+    + executeQuery(sql : String, paramSetter : ParameterSetter, rowMapper : RowMapper) : List
+    + executeQuerySingle(sql : String, paramSetter : ParameterSetter, rowMapper : RowMapper) : Optional
+    + executeUpdate(sql : String, paramSetter : ParameterSetter) : int
+    + executeCountQuery(sql : String, paramSetter : ParameterSetter) : int
+  }
+}
+
+FileBasedTrailRepo    ..|> ITrail
+SqlBasedTrailRepo     ..|> ITrail
+FileBasedKeywordRepo  ..|> IKeyword
+SqlBasedKeywordRepo   ..|> IKeyword
+
+SqlBasedTrailRepo     --> QueryHelper
+SqlBasedKeywordRepo   --> QueryHelper
+
+
+@enduml
