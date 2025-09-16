@@ -42,19 +42,17 @@ public abstract class Controller {
     }
 
     /**
-     * Shows an alert dialogue to the user with given parameters.
-     * Returns the button the user pressed, if any.
+     * Shows an alert dialog to the user.
      *
      * @param type    the type of alert (ERROR, INFORMATION, etc.)
      * @param title   the title of the alert
      * @param content the content message
-     * @return an {@code Optional<ButtonType>} containing the button that was pressed by the user,
-     *         or an empty {@code Optional<ButtonType>} if the user closed the dialog without pressing a button.
      */
-    public Optional<ButtonType> showAlert(AlertType type, String title, String content) {
-        Alert alert = new Alert(type, content, ButtonType.OK);
+    public void showAlert(AlertType type, String title, String content) {
+        Alert alert = new Alert(type);
 
         alert.setTitle(title);
+        alert.setContentText(content);
 
         alert.setHeaderText(null);
         alert.setGraphic(null);
@@ -66,7 +64,7 @@ public abstract class Controller {
         dialogPane.getStylesheets().add(
                 Objects.requireNonNull(getClass().getResource("/styles/global.css")).toExternalForm());
 
-        return alert.showAndWait();
+        alert.showAndWait();
     }
 
     /**
