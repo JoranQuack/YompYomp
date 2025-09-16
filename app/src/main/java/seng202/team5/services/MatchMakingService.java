@@ -43,15 +43,11 @@ public class MatchMakingService {
      * @param user the user whose preferences will be used to generate trail weights
      */
     public void generateTrailWeights(User user) {
-        try {
-            setUserPreferences(user);
-            buildReverseIndex();
-            assignWeightsToTrails();
-            trailRepo.upsertAll(getSortedTrails());
-        }
-        catch (MatchMakingFailedException e) {
-            e.printStackTrace(); //TODO handle exception
-        }
+        throw new MatchMakingFailedException("Test");
+        setUserPreferences(user);
+        buildReverseIndex();
+        assignWeightsToTrails();
+        trailRepo.upsertAll(getSortedTrails());
     }
 
     /**

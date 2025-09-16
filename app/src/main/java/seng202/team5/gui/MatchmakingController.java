@@ -59,9 +59,14 @@ public class MatchmakingController extends Controller {
                     return null;
                 }
 
-                // Run the matchmaking process
-                matchMakingService.generateTrailWeights(user);
-                return null;
+                try {
+                    // Run the matchmaking process
+                    matchMakingService.generateTrailWeights(user);
+                    return null;
+                }
+                catch (MatchMakingFailedException exception) {
+                    showAlert(AlertType.ERROR, "Matchmaking failed", "Matchmaking failed, please close the application and try again");
+                }
             }
 
             @Override
