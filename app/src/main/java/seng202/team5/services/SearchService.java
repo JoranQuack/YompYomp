@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import seng202.team5.data.SqlBasedTrailRepo;
+import seng202.team5.exceptions.LoadingTrailsFailedException;
 import seng202.team5.models.Trail;
 
 /**
@@ -28,8 +29,12 @@ public class SearchService {
      * @param page        Page number (0-based)
      * @return List of trails for the specified page
      */
-    public List<Trail> getTrails(String searchQuery, int page) {
-        return searchTrails(searchQuery, page);
+    public List<Trail> getTrails(String searchQuery, int page) throws LoadingTrailsFailedException {
+        List<Trail> trails = searchTrails(searchQuery, page);
+        if (trails == null) {
+            throw new LoadingTrailsFailedException("Failed to get trails");
+        };
+        return trails;
     }
 
     /**
