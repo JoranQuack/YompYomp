@@ -67,6 +67,13 @@ public abstract class Controller {
         alert.showAndWait();
     }
 
+    //TODO add javadoc
+    public void onLoadFailed(Exception e) {
+        // default: just log
+        System.err.println("Failed to load screen: " + e.getMessage());
+        e.printStackTrace();
+    }
+
     /**
      * Gets the FXML file that will be loaded for this controller.
      *
