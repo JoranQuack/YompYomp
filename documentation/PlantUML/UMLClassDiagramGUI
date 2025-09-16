@@ -1,0 +1,103 @@
+@startuml
+skinparam packageStyle rectangle
+title GUI Package
+
+package "GUI" {
+
+  package "components" as components {
+    class NavbarController {
+      + setPage(index : int) : void
+      + onHome() : void
+      + onTrails() : void
+      + onProfile() : void
+      + onSettings() : void
+    }
+
+    class TrailCardController {
+      + setTrail(trail : Trail) : void
+      + setMatchScore(score : double) : void
+      + onOpenDetails() : void
+    }
+  }
+
+  abstract class Controller {
+    + setNavigator(n : ScreenNavigator) : void
+    + showError(message : String) : void
+  }
+
+  class ScreenNavigator {
+    + launch(controller : Controller) : void
+  }
+
+  class FXAppEntry {
+    + start(stage : Stage) : void
+    + main(args : String[]) : void
+  }
+  FXAppEntry -up-|> Application
+  FXAppEntry ..> ScreenNavigator
+
+  class DashboardController {
+    + DashboardController()
+    + DashboardController(n : ScreenNavigator)
+    + initialize() : void (add note to say includes lots of initialization)
+    - updateTrailsDisplay(trails : List<Trail>) : void
+  }
+
+  class TrailsController {
+    + TrailsController()
+    + TrailsController(n : ScreenNavigator)
+    + initialize() : void (same note as before)
+    - updateDisplay(trails : List<Trail>) : void
+  }
+
+  class WelcomeController {
+    + WelcomeController(n : ScreenNavigator)
+    + initialize() : void
+    - onSetup() : void
+    - onSkip() : void
+  }
+
+  class SetupController {
+    + SetupController(n : ScreenNavigator)
+    + initialize() : void
+    - onNext() : void
+    - onBack() : void
+  }
+
+  class MatchmakingController {
+    + MatchmakingController(n : ScreenNavigator)
+    + initialize() : void
+    - startMatchmaking() : void
+    - showMatches(trails : List<Trail>) : void
+  }
+
+  class ProfileQuizController {
+    + ProfileQuizController(n : ScreenNavigator)
+    + initialize() : void
+    - updateQuestionView() : void
+    - next() : void
+    - previous() : void
+    - submit() : void
+  }
+
+  class ProfileSetupGeneralController {
+    + ProfileSetupGeneralController(n : ScreenNavigator)
+    + initialize() : void
+    - saveUserPreferences() : void
+    - onContinue() : void
+  }
+
+  Controller <|-- DashboardController
+  Controller <|-- TrailsController
+  Controller <|-- WelcomeController
+  Controller <|-- SetupController
+  Controller <|-- MatchmakingController
+  Controller <|-- ProfileQuizController
+  Controller <|-- ProfileSetupGeneralController
+
+  Controller ..> components.NavbarController
+  Controller ..> components.TrailCardController
+  Controller --> ScreenNavigator
+  ScreenNavigator ..> Controller
+}
+@enduml
