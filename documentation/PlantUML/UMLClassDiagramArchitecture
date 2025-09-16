@@ -1,0 +1,103 @@
+WORK IN PROGRESS
+
+
+@startuml
+left to right direction
+title YompYomp UML Class Diagram - Architecture and Package View
+
+package "---" {
+  class FXAppEntry
+  class App
+}
+
+package "Models" {
+  class Trail
+  class User
+  enum Question
+}
+
+package "Service" {
+  class SetupService
+  class SearchService
+  class UserService
+  class MatchMakingService
+  class ImageService
+}
+
+package "DataAccess (SQLite DB)" {
+  interface ITrail
+  interface IKeyword
+  class FileBasedTrailRepo
+  class FileBasedKeywordRepo
+  class SQLBasedKeywordRepo
+  class SQLBasedTrailRepo
+  class DatabaseService
+}
+
+package "GUI" {
+  class ScreenNavigator
+  abstract class Controller
+  class WelcomeController
+  class DashboardController
+  class MatchmakingController
+  class ProfileQuizController
+  class ProfileSetupGeneralController
+  class TrailsController
+  package "Components" {
+    class NavbarComponent
+    class TrailCardComponent
+  }
+}
+
+'skinparam linetype ortho
+
+'Controller relationships
+FXAppEntry --> ScreenNavigator
+ScreenNavigator ..> Controller
+
+'Inheritence with the abstract controller class
+Controller <|-- WelcomeController
+Controller <|-- ProfileSetupGeneralController
+Controller <|-- MatchmakingController
+Controller <|-- ProfileQuizController
+Controller <|-- DashboardController
+Controller <|-- TrailsController
+
+Controller ..> NavbarComponent
+Controller ..> TrailCardComponent
+
+App ..> SetupService
+TrailsController ..> SearchService
+ProfileSetupGeneralController ..> UserService
+ProfileQuizController ..> UserService
+MatchmakingController ..> MatchMakingService
+DashboardController ..> SearchService
+WelcomeController ..> UserService
+NavbarComponent ..> ImageService
+
+
+UserService *-- DatabaseService
+SetupService *-- DatabaseService
+SearchService *-- DatabaseService
+MatchMakingService *-- DatabaseService
+
+
+SearchService ..> ITrail
+SetupService ..> ITrail
+SetupService ..> IKeyword
+MatchMakingService ..> IKeyword
+
+ITrail <|.. FileBasedTrailRepo
+ITrail <|.. SQLBasedTrailRepo
+IKeyword <|.. FileBasedKeywordRepo
+IKeyword <|.. SQLBasedKeywordRepo
+
+UserService ..> User
+MatchMakingService ..> User
+MatchMakingService ..> Trail
+SearchService ..> Trail
+SetupService ..> Trail
+ProfileQuizController ..> Question
+
+
+@enduml
