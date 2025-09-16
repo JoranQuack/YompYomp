@@ -127,6 +127,17 @@ public class UserService {
     }
 
     /**
+     * Checks if a user's name choice is valid.
+     * 
+     * @param name the name to validate
+     * @return true if the name is not null, not empty, and not "Guest User"
+     */
+    public boolean isValidName(String name) {
+        return name != null && !name.trim().isEmpty() && !name.equalsIgnoreCase("Guest User")
+                && !name.equalsIgnoreCase("null");
+    }
+
+    /**
      * Set the service to guest mode.
      */
     public void setGuest() {
