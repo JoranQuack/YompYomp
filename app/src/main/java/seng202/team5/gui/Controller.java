@@ -57,12 +57,12 @@ public abstract class Controller {
         alert.setHeaderText(null);
         alert.setGraphic(null);
 
-        Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
-        stage.getIcons().add(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/icon.png"))));
+//        Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
+//        stage.getIcons().add(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/icon.png"))));
 
-        DialogPane dialogPane = alert.getDialogPane();
-        dialogPane.getStylesheets().add(
-                Objects.requireNonNull(getClass().getResource("/styles/global.css")).toExternalForm());
+//        DialogPane dialogPane = alert.getDialogPane();
+//        dialogPane.getStylesheets().add(
+//                Objects.requireNonNull(getClass().getResource("/styles/global.css")).toExternalForm());
 
         alert.showAndWait();
     }
