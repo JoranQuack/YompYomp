@@ -195,7 +195,13 @@ public class TrailsController extends Controller {
 
         List<String> sortOptions = searchService.getSortOptions();
         sortChoiceBox.getItems().addAll(sortOptions);
-        sortChoiceBox.setValue("Name"); // Name by defaults
+
+        if (super.getUserService().isGuest()) {
+            sortChoiceBox.getItems().remove("Match");
+            sortChoiceBox.setValue("Name");
+        } else {
+            sortChoiceBox.setValue("Match");
+        }
     }
 
     /**
@@ -226,13 +232,6 @@ public class TrailsController extends Controller {
     private void updateSearchDisplay() {
         List<Trail> trails = searchService.getPage(0);
         updateTrailsDisplay(trails);
-
-        if (trails.isEmpty()) {
-            resultsLabel.setText("No trails found.");
-        } else {
-            resultsLabel.setText(trails.size() + "/" + searchService.getNumberOfTrails() + " trails loaded");
-        }
-
         resetPageChoiceBox();
     }
 
@@ -258,6 +257,12 @@ public class TrailsController extends Controller {
             // Add some spacing between cards
             VBox.setMargin(trailCard, new Insets(10));
             trailsContainer.getChildren().add(trailCard);
+        }
+
+        if (trails.isEmpty()) {
+            resultsLabel.setText("No trails found.");
+        } else {
+            resultsLabel.setText(trails.size() + "/" + searchService.getNumberOfTrails() + " trails showing");
         }
     }
 
@@ -321,12 +326,6 @@ public class TrailsController extends Controller {
             int pageIndex = Integer.parseInt(selectedPage) - 1;
             List<Trail> trails = searchService.getPage(pageIndex);
             updateTrailsDisplay(trails);
-
-            if (trails.isEmpty()) {
-                resultsLabel.setText("No trails found.");
-            } else {
-                resultsLabel.setText(trails.size() + "/" + searchService.getNumberOfTrails() + " trails loaded");
-            }
         }
     }
 
