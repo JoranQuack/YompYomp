@@ -6,9 +6,11 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.ToggleButton?>
 <?import javafx.scene.layout.FlowPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 
 <VBox minHeight="300.0" minWidth="500.0" xmlns="http://javafx.com/javafx/21.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="seng202.team5.gui.TrailsController">
@@ -17,8 +19,12 @@
       <!-- Search section -->
       <HBox alignment="CENTER_LEFT" spacing="10.0">
          <children>
-            <TextField fx:id="searchBarTextField" maxWidth="1.7976931348623157E308" promptText="Search trails..." HBox.hgrow="ALWAYS" />
-            <Button fx:id="searchButton" onAction="#onSearchButtonClicked" text="Search" />
+            <StackPane maxWidth="1.7976931348623157E308" HBox.hgrow="ALWAYS">
+               <children>
+                  <TextField fx:id="searchBarTextField" maxWidth="1.7976931348623157E308" promptText="Search trails..." />
+                  <Button fx:id="searchButton" onAction="#onSearchButtonClicked" text="Search" StackPane.alignment="CENTER_RIGHT" />
+               </children>
+            </StackPane>
             <ChoiceBox fx:id="completionTypeChoiceBox" />
             <ChoiceBox fx:id="timeUnitChoiceBox" />
             <ChoiceBox fx:id="difficultyChoiceBox" />
@@ -33,6 +39,10 @@
       <HBox alignment="CENTER_LEFT" spacing="10.0">
          <children>
             <Label fx:id="resultsLabel" text="Loading trails..." />
+            <Region HBox.hgrow="ALWAYS" />
+            <Label text="Sort by:" />
+            <ChoiceBox fx:id="sortChoiceBox" />
+            <ToggleButton fx:id="ascDescToggleButton" mnemonicParsing="false" text="↑ Asc" />
             <Region HBox.hgrow="ALWAYS" />
             <Label text="Page:" />
             <ChoiceBox fx:id="pageChoiceBox" prefWidth="60.0" />

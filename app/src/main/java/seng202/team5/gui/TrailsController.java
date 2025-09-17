@@ -8,6 +8,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.control.ToggleButton;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.VBox;
 import seng202.team5.data.DatabaseService;
@@ -26,8 +27,6 @@ public class TrailsController extends Controller {
     private SearchService searchService;
     private String searchText;
 
-    /** Ordered list of difficulty levels for proper sorting */
-    private final List<String> difficultyOrder = List.of("easiest", "easy", "intermediate", "advanced", "expert");
     @FXML
     private VBox navbarContainer;
 
@@ -57,6 +56,12 @@ public class TrailsController extends Controller {
 
     @FXML
     private ChoiceBox<String> multiDayChoiceBox;
+
+    @FXML
+    private ChoiceBox<String> sortChoiceBox;
+
+    @FXML
+    private ToggleButton ascDescToggleButton;
 
     /**
      * Creates controller with navigator.
@@ -131,6 +136,8 @@ public class TrailsController extends Controller {
         initializeChoiceBox(timeUnitChoiceBox, "timeUnit");
         initializeChoiceBox(difficultyChoiceBox, "difficulty");
         initializeChoiceBox(multiDayChoiceBox, "multiDay");
+        initializeSortChoiceBox();
+        initializeToggleButton();
     }
 
     /**
@@ -158,6 +165,7 @@ public class TrailsController extends Controller {
      * Difficulty sorting logic
      */
     private void sortDifficultyOptions(List<String> options) {
+        List<String> difficultyOrder = SearchService.getDifficultyOrder();
         options.sort((a, b) -> {
             if (a.equals("All difficulties"))
                 return -1;
@@ -176,6 +184,40 @@ public class TrailsController extends Controller {
                 return 1;
             return a.compareToIgnoreCase(b);
         });
+    }
+
+    /**
+     * Initialises the sort choice box with the available sort options that we have
+     */
+    private void initializeSortChoiceBox() {
+        sortChoiceBox.getSelectionModel().selectedItemProperty().addListener(
+                (observable, oldValue, newValue) -> onSortChanged());
+
+        List<String> sortOptions = searchService.getSortOptions();
+        sortChoiceBox.getItems().addAll(sortOptions);
+        sortChoiceBox.setValue("Name"); // Name by defaults
+    }
+
+    /**
+     * Initialises the toggle button for asc/desc order
+     */
+    private void initializeToggleButton() {
+        ascDescToggleButton.setSelected(true);
+        updateToggleButtonText();
+
+        ascDescToggleButton.setOnAction(event -> onToggleButtonClicked());
+    }
+
+    /**
+     * Updates the toggle button text based on current state
+     * Cute arrows for the win
+     */
+    private void updateToggleButtonText() {
+        if (ascDescToggleButton.isSelected()) {
+            ascDescToggleButton.setText("↑ Asc");
+        } else {
+            ascDescToggleButton.setText("↓ Desc");
+        }
     }
 
     /**
@@ -238,6 +280,26 @@ public class TrailsController extends Controller {
         searchService.updateFilter("timeUnit", timeUnitChoiceBox.getValue());
         searchService.updateFilter("difficulty", difficultyChoiceBox.getValue());
         searchService.updateFilter("multiDay", multiDayChoiceBox.getValue());
+        updateSearchDisplay();
+    }
+
+    /**
+     * Handles sort change event.
+     */
+    private void onSortChanged() {
+        String selectedSort = sortChoiceBox.getValue();
+        if (selectedSort != null) {
+            searchService.setSortBy(selectedSort.toLowerCase());
+            updateSearchDisplay();
+        }
+    }
+
+    /**
+     * Handles toggle button click for asc/desc order
+     */
+    private void onToggleButtonClicked() {
+        searchService.setSortAscending(ascDescToggleButton.isSelected());
+        updateToggleButtonText();
         updateSearchDisplay();
     }
 

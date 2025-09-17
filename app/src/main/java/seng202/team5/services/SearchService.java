@@ -1,5 +1,6 @@
 package seng202.team5.services;
 
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -19,6 +20,12 @@ public class SearchService {
     private List<Trail> filteredTrails;
     private Map<String, String> filters;
     private int maxResults = 50;
+    private String currentSortBy = "name"; // Default sorting by name
+    private boolean isAscending = true; // Default to ascending order
+
+    /** Ordered list of difficulty levels for proper sorting */
+    private static final List<String> DIFFICULTY_ORDER = List.of("easiest", "easy", "intermediate", "advanced",
+            "expert");
 
     /**
      * Configuration for a filter type containing all necessary metadata.
@@ -88,13 +95,63 @@ public class SearchService {
     }
 
     /**
-     * Updates the filtered trails based on all active filters.
+     * Updates the filtered trails based on all active filters and applies sorting.
      */
     private void updateTrails() {
         this.filteredTrails = trails.stream()
                 .filter(trail -> filterConfigs.entrySet().stream()
                         .allMatch(entry -> entry.getValue().predicate.test(trail, filters.get(entry.getKey()))))
+                .filter(this::shouldIncludeInSort)
+                .sorted(getSortComparator())
                 .collect(Collectors.toList());
+    }
+
+    /**
+     * Filter out unwanted trails from sort
+     */
+    private boolean shouldIncludeInSort(Trail trail) {
+        switch (currentSortBy.toLowerCase()) {
+            case "time":
+                return trail.getAvgCompletionTimeMinutes() > 0;
+            case "difficulty":
+                return !trail.getDifficulty().equalsIgnoreCase("unknown");
+            default:
+                return true;
+        }
+    }
+
+    /**
+     * Gets the comparator for the current sort
+     */
+    private Comparator<Trail> getSortComparator() {
+        Comparator<Trail> comparator;
+        switch (currentSortBy.toLowerCase()) {
+            case "name":
+                comparator = Comparator.comparing(Trail::getName, String.CASE_INSENSITIVE_ORDER);
+                break;
+            case "time":
+                comparator = Comparator.comparingInt(Trail::getAvgCompletionTimeMinutes);
+                break;
+            case "difficulty":
+                comparator = getDifficultyComparator();
+                break;
+            default:
+                comparator = Comparator.comparing(Trail::getName, String.CASE_INSENSITIVE_ORDER);
+                break;
+        }
+
+        return isAscending ? comparator : comparator.reversed();
+    }
+
+    /**
+     * Gets a comparator for difficulty
+     */
+    private Comparator<Trail> getDifficultyComparator() {
+        return Comparator.comparing(trail -> {
+            String difficulty = trail.getDifficulty().toLowerCase();
+            int index = DIFFICULTY_ORDER.indexOf(difficulty);
+            return index == -1 ? 999 : index;
+        });
     }
 
     /**
@@ -221,6 +278,60 @@ public class SearchService {
      */
     public int getMaxResults() {
         return maxResults;
+    }
+
+    /**
+     * Sets the sorting criteria.
+     *
+     * @param sortBy The field to sort by ("name", "time", "difficulty")
+     */
+    public void setSortBy(String sortBy) {
+        this.currentSortBy = sortBy;
+    }
+
+    /**
+     * Gets the current sorting criteria.
+     *
+     * @return The current sort field
+     */
+    public String getSortBy() {
+        return currentSortBy;
+    }
+
+    /**
+     * Gets available sorting options.
+     *
+     * @return List of available sort options
+     */
+    public List<String> getSortOptions() {
+        return List.of("Name", "Time", "Difficulty");
+    }
+
+    /**
+     * Sets the sort order.
+     *
+     * @param ascending true for ascending, false for descending
+     */
+    public void setSortAscending(boolean ascending) {
+        this.isAscending = ascending;
+    }
+
+    /**
+     * Gets the current sort order.
+     *
+     * @return true if ascending, false if descending
+     */
+    public boolean isSortAscending() {
+        return isAscending;
+    }
+
+    /**
+     * Gets the difficulty order list for consistent sorting.
+     *
+     * @return List of difficulty levels in order
+     */
+    public static List<String> getDifficultyOrder() {
+        return DIFFICULTY_ORDER;
     }
 
 }
