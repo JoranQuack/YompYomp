@@ -95,7 +95,7 @@ public class DashboardController extends Controller {
 
     @FXML
     private void onSearchButtonClicked() {
-        super.getNavigator().launchScreen(new TrailsController(super.getNavigator(), searchBarTextField.getText()));
+        super.getNavigator().launchScreen(new TrailsController(super.getNavigator(), searchBarTextField.getText()), null);
     }
 
     /**

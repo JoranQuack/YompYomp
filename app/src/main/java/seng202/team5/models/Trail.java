@@ -98,8 +98,8 @@ public class Trail {
         this.name = name;
         this.difficulty = difficulty;
         this.description = description;
-        this.completionTime = completionTime;
-        this.type = type;
+        //this.completionTime = completionTime;
+        //this.type = type;
     }
 
     // Getters

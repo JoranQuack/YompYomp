@@ -69,8 +69,8 @@ public class ModifyTrailController extends Controller {
                 "Manawatu-Whanganui", "Tasman", "Wellington", "Nelson", "Marlborough", "West Coast",
                 "Canterbury", "Otago", "Southland"));
         regionComboBox.getItems().addAll(regionList);
-        difficultyComboBox.getItems().addAll(List.of("Easy", "Intermediate", "Advanced"));
-        trailTypeComboBox.getItems().addAll(List.of("One way", "Loop", "Return"));
+        difficultyComboBox.getItems().addAll(List.of("easy", "intermediate", "advanced"));
+        trailTypeComboBox.getItems().addAll(List.of("one way", "loop", "return"));
         saveButton.setOnAction(e -> onSaveButtonClicked());
         backButton.setOnAction(e -> onBackButtonClicked());
     }
@@ -95,8 +95,8 @@ public class ModifyTrailController extends Controller {
     private void initializeTextFields() {
         trailNameTextField.setText(trail.getName());
         difficultyComboBox.setValue(trail.getDifficulty());
-        trailTypeComboBox.setValue(trail.getType());
-        completionTimeTextField.setText(trail.getCompletionTime());
+        //trailTypeComboBox.setValue(trail.getType());
+        //completionTimeTextField.setText(trail.getCompletionTime());
         trailDescriptionTextArea.setText(trail.getDescription());
     }
 
