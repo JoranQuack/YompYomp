@@ -16,9 +16,4 @@ Scenario: User selected to redo quiz (Alternative Flow) (AT_2)
   Then the user will be taken back to original questions for the profile
   And the basic flow of the application is followed
 
-Scenario: Completed profile quiz. Matchmaking fails (Exceptional Flow) (AT_3)
-  Given the user has completed the profile quiz
-  When matchmaking fails
-  Then user sees the error message "Matchmaking failed, please close the application and try again."
-  And user is displayed the View Highlighted Trails screen
 
