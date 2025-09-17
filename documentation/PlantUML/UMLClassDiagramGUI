@@ -40,14 +40,14 @@ package "GUI" {
   class DashboardController {
     + DashboardController()
     + DashboardController(n : ScreenNavigator)
-    + initialize() : void (add note to say includes lots of initialization)
+    + initialize() : void
     - updateTrailsDisplay(trails : List<Trail>) : void
   }
 
   class TrailsController {
     + TrailsController()
     + TrailsController(n : ScreenNavigator)
-    + initialize() : void (same note as before)
+    + initialize() : void
     - updateDisplay(trails : List<Trail>) : void
   }
 
