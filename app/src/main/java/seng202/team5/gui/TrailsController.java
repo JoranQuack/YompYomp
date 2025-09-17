@@ -13,8 +13,8 @@ import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.VBox;
 import seng202.team5.data.DatabaseService;
 import seng202.team5.data.SqlBasedTrailRepo;
-import seng202.team5.gui.components.NavbarController;
-import seng202.team5.gui.components.TrailCardController;
+import seng202.team5.gui.components.NavbarComponent;
+import seng202.team5.gui.components.TrailCardComponent;
 import seng202.team5.models.Trail;
 import seng202.team5.services.SearchService;
 
@@ -93,7 +93,7 @@ public class TrailsController extends Controller {
     @FXML
     private void initialize() {
         // Initialize the navbar from parent coz you can't have your kid running around
-        NavbarController navbar = super.getNavbarController();
+        NavbarComponent navbar = super.getNavbarController();
         navbar.setPage(1);
         navbarContainer.getChildren().add(navbar);
 
@@ -252,7 +252,7 @@ public class TrailsController extends Controller {
         }
 
         for (Trail trail : trails) {
-            TrailCardController trailCard = new TrailCardController(super.getUserService().isGuest());
+            TrailCardComponent trailCard = new TrailCardComponent(super.getUserService().isGuest());
             trailCard.setData(trail);
 
             // Add some spacing between cards

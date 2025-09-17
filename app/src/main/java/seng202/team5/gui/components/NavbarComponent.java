@@ -13,7 +13,7 @@ import seng202.team5.gui.DashboardController;
 import seng202.team5.gui.TrailsController;
 import seng202.team5.services.UserService;
 
-public class NavbarController extends HBox {
+public class NavbarComponent extends HBox {
 
     private List<Button> navButtons;
 
@@ -33,7 +33,7 @@ public class NavbarController extends HBox {
      * Initialise the NavbarController and put the buttons into the list to easily
      * switch between them.
      */
-    public NavbarController(ScreenNavigator navigator, UserService userService) {
+    public NavbarComponent(ScreenNavigator navigator, UserService userService) {
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/components/navbar.fxml"));
         fxmlLoader.setRoot(this);
         fxmlLoader.setController(this);

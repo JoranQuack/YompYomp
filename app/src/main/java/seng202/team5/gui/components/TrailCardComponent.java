@@ -13,7 +13,7 @@ import seng202.team5.models.Trail;
 import seng202.team5.services.ImageService;
 import seng202.team5.utils.CompletionTimeParser;
 
-public class TrailCardController extends VBox {
+public class TrailCardComponent extends VBox {
 
     // UI Components
     @FXML
@@ -37,7 +37,7 @@ public class TrailCardController extends VBox {
 
     private boolean isUnmatched;
 
-    public TrailCardController(boolean isUnmatched) {
+    public TrailCardComponent(boolean isUnmatched) {
         this.isUnmatched = isUnmatched;
         this.imageService = new ImageService();
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/components/trail_card.fxml"));
