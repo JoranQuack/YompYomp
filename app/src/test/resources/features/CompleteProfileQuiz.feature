@@ -12,22 +12,13 @@ Scenario: User completes profile quiz for the first time (basic flow) (AT_1)
 
 Scenario: User selected to redo quiz (Alternative Flow) (AT_2)
   Given the user had previously completed the profile quiz and has matchmaking results saved
-  When the user selects the "Redo Quiz" button on the dashboard
+  When the user selects the "Change Quiz Preferences" button on the dashboard
   Then the user will be taken back to original questions for the profile
   And the basic flow of the application is followed
 
-Scenario: Completed profile quiz. Matchmaking fails once (Exceptional Flow) (AT_3)
+Scenario: Completed profile quiz. Matchmaking fails (Exceptional Flow) (AT_3)
   Given the user has completed the profile quiz
-  And matchmaking fails
-  When the system retries matchmaking
-  Then user sees the error message "Matchmaking failed, please try again."
-  And system attempts matchmaking again automatically up to 3 times
+  When matchmaking fails
+  Then user sees the error message "Matchmaking failed, please close the application and try again."
+  And user is displayed the View Highlighted Trails screen
 
-#TODO change according to new AT3
-Scenario: Completed profile quiz. Matchmaking fails more than 3 times (Exceptional flow) (AT_4)
-  Given the user has completed the profile quiz
-  And matchmaking fails
-  When the system retries matchmaking
-  And the matchmaking retries over 3 times
-  Then an error message of "Matchmaking has exceeded the number of possible retries. Please restart the application and redo the quiz" is displayed
-  And the user is directed to the general recommended trail screen used for guest mode
