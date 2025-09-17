@@ -43,9 +43,10 @@ public class ProfileSetupGeneralController extends Controller {
      */
     @FXML
     private void initialize() {
-        // TODO: use regions based on trail data in DB
+        super.getUserService().setGuest(false);
         User user = super.getUserService().getUser();
 
+        // TODO: use regions based on trail data in DB
         List<String> regionList = new ArrayList<>(List.of("Northland", "Auckland",
                 "Waikato", "Bay of Plenty", "Gisborne", "Hawke's Bay", "Taranaki",
                 "Manawatu-Whanganui", "Tasman", "Wellington", "Nelson", "Marlborough", "West Coast",
