@@ -55,6 +55,9 @@ public class TrailsController extends Controller {
     @FXML
     private ChoiceBox<String> difficultyChoiceBox;
 
+    @FXML
+    private ChoiceBox<String> multiDayChoiceBox;
+
     /**
      * Creates controller with navigator.
      *
@@ -127,6 +130,7 @@ public class TrailsController extends Controller {
         initializeChoiceBox(completionTypeChoiceBox, "completionType");
         initializeChoiceBox(timeUnitChoiceBox, "timeUnit");
         initializeChoiceBox(difficultyChoiceBox, "difficulty");
+        initializeChoiceBox(multiDayChoiceBox, "multiDay");
     }
 
     /**
@@ -199,7 +203,8 @@ public class TrailsController extends Controller {
         trailsContainer.getChildren().clear();
 
         if (trails.isEmpty()) {
-            Label noResultsLabel = new Label("No trails match your search. Please try adjusting your search and filter preferences.");
+            Label noResultsLabel = new Label(
+                    "No trails match your search. Please try adjusting your search and filter preferences.");
             trailsContainer.getChildren().add(noResultsLabel);
             return;
         }
@@ -232,6 +237,7 @@ public class TrailsController extends Controller {
         searchService.updateFilter("completionType", completionTypeChoiceBox.getValue());
         searchService.updateFilter("timeUnit", timeUnitChoiceBox.getValue());
         searchService.updateFilter("difficulty", difficultyChoiceBox.getValue());
+        searchService.updateFilter("multiDay", multiDayChoiceBox.getValue());
         updateSearchDisplay();
     }
 

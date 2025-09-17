@@ -50,7 +50,11 @@ public class SearchService {
                             trail.getTimeUnit().equalsIgnoreCase(value)),
             "difficulty", new FilterConfig("All difficulties", Trail::getDifficulty,
                     (trail, value) -> isNullOrEmpty(value) || value.equals("All difficulties") ||
-                            trail.getDifficulty().equalsIgnoreCase(value)));
+                            trail.getDifficulty().equalsIgnoreCase(value)),
+            "multiDay", new FilterConfig("Any time range", trail -> trail.isMultiDay() ? "Multi-day" : "Day walk",
+                    (trail, value) -> isNullOrEmpty(value) || value.equals("Any time range") ||
+                            (value.equals("Multi-day") && trail.isMultiDay()) ||
+                            (value.equals("Day walk") && !trail.isMultiDay())));
 
     /**
      * Creates SearchService with injected SQLBasedTrailRepo.
