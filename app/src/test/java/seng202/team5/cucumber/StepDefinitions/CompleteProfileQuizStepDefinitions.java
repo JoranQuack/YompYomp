@@ -7,7 +7,6 @@ import seng202.team5.data.SqlBasedTrailRepo;
 import seng202.team5.exceptions.LoadingTrailsFailedException;
 import seng202.team5.exceptions.MatchMakingFailedException;
 import seng202.team5.gui.MatchmakingController;
-import seng202.team5.gui.ScreenNavigator;
 import seng202.team5.models.Trail;
 import seng202.team5.models.User;
 import seng202.team5.services.MatchmakingService;
@@ -21,14 +20,10 @@ import static org.mockito.Mockito.*;
 public class CompleteProfileQuizStepDefinitions {
     private SqlBasedKeywordRepo mockKeywordRepo;
     private SqlBasedTrailRepo mockTrailRepo;
-    private MatchmakingService matchMakingService;
+    private MatchmakingService matchmakingService;
     private SearchService searchService;
-    private MatchmakingController matchmakingController;
     private User testUser;
     private Map<String, Integer> userWeights;
-    private Map<String, Integer> retrievedWeights;
-    private List<Trail> orderedTrails;
-    private ScreenNavigator mockNavigator;
 
     @Before
     public void setUp() {
@@ -86,7 +81,7 @@ public class CompleteProfileQuizStepDefinitions {
                         "2024-01-10", 1056.78, 146.89)));
         when(mockTrailRepo.getAllTrails()).thenReturn(mockTrails);
         searchService = new SearchService(mockTrailRepo);
-        matchMakingService = new MatchmakingService(mockKeywordRepo, mockTrailRepo);
+        matchmakingService = new MatchmakingService(mockKeywordRepo, mockTrailRepo);
 
         // Build a test user with some preferences
         testUser = new User();
@@ -107,7 +102,7 @@ public class CompleteProfileQuizStepDefinitions {
         testUser.setWaterfallPreference(5);
         testUser.setReservePreference(2);
 
-        matchMakingService.setUserPreferences(testUser);
+        matchmakingService.setUserPreferences(testUser);
     }
     @And("all trail data is available and has been loaded")
     public void allTrailDataLoaded() throws LoadingTrailsFailedException {
@@ -118,7 +113,7 @@ public class CompleteProfileQuizStepDefinitions {
 
     @When("the system begins match making")
     public void systemBeginsMatchMaking() throws MatchMakingFailedException {
-        matchMakingService.generateTrailWeights(testUser);
+        matchmakingService.generateTrailWeights(testUser);
     }
 
     @Then("the user sees a loading screen for between 1 and 10 seconds with the message {string}")
@@ -135,13 +130,13 @@ public class CompleteProfileQuizStepDefinitions {
         userHasCompletedProfileQuiz();
 
         // Simulate system has already run matchmaking before
-        matchMakingService.generateTrailWeights(testUser);
+        matchmakingService.generateTrailWeights(testUser);
     }
 
     @When("the user selects the \"Change Quiz Preferences\" button on the dashboard")
     public void userSelectsRedoQuiz() {
         // Retrieve previously stored matchmaking results
-        userWeights = matchMakingService.getUserWeights();
+        userWeights = matchmakingService.getUserWeights();
     }
 
     @Then("the user will be taken back to original questions for the profile")
