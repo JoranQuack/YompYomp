@@ -120,8 +120,7 @@ public class TrailsController extends Controller {
 
     /**
      * This method is used to populate and click the search button on the trails
-     * page a search is made from
-     * the dashboard page
+     * page if a search is made from the dashboard page
      */
     private void executeDashboardSearch() {
         searchBarTextField.setText(searchText);
