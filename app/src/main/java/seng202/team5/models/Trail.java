@@ -80,13 +80,17 @@ public class Trail {
     }
 
     /**
-     * Constructor for Trail class without id, thumbnailURL, webpageURL, dateLoaded, x, y
+     * Constructor for Trail class without thumbnailURL, webpageURL, dateLoaded, x, y
      * Calls SqlBasedTrailRepo to get new trail id
      */
-    public Trail(String name, String difficulty, String description, String completionTime, String type) {
+    public Trail(int id, String name, String difficulty, String description, String completionTime, String type) {
         DatabaseService databaseService = new DatabaseService();
         SqlBasedTrailRepo sqlBasedTrailRepo = new SqlBasedTrailRepo(databaseService);
-        this.id = sqlBasedTrailRepo.getNewTrailId();
+        if (id == -1) {
+            this.id = sqlBasedTrailRepo.getNewTrailId();
+        } else {
+            this.id = id;
+        }
         this.name = name;
         this.difficulty = difficulty;
         this.description = description;

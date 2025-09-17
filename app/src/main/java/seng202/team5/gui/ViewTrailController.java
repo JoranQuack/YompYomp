@@ -57,15 +57,20 @@ public class ViewTrailController extends Controller {
         matchLabel.setText(matchPercent + "% match");
         descriptionLabel.setText(trail.getDescription());
         backButton.setOnAction(e -> onBackButtonClicked());
+        editInfoButton.setOnAction(e -> onEditInfoButtonClicked());
         // TODO: add icon for map
-        // TODO: action method for edit info button
-        // TODO: add completion time field
+        // TODO: show completion time
     }
 
     @FXML
     private void onBackButtonClicked() {
         Controller lastController = super.getNavigator().getLastController();
         super.getNavigator().launchScreen(lastController, null);
+    }
+
+    @FXML
+    private void onEditInfoButtonClicked() {
+        super.getNavigator().launchScreen(new ModifyTrailController(super.getNavigator(), trail, this), null);
     }
 
     @Override

@@ -4,6 +4,7 @@ import java.util.List;
 
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
+import javafx.scene.control.Button;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.VBox;
 import seng202.team5.data.DatabaseService;
@@ -25,6 +26,9 @@ public class DashboardController extends Controller {
 
     @FXML
     private FlowPane trailsContainer;
+
+    @FXML
+    private Button addTrailButton;
 
     /**
      * Default constructor required by JavaFX FXML loading.
@@ -69,11 +73,17 @@ public class DashboardController extends Controller {
         SqlBasedTrailRepo repo = new SqlBasedTrailRepo(new DatabaseService());
         List<Trail> trails = repo.getRecommendedTrails();
         initializeRecommendedTrails(trails);
+        addTrailButton.setOnAction(e -> onAddTrailButtonClicked());
     }
 
     @FXML
     private void onViewAllClicked() {
         super.getNavigator().launchScreen(new TrailsController(super.getNavigator()), null);
+    }
+
+    @FXML
+    private void onAddTrailButtonClicked() {
+        super.getNavigator().launchScreen(new ModifyTrailController(super.getNavigator(), null, this), null);
     }
 
     /**

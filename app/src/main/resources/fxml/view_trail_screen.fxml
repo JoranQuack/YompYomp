@@ -12,7 +12,7 @@
 
 <HBox alignment="CENTER_LEFT" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="550.0" minWidth="800.0" xmlns="http://javafx.com/javafx/21.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="seng202.team5.gui.ViewTrailController">
    <children>
-      <VBox maxHeight="1.7976931348623157E308" prefWidth="250.0" spacing="10.0">
+      <VBox maxHeight="1.7976931348623157E308" maxWidth="600.0" minWidth="300.0" spacing="10.0">
          <children>
             <HBox spacing="10.0">
                <children>
@@ -23,7 +23,7 @@
                   </Button>
                </children>
             </HBox>
-            <ImageView fx:id="trailThumbnail" fitHeight="157.0" fitWidth="282.0" pickOnBounds="true" preserveRatio="true">
+            <ImageView fx:id="trailThumbnail" fitHeight="157.0" fitWidth="290.0" pickOnBounds="true" preserveRatio="true">
                <VBox.margin>
                   <Insets />
                </VBox.margin>
@@ -33,25 +33,25 @@
                   <Insets />
                </VBox.margin>
                <children>
-                  <VBox prefHeight="37.0" prefWidth="280.0">
+                  <VBox prefHeight="37.0">
                      <children>
-                        <Label fx:id="trailNameLabel" text="Trail Name">
+                        <Label fx:id="trailNameLabel" prefHeight="22.0" prefWidth="289.0" text="Trail Name">
                            <font>
                               <Font name="System Bold" size="15.0" />
                            </font>
                         </Label>
-                        <Label fx:id="translationLabel" text="Translation">
+                        <Label fx:id="translationLabel" text="Translation" visible="false">
                            <font>
-                              <Font size="11.0" />
+                              <Font size="13.0" />
                            </font>
                         </Label>
                      </children>
                   </VBox>
                </children>
             </HBox>
-            <StackPane>
+            <StackPane maxWidth="580.0" minWidth="280.0">
                <children>
-                  <ProgressBar fx:id="matchBar" prefHeight="25.0" prefWidth="270.0" progress="0.0">
+                  <ProgressBar fx:id="matchBar" maxWidth="1.7976931348623157E308" minWidth="270.0" prefHeight="25.0" progress="0.0">
                      <StackPane.margin>
                         <Insets />
                      </StackPane.margin>
@@ -67,14 +67,11 @@
                </VBox.margin>
             </StackPane>
             <Label fx:id="descriptionLabel" alignment="TOP_LEFT" text="Label" wrapText="true">
-               <font>
-                  <Font size="11.0" />
-               </font>
                <VBox.margin>
                   <Insets top="20.0" />
                </VBox.margin>
             </Label>
-            <HBox alignment="BOTTOM_LEFT" spacing="10.0">
+            <HBox alignment="BOTTOM_LEFT" prefHeight="177.0" spacing="10.0">
                <children>
                   <Button fx:id="editInfoButton" mnemonicParsing="false" text="Edit Info" />
                </children>
@@ -99,7 +96,10 @@
                   <Insets />
                </VBox.margin>
                <children>
-                  <Label text="Weather forecast coming soon..." />
+                  <Label text="Weather forecast coming soon...">
+                     <font>
+                        <Font size="13.0" />
+                     </font></Label>
                </children>
             </HBox>
             <Label disable="true" text="Relevant Huts" visible="false">

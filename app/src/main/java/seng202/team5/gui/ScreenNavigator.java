@@ -29,6 +29,7 @@ public class ScreenNavigator {
     public ScreenNavigator(Stage stage) {
         this.stage = stage;
         this.rootPane = new BorderPane();
+        this.lastController = null;
         Scene scene = new Scene(rootPane, 1200, 800);
         stage.setScene(scene);
 
@@ -62,7 +63,9 @@ public class ScreenNavigator {
      */
     public void launchScreen(Controller controller, Controller lastController) {
         try {
-            this.lastController = lastController;
+            if (lastController != null) {
+                this.lastController = lastController;
+            }
             FXMLLoader setupLoader = new FXMLLoader(getClass().getResource(controller.getFxmlFile()));
             setupLoader.setControllerFactory(param -> controller);
             Parent setupParent = setupLoader.load();
