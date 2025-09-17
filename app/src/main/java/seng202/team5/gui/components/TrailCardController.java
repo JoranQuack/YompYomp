@@ -11,6 +11,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
 import seng202.team5.models.Trail;
 import seng202.team5.services.ImageService;
+import seng202.team5.utils.CompletionTimeParser;
 
 public class TrailCardController extends VBox {
 
@@ -29,6 +30,8 @@ public class TrailCardController extends VBox {
     private Label durationLabel;
     @FXML
     private Label regionLabel;
+    @FXML
+    private Label typeLabel;
 
     private final ImageService imageService;
 
@@ -48,6 +51,35 @@ public class TrailCardController extends VBox {
     }
 
     /**
+     * Capitalise the first letter of a string.
+     *
+     * @param str The input string
+     * @return The capitalised string
+     */
+    private String capitaliseFirstLetter(String str) {
+        if (str == null || str.isEmpty()) {
+            return str;
+        }
+        return str.substring(0, 1).toUpperCase() + str.substring(1);
+    }
+
+    /**
+     * Completion time formatting.
+     *
+     * @param trail
+     */
+    private String formatCompletionTime(Trail trail) {
+        if (trail.getMinCompletionTimeMinutes() == trail.getMaxCompletionTimeMinutes()) {
+            return capitaliseFirstLetter(
+                    CompletionTimeParser.formatMinutesToString(trail.getMinCompletionTimeMinutes()));
+        }
+        return capitaliseFirstLetter(CompletionTimeParser.formatMinutesToString(trail.getMinCompletionTimeMinutes()))
+                + " - "
+                + capitaliseFirstLetter(
+                        CompletionTimeParser.formatMinutesToString(trail.getMaxCompletionTimeMinutes()));
+    }
+
+    /**
      * Sets the trail data for this card component.
      *
      * @param trail The trail object to display
@@ -58,9 +90,25 @@ public class TrailCardController extends VBox {
         Image trailImage = imageService.loadTrailImage(trail.getThumbnailURL());
         thumbnail.setImage(trailImage);
 
-        difficultyLabel.setText(trail.getDifficulty());
-        durationLabel.setText(trail.getCompletionType());
-        regionLabel.setText("Region");
+        regionLabel.setVisible(false); // Hide region label for now
+
+        if (!trail.getDifficulty().contains("unknown")) {
+            difficultyLabel.setText(capitaliseFirstLetter(trail.getDifficulty()));
+        } else {
+            difficultyLabel.setVisible(false);
+        }
+
+        if (trail.getMinCompletionTimeMinutes() != 0) {
+            durationLabel.setText(formatCompletionTime(trail));
+        } else {
+            durationLabel.setVisible(false);
+        }
+
+        if (!trail.getCompletionType().contains("unknown")) {
+            typeLabel.setText(capitaliseFirstLetter(trail.getCompletionType()));
+        } else {
+            typeLabel.setVisible(false);
+        }
 
         if (isUnmatched) {
             matchBar.setVisible(false);
