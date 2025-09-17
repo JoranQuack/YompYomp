@@ -173,10 +173,10 @@ public class SqlBasedTrailRepo implements ITrail {
     }
 
     /**
-     * Returns max value of trail id in database
+     * Returns a new value of trail id in database
      */
-    public void findMaxTrailId() throws java.sql.SQLException {
+    public int getNewTrailId() {
         String getIdQuery = "SELECT MAX(id) FROM trail";
-        queryHelper.executeQuery(getIdQuery, null, this::mapRowToTrail);
+        return queryHelper.executeQuerySingle(getIdQuery, null, this::mapRowToTrail).get().getId() + 1;
     }
 }

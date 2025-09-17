@@ -2,6 +2,9 @@ package seng202.team5.models;
 
 // import java.util.Date;
 
+import seng202.team5.data.DatabaseService;
+import seng202.team5.data.SqlBasedTrailRepo;
+
 import java.util.HashSet;
 import java.util.Set;
 
@@ -74,6 +77,21 @@ public class Trail {
     public Trail(int id, String name, String difficulty, String description, String completionTime, String type,
             String thumbnailURL, String webpageURL, String dateLoaded, double x, double y) {
         this(id, name, difficulty, description, completionTime, type, thumbnailURL, webpageURL, dateLoaded, x, y, 0.0);
+    }
+
+    /**
+     * Constructor for Trail class without id, thumbnailURL, webpageURL, dateLoaded, x, y
+     * Calls SqlBasedTrailRepo to get new trail id
+     */
+    public Trail(String name, String difficulty, String description, String completionTime, String type) {
+        DatabaseService databaseService = new DatabaseService();
+        SqlBasedTrailRepo sqlBasedTrailRepo = new SqlBasedTrailRepo(databaseService);
+        this.id = sqlBasedTrailRepo.getNewTrailId();
+        this.name = name;
+        this.difficulty = difficulty;
+        this.description = description;
+        this.completionTime = completionTime;
+        this.type = type;
     }
 
     // Getters
