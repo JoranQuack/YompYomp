@@ -67,6 +67,7 @@ public class WelcomeController extends Controller {
         if (user == null) {
             user = new User();
             user.setType("guest");
+            user.setName("Guest User");
             super.getUserService().setUser(user);
         }
         super.getNavigator().launchScreen(new DashboardController(super.getNavigator()));

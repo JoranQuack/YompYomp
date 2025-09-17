@@ -2,15 +2,16 @@ package seng202.team5.gui;
 
 import javafx.concurrent.Task;
 import javafx.fxml.FXML;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ProgressIndicator;
 import seng202.team5.data.DatabaseService;
 import seng202.team5.data.SqlBasedKeywordRepo;
 import seng202.team5.data.SqlBasedTrailRepo;
 import seng202.team5.models.User;
-import seng202.team5.services.MatchMakingService;
+import seng202.team5.services.MatchmakingService;
 
 public class MatchmakingController extends Controller {
-    private MatchMakingService matchMakingService;
+    private MatchmakingService matchMakingService;
 
     @FXML
     private ProgressIndicator progressIndicator;
@@ -23,7 +24,7 @@ public class MatchmakingController extends Controller {
     public MatchmakingController(ScreenNavigator navigator) {
         super(navigator);
         DatabaseService databaseService = new DatabaseService();
-        matchMakingService = new MatchMakingService(
+        matchMakingService = new MatchmakingService(
                 new SqlBasedKeywordRepo(databaseService),
                 new SqlBasedTrailRepo(databaseService));
 
@@ -59,9 +60,12 @@ public class MatchmakingController extends Controller {
                     return null;
                 }
 
-                // Run the matchmaking process
-                matchMakingService.generateTrailWeights(user);
-                return null;
+
+                    // Run the matchmaking process
+                    matchMakingService.generateTrailWeights(user);
+                    return null;
+
+
             }
 
             @Override
@@ -73,8 +77,9 @@ public class MatchmakingController extends Controller {
             protected void failed() {
                 Throwable exception = getException();
                 System.err.println("Matchmaking failed: " + exception.getMessage());
-                exception.printStackTrace();
-                navigator.launchScreen(new DashboardController(navigator));
+                exitThread();
+//                showAlert(AlertType.ERROR, "Matchmaking Failed", exception.getMessage());
+
             }
         };
 
@@ -91,6 +96,15 @@ public class MatchmakingController extends Controller {
     @Override
     public String getTitle() {
         return "Matchmaking In Progress";
+    }
+
+    /**
+     * Handles cleanup and user notification when the matchmaking thread fails
+     */
+    private void exitThread() {
+        Thread.currentThread().interrupt();
+        showAlert(AlertType.ERROR, "Matchmaking Failed", "Matchmaking failed, please close the application and try again.");
+        super.getNavigator().launchScreen(new DashboardController(super.getNavigator())); //TODO this should take user to guest dashboard screen
     }
 
 }

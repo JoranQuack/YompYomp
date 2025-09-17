@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import seng202.team5.data.SqlBasedTrailRepo;
+import seng202.team5.exceptions.LoadingTrailsFailedException;
 import seng202.team5.models.Trail;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -50,7 +51,7 @@ public class SearchServiceTest {
 
     @Test
     @DisplayName("Should return all of the trails (showing only 20 per page) if search query is empty")
-    void testSearchTrailsEmptyQuery() {
+    void testSearchTrailsEmptyQuery() throws LoadingTrailsFailedException {
         List<Trail> trails = searchService.getTrails("", 0);
 
         assertNotNull(trails);
@@ -61,7 +62,7 @@ public class SearchServiceTest {
 
     @Test
     @DisplayName("Should return trails independently of case")
-    void testSearchTrailsCaseInsensitive() {
+    void testSearchTrailsCaseInsensitive() throws LoadingTrailsFailedException {
         List<Trail> lowerCase = searchService.getTrails("trail", 0);
         List<Trail> upperCase = searchService.getTrails("TRAIL", 0);
         List<Trail> mixedCase = searchService.getTrails("Trail", 0);
@@ -79,7 +80,7 @@ public class SearchServiceTest {
 
     @Test
     @DisplayName("Should return empty list when no trails match search query")
-    void testSearchTrailsNoMatches() {
+    void testSearchTrailsNoMatches() throws LoadingTrailsFailedException {
         List<Trail> trails = searchService.getTrails("nonexistent", 0);
 
         assertNotNull(trails);
@@ -110,7 +111,7 @@ public class SearchServiceTest {
 
     @Test
     @DisplayName("Should handle pagination correctly")
-    void testPagination() {
+    void testPagination() throws LoadingTrailsFailedException {
         searchService.setMaxResults(2);
 
         List<Trail> page1 = searchService.getTrails("", 0);

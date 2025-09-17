@@ -4,14 +4,12 @@ import java.util.List;
 
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
-import javafx.scene.control.Button;
-import javafx.scene.control.ChoiceBox;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.VBox;
 import seng202.team5.data.DatabaseService;
 import seng202.team5.data.SqlBasedTrailRepo;
+import seng202.team5.exceptions.LoadingTrailsFailedException;
 import seng202.team5.gui.components.NavbarController;
 import seng202.team5.gui.components.TrailCardController;
 import seng202.team5.models.Trail;
@@ -88,10 +86,17 @@ public class TrailsController extends Controller {
             return;
         }
 
-        List<Trail> trails = searchService.getTrails(null, 0);
-        initializePageChoiceBox();
-        updateTrailsDisplay(trails);
-        resultsLabel.setText(trails.size() + "/" + searchService.getNumberOfTrails() + " trails loaded");
+        try {
+            List<Trail> trails = searchService.getTrails(null, 0);
+            initializePageChoiceBox();
+            updateTrailsDisplay(trails);
+            resultsLabel.setText(trails.size() + "/" + searchService.getNumberOfTrails() + " trails loaded");
+        } catch (LoadingTrailsFailedException e) {
+            showAlert(Alert.AlertType.ERROR, "Loading Trails Failed", "Failed to load trails, please close the application and try again");
+            super.getNavigator().launchScreen(new DashboardController(super.getNavigator())); //TODO this should take user to respective dashboard screen
+        }
+
+
     }
 
     /**
@@ -125,14 +130,20 @@ public class TrailsController extends Controller {
         }
         pageChoiceBox.setValue("1");
         pageChoiceBox.getSelectionModel().selectedItemProperty().addListener(
-                (observable, oldValue, newValue) -> onSearchButtonClickedOrPageSelected());
+                (observable, oldValue, newValue) -> {
+                    try {
+                        onSearchButtonClickedOrPageSelected();
+                    } catch (LoadingTrailsFailedException e) {
+                        showAlert(Alert.AlertType.ERROR, "Search is Really Broken", "How did you even get this error?");
+                    }
+                });
     }
 
     /**
      * Handles search button click or page selection change
      */
     @FXML
-    private void onSearchButtonClickedOrPageSelected() {
+    private void onSearchButtonClickedOrPageSelected() throws LoadingTrailsFailedException {
         if (searchService == null) {
             return;
         }

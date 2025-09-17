@@ -5,25 +5,31 @@
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.Region?>
 
-
-<fx:root alignment="CENTER_LEFT" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minWidth="400.0" spacing="10.0" type="HBox" xmlns="http://javafx.com/javafx/21.0.2" xmlns:fx="http://javafx.com/fxml/1">
+<fx:root alignment="CENTER_LEFT" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minWidth="400.0" prefHeight="70.0" prefWidth="637.0" spacing="10.0" type="HBox" xmlns="http://javafx.com/javafx/null" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <ImageView fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true">
          <image>
             <Image url="@../../images/YompYompIcon.png" />
          </image>
       </ImageView>
-      <HBox alignment="CENTER" spacing="10.0" HBox.hgrow="ALWAYS">
+      <HBox alignment="CENTER" prefHeight="50.0" prefWidth="372.0" spacing="10.0" HBox.hgrow="ALWAYS">
          <children>
             <Button fx:id="homeButton" mnemonicParsing="false" text="Home" />
             <Button fx:id="trailsButton" mnemonicParsing="false" text="Trails" />
-            <Button fx:id="loggedButton" mnemonicParsing="false" text="Logged" />
-            <Button fx:id="toDoButton" mnemonicParsing="false" text="To Do" />
+            <Button fx:id="loggedButton" disable="true" mnemonicParsing="false" text="Logged" visible="false" />
+            <Button fx:id="toDoButton" disable="true" mnemonicParsing="false" text="To Do" visible="false" />
          </children>
       </HBox>
-      <Region prefHeight="50.0" prefWidth="50.0" />
+      <HBox alignment="CENTER">
+         <children>
+            <Button fx:id="redoQuizButton" alignment="CENTER" mnemonicParsing="false" text="Change Quiz Preferences" HBox.hgrow="ALWAYS">
+               <HBox.margin>
+                  <Insets />
+               </HBox.margin>
+            </Button>
+         </children>
+      </HBox>
    </children>
    <padding>
       <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
