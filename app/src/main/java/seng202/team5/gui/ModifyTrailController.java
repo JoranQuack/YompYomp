@@ -13,6 +13,9 @@ import seng202.team5.models.Trail;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Controller for the modify trail screen
+ */
 public class ModifyTrailController extends Controller {
 
     private Trail trail;
@@ -22,6 +25,7 @@ public class ModifyTrailController extends Controller {
      * Launches the screen with navigator
      *
      * @param navigator screen navigator
+     * @param lastController controller of last screen user interacted with
      */
     public ModifyTrailController(ScreenNavigator navigator, Trail trail, Controller lastController) {
         super(navigator);
@@ -50,6 +54,11 @@ public class ModifyTrailController extends Controller {
     @FXML
     private Button backButton;
 
+    /**
+     * Initialises the screen with components for user to input data
+     * Prefills the boxes if user is updating an existing trail
+     * Else leaves boxes blank
+     */
     @FXML
     private void initialize() {
         if (trail != null) {
@@ -79,6 +88,9 @@ public class ModifyTrailController extends Controller {
         super.getNavigator().launchScreen(lastController, lastController.getNavigator().getLastController());
     }
 
+    /**
+     * Prefills boxes with existing data of the trail
+     */
     @FXML
     private void initializeTextFields() {
         trailNameTextField.setText(trail.getName());
@@ -88,6 +100,10 @@ public class ModifyTrailController extends Controller {
         trailDescriptionTextArea.setText(trail.getDescription());
     }
 
+    /**
+     * Returns Trail object of trail to be updated/added to database
+     * @return updatedTrail
+     */
     private Trail getUpdatedTrail() {
         int trailId;
         if (trail != null) {
