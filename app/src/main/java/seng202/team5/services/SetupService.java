@@ -1,12 +1,14 @@
 package seng202.team5.services;
 
-import seng202.team5.data.AppDataManager;
+import seng202.team5.utils.AppDataManager;
 import seng202.team5.data.DatabaseService;
 import seng202.team5.data.FileBasedKeywordRepo;
 import seng202.team5.data.FileBasedTrailRepo;
 import seng202.team5.data.SqlBasedKeywordRepo;
 import seng202.team5.data.SqlBasedTrailRepo;
 import seng202.team5.models.Trail;
+import seng202.team5.utils.CompletionTimeParser;
+import seng202.team5.utils.DifficultyParser;
 
 import java.io.File;
 import java.io.IOException;
@@ -24,8 +26,8 @@ import java.util.List;
  */
 public class SetupService {
     private final DatabaseService databaseService;
-    private final SqlBasedTrailRepo DbTrailRepo;
-    private final FileBasedTrailRepo FileTrailRepo;
+    private final SqlBasedTrailRepo sqlTrailRepo;
+    private final FileBasedTrailRepo fileTrailRepo;
 
     /**
      * Constructor for setup service with custom SQLBasedRepo and FileBasedRepo for
@@ -35,8 +37,8 @@ public class SetupService {
      * @param fileTrailRepo
      */
     public SetupService(SqlBasedTrailRepo sqlBasedTrailRepo, FileBasedTrailRepo fileTrailRepo) {
-        this.DbTrailRepo = sqlBasedTrailRepo;
-        this.FileTrailRepo = fileTrailRepo;
+        this.sqlTrailRepo = sqlBasedTrailRepo;
+        this.fileTrailRepo = fileTrailRepo;
         databaseService = null;
     }
 
@@ -45,17 +47,8 @@ public class SetupService {
      */
     public SetupService() {
         this.databaseService = new DatabaseService();
-        this.DbTrailRepo = new SqlBasedTrailRepo(databaseService);
-        this.FileTrailRepo = new FileBasedTrailRepo("/datasets/DOC_Walking_Experiences_7994760352369043452.csv");
-    }
-
-    /**
-     * Checks if the trail table is populated.
-     *
-     * @return true if the trail table is populated, false otherwise.
-     */
-    boolean isTrailTablePopulated() {
-        return DbTrailRepo.countTrails() >= FileTrailRepo.countTrails();
+        this.sqlTrailRepo = new SqlBasedTrailRepo(databaseService);
+        this.fileTrailRepo = new FileBasedTrailRepo("/datasets/DOC_Walking_Experiences_7994760352369043452.csv");
     }
 
     /**
@@ -77,20 +70,24 @@ public class SetupService {
             return;
         }
 
-        try {
-            // Check if database exists and schema is up to date
-            if (!databaseService.databaseExists() || !databaseService.isSchemaUpToDate()) {
-                if (databaseService.databaseExists()) {
-                    databaseService.deleteDatabase();
-                }
+        if (databaseService.databaseExists() || databaseService.isSchemaUpToDate()) {
+            return;
+        }
 
-                // Create the database and tables
-                databaseService.createDatabaseIfNotExists();
+        try {
+            if (databaseService.databaseExists()) {
+                System.out.println("Database schema is outdated. Deleting database.");
+                databaseService.deleteDatabase();
             }
+
+            // Create the database and tables
+            databaseService.createDatabaseIfNotExists();
         } catch (Exception e) {
             System.err.println("Error setting up database: " + e.getMessage());
             e.printStackTrace();
         }
+
+        syncDbFromTrailFile();
 
         // Populate keywords table coz we need dat stuff later
         SqlBasedKeywordRepo sqlBasedKeywordRepo = new SqlBasedKeywordRepo(databaseService);
@@ -130,7 +127,7 @@ public class SetupService {
      * Scrapes images for all trails.
      */
     public void scrapeAllTrailImages() {
-        for (Trail trail : DbTrailRepo.getAllTrails()) {
+        for (Trail trail : sqlTrailRepo.getAllTrails()) {
             scrapeTrailImage(trail.getThumbnailURL());
         }
     }
@@ -146,18 +143,13 @@ public class SetupService {
     }
 
     /**
-     * Upserts into DB if not up to date
+     * Upserts into DB to keep up to date
      */
     public void syncDbFromTrailFile() {
         try {
-            if (!isTrailTablePopulated()) {
-                System.out.println("Trail table being populated");
-                List<Trail> source = FileTrailRepo.getAllTrails();
-                DbTrailRepo.upsertAll(source);
-                if (isTrailTablePopulated()) {
-                    System.out.println("Trail table populated");
-                }
-            }
+            List<Trail> source = fileTrailRepo.getAllTrails();
+            List<Trail> trails = processTrails(source);
+            sqlTrailRepo.upsertAll(trails);
         } catch (Exception e) {
             System.err.println("Error syncing database from trail file: " + e.getMessage());
             e.printStackTrace();
@@ -165,11 +157,45 @@ public class SetupService {
     }
 
     /**
+     * Processes trails to populate time-related fields
+     *
+     * @param trails List of trails to process
+     * @return List of processed trails
+     */
+    private List<Trail> processTrails(List<Trail> trails) {
+        for (Trail trail : trails) {
+            String completionInfo = trail.getCompletionInfo();
+
+            if (completionInfo != null && !completionInfo.trim().isEmpty()) {
+                try {
+                    CompletionTimeParser.CompletionTimeResult result = CompletionTimeParser
+                            .parseCompletionTime(completionInfo);
+
+                    // Update trail with parsed time information
+                    trail.setMinCompletionTimeMinutes(result.getMinCompletionTimeMinutes());
+                    trail.setMaxCompletionTimeMinutes(result.getMaxCompletionTimeMinutes());
+                    trail.setCompletionType(result.getCompletionType());
+                    trail.setTimeUnit(result.getTimeUnit());
+                    trail.setMultiDay(result.isMultiDay());
+                    trail.setHasVariableTime(result.hasVariableTime());
+
+                } catch (Exception e) {
+                    System.err.println("Error parsing completion time for trail " + trail.getId() +
+                            " ('" + completionInfo + "'): " + e.getMessage());
+                    // Keep default values if parsing fails
+                }
+            }
+
+            trail.setDifficulty(DifficultyParser.parseDifficulty(trail.getDifficulty()));
+        }
+        return trails;
+    }
+
+    /**
      * Calls key functions to set up application
      */
     public void setupApplication() {
         setupDatabase();
-        syncDbFromTrailFile();
         scrapeAllTrailImages();
     }
 }

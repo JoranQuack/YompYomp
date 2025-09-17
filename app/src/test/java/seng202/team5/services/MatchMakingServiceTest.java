@@ -33,20 +33,15 @@ class MatchMakingServiceTest {
         mockTrailRepo = mock(SqlBasedTrailRepo.class);
         mockTrails = new ArrayList<>(Arrays.asList(
                 new Trail(1, "Alpine Trail", "Easy", "A beautiful alpine trail through the mountains",
-                        "2 hours", "Walking", "thumb1.jpg", "http://example.com/trail1",
-                        "2024-01-01", 123.45, 67.89),
+                        "2 hours", "thumb1.jpg", "http://example.com/trail1"),
                 new Trail(2, "Forest Trail", "Medium", "A scenic forest trail with wildlife viewing",
-                        "3 hours", "Walking", "thumb2.jpg", "http://example.com/trail2",
-                        "2024-01-02", 234.56, 78.90),
+                        "3 hours", "thumb2.jpg", "http://example.com/trail2"),
                 new Trail(3, "Mountain Peak Trail", "Hard", "Challenging trail to the mountain peak",
-                        "5 hours", "Hiking", "thumb3.jpg", "http://example.com/trail3",
-                        "2024-01-03", 345.67, 89.01),
+                        "5 hours", "thumb3.jpg", "http://example.com/trail3"),
                 new Trail(4, "Coastal Walk", "Easy", "Easy coastal walk with ocean views",
-                        "1.5 hours", "Walking", "thumb4.jpg", "http://example.com/trail4",
-                        "2024-01-04", 456.78, 90.12),
+                        "1.5 hours", "thumb4.jpg", "http://example.com/trail4"),
                 new Trail(5, "River Trail", "Medium", "Trail following the river through the valley",
-                        "2.5 hours", "Walking", "thumb5.jpg", "http://example.com/trail5",
-                        "2024-01-05", 567.89, 101.23)));
+                        "2.5 hours", "thumb5.jpg", "http://example.com/trail5")));
         when(mockTrailRepo.getAllTrails()).thenReturn(mockTrails);
 
         matchMakingService = new MatchMakingService(mockKeywordRepo, mockTrailRepo);
@@ -90,18 +85,22 @@ class MatchMakingServiceTest {
     }
 
     /**
-     *Calculated the expected weighted score for a trail, based on the given
-     * strength contribution and coverage values. This helper function is used in tests
+     * Calculated the expected weighted score for a trail, based on the given
+     * strength contribution and coverage values. This helper function is used in
+     * tests
      * to independently verify the scoring logic in {@link MatchMakingService}.
+     *
      * @param strengthSum the total weighted sum of matched trail categories
-     * @param matched the number of trail categories that match user preferences
-     * @param total the total number of categories in the trail
-     * @param maxScore the maximum possible weight sum across all user preferences
-     * @return the expected weighted score (combination of user-weighted strength and category coverage)
+     * @param matched     the number of trail categories that match user preferences
+     * @param total       the total number of categories in the trail
+     * @param maxScore    the maximum possible weight sum across all user
+     *                    preferences
+     * @return the expected weighted score (combination of user-weighted strength
+     *         and category coverage)
      */
     private double expectedScore(double strengthSum, int matched, int total, double maxScore) {
-        double strength = strengthSum/maxScore;
-        double coverage = (double) matched/total;
+        double strength = strengthSum / maxScore;
+        double coverage = (double) matched / total;
         return MatchMakingService.STRENGTH_WEIGHT * strength + (1 - MatchMakingService.STRENGTH_WEIGHT) * coverage;
     }
 
@@ -159,8 +158,10 @@ class MatchMakingServiceTest {
         final double maxScore = matchMakingService.getMaxScore(); // Max score = 5 + 0 + 3 + 2 + 4 + 1 + 5 + 0 + 4 + 2 +
                                                                   // 3 + 0 = 29
         assertEquals(expectedScore(4.0, 1, 1, maxScore), weight1, 0.0001); // Alpine Trail (Alpine: 4)
-        assertEquals(expectedScore((4.0 + 2.0), 2, 2, maxScore), weight2, 0.0001); // Forest Trail (Forest: 4, Wildlife: 2)
-        assertEquals(expectedScore(4.0 + 3.0, 2, 2, maxScore), weight3, 0.0001); // Mountain Peak Trail (Alpine: 4, Difficult: 3)
+        assertEquals(expectedScore((4.0 + 2.0), 2, 2, maxScore), weight2, 0.0001); // Forest Trail (Forest: 4, Wildlife:
+                                                                                   // 2)
+        assertEquals(expectedScore(4.0 + 3.0, 2, 2, maxScore), weight3, 0.0001); // Mountain Peak Trail (Alpine: 4,
+                                                                                 // Difficult: 3)
         assertEquals(expectedScore(5.0, 2, 2, maxScore), weight4, 0.0001); // Coastal Walk (Beach: 0, FamilyFriendly: 5)
         assertEquals(expectedScore(5.0, 1, 1, maxScore), weight5, 0.0001); // River Trail (Wet: 5)
     }
@@ -238,7 +239,8 @@ class MatchMakingServiceTest {
         Set<String> categories = new HashSet<>(Arrays.asList("Wet", "Forest", "Alpine"));
 
         double score = matchMakingService.scoreTrail(categories);
-        // Matched weights: Wet(5) + Forest(4) + Alpine(4) = 13, Max score = 29, 13/29 ≈ 0.4483
+        // Matched weights: Wet(5) + Forest(4) + Alpine(4) = 13, Max score = 29, 13/29 ≈
+        // 0.4483
         // 3 matched categories / 3 total categories for the trail
         // 0.8 * 13/29 + 0.2 * 3/3 ≈
         // 0.5586
@@ -290,8 +292,7 @@ class MatchMakingServiceTest {
         matchMakingService.setUserPreferences(user);
 
         Trail trail = new Trail(6, "Case Test Trail", "Easy", "A FOREST trail with a RIVER nearby",
-                "2 hours", "Walking", "thumb6.jpg", "http://example.com/trail6",
-                "2024-01-06", 678.90, 112.34);
+                "2 hours", "thumb6.jpg", "http://example.com/trail6");
         Set<String> categories = matchMakingService.categoriseTrail(trail);
         assertTrue(categories.contains("Forest"));
         assertTrue(categories.contains("Wet"));

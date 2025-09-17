@@ -69,19 +69,13 @@ public class FileBasedTrailRepo implements ITrail {
                 String name = values[1];
                 String description = values[2];
                 String difficulty = values[3];
-                String completionTime = values[4];
-                // String hasAlerts = values[5];
-                String type = null;
+                String completionInfo = values[4];
                 String thumbnailURL = values[6];
                 String webpageURL = values[7];
-                String dateLoaded = values[8];
-                // double shapeLength = Double.parseDouble(values[9]);
-                double x = 0;
-                double y = 0;
 
                 // create the new trail object
-                Trail newTrail = new Trail(id, name, difficulty, description, completionTime, type,
-                        thumbnailURL, webpageURL, dateLoaded, x, y, 0.0);
+                Trail newTrail = new Trail(id, name, difficulty, description, completionInfo,
+                        thumbnailURL, webpageURL);
 
                 // add the new trail object to the list
                 trails.add(newTrail);

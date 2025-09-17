@@ -4,6 +4,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import org.controlsfx.control.CheckComboBox;
 import seng202.team5.models.User;
+import seng202.team5.services.UserService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,18 +43,32 @@ public class ProfileSetupGeneralController extends Controller {
      */
     @FXML
     private void initialize() {
+        super.getUserService().setGuest(false);
+        User user = super.getUserService().getUser();
+
         // TODO: use regions based on trail data in DB
         List<String> regionList = new ArrayList<>(List.of("Northland", "Auckland",
                 "Waikato", "Bay of Plenty", "Gisborne", "Hawke's Bay", "Taranaki",
                 "Manawatu-Whanganui", "Tasman", "Wellington", "Nelson", "Marlborough", "West Coast",
                 "Canterbury", "Otago", "Southland"));
-
-        usernameLabel.setText("Choose a username");
-        regionLabel.setText("Choose your region to view tramps of");
-        usernameTextField.setPromptText("YompYomp User");
         regionCheckComboBox.getItems().addAll(regionList);
-        familyFriendlyCheckBox.setSelected(false);
-        accessibleCheckBox.setSelected(false);
+
+        if (user != null) {
+            usernameTextField.setText(user.getName());
+            regionCheckComboBox.getCheckModel().clearChecks();
+            if (user.getRegion() != null) {
+                for (String region : user.getRegion()) {
+                    regionCheckComboBox.getCheckModel().check(region);
+                }
+            }
+            familyFriendlyCheckBox.setSelected(user.isFamilyFriendly());
+            accessibleCheckBox.setSelected(user.isAccessible());
+        } else {
+            usernameTextField.setPromptText("Guest User");
+            familyFriendlyCheckBox.setSelected(false);
+            accessibleCheckBox.setSelected(false);
+        }
+
         continueButton.setOnAction(e -> onContinueButtonClicked());
     }
 
@@ -63,18 +78,30 @@ public class ProfileSetupGeneralController extends Controller {
      */
     @FXML
     private void onContinueButtonClicked() {
-        setUserPreferences();
-        super.getNavigator().launchScreen(new ProfileQuizController(super.getNavigator(), 1), null);
+        boolean isNameValid = setUserPreferences();
+
+        if (isNameValid) {
+            super.getNavigator().launchScreen(new ProfileQuizController(super.getNavigator(), 1), null);
+        }
     }
 
     /**
      * Gets user input and sets attributes of User object
      */
-    private void setUserPreferences() {
-        User user = super.getUserService().getUser();
-        if (user == null) {
-            user = new User();
+    private boolean setUserPreferences() {
+        String name = usernameTextField.getText().trim();
+        UserService userService = super.getUserService();
+
+        if (!userService.isValidName(name)) {
+            usernameTextField.setStyle("-fx-border-color: red; -fx-border-width: 2px;");
+            usernameLabel.setText("Invalid name. Please try again.");
+            return false;
+        } else {
+            usernameTextField.setStyle("");
+            usernameLabel.setText("Username");
         }
+
+        User user = super.getUserService().getUser();
         if (usernameTextField.getText().isEmpty()) {
             user.setName("YompYomp User");
         } else {
@@ -83,7 +110,9 @@ public class ProfileSetupGeneralController extends Controller {
         user.setRegion(regionCheckComboBox.getCheckModel().getCheckedItems());
         user.setIsFamilyFriendly(familyFriendlyCheckBox.isSelected());
         user.setIsAccessible(accessibleCheckBox.isSelected());
-        super.getUserService().setUser(user);
+
+        userService.setUser(user);
+        return true;
     }
 
     @Override

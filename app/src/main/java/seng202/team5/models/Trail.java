@@ -14,69 +14,73 @@ public class Trail {
     private String name;
     private String description;
     private String difficulty;
-    private String completionTime;
-    // private String hasAlerts;
-    private String type;
+    private String completionInfo;
+    private int minCompletionTimeMinutes;
+    private int maxCompletionTimeMinutes;
+    private String completionType;
+    private String timeUnit;
+    private boolean isMultiDay;
+    private boolean hasVariableTime;
     private String thumbnailURL;
     private String webpageURL;
-    private String dateLoaded;
-    // private double shapeLength;
-    private double x;
-    private double y;
     private Set<String> categories = new HashSet<>();
     private double userWeight;
 
     /**
-     * Constructor for Trail class with userWeight
+     * Constructor for Trail class with userWeight and enhanced time fields
      *
      * @param id
      * @param name
      * @param difficulty
      * @param description
-     * @param completionTime
-     * @param type
+     * @param completionInfo
+     * @param minCompletionTimeMinutes
+     * @param maxCompletionTimeMinutes
+     * @param completionType
+     * @param timeUnit
+     * @param isMultiDay
+     * @param hasVariableTime
      * @param thumbnailURL
      * @param webpageURL
-     * @param dateLoaded
-     * @param x
-     * @param y
      * @param userWeight
      */
-    public Trail(int id, String name, String difficulty, String description, String completionTime, String type,
-            String thumbnailURL, String webpageURL, String dateLoaded, double x, double y, double userWeight) {
+    public Trail(int id, String name, String difficulty, String description, String completionInfo,
+            int minCompletionTimeMinutes, int maxCompletionTimeMinutes, String completionType, String timeUnit,
+            boolean isMultiDay, boolean hasVariableTime, String thumbnailURL, String webpageURL, double userWeight) {
         this.id = id;
         this.name = name;
-        this.description = description;
         this.difficulty = difficulty;
-        this.completionTime = completionTime;
-        this.type = type;
+        this.description = description;
+        this.completionInfo = completionInfo;
+        this.minCompletionTimeMinutes = minCompletionTimeMinutes;
+        this.maxCompletionTimeMinutes = maxCompletionTimeMinutes;
+        this.completionType = completionType;
+        this.timeUnit = timeUnit;
+        this.isMultiDay = isMultiDay;
+        this.hasVariableTime = hasVariableTime;
         this.thumbnailURL = thumbnailURL;
         this.webpageURL = webpageURL;
-        this.dateLoaded = dateLoaded;
-        this.x = x;
-        this.y = y;
         this.userWeight = userWeight;
     }
 
     /**
-     * Constructor for Trail class without userWeight (backward compatibility)
+     * Constructor for Trail class using just dataset values.
      * Sets userWeight to default value of 0.0
+     * Sets the completionTime to default value of 0
+     * Sets enhanced time fields to default values
      *
      * @param id
      * @param name
      * @param difficulty
      * @param description
-     * @param completionTime
-     * @param type
+     * @param completionInfo
      * @param thumbnailURL
      * @param webpageURL
-     * @param dateLoaded
-     * @param x
-     * @param y
      */
-    public Trail(int id, String name, String difficulty, String description, String completionTime, String type,
-            String thumbnailURL, String webpageURL, String dateLoaded, double x, double y) {
-        this(id, name, difficulty, description, completionTime, type, thumbnailURL, webpageURL, dateLoaded, x, y, 0.0);
+    public Trail(int id, String name, String description, String difficulty, String completionInfo,
+            String thumbnailURL, String webpageURL) {
+        this(id, name, description, difficulty, completionInfo, 0, 0, "unknown", "unknown",
+                false, false, thumbnailURL, webpageURL, 0.0);
     }
 
     /**
@@ -115,12 +119,36 @@ public class Trail {
         return difficulty;
     }
 
-    public String getCompletionTime() {
-        return completionTime;
+    public String getCompletionInfo() {
+        return completionInfo;
     }
 
-    public String getType() {
-        return type;
+    public int getMinCompletionTimeMinutes() {
+        return minCompletionTimeMinutes;
+    }
+
+    public int getMaxCompletionTimeMinutes() {
+        return maxCompletionTimeMinutes;
+    }
+
+    public int getAvgCompletionTimeMinutes() {
+        return (minCompletionTimeMinutes + maxCompletionTimeMinutes) / 2;
+    }
+
+    public String getCompletionType() {
+        return completionType;
+    }
+
+    public String getTimeUnit() {
+        return timeUnit;
+    }
+
+    public boolean isMultiDay() {
+        return isMultiDay;
+    }
+
+    public boolean hasVariableTime() {
+        return hasVariableTime;
     }
 
     public String getThumbnailURL() {
@@ -129,22 +157,6 @@ public class Trail {
 
     public String getWebpageURL() {
         return webpageURL;
-    }
-
-    public String getDateLoaded() {
-        return dateLoaded;
-    }
-
-    // public double getShapeLength() {
-    // return shapeLength;
-    // }
-
-    public double getX() {
-        return x;
-    }
-
-    public double getY() {
-        return y;
     }
 
     public Set<String> getCategories() {
@@ -172,12 +184,32 @@ public class Trail {
         this.difficulty = difficulty;
     }
 
-    public void setCompletionTime(String completionTime) {
-        this.completionTime = completionTime;
+    public void setCompletionInfo(String completionInfo) {
+        this.completionInfo = completionInfo;
     }
 
-    public void setType(String type) {
-        this.type = type;
+    public void setMinCompletionTimeMinutes(int minCompletionTimeMinutes) {
+        this.minCompletionTimeMinutes = minCompletionTimeMinutes;
+    }
+
+    public void setMaxCompletionTimeMinutes(int maxCompletionTimeMinutes) {
+        this.maxCompletionTimeMinutes = maxCompletionTimeMinutes;
+    }
+
+    public void setCompletionType(String completionType) {
+        this.completionType = completionType;
+    }
+
+    public void setTimeUnit(String timeUnit) {
+        this.timeUnit = timeUnit;
+    }
+
+    public void setMultiDay(boolean multiDay) {
+        this.isMultiDay = multiDay;
+    }
+
+    public void setHasVariableTime(boolean hasVariableTime) {
+        this.hasVariableTime = hasVariableTime;
     }
 
     public void setThumbnailURL(String thumbnailURL) {
@@ -186,22 +218,6 @@ public class Trail {
 
     public void setWebpageURL(String webpageURL) {
         this.webpageURL = webpageURL;
-    }
-
-    public void setDateLoaded(String dateLoaded) {
-        this.dateLoaded = dateLoaded;
-    }
-
-    // public void setShapeLength(double shapeLength) {//this.shapeLength =
-    // shapeLength;
-    // }
-
-    public void setX(double x) {
-        this.x = x;
-    }
-
-    public void setY(double y) {
-        this.y = y;
     }
 
     public void setCategories(Set<String> categories) {
