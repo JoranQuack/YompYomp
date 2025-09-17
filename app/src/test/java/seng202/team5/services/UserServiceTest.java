@@ -86,7 +86,7 @@ public class UserServiceTest {
     @Test
     @DisplayName("Should return null when user is guest")
     void testGetUserReturnsNullWhenGuest() {
-        userService.setGuest();
+        userService.setGuest(true);
 
         User retrievedUser = userService.getUser();
         assertNull(retrievedUser);
@@ -96,7 +96,7 @@ public class UserServiceTest {
     @Test
     @DisplayName("Should not save guest user to database")
     void testSaveUserToDatabaseDoesNotSaveGuest() {
-        userService.setGuest();
+        userService.setGuest(true);
         assertTrue(userService.isGuest());
 
         userService.saveUserToDatabase(testUser);

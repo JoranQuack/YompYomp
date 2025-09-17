@@ -128,7 +128,7 @@ public class UserService {
 
     /**
      * Checks if a user's name choice is valid.
-     * 
+     *
      * @param name the name to validate
      * @return true if the name is not null, not empty, and not "Guest User"
      */
@@ -140,9 +140,11 @@ public class UserService {
     /**
      * Set the service to guest mode.
      */
-    public void setGuest() {
-        clearUser();
-        this.isGuest = true;
+    public void setGuest(boolean isGuest) {
+        if (isGuest) {
+            clearUser();
+        }
+        this.isGuest = isGuest;
     }
 
     /**

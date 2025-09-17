@@ -43,6 +43,12 @@ public class NavbarComponent extends HBox {
             throw new RuntimeException(e);
         }
 
+        if (userService.isGuest()) {
+            redoQuizButton.setText("Take Quiz");
+        } else {
+            redoQuizButton.setText("Redo Quiz");
+        }
+
         // navButtons = List.of(homeButton, trailsButton, loggedButton, toDoButton);
         navButtons = List.of(homeButton, trailsButton);
         homeButton.setOnAction(e -> navigator.launchScreen(new DashboardController(navigator)));
