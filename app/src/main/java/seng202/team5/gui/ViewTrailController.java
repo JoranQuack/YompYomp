@@ -59,6 +59,7 @@ public class ViewTrailController extends Controller {
         backButton.setOnAction(e -> onBackButtonClicked());
         // TODO: add icon for map
         // TODO: action method for edit info button
+        // TODO: add completion time field
     }
 
     @FXML

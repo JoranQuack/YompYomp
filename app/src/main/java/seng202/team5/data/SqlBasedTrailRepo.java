@@ -171,4 +171,12 @@ public class SqlBasedTrailRepo implements ITrail {
         stmt.setDouble(11, trail.getY());
         stmt.setDouble(12, trail.getUserWeight());
     }
+
+    /**
+     * Returns max value of trail id in database
+     */
+    public void findMaxTrailId() throws java.sql.SQLException {
+        String getIdQuery = "SELECT MAX(id) FROM trail";
+        queryHelper.executeQuery(getIdQuery, null, this::mapRowToTrail);
+    }
 }

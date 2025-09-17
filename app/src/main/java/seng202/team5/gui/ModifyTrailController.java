@@ -6,6 +6,8 @@ import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
 import org.controlsfx.control.CheckComboBox;
 import seng202.team5.data.DatabaseService;
+import seng202.team5.data.SqlBasedTrailRepo;
+import seng202.team5.models.Trail;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,7 +48,12 @@ public class ModifyTrailController extends Controller {
 
     @FXML
     private void onSaveButtonClicked() {
+        DatabaseService databaseService = new DatabaseService();
+        String databasePath = databaseService.getDatabasePath();
+        SqlBasedTrailRepo sqlBasedTrailRepo = new SqlBasedTrailRepo(databaseService);
+        Trail updatedTrail = new Trail();
 
+        sqlBasedTrailRepo.upsert(updatedTrail);
     }
 
     @Override
