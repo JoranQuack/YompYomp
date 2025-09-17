@@ -42,10 +42,6 @@ package "data" {
     + getKeywords() : Map<String, List<String>>
   }
 
-  class AppDataManager {
-    + getAppData(subDirectory : String) : String
-  }
-
   class QueryHelper {
     + QueryHelper(databaseService : DatabaseService)
     + executeQuery(sql : String, paramSetter : ParameterSetter, rowMapper : RowMapper) : List
@@ -60,8 +56,6 @@ SqlBasedTrailRepo     ..|> ITrail
 FileBasedKeywordRepo  ..|> IKeyword
 SqlBasedKeywordRepo   ..|> IKeyword
 
-SqlBasedTrailRepo     --> QueryHelper
-SqlBasedKeywordRepo   --> QueryHelper
-
-
+SqlBasedTrailRepo     *-- QueryHelper
+SqlBasedKeywordRepo   *-- QueryHelper
 @enduml
