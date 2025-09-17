@@ -73,12 +73,10 @@ public class SearchService {
     }
 
     /**
-     * Calculates the total number of pages based on the search query.
-     * If the query is null or empty, it returns the total number of pages
-     * based on the total number of trails.
+     * Calculates the total number of pages required to display the currently
+     * filtered list of trails.
      *
-     * @param searchQuery The search query to filter trails by name
-     * @return The total number of pages required to display the trails
+     * @return The total number of pages required to display the filtered trails
      */
     public int getNumberOfPages() {
         updateTrails(); // Ensure filteredTrails is up to date
