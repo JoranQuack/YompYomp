@@ -209,20 +209,22 @@ public class CompleteProfileQuizStepDefinitions {
 
     @When("the user selects the \"Redo Quiz\" button on the dashboard")
     public void userSelectsRedoQuiz() {
-        retrievedWeights = userWeights;
+        userWeights.clear();
     }
 
     @Then("the user will be taken back to original questions for the profile")
     public void userTakenBackToOriginalQuestions() {
-
+        userHasCompletedProfileQuiz();
     }
 
     @And("the basic flow of the application is followed")
     public void basicFlowOfApplicationFollowed() {
-        //call functions for first scenario??
+        allTrailDataLoaded();
+        systemBeginsMatchMaking();
+        systemShowsLoadingScreen("Matchmaking in progress...");
     }
 
-    @And("matchmaking fails on the first attempt")
+    @And("matchmaking fails")
     public void matchmakingFailsOnTheFirstAttempt() {
         //simulate matchmaking failing
     }
