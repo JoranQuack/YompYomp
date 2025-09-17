@@ -10,15 +10,15 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<HBox alignment="CENTER_LEFT" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="550.0" minWidth="800.0" xmlns="http://javafx.com/javafx/23" xmlns:fx="http://javafx.com/fxml/1" fx:controller="seng202.team5.gui.ViewTrailController">
+<HBox alignment="CENTER_LEFT" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="550.0" minWidth="800.0" xmlns="http://javafx.com/javafx/21.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="seng202.team5.gui.ViewTrailController">
    <children>
-      <VBox prefHeight="400.0" prefWidth="300.0" spacing="10.0">
+      <VBox maxHeight="1.7976931348623157E308" prefWidth="250.0" spacing="10.0">
          <children>
-            <HBox prefHeight="20.0" prefWidth="200.0" spacing="10.0">
+            <HBox spacing="10.0">
                <children>
                   <Button fx:id="backButton" mnemonicParsing="false" text="Back">
                      <HBox.margin>
-                        <Insets top="10.0" />
+                        <Insets />
                      </HBox.margin>
                   </Button>
                </children>
@@ -28,7 +28,7 @@
                   <Insets />
                </VBox.margin>
             </ImageView>
-            <HBox prefHeight="30.0" prefWidth="200.0">
+            <HBox>
                <VBox.margin>
                   <Insets />
                </VBox.margin>
@@ -49,7 +49,7 @@
                   </VBox>
                </children>
             </HBox>
-            <StackPane prefHeight="40.0" prefWidth="200.0">
+            <StackPane>
                <children>
                   <ProgressBar fx:id="matchBar" prefHeight="25.0" prefWidth="270.0" progress="0.0">
                      <StackPane.margin>
@@ -66,7 +66,7 @@
                   <Insets top="10.0" />
                </VBox.margin>
             </StackPane>
-            <Label fx:id="descriptionLabel" alignment="TOP_LEFT" prefHeight="162.0" prefWidth="280.0" text="Label" wrapText="true">
+            <Label fx:id="descriptionLabel" alignment="TOP_LEFT" text="Label" wrapText="true">
                <font>
                   <Font size="11.0" />
                </font>
@@ -74,24 +74,27 @@
                   <Insets top="20.0" />
                </VBox.margin>
             </Label>
-            <HBox alignment="BOTTOM_LEFT" prefHeight="20.0" prefWidth="200.0" spacing="10.0">
+            <HBox alignment="BOTTOM_LEFT" spacing="10.0">
                <children>
                   <Button fx:id="editInfoButton" mnemonicParsing="false" text="Edit Info" />
                </children>
             </HBox>
          </children>
          <padding>
-            <Insets left="10.0" right="10.0" />
+            <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
          </padding>
+         <HBox.margin>
+            <Insets />
+         </HBox.margin>
       </VBox>
-      <VBox prefHeight="400.0" prefWidth="500.0" spacing="10.0">
+      <VBox spacing="10.0" HBox.hgrow="ALWAYS">
          <children>
-            <ImageView fx:id="trailMap" fitHeight="253.0" fitWidth="479.0" pickOnBounds="true" preserveRatio="true">
+            <ImageView fx:id="trailMap" fitHeight="253.0" fitWidth="479.0" pickOnBounds="true" preserveRatio="true" VBox.vgrow="ALWAYS">
                <VBox.margin>
                   <Insets top="10.0" />
                </VBox.margin>
             </ImageView>
-            <HBox prefHeight="20.0" prefWidth="200.0">
+            <HBox>
                <VBox.margin>
                   <Insets />
                </VBox.margin>
@@ -99,12 +102,12 @@
                   <Label text="Weather forecast coming soon..." />
                </children>
             </HBox>
-            <Label disable="true" prefHeight="18.0" prefWidth="360.0" text="Relevant Huts" visible="false">
+            <Label disable="true" text="Relevant Huts" visible="false">
                <font>
                   <Font name="System Bold" size="15.0" />
                </font>
             </Label>
-            <HBox prefHeight="100.0" prefWidth="200.0" spacing="10.0" visible="false">
+            <HBox spacing="10.0" visible="false">
                <children>
                   <VBox prefHeight="200.0" prefWidth="100.0" spacing="5.0">
                      <children>
