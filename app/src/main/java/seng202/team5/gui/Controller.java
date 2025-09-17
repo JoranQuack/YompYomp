@@ -6,7 +6,7 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.control.DialogPane;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
-import seng202.team5.gui.components.NavbarController;
+import seng202.team5.gui.components.NavbarComponent;
 import seng202.team5.services.UserService;
 
 import java.util.Objects;
@@ -18,7 +18,7 @@ import java.util.Optional;
 public abstract class Controller {
 
     private final ScreenNavigator navigator;
-    private final NavbarController navbarController;
+    private final NavbarComponent navbarController;
     private final UserService userService;
 
     /**
@@ -38,7 +38,7 @@ public abstract class Controller {
     protected Controller(final ScreenNavigator navigator) {
         this.navigator = navigator;
         this.userService = new UserService();
-        this.navbarController = new NavbarController(navigator, userService);
+        this.navbarController = new NavbarComponent(navigator, userService);
     }
 
     /**
@@ -120,7 +120,7 @@ public abstract class Controller {
      *
      * @return The navbar controller for this controller
      */
-    protected NavbarController getNavbarController() {
+    protected NavbarComponent getNavbarController() {
         return navbarController;
     }
 

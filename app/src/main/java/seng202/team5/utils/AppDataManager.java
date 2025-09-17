@@ -1,4 +1,4 @@
-package seng202.team5.data;
+package seng202.team5.utils;
 
 import java.nio.file.Files;
 import java.nio.file.Path;

@@ -7,7 +7,8 @@ import org.junit.jupiter.api.io.TempDir;
 import org.mockito.Mock;
 import org.mockito.MockedStatic;
 import org.mockito.MockitoAnnotations;
-import seng202.team5.data.AppDataManager;
+import seng202.team5.exceptions.MatchMakingFailedException;
+import seng202.team5.utils.AppDataManager;
 import seng202.team5.data.FileBasedTrailRepo;
 import seng202.team5.data.SqlBasedTrailRepo;
 import seng202.team5.exceptions.MatchMakingFailedException;
@@ -45,17 +46,6 @@ public class SetupServiceTest {
     void setUp() {
         MockitoAnnotations.openMocks(this);
         setupService = new SetupService(mockDbTrailRepo, mockFileTrailRepo);
-    }
-
-    @Test
-    @DisplayName("Should return false when DB has fewer trails than file")
-    void testIsTrailTablePopulated() {
-        when(mockDbTrailRepo.countTrails()).thenReturn(3);
-        when(mockFileTrailRepo.countTrails()).thenReturn(10);
-
-        boolean result = setupService.isTrailTablePopulated();
-
-        assertFalse(result);
     }
 
     @Test
@@ -181,10 +171,10 @@ public class SetupServiceTest {
     @Test
     @DisplayName("Should scrape images for all trails")
     void testScrapeAllTrailImages() {
-        Trail trail1 = new Trail(1, "Trail1", "Easy", "Description1", "1hr",
-                "Walking", "https://example.com/image1.jpg", "url1", "2023-01-01", 0.0, 0.0);
-        Trail trail2 = new Trail(2, "Trail2", "Medium", "Description2", "2hr",
-                "Hiking", "https://example.com/image2.jpg", "url2", "2023-01-02", 1.0, 1.0);
+        Trail trail1 = new Trail(1, "Trail1", "Description1", "Easy", "1hr",
+                "https://example.com/image1.jpg", "url1");
+        Trail trail2 = new Trail(2, "Trail2", "Description2", "Medium", "2hr",
+                "https://example.com/image2.jpg", "url2");
 
         List<Trail> trails = Arrays.asList(trail1, trail2);
         when(mockDbTrailRepo.getAllTrails()).thenReturn(trails);
@@ -215,50 +205,43 @@ public class SetupServiceTest {
     @Test
     @DisplayName("Should sync DB from file when table is not populated")
     void testSyncDbFromTrailFile() throws MatchMakingFailedException {
-        Trail trail1 = new Trail(1, "Trail1", "Easy", "Description1", "1hr",
-                "Walking", "url1", "url1", "2023-01-01", 0.0, 0.0);
-        Trail trail2 = new Trail(2, "Trail2", "Medium", "Description2", "2hr",
-                "Hiking", "url2", "url2", "2023-01-02", 1.0, 1.0);
+        Trail trail1 = new Trail(1, "Trail1", "Description1", "Easy", "1hr",
+                "url1", "url1");
+        Trail trail2 = new Trail(2, "Trail2", "Description2", "Medium", "2hr",
+                "url2", "url2");
 
         List<Trail> fileTrails = Arrays.asList(trail1, trail2);
 
-        when(mockDbTrailRepo.countTrails()).thenReturn(0).thenReturn(2);
-        when(mockFileTrailRepo.countTrails()).thenReturn(2);
         when(mockFileTrailRepo.getAllTrails()).thenReturn(fileTrails);
 
         setupService.syncDbFromTrailFile();
 
-        verify(mockDbTrailRepo, times(2)).countTrails();
-        verify(mockFileTrailRepo, times(2)).countTrails();
         verify(mockFileTrailRepo).getAllTrails();
         verify(mockDbTrailRepo).upsertAll(fileTrails);
     }
 
     @Test
-    @DisplayName("Should not sync DB when table is already populated")
+    @DisplayName("Should always sync DB regardless of current population")
     void testSyncDbFromTrailFile_WhenTableAlreadyPopulated() throws MatchMakingFailedException {
-        when(mockDbTrailRepo.countTrails()).thenReturn(5);
-        when(mockFileTrailRepo.countTrails()).thenReturn(5);
+        Trail trail1 = new Trail(1, "Trail1", "Description1", "Easy", "1hr",
+                "url1", "url1");
+
+        List<Trail> fileTrails = Arrays.asList(trail1);
+        when(mockFileTrailRepo.getAllTrails()).thenReturn(fileTrails);
 
         setupService.syncDbFromTrailFile();
 
-        verify(mockDbTrailRepo).countTrails();
-        verify(mockFileTrailRepo).countTrails();
-        verify(mockFileTrailRepo, never()).getAllTrails();
-        verify(mockDbTrailRepo, never()).upsertAll(any());
+        verify(mockFileTrailRepo).getAllTrails();
+        verify(mockDbTrailRepo).upsertAll(fileTrails);
     }
 
     @Test
     @DisplayName("Should handle empty file trail list during sync")
     void testSyncDbFromTrailFile_WithEmptyFileTrails() throws MatchMakingFailedException {
-        when(mockDbTrailRepo.countTrails()).thenReturn(0).thenReturn(0);
-        when(mockFileTrailRepo.countTrails()).thenReturn(1); // File claims to have 1 trail
-        when(mockFileTrailRepo.getAllTrails()).thenReturn(Collections.emptyList()); // But returns empty list
+        when(mockFileTrailRepo.getAllTrails()).thenReturn(Collections.emptyList());
 
         setupService.syncDbFromTrailFile();
 
-        verify(mockDbTrailRepo, times(2)).countTrails(); // Called twice: once for check, once after sync
-        verify(mockFileTrailRepo, times(2)).countTrails(); // Called twice: once for initial check, once for final check
         verify(mockFileTrailRepo).getAllTrails();
         verify(mockDbTrailRepo).upsertAll(Collections.emptyList());
     }
@@ -267,20 +250,18 @@ public class SetupServiceTest {
     @DisplayName("Should call both sync and scrape methods in setupApplication")
     void testSetupApplication_CallsBothMethods() {
         SetupService spySetupService = spy(setupService);
-        doNothing().when(spySetupService).syncDbFromTrailFile();
         doNothing().when(spySetupService).scrapeAllTrailImages();
 
         spySetupService.setupApplication();
 
-        verify(spySetupService).syncDbFromTrailFile();
         verify(spySetupService).scrapeAllTrailImages();
     }
 
     @Test
     @DisplayName("Should handle null thumbnail URL in scrapeAllTrailImages")
     void testScrapeAllTrailImages_WithNullThumbnailURL() {
-        Trail trailWithNullUrl = new Trail(1, "Trail1", "Easy", "Description1", "1hr",
-                "Walking", null, "url1", "2023-01-01", 0.0, 0.0);
+        Trail trailWithNullUrl = new Trail(1, "Trail1", "Description1", "Easy", "1hr",
+                null, "url1");
 
         List<Trail> trails = Arrays.asList(trailWithNullUrl);
         when(mockDbTrailRepo.getAllTrails()).thenReturn(trails);

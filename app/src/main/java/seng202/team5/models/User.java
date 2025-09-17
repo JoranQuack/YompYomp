@@ -5,7 +5,6 @@ import java.util.List;
 public class User {
     // Some basic variables
     private int id;
-    private String type; // guest or profiled
     private String name;
     private List<String> regions;
     private boolean isFamilyFriendly;
@@ -20,15 +19,16 @@ public class User {
     private int wildlifePreference;
     private int historicPreference;
     private int waterfallPreference;
+    private boolean isProfileComplete;
 
     public User() {
+        this.isProfileComplete = false;
     }
 
     /**
      * Constructor for User class with all parameters.
      *
      * @param id
-     * @param type
      * @param name
      * @param regions
      * @param isFamilyFriendly
@@ -43,13 +43,13 @@ public class User {
      * @param wildlifePreference
      * @param historicPreference
      * @param waterfallPreference
+     * @param isProfileComplete
      */
-    public User(int id, String type, String name, List<String> regions, boolean isFamilyFriendly, boolean isAccessible,
+    public User(int id, String name, List<String> regions, boolean isFamilyFriendly, boolean isAccessible,
             int experienceLevel, int gradientPreference, int bushPreference, int reservePreference,
             int lakeRiverPreference, int coastPreference, int mountainPreference, int wildlifePreference,
-            int historicPreference, int waterfallPreference) {
+            int historicPreference, int waterfallPreference, boolean isProfileComplete) {
         this.id = id;
-        this.type = type;
         this.name = name;
         this.regions = regions;
         this.isFamilyFriendly = isFamilyFriendly;
@@ -64,15 +64,12 @@ public class User {
         this.wildlifePreference = wildlifePreference;
         this.historicPreference = historicPreference;
         this.waterfallPreference = waterfallPreference;
+        this.isProfileComplete = isProfileComplete;
     }
 
     // getters
     public int getId() {
         return id;
-    }
-
-    public String getType() {
-        return type;
     }
 
     public String getName() {
@@ -131,10 +128,11 @@ public class User {
         return waterfallPreference;
     }
 
-    // setters
-    public void setType(String type) {
-        this.type = type;
+    public boolean isProfileComplete() {
+        return isProfileComplete;
     }
+
+    // setters
 
     public void setName(String name) {
         this.name = name;
@@ -192,11 +190,14 @@ public class User {
         this.waterfallPreference = waterfallPreference;
     }
 
+    public void setProfileComplete(boolean profileComplete) {
+        this.isProfileComplete = profileComplete;
+    }
+
     @Override
     public String toString() {
         return "User{" +
                 "id=" + id +
-                ", type='" + type + '\'' +
                 ", name='" + name + '\'' +
                 ", regions=" + regions +
                 ", isFamilyFriendly=" + isFamilyFriendly +
@@ -211,6 +212,7 @@ public class User {
                 ", wildlifePreference=" + wildlifePreference +
                 ", historicPreference=" + historicPreference +
                 ", waterfallPreference=" + waterfallPreference +
+                ", isProfileComplete=" + isProfileComplete +
                 '}';
     }
 }

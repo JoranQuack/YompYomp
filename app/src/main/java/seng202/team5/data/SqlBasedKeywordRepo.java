@@ -2,6 +2,8 @@ package seng202.team5.data;
 
 import java.util.*;
 
+import seng202.team5.utils.QueryHelper;
+
 /**
  * Repository for accessing keyword and category data from the database.
  * This class provides methods to retrieve keywords grouped by categories from

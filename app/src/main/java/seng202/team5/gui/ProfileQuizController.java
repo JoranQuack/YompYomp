@@ -60,7 +60,9 @@ public class ProfileQuizController extends Controller {
         setProgressBar();
         setQuestionLabel();
         if (quizId == 9) {
-            continueButton.setText("Complete");
+            continueButton.setText("Complete Quiz");
+        } else {
+            continueButton.setText("Continue");
         }
         continueButton.setOnAction(e -> onContinueButtonClicked());
     }
@@ -142,6 +144,8 @@ public class ProfileQuizController extends Controller {
             super.getNavigator()
                     .launchScreen(new ProfileQuizController(super.getNavigator(), quizId));
         } else {
+            // Mark profile as complete and save final state
+            super.getUserService().markProfileComplete();
             super.getNavigator().launchScreen(new MatchmakingController(super.getNavigator()));
         }
     }
@@ -170,9 +174,6 @@ public class ProfileQuizController extends Controller {
      */
     private void setUserPreferences() {
         User user = super.getUserService().getUser();
-        if (user == null) {
-            user = new User();
-        }
         switch (quizId) {
             case 1:
                 user.setExperienceLevel((int) slider1.getValue());

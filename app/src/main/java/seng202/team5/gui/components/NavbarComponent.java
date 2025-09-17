@@ -13,7 +13,7 @@ import seng202.team5.gui.DashboardController;
 import seng202.team5.gui.TrailsController;
 import seng202.team5.services.UserService;
 
-public class NavbarController extends HBox {
+public class NavbarComponent extends HBox {
 
     private List<Button> navButtons;
 
@@ -22,10 +22,10 @@ public class NavbarController extends HBox {
     private Button homeButton;
     @FXML
     private Button trailsButton;
-    @FXML
-    private Button loggedButton;
-    @FXML
-    private Button toDoButton;
+    // @FXML
+    // private Button loggedButton;
+    // @FXML
+    // private Button toDoButton;
     @FXML
     private Button redoQuizButton;
 
@@ -33,7 +33,7 @@ public class NavbarController extends HBox {
      * Initialise the NavbarController and put the buttons into the list to easily
      * switch between them.
      */
-    public NavbarController(ScreenNavigator navigator, UserService userService) {
+    public NavbarComponent(ScreenNavigator navigator, UserService userService) {
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/components/navbar.fxml"));
         fxmlLoader.setRoot(this);
         fxmlLoader.setController(this);
@@ -43,11 +43,18 @@ public class NavbarController extends HBox {
             throw new RuntimeException(e);
         }
 
-        navButtons = List.of(homeButton, trailsButton, loggedButton, toDoButton);
+        if (userService.isGuest()) {
+            redoQuizButton.setText("Take Quiz");
+        } else {
+            redoQuizButton.setText("Redo Quiz");
+        }
+
+        // navButtons = List.of(homeButton, trailsButton, loggedButton, toDoButton);
+        navButtons = List.of(homeButton, trailsButton);
         homeButton.setOnAction(e -> navigator.launchScreen(new DashboardController(navigator)));
         trailsButton.setOnAction(e -> navigator.launchScreen(new TrailsController(navigator)));
         redoQuizButton.setOnAction(e -> navigator.launchScreen(new ProfileSetupGeneralController(navigator)));
-        // TODO: Implement actions for the remaining buttons when we're ready to rock
+        // Implement actions for the remaining buttons when we're ready to rock
     }
 
     /**
