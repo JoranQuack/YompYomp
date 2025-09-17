@@ -22,10 +22,10 @@ public class NavbarController extends HBox {
     private Button homeButton;
     @FXML
     private Button trailsButton;
-    @FXML
-    private Button loggedButton;
-    @FXML
-    private Button toDoButton;
+    // @FXML
+    // private Button loggedButton;
+    // @FXML
+    // private Button toDoButton;
     @FXML
     private Button redoQuizButton;
 
@@ -43,11 +43,12 @@ public class NavbarController extends HBox {
             throw new RuntimeException(e);
         }
 
-        navButtons = List.of(homeButton, trailsButton, loggedButton, toDoButton);
+        // navButtons = List.of(homeButton, trailsButton, loggedButton, toDoButton);
+        navButtons = List.of(homeButton, trailsButton);
         homeButton.setOnAction(e -> navigator.launchScreen(new DashboardController(navigator)));
         trailsButton.setOnAction(e -> navigator.launchScreen(new TrailsController(navigator)));
         redoQuizButton.setOnAction(e -> navigator.launchScreen(new ProfileSetupGeneralController(navigator)));
-        // TODO: Implement actions for the remaining buttons when we're ready to rock
+        // Implement actions for the remaining buttons when we're ready to rock
     }
 
     /**
