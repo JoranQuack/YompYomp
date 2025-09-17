@@ -91,7 +91,7 @@ public class SearchService {
      * @return The total number of trails
      */
     public int getNumberOfTrails() {
-        return trails.size();
+        return filteredTrails.size();
     }
 
     /**
@@ -115,8 +115,6 @@ public class SearchService {
                 return trail.getAvgCompletionTimeMinutes() > 0;
             case "difficulty":
                 return !trail.getDifficulty().equalsIgnoreCase("unknown");
-            case "match":
-                return trail.getUserWeight() > 0;
             default:
                 return true;
         }
