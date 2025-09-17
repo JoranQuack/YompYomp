@@ -1,20 +1,27 @@
 package seng202.team5.cucumber.StepDefinitions;
 
+import io.cucumber.java.Before;
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
+import seng202.team5.data.SqlBasedKeywordRepo;
+import seng202.team5.data.SqlBasedTrailRepo;
+import seng202.team5.exceptions.MatchMakingFailedException;
 import seng202.team5.models.Trail;
-import seng202.team5.services.MatchMakingService;
+import seng202.team5.models.User;
+import seng202.team5.services.MatchmakingService;
+import seng202.team5.services.MatchmakingService;
 import seng202.team5.services.SearchService;
 
-import java.util.List;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class ViewPersonalisedRecommendedTrailsStepDefinitions {
     private SearchService searchService;
-    private MatchMakingService matchMakingService;
     private List<Trail> orderedTrails;
     private SqlBasedTrailRepo mockTrailRepo;
     private SqlBasedKeywordRepo mockKeywordRepo;
@@ -93,8 +100,8 @@ public class ViewPersonalisedRecommendedTrailsStepDefinitions {
 
     @And("the trails are ordered by highest to lowest match")
     public void trailsOrderedByHighestToLowest() {
-        //TODO need test user here
-        orderedTrails = matchMakingService.getTrailsSortedByWeight();
+        matchmakingService = new MatchmakingService(mockKeywordRepo, mockTrailRepo);
+        orderedTrails = matchmakingService.getTrailsSortedByWeight();
 
         //check ordering
         for (int i = 0; i < orderedTrails.size() - 1; i++) {
@@ -107,28 +114,20 @@ public class ViewPersonalisedRecommendedTrailsStepDefinitions {
 
     @When("the user reloads up the application")
     public void userReloadsApplication() {
-
+        // retrieve user data
+        currentUser = testUser;
     }
 
     @And("user selects the \"Continue\" button on the start screen")
-    public void userSelectsContinueButton() {
-
+    public void userSelectsContinueButton() throws MatchMakingFailedException {
+        // retrieve previously calculated userWeights
+        matchmakingService.setUserPreferences(currentUser);
+        userWeights = matchmakingService.getUserWeights();
     }
 
     @Then("the user is shown the previously calculated personalised recommended trails screen directly")
     public void userShownCalculatedRecommendations() {
-        orderedTrails = matchMakingService.getTrailsSortedByWeight();
+        orderedTrails = matchmakingService.getTrailsSortedByWeight();
         assertNotNull(orderedTrails);
     }
-
-    @When("there is an error during matchmaking calculations")
-    public void errorDuringMatchmakingCalculations() {
-
-    }
-
-
-
-
-
-
 }
