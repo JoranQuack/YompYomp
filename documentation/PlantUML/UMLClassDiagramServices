@@ -6,6 +6,7 @@ package "services" {
 
   class ImageService {
     + loadTrailImage(url : String) : Image
+    + getDefaultTrailImage() : Image
   }
 
   class MatchMakingService {
@@ -25,14 +26,17 @@ package "services" {
   }
 
   class SetupService {
-    + start() : void
-    + saveGeneral(username : String, prefs : Preferences) : void
-    + finish() : void
+    + SetupService()
+    + setupDatabase() : void
+    + scrapeTrailImage(url : String) : void
+    + syncDB() : void
+    + setupApplicaiton() : void
   }
 
   class UserService {
     + getUser() : User
-    + updatePreferences(prefs : Preferences) : void
+    + setUserParameters(stmt : PreparedStatement, user : User) : void
+    - loadUserFromDatabase() : User
   }
 
   class DatabaseService {
@@ -47,8 +51,8 @@ package "services" {
 
 }
 
-SearchService --> DatabaseService
-MatchMakingService --> DatabaseService
-UserService --> DatabaseService
-SetupService --> DatabaseService
+SearchService *-- DatabaseService
+MatchMakingService *-- DatabaseService
+UserService *-- DatabaseService
+SetupService *-- DatabaseService
 @enduml
