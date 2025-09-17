@@ -1,6 +1,8 @@
 package seng202.team5.data;
 
 import seng202.team5.models.Trail;
+import seng202.team5.utils.QueryHelper;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -21,20 +23,23 @@ public class SqlBasedTrailRepo implements ITrail {
 
     private static final String UPSERT_SQL = """
             INSERT INTO trail (
-                id, name, description, difficulty, completion_time,
-                type, thumb_url, web_url, date_loaded_raw, x, y, user_weight
-            ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)
+                id, name, description, difficulty, completion_info, min_completion_time_minutes,
+                max_completion_time_minutes, completion_type, time_unit, is_multi_day, has_variable_time,
+                thumb_url, web_url, user_weight
+            ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)
             ON CONFLICT(id) DO UPDATE SET
                 name=excluded.name,
                 description=excluded.description,
                 difficulty=excluded.difficulty,
-                completion_time=excluded.completion_time,
-                type=excluded.type,
+                completion_info=excluded.completion_info,
+                min_completion_time_minutes=excluded.min_completion_time_minutes,
+                max_completion_time_minutes=excluded.max_completion_time_minutes,
+                completion_type=excluded.completion_type,
+                time_unit=excluded.time_unit,
+                is_multi_day=excluded.is_multi_day,
+                has_variable_time=excluded.has_variable_time,
                 thumb_url=excluded.thumb_url,
                 web_url=excluded.web_url,
-                date_loaded_raw=excluded.date_loaded_raw,
-                x=excluded.x,
-                y=excluded.y,
                 user_weight=excluded.user_weight
             """;
 
@@ -66,8 +71,20 @@ public class SqlBasedTrailRepo implements ITrail {
      * @return a list of recommended trails
      */
     public List<Trail> getRecommendedTrails() {
-        String sql = SELECT_ALL + " ORDER BY user_weight DESC LIMIT 8";
+        String sql = SELECT_ALL + " ORDER BY user_weight DESC, name ASC LIMIT 8";
         return queryHelper.executeQuery(sql, null, this::mapRowToTrail);
+    }
+
+    /**
+     * Returns if the trail has been processed or not
+     *
+     * @param trail
+     * @return boolean indicating if trail has been processed
+     */
+    public boolean isTrailProcessed(Trail trail) {
+        String sql = "SELECT COUNT(*) FROM trail WHERE id = ? AND completion_type IS NOT NULL AND completion_type != 'unknown'";
+        Integer count = queryHelper.executeCountQuery(sql, stmt -> stmt.setInt(1, trail.getId()));
+        return count != null && count > 0;
     }
 
     /**
@@ -118,6 +135,13 @@ public class SqlBasedTrailRepo implements ITrail {
     }
 
     /**
+     * Clears all user weight values from database
+     */
+    public void clearUserWeights() {
+        queryHelper.executeUpdate("UPDATE trail SET user_weight = NULL", null);
+    }
+
+    /**
      * Counts all the rows in the trail table
      *
      * @return
@@ -140,13 +164,15 @@ public class SqlBasedTrailRepo implements ITrail {
                 rs.getString("name"),
                 rs.getString("difficulty"),
                 rs.getString("description"),
-                rs.getString("completion_time"),
-                rs.getString("type"),
+                rs.getString("completion_info"),
+                rs.getInt("min_completion_time_minutes"),
+                rs.getInt("max_completion_time_minutes"),
+                rs.getString("completion_type"),
+                rs.getString("time_unit"),
+                rs.getBoolean("is_multi_day"),
+                rs.getBoolean("has_variable_time"),
                 rs.getString("thumb_url"),
                 rs.getString("web_url"),
-                rs.getString("date_loaded_raw"),
-                rs.getDouble("x"),
-                rs.getDouble("y"),
                 rs.getDouble("user_weight"));
     }
 
@@ -162,13 +188,15 @@ public class SqlBasedTrailRepo implements ITrail {
         stmt.setString(2, trail.getName());
         stmt.setString(3, trail.getDescription());
         stmt.setString(4, trail.getDifficulty());
-        stmt.setString(5, trail.getCompletionTime());
-        stmt.setString(6, trail.getType());
-        stmt.setString(7, trail.getThumbnailURL());
-        stmt.setString(8, trail.getWebpageURL());
-        stmt.setString(9, trail.getDateLoaded());
-        stmt.setDouble(10, trail.getX());
-        stmt.setDouble(11, trail.getY());
-        stmt.setDouble(12, trail.getUserWeight());
+        stmt.setString(5, trail.getCompletionInfo());
+        stmt.setInt(6, trail.getMinCompletionTimeMinutes());
+        stmt.setInt(7, trail.getMaxCompletionTimeMinutes());
+        stmt.setString(8, trail.getCompletionType());
+        stmt.setString(9, trail.getTimeUnit());
+        stmt.setBoolean(10, trail.isMultiDay());
+        stmt.setBoolean(11, trail.hasVariableTime());
+        stmt.setString(12, trail.getThumbnailURL());
+        stmt.setString(13, trail.getWebpageURL());
+        stmt.setDouble(14, trail.getUserWeight());
     }
 }

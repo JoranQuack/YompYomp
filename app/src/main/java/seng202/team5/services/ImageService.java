@@ -1,7 +1,7 @@
 package seng202.team5.services;
 
 import javafx.scene.image.Image;
-import seng202.team5.data.AppDataManager;
+import seng202.team5.utils.AppDataManager;
 
 import java.io.File;
 
@@ -31,17 +31,17 @@ public class ImageService {
 
             // Convert file path to file URI for JavaFX Image
             File imageFile = new File(imagePath);
+            Image image;
             if (imageFile.exists()) {
                 String fileUri = imageFile.toURI().toString();
-                Image image = new Image(fileUri, true);
-
-                if (!image.isError()) {
-                    return image;
-                } else {
-                    System.err.println("Image loading error for: " + imagePath);
-                }
+                image = new Image(fileUri, true);
             } else {
-                System.err.println("Image file does not exist: " + imagePath);
+                image = new Image(thumbnailUrl, true);
+            }
+            if (!image.isError()) {
+                return image;
+            } else {
+                System.err.println("Image loading error for URL: " + thumbnailUrl);
             }
         } catch (Exception e) {
             System.err.println("Error loading trail image: " + e.getMessage());

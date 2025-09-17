@@ -8,12 +8,13 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.control.ToggleButton;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.VBox;
 import seng202.team5.data.DatabaseService;
 import seng202.team5.data.SqlBasedTrailRepo;
-import seng202.team5.gui.components.NavbarController;
-import seng202.team5.gui.components.TrailCardController;
+import seng202.team5.gui.components.NavbarComponent;
+import seng202.team5.gui.components.TrailCardComponent;
 import seng202.team5.models.Trail;
 import seng202.team5.services.SearchService;
 
@@ -24,6 +25,7 @@ import seng202.team5.services.SearchService;
 public class TrailsController extends Controller {
     /** Service for searching and filtering trails */
     private SearchService searchService;
+    private String searchText;
 
     @FXML
     private VBox navbarContainer;
@@ -43,12 +45,23 @@ public class TrailsController extends Controller {
     @FXML
     private ChoiceBox<String> pageChoiceBox;
 
-    /**
-     * Default constructor required by JavaFX FXML loading.
-     */
-    public TrailsController() {
-        super();
-    }
+    @FXML
+    private ChoiceBox<String> completionTypeChoiceBox;
+
+    @FXML
+    private ChoiceBox<String> timeUnitChoiceBox;
+
+    @FXML
+    private ChoiceBox<String> difficultyChoiceBox;
+
+    @FXML
+    private ChoiceBox<String> multiDayChoiceBox;
+
+    @FXML
+    private ChoiceBox<String> sortChoiceBox;
+
+    @FXML
+    private ToggleButton ascDescToggleButton;
 
     /**
      * Creates controller with navigator.
@@ -57,7 +70,14 @@ public class TrailsController extends Controller {
      */
     public TrailsController(ScreenNavigator navigator) {
         super(navigator);
-        initializeSearchService();
+    }
+
+    /**
+     *
+     */
+    public TrailsController(ScreenNavigator navigator, String searchText) {
+        super(navigator);
+        this.searchText = searchText;
     }
 
     /**
@@ -73,14 +93,11 @@ public class TrailsController extends Controller {
     @FXML
     private void initialize() {
         // Initialize the navbar from parent coz you can't have your kid running around
-        NavbarController navbar = super.getNavbarController();
+        NavbarComponent navbar = super.getNavbarController();
         navbar.setPage(1);
         navbarContainer.getChildren().add(navbar);
 
-        // Initialize search service if not already done
-        if (searchService == null) {
-            initializeSearchService();
-        }
+        initializeSearchService();
 
         // Check if searchService is still null and handle gracefully
         if (searchService == null) {
@@ -88,10 +105,133 @@ public class TrailsController extends Controller {
             return;
         }
 
-        List<Trail> trails = searchService.getTrails(null, 0);
-        initializePageChoiceBox();
+        pageChoiceBox.getSelectionModel().selectedItemProperty().addListener(
+                (observable, oldValue, newValue) -> onPageSelected());
+        initializeFilterChoiceBoxes();
+
+        // check if the user searched from dashboard
+        if (searchText != null) {
+            executeDashboardSearch();
+        } else {
+            updateSearchDisplay();
+        }
+
+    }
+
+    /**
+     * This method is used to populate and click the search button on the trails
+     * page if a search is made from the dashboard page
+     */
+    private void executeDashboardSearch() {
+        searchBarTextField.setText(searchText);
+        searchButton.fire();
+    }
+
+    /**
+     * Initialises the filter choice boxes.
+     */
+    private void initializeFilterChoiceBoxes() {
+        initializeChoiceBox(completionTypeChoiceBox, "completionType");
+        initializeChoiceBox(timeUnitChoiceBox, "timeUnit");
+        initializeChoiceBox(difficultyChoiceBox, "difficulty");
+        initializeChoiceBox(multiDayChoiceBox, "multiDay");
+        initializeSortChoiceBox();
+        initializeToggleButton();
+    }
+
+    /**
+     * Generic method to initialise a choice box
+     *
+     * @param choiceBox  The ChoiceBox to initialise
+     * @param filterType The filter type identifier
+     */
+    private void initializeChoiceBox(ChoiceBox<String> choiceBox, String filterType) {
+        choiceBox.getSelectionModel().selectedItemProperty().addListener(
+                (observable, oldValue, newValue) -> onFilterChanged());
+
+        List<String> options = searchService.getFilterOptions(filterType);
+
+        // Special sorting for difficulty
+        if (filterType.equals("difficulty")) {
+            sortDifficultyOptions(options);
+        }
+
+        choiceBox.getItems().addAll(options);
+        choiceBox.setValue(searchService.getDefaultFilterValue(filterType));
+    }
+
+    /**
+     * Difficulty sorting logic
+     */
+    private void sortDifficultyOptions(List<String> options) {
+        List<String> difficultyOrder = SearchService.getDifficultyOrder();
+        options.sort((a, b) -> {
+            if (a.equals("All difficulties"))
+                return -1;
+            if (b.equals("All difficulties"))
+                return 1;
+
+            int indexA = difficultyOrder.indexOf(a.toLowerCase());
+            int indexB = difficultyOrder.indexOf(b.toLowerCase());
+
+            if (indexA != -1 && indexB != -1) {
+                return Integer.compare(indexA, indexB);
+            }
+            if (indexA != -1)
+                return -1;
+            if (indexB != -1)
+                return 1;
+            return a.compareToIgnoreCase(b);
+        });
+    }
+
+    /**
+     * Initialises the sort choice box with the available sort options that we have
+     */
+    private void initializeSortChoiceBox() {
+        sortChoiceBox.getSelectionModel().selectedItemProperty().addListener(
+                (observable, oldValue, newValue) -> onSortChanged());
+
+        List<String> sortOptions = searchService.getSortOptions();
+        sortChoiceBox.getItems().addAll(sortOptions);
+
+        if (super.getUserService().isGuest()) {
+            sortChoiceBox.getItems().remove("Match");
+            sortChoiceBox.setValue("Name");
+        } else {
+            sortChoiceBox.setValue("Match");
+        }
+    }
+
+    /**
+     * Initialises the toggle button for asc/desc order
+     */
+    private void initializeToggleButton() {
+        ascDescToggleButton.setSelected(true);
+        updateToggleButtonText();
+
+        ascDescToggleButton.setOnAction(event -> onToggleButtonClicked());
+    }
+
+    /**
+     * Updates the toggle button text based on current state
+     * Cute arrows for the win
+     */
+    private void updateToggleButtonText() {
+        if (ascDescToggleButton.isSelected()) {
+            ascDescToggleButton.setText("↑ Asc");
+        } else {
+            ascDescToggleButton.setText("↓ Desc");
+        }
+    }
+
+    /**
+     * Method to update the search results display.
+     */
+    private void updateSearchDisplay() {
+        List<Trail> trails = searchService.getPage(0);
         updateTrailsDisplay(trails);
-        resultsLabel.setText(trails.size() + "/" + searchService.getNumberOfTrails() + " trails loaded");
+        resetPageChoiceBox();
     }
 
     /**
@@ -102,45 +242,90 @@ public class TrailsController extends Controller {
     private void updateTrailsDisplay(List<Trail> trails) {
         trailsContainer.getChildren().clear();
 
+        if (trails.isEmpty()) {
+            Label noResultsLabel = new Label(
+                    "No trails match your search. Please try adjusting your search and filter preferences.");
+            trailsContainer.getChildren().add(noResultsLabel);
+            return;
+        }
+
         for (Trail trail : trails) {
-            TrailCardController trailCard = new TrailCardController();
+            TrailCardComponent trailCard = new TrailCardComponent(super.getUserService().isGuest());
             trailCard.setData(trail);
 
             // Add some spacing between cards
             VBox.setMargin(trailCard, new Insets(10));
-
             trailsContainer.getChildren().add(trailCard);
+        }
+
+        if (trails.isEmpty()) {
+            resultsLabel.setText("No trails found.");
+        } else {
+            resultsLabel.setText(trails.size() + "/" + searchService.getNumberOfTrails() + " trails showing");
         }
     }
 
     /**
      * Sets up pagination choice box.
      */
-    private void initializePageChoiceBox() {
-        if (searchService == null)
-            return;
-
-        for (int i = 0; i < searchService.getNumberOfPages(null); i++) {
+    private void resetPageChoiceBox() {
+        pageChoiceBox.getItems().clear();
+        for (int i = 0; i < searchService.getNumberOfPages(); i++) {
             pageChoiceBox.getItems().add(String.valueOf(i + 1));
         }
         pageChoiceBox.setValue("1");
-        pageChoiceBox.getSelectionModel().selectedItemProperty().addListener(
-                (observable, oldValue, newValue) -> onSearchButtonClickedOrPageSelected());
+    }
+
+    /**
+     * Handles filter change event.
+     */
+    private void onFilterChanged() {
+        searchService.updateFilter("completionType", completionTypeChoiceBox.getValue());
+        searchService.updateFilter("timeUnit", timeUnitChoiceBox.getValue());
+        searchService.updateFilter("difficulty", difficultyChoiceBox.getValue());
+        searchService.updateFilter("multiDay", multiDayChoiceBox.getValue());
+        updateSearchDisplay();
+    }
+
+    /**
+     * Handles sort change event.
+     */
+    private void onSortChanged() {
+        String selectedSort = sortChoiceBox.getValue();
+        if (selectedSort != null) {
+            searchService.setSortBy(selectedSort.toLowerCase());
+            updateSearchDisplay();
+        }
+    }
+
+    /**
+     * Handles toggle button click for asc/desc order
+     */
+    private void onToggleButtonClicked() {
+        searchService.setSortAscending(ascDescToggleButton.isSelected());
+        updateToggleButtonText();
+        updateSearchDisplay();
     }
 
     /**
      * Handles search button click or page selection change
      */
     @FXML
-    private void onSearchButtonClickedOrPageSelected() {
-        if (searchService == null) {
-            return;
-        }
+    private void onSearchButtonClicked() {
+        searchService.setCurrentQuery(searchBarTextField.getText());
+        updateSearchDisplay();
+    }
 
-        String query = searchBarTextField.getText();
-        int page = Integer.parseInt(pageChoiceBox.getValue()) - 1;
-        List<Trail> filteredTrails = searchService.getTrails(query, page);
-        updateTrailsDisplay(filteredTrails);
+    /**
+     * Handles page selection change.
+     */
+    private void onPageSelected() {
+        String selectedPage = pageChoiceBox.getValue();
+        if (selectedPage != null) {
+            int pageIndex = Integer.parseInt(selectedPage) - 1;
+            List<Trail> trails = searchService.getPage(pageIndex);
+            updateTrailsDisplay(trails);
+        }
     }
 
     @Override

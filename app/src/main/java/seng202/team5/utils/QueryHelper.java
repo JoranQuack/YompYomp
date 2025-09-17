@@ -1,4 +1,4 @@
-package seng202.team5.data;
+package seng202.team5.utils;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -7,6 +7,8 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+
+import seng202.team5.data.DatabaseService;
 
 /**
  * Query helper for executing SQL
