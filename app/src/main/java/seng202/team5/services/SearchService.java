@@ -115,6 +115,8 @@ public class SearchService {
                 return trail.getAvgCompletionTimeMinutes() > 0;
             case "difficulty":
                 return !trail.getDifficulty().equalsIgnoreCase("unknown");
+            case "match":
+                return trail.getUserWeight() > 0;
             default:
                 return true;
         }
@@ -134,6 +136,9 @@ public class SearchService {
                 break;
             case "difficulty":
                 comparator = getDifficultyComparator();
+                break;
+            case "match":
+                comparator = Comparator.comparingDouble(Trail::getUserWeight).reversed();
                 break;
             default:
                 comparator = Comparator.comparing(Trail::getName, String.CASE_INSENSITIVE_ORDER);
@@ -304,7 +309,7 @@ public class SearchService {
      * @return List of available sort options
      */
     public List<String> getSortOptions() {
-        return List.of("Name", "Time", "Difficulty");
+        return List.of("Name", "Time", "Difficulty", "Match");
     }
 
     /**
