@@ -109,6 +109,10 @@ public class Trail {
         return maxCompletionTimeMinutes;
     }
 
+    public int getAvgCompletionTimeMinutes() {
+        return (minCompletionTimeMinutes + maxCompletionTimeMinutes) / 2;
+    }
+
     public String getCompletionType() {
         return completionType;
     }
