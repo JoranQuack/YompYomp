@@ -98,6 +98,9 @@ public class MatchmakingController extends Controller {
         return "Matchmaking In Progress";
     }
 
+    /**
+     * Handles cleanup and user notification when the matchmaking thread fails
+     */
     private void exitThread() {
         Thread.currentThread().interrupt();
         showAlert(AlertType.ERROR, "Matchmaking Failed", "Matchmaking failed, please close the application and try again.");
