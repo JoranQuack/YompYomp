@@ -31,7 +31,7 @@ public class DatabaseService {
         return connection;
     }
 
-    private String getDatabasePath() {
+    public String getDatabasePath() {
         // Use custom path if provided (for testing)
         if (customDatabasePath != null && !customDatabasePath.isEmpty()) {
             return customDatabasePath;

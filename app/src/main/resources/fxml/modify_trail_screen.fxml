@@ -36,7 +36,7 @@
                </font>
             </TextField>
             <Label text="Region" />
-            <CheckComboBox fx:id="regionComboBox" prefHeight="26.0" prefWidth="266.0" />
+            <CheckComboBox fx:id="regionCheckComboBox" prefHeight="26.0" prefWidth="266.0" />
             <Label text="Trail description" />
             <TextField fx:id="trailDescriptionTextField" prefHeight="225.0" prefWidth="240.0">
                <font>

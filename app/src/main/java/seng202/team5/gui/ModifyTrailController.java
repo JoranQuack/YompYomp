@@ -1,7 +1,14 @@
 package seng202.team5.gui;
 
-import seng202.team5.models.Trail;
-import seng202.team5.services.ImageService;
+import javafx.fxml.FXML;
+import javafx.scene.control.Button;
+import javafx.scene.control.TextField;
+import javafx.scene.image.ImageView;
+import org.controlsfx.control.CheckComboBox;
+import seng202.team5.data.DatabaseService;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class ModifyTrailController extends Controller {
 
@@ -12,6 +19,34 @@ public class ModifyTrailController extends Controller {
      */
     public ModifyTrailController(ScreenNavigator navigator) {
         super(navigator);
+    }
+
+    @FXML
+    private TextField trailNameTextField;
+    @FXML
+    private TextField translationTextField;
+    @FXML
+    private CheckComboBox<String> regionCheckComboBox;
+    @FXML
+    private TextField trailDescriptionTextField;
+    @FXML
+    private ImageView mapImage;
+    @FXML
+    private Button saveButton;
+
+    @FXML
+    private void initialize() {
+        List<String> regionList = new ArrayList<>(List.of("Northland", "Auckland",
+                "Waikato", "Bay of Plenty", "Gisborne", "Hawke's Bay", "Taranaki",
+                "Manawatu-Whanganui", "Tasman", "Wellington", "Nelson", "Marlborough", "West Coast",
+                "Canterbury", "Otago", "Southland"));
+        regionCheckComboBox.getItems().addAll(regionList);
+        saveButton.setOnAction(e -> onSaveButtonClicked());
+    }
+
+    @FXML
+    private void onSaveButtonClicked() {
+
     }
 
     @Override
