@@ -32,9 +32,7 @@ package "data" {
     + getRecommendedTrails() : List<Trail>
     + findById(id : int) : Optional<Trail>
     + upsert(trail : Trail) : void
-    + upsertAll(trails : List<Trail>) : void
     + deleteById(id : int) : void
-    + countTrails() : int
   }
 
   class SqlBasedKeywordRepo {
@@ -45,9 +43,7 @@ package "data" {
   class QueryHelper {
     + QueryHelper(databaseService : DatabaseService)
     + executeQuery(sql : String, paramSetter : ParameterSetter, rowMapper : RowMapper) : List
-    + executeQuerySingle(sql : String, paramSetter : ParameterSetter, rowMapper : RowMapper) : Optional
     + executeUpdate(sql : String, paramSetter : ParameterSetter) : int
-    + executeCountQuery(sql : String, paramSetter : ParameterSetter) : int
   }
 }
 
