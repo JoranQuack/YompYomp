@@ -8,7 +8,7 @@ import seng202.team5.data.DatabaseService;
 import seng202.team5.data.SqlBasedKeywordRepo;
 import seng202.team5.data.SqlBasedTrailRepo;
 import seng202.team5.models.Trail;
-import seng202.team5.services.MatchMakingService;
+import seng202.team5.services.MatchmakingService;
 import seng202.team5.utils.StringManipulator;
 import seng202.team5.utils.TrailsProcessor;
 
@@ -24,7 +24,7 @@ public class ModifyTrailController extends Controller {
     private Controller lastController;
     private DatabaseService databaseService;
     private SqlBasedTrailRepo sqlBasedTrailRepo;
-    private MatchMakingService matchMakingService;
+    private MatchmakingService matchmakingService;
 
     /**
      * Launches the screen with navigator
@@ -38,7 +38,7 @@ public class ModifyTrailController extends Controller {
         this.lastController = lastController;
         this.databaseService = new DatabaseService();
         this.sqlBasedTrailRepo = new SqlBasedTrailRepo(databaseService);
-        this.matchMakingService = new MatchMakingService(new SqlBasedKeywordRepo(databaseService),
+        this.matchmakingService = new MatchmakingService(new SqlBasedKeywordRepo(databaseService),
                 new SqlBasedTrailRepo(databaseService));
     }
 
@@ -167,7 +167,7 @@ public class ModifyTrailController extends Controller {
         String completionTime = completionTimeTextField.getText();
         String trailDescription = trailDescriptionTextArea.getText();
         String cultureUrl = cultureUrlTextField.getText();
-        double userWeight = matchMakingService.getTrailWeight(trailId);
+        double userWeight = matchmakingService.getTrailWeight(trailId);
         List<Trail> updatedTrail = TrailsProcessor.processTrails(List.of(new Trail(trailId, trailName, translation,
                 region, difficulty, trailType, completionTime, trailDescription, thumbUrl, webUrl, cultureUrl, userWeight)));
         return updatedTrail.getFirst();
