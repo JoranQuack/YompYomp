@@ -6,10 +6,9 @@ import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import seng202.team5.data.SqlBasedKeywordRepo;
 import seng202.team5.data.SqlBasedTrailRepo;
-import seng202.team5.exceptions.MatchMakingFailedException;
+import seng202.team5.exceptions.MatchmakingFailedException;
 import seng202.team5.models.Trail;
 import seng202.team5.models.User;
-import seng202.team5.services.MatchmakingService;
 import seng202.team5.services.MatchmakingService;
 import seng202.team5.services.SearchService;
 
@@ -109,7 +108,7 @@ public class ViewPersonalisedRecommendedTrailsStepDefinitions {
     }
 
     @And("user selects the \"Continue\" button on the start screen")
-    public void userSelectsContinueButton() throws MatchMakingFailedException {
+    public void userSelectsContinueButton() throws MatchmakingFailedException {
         // retrieve previously calculated userWeights
         matchmakingService.setUserPreferences(currentUser);
         userWeights = matchmakingService.getUserWeights();

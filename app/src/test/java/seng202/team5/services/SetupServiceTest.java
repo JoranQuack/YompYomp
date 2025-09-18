@@ -7,11 +7,10 @@ import org.junit.jupiter.api.io.TempDir;
 import org.mockito.Mock;
 import org.mockito.MockedStatic;
 import org.mockito.MockitoAnnotations;
-import seng202.team5.exceptions.MatchMakingFailedException;
+import seng202.team5.exceptions.MatchmakingFailedException;
 import seng202.team5.utils.AppDataManager;
 import seng202.team5.data.FileBasedTrailRepo;
 import seng202.team5.data.SqlBasedTrailRepo;
-import seng202.team5.exceptions.MatchMakingFailedException;
 import seng202.team5.models.Trail;
 
 import java.io.ByteArrayInputStream;
@@ -204,7 +203,7 @@ public class SetupServiceTest {
 
     @Test
     @DisplayName("Should sync DB from file when table is not populated")
-    void testSyncDbFromTrailFile() throws MatchMakingFailedException {
+    void testSyncDbFromTrailFile() throws MatchmakingFailedException {
         Trail trail1 = new Trail(1, "Trail1", "Description1", "Easy", "1hr",
                 "url1", "url1");
         Trail trail2 = new Trail(2, "Trail2", "Description2", "Medium", "2hr",
@@ -222,7 +221,7 @@ public class SetupServiceTest {
 
     @Test
     @DisplayName("Should always sync DB regardless of current population")
-    void testSyncDbFromTrailFile_WhenTableAlreadyPopulated() throws MatchMakingFailedException {
+    void testSyncDbFromTrailFile_WhenTableAlreadyPopulated() throws MatchmakingFailedException {
         Trail trail1 = new Trail(1, "Trail1", "Description1", "Easy", "1hr",
                 "url1", "url1");
 
@@ -237,7 +236,7 @@ public class SetupServiceTest {
 
     @Test
     @DisplayName("Should handle empty file trail list during sync")
-    void testSyncDbFromTrailFile_WithEmptyFileTrails() throws MatchMakingFailedException {
+    void testSyncDbFromTrailFile_WithEmptyFileTrails() throws MatchmakingFailedException {
         when(mockFileTrailRepo.getAllTrails()).thenReturn(Collections.emptyList());
 
         setupService.syncDbFromTrailFile();

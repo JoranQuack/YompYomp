@@ -5,7 +5,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
-import seng202.team5.exceptions.MatchMakingFailedException;
+import seng202.team5.exceptions.MatchmakingFailedException;
 import seng202.team5.models.Trail;
 
 import java.io.File;
@@ -102,7 +102,7 @@ public class SqlBasedTrailRepoTest {
 
     @Test
     @DisplayName("Should upsert all of the list of trails")
-    void testUpsertAll() throws SQLException, MatchMakingFailedException {
+    void testUpsertAll() throws SQLException, MatchmakingFailedException {
         sqlBasedTrailRepo.upsertAll(List.of(
                 new Trail(4, "Test4", "Test Trail 4", "Easy", null, null, null),
                 new Trail(5, "Test5", "Test Trail 5", "Medium", null, null, null),

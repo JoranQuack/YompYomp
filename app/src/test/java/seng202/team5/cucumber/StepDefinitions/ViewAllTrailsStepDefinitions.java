@@ -6,7 +6,7 @@ import javafx.scene.control.Alert;
 import org.mockito.Mockito;
 import seng202.team5.data.SqlBasedKeywordRepo;
 import seng202.team5.data.SqlBasedTrailRepo;
-import seng202.team5.exceptions.MatchMakingFailedException;
+import seng202.team5.exceptions.MatchmakingFailedException;
 import seng202.team5.gui.ScreenNavigator;
 import seng202.team5.gui.TrailsController;
 import seng202.team5.gui.components.NavbarComponent;
@@ -117,7 +117,7 @@ public class ViewAllTrailsStepDefinitions {
     }
 
     @And("the dashboard screen of personalised recommended trails is shown")
-    public void theDashboardScreenOfPersonalisedRecommendedTrailsIsShown() throws MatchMakingFailedException {
+    public void theDashboardScreenOfPersonalisedRecommendedTrailsIsShown() throws MatchmakingFailedException {
         matchmakingService = new MatchmakingService(mockKeywordRepo, mockTrailRepo);
 
         // Build a test user with some preferences

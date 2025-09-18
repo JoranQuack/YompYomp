@@ -11,7 +11,7 @@ import seng202.team5.models.User;
 import seng202.team5.services.MatchmakingService;
 
 public class MatchmakingController extends Controller {
-    private MatchmakingService matchMakingService;
+    private MatchmakingService matchmakingService;
 
     @FXML
     private ProgressIndicator progressIndicator;
@@ -24,7 +24,7 @@ public class MatchmakingController extends Controller {
     public MatchmakingController(ScreenNavigator navigator) {
         super(navigator);
         DatabaseService databaseService = new DatabaseService();
-        matchMakingService = new MatchmakingService(
+        matchmakingService = new MatchmakingService(
                 new SqlBasedKeywordRepo(databaseService),
                 new SqlBasedTrailRepo(databaseService));
 
@@ -61,7 +61,7 @@ public class MatchmakingController extends Controller {
                 }
 
                 // Run the matchmaking process
-                matchMakingService.generateTrailWeights(user);
+                matchmakingService.generateTrailWeights(user);
                 return null;
             }
 
