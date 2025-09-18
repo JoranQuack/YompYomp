@@ -3,6 +3,7 @@ package seng202.team5.utils;
 import seng202.team5.models.Trail;
 
 import java.util.List;
+import java.util.Objects;
 
 public class TrailsProcessor {
     /**
@@ -21,9 +22,13 @@ public class TrailsProcessor {
                             .parseCompletionTime(completionInfo);
 
                     // Update trail with parsed time information
+                    if (Objects.equals(trail.getCompletionType(), "unknown") ||
+                        (!Objects.equals(trail.getCompletionType(), result.getCompletionType())) &&
+                        !Objects.equals(result.getCompletionType(), "unknown")) {
+                        trail.setCompletionType(result.getCompletionType());
+                    }
                     trail.setMinCompletionTimeMinutes(result.getMinCompletionTimeMinutes());
                     trail.setMaxCompletionTimeMinutes(result.getMaxCompletionTimeMinutes());
-                    trail.setCompletionType(result.getCompletionType());
                     trail.setTimeUnit(result.getTimeUnit());
                     trail.setMultiDay(result.isMultiDay());
                     trail.setHasVariableTime(result.hasVariableTime());

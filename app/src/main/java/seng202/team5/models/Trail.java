@@ -87,18 +87,18 @@ public class Trail {
      * @param thumbnailURL
      * @param webpageURL
      */
-    public Trail(int id, String name, String description, String difficulty, String completionInfo,
+    public Trail(int id, String name, String difficulty, String description, String completionInfo,
             String thumbnailURL, String webpageURL) {
         this(id, name, "", "", difficulty, description, completionInfo, 0, 0,"unknown", "unknown",
                 false, false, thumbnailURL, webpageURL, "", 0.0);
     }
 
     /**
-     * Constructor for Trail class without thumbnailURL, webpageURL
+     * Constructor for Trail class for user input data
      * Calls SqlBasedTrailRepo to get new trail id
      */
     public Trail(int id, String name, String translation, String region, String difficulty, String completionType,
-                 String completionInfo, String description, String cultureUrl) {
+                 String completionInfo, String description, String thumbUrl, String webUrl, String cultureUrl) {
         SqlBasedTrailRepo sqlBasedTrailRepo = new SqlBasedTrailRepo(new DatabaseService());
         if (id == -1) {
             this.id = sqlBasedTrailRepo.getNewTrailId();
@@ -118,8 +118,8 @@ public class Trail {
         this.timeUnit = "unknown";
         this.isMultiDay = false;
         this.hasVariableTime = false;
-        this.thumbnailURL = "";
-        this.webpageURL = "";
+        this.thumbnailURL = thumbUrl;
+        this.webpageURL = webUrl;
         this.userWeight = 0.0;
     }
 

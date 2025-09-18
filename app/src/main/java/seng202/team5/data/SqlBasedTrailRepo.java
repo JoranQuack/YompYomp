@@ -23,7 +23,7 @@ public class SqlBasedTrailRepo implements ITrail {
 
     private static final String UPSERT_SQL = """
             INSERT INTO trail (
-                id, name, translation, region, description, difficulty, completion_info, min_completion_time_minutes,
+                id, name, translation, region, difficulty, description, completion_info, min_completion_time_minutes,
                 max_completion_time_minutes, completion_type, time_unit, is_multi_day, has_variable_time,
                 thumb_url, web_url, culture_url, user_weight
             ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
@@ -31,8 +31,8 @@ public class SqlBasedTrailRepo implements ITrail {
                 name=excluded.name,
                 translation=excluded.translation,
                 region=excluded.region,
-                description=excluded.description,
                 difficulty=excluded.difficulty,
+                description=excluded.description,
                 completion_info=excluded.completion_info,
                 min_completion_time_minutes=excluded.min_completion_time_minutes,
                 max_completion_time_minutes=excluded.max_completion_time_minutes,
@@ -162,8 +162,6 @@ public class SqlBasedTrailRepo implements ITrail {
      * @throws java.sql.SQLException if column cannot be read
      */
     private Trail mapRowToTrail(java.sql.ResultSet rs) throws java.sql.SQLException {
-        //System.out.println(rs.getBoolean("has_variable_time"));
-        //System.out.println(rs.getString("web_url"));
         return new Trail(
                 rs.getInt("id"),
                 rs.getString("name"),
@@ -185,6 +183,17 @@ public class SqlBasedTrailRepo implements ITrail {
     }
 
     /**
+     * Maps the result returned from MAX(id) to an integer
+     *
+     * @param rs result set
+     * @return integer of max id
+     * @throws java.sql.SQLException if column cannot be read
+     */
+    private int mapMaxId(java.sql.ResultSet rs) throws java.sql.SQLException {
+        return rs.getInt("MAX(id)");
+    }
+
+    /**
      * Binds trail fields to the prepared statement. The order must match.
      *
      * @param stmt  prepared statement to bind
@@ -196,8 +205,8 @@ public class SqlBasedTrailRepo implements ITrail {
         stmt.setString(2, trail.getName());
         stmt.setString(3, trail.getTranslation());
         stmt.setString(4, trail.getRegion());
-        stmt.setString(5, trail.getDescription());
-        stmt.setString(6, trail.getDifficulty());
+        stmt.setString(5, trail.getDifficulty());
+        stmt.setString(6, trail.getDescription());
         stmt.setString(7, trail.getCompletionInfo());
         stmt.setInt(8, trail.getMinCompletionTimeMinutes());
         stmt.setInt(9, trail.getMaxCompletionTimeMinutes());
@@ -216,6 +225,6 @@ public class SqlBasedTrailRepo implements ITrail {
      */
     public int getNewTrailId() {
         String getIdQuery = "SELECT MAX(id) FROM trail";
-        return queryHelper.executeQuerySingle(getIdQuery, null, this::mapRowToTrail).get().getId() + 1;
+        return queryHelper.executeQuerySingle(getIdQuery, null, this::mapMaxId).get() + 1;
     }
 }

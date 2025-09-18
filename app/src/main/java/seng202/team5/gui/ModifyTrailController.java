@@ -3,6 +3,7 @@ package seng202.team5.gui;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
+import javafx.scene.paint.Color;
 import seng202.team5.data.DatabaseService;
 import seng202.team5.data.SqlBasedTrailRepo;
 import seng202.team5.models.Trail;
@@ -19,6 +20,7 @@ public class ModifyTrailController extends Controller {
 
     private Trail trail;
     private Controller lastController;
+    private SqlBasedTrailRepo sqlBasedTrailRepo;
 
     /**
      * Launches the screen with navigator
@@ -30,6 +32,7 @@ public class ModifyTrailController extends Controller {
         super(navigator);
         this.trail = trail;
         this.lastController = lastController;
+        this.sqlBasedTrailRepo = new SqlBasedTrailRepo(new DatabaseService());
     }
 
     @FXML
@@ -52,6 +55,8 @@ public class ModifyTrailController extends Controller {
     private ComboBox<String> regionComboBox;
     @FXML
     private ImageView mapImage;
+    @FXML
+    private Label emptyFieldLabel;
     @FXML
     private Button saveButton;
     @FXML
@@ -79,16 +84,20 @@ public class ModifyTrailController extends Controller {
         regionComboBox.getItems().addAll(regionList);
         difficultyComboBox.getItems().addAll(List.of("Easy", "Intermediate", "Advanced"));
         trailTypeComboBox.getItems().addAll(List.of("One way", "Loop", "Return"));
+        emptyFieldLabel.setText("");
         saveButton.setOnAction(e -> onSaveButtonClicked());
         backButton.setOnAction(e -> onBackButtonClicked());
     }
 
     @FXML
     private void onSaveButtonClicked() {
-        DatabaseService databaseService = new DatabaseService();
-        SqlBasedTrailRepo sqlBasedTrailRepo = new SqlBasedTrailRepo(databaseService);
-        sqlBasedTrailRepo.upsert(getUpdatedTrail());
-        super.getNavigator().launchScreen(lastController, lastController.getNavigator().getLastController());
+        if (userInputValidation()) {
+            sqlBasedTrailRepo.upsert(getUpdatedTrail());
+            super.getNavigator().launchScreen(lastController, lastController.getNavigator().getLastController());
+        } else {
+            emptyFieldLabel.setText("Please make sure all required fields are filled!");
+            emptyFieldLabel.setTextFill(Color.RED);
+        }
     }
 
     @FXML
@@ -101,13 +110,27 @@ public class ModifyTrailController extends Controller {
      */
     @FXML
     private void initializeTextFields() {
-        trailNameTextField.setText(trail.getName());
-        difficultyComboBox.setValue(StringManipulator.capitaliseFirstLetter(trail.getDifficulty()));
-        trailTypeComboBox.setValue(StringManipulator.capitaliseFirstLetter(trail.getCompletionType()));
-        trailDescriptionTextArea.setText(trail.getDescription());
-        completionTimeTextField.setText(trail.getCompletionInfo());
-        cultureUrlTextField.setText(trail.getCultureUrl());
-        translationTextField.setText(trail.getTranslation());
+        Trail foundTrail = sqlBasedTrailRepo.findById(trail.getId()).get();
+        trailNameTextField.setText(foundTrail.getName());
+        difficultyComboBox.setValue(StringManipulator.capitaliseFirstLetter(foundTrail.getDifficulty()));
+        trailTypeComboBox.setValue(StringManipulator.capitaliseFirstLetter(foundTrail.getCompletionType()));
+        trailDescriptionTextArea.setText(foundTrail.getDescription());
+        completionTimeTextField.setText(foundTrail.getCompletionInfo());
+        cultureUrlTextField.setText(foundTrail.getCultureUrl());
+        translationTextField.setText(foundTrail.getTranslation());
+    }
+
+    /**
+     * Validates user input
+     * @return whether inputs are valid
+     */
+    private boolean userInputValidation() {
+        if (trailNameTextField.getText().isEmpty() || difficultyComboBox.getValue() == null ||
+            trailTypeComboBox.getValue() == null || completionTimeTextField.getText().isEmpty() ||
+            trailDescriptionTextArea.getText().isEmpty()) {
+            return false;
+        }
+        return true;
     }
 
     /**
@@ -117,12 +140,18 @@ public class ModifyTrailController extends Controller {
     private Trail getUpdatedTrail() {
         int trailId;
         String region;
+        String thumbUrl;
+        String webUrl;
         if (trail != null) {
             trailId = trail.getId();
             region = "";
+            thumbUrl = trail.getThumbnailURL();
+            webUrl = trail.getWebpageURL();
         } else {
             trailId = -1;
             region = regionComboBox.getValue();
+            thumbUrl = "";
+            webUrl = "";
         }
         String trailName = trailNameTextField.getText();
         String translation = translationTextField.getText();
@@ -132,7 +161,7 @@ public class ModifyTrailController extends Controller {
         String trailDescription = trailDescriptionTextArea.getText();
         String cultureUrl = cultureUrlTextField.getText();
         List<Trail> updatedTrail = TrailsProcessor.processTrails(List.of(new Trail(trailId, trailName, translation,
-                region, difficulty, trailType, completionTime, trailDescription, cultureUrl)));
+                region, difficulty, trailType, completionTime, trailDescription, thumbUrl, webUrl, cultureUrl)));
         return updatedTrail.getFirst();
     }
 

@@ -23,7 +23,7 @@
                   <Insets top="10.0" />
                </VBox.margin>
             </Label>
-            <Label text="Trail name" />
+            <Label text="Trail name (required)" />
             <TextField fx:id="trailNameTextField">
                <font>
                   <Font size="12.0" />
@@ -39,21 +39,21 @@
                <children>
                   <VBox prefHeight="99.0" prefWidth="132.0" spacing="10.0">
                      <children>
-                        <Label text="Difficulty" />
+                        <Label text="Difficulty (required)" />
                         <ComboBox fx:id="difficultyComboBox" prefHeight="26.0" prefWidth="128.0" />
                      </children>
                   </VBox>
                   <VBox prefHeight="99.0" prefWidth="133.0" spacing="10.0">
                      <children>
-                        <Label text="Trail type" />
+                        <Label text="Trail type (required)" />
                         <ComboBox fx:id="trailTypeComboBox" prefHeight="26.0" prefWidth="128.0" />
                      </children>
                   </VBox>
                </children>
             </HBox>
-            <Label text="Completion time" />
+            <Label text="Completion time (required)" />
             <TextField fx:id="completionTimeTextField" />
-            <Label text="Trail description" />
+            <Label text="Trail description (required)" />
             <TextArea fx:id="trailDescriptionTextArea" prefHeight="66.0" prefWidth="261.0" wrapText="true" />
             <Label text="Cultural URL" />
             <TextField fx:id="cultureUrlTextField" />
@@ -71,6 +71,7 @@
                <children>
                   <VBox alignment="BOTTOM_RIGHT" maxWidth="1.7976931348623157E308" spacing="10.0">
                      <children>
+                        <Label fx:id="emptyFieldLabel" text="Label" />
                         <Button fx:id="saveButton" mnemonicParsing="false" text="Save" />
                         <Button fx:id="backButton" mnemonicParsing="false" text="Back &amp; Don't save" />
                      </children>
