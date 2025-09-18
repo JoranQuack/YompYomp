@@ -293,7 +293,7 @@ class MatchMakingServiceTest {
         User user = makeTestUser();
         matchMakingService.setUserPreferences(user);
 
-        Trail trail = new Trail(6, "Case Test Trail", "A FOREST trail with a RIVER nearby", "Easy",
+        Trail trail = new Trail(6, "Case Test Trail", "Easy", "A FOREST trail with a RIVER nearby",
                 "2 hours", "thumb6.jpg", "http://example.com/trail6");
         Set<String> categories = matchMakingService.categoriseTrail(trail);
         assertTrue(categories.contains("Forest"));

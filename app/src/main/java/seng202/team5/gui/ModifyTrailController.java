@@ -5,8 +5,10 @@ import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
 import seng202.team5.data.DatabaseService;
+import seng202.team5.data.SqlBasedKeywordRepo;
 import seng202.team5.data.SqlBasedTrailRepo;
 import seng202.team5.models.Trail;
+import seng202.team5.services.MatchMakingService;
 import seng202.team5.utils.StringManipulator;
 import seng202.team5.utils.TrailsProcessor;
 
@@ -20,7 +22,9 @@ public class ModifyTrailController extends Controller {
 
     private Trail trail;
     private Controller lastController;
+    private DatabaseService databaseService;
     private SqlBasedTrailRepo sqlBasedTrailRepo;
+    private MatchMakingService matchMakingService;
 
     /**
      * Launches the screen with navigator
@@ -32,7 +36,10 @@ public class ModifyTrailController extends Controller {
         super(navigator);
         this.trail = trail;
         this.lastController = lastController;
-        this.sqlBasedTrailRepo = new SqlBasedTrailRepo(new DatabaseService());
+        this.databaseService = new DatabaseService();
+        this.sqlBasedTrailRepo = new SqlBasedTrailRepo(databaseService);
+        this.matchMakingService = new MatchMakingService(new SqlBasedKeywordRepo(databaseService),
+                new SqlBasedTrailRepo(databaseService));
     }
 
     @FXML
@@ -160,8 +167,9 @@ public class ModifyTrailController extends Controller {
         String completionTime = completionTimeTextField.getText();
         String trailDescription = trailDescriptionTextArea.getText();
         String cultureUrl = cultureUrlTextField.getText();
+        double userWeight = matchMakingService.getTrailWeight(trailId);
         List<Trail> updatedTrail = TrailsProcessor.processTrails(List.of(new Trail(trailId, trailName, translation,
-                region, difficulty, trailType, completionTime, trailDescription, thumbUrl, webUrl, cultureUrl)));
+                region, difficulty, trailType, completionTime, trailDescription, thumbUrl, webUrl, cultureUrl, userWeight)));
         return updatedTrail.getFirst();
     }
 

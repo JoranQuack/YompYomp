@@ -21,12 +21,13 @@ public class TrailsProcessor {
                     CompletionTimeParser.CompletionTimeResult result = CompletionTimeParser
                             .parseCompletionTime(completionInfo);
 
-                    // Update trail with parsed time information
+                    // Only use type returned by parser if current type of trail is unknown or the 2 don't match so choose parser
                     if (Objects.equals(trail.getCompletionType(), "unknown") ||
                         (!Objects.equals(trail.getCompletionType(), result.getCompletionType())) &&
                         !Objects.equals(result.getCompletionType(), "unknown")) {
                         trail.setCompletionType(result.getCompletionType());
                     }
+                    // Update trail with parsed time information
                     trail.setMinCompletionTimeMinutes(result.getMinCompletionTimeMinutes());
                     trail.setMaxCompletionTimeMinutes(result.getMaxCompletionTimeMinutes());
                     trail.setTimeUnit(result.getTimeUnit());

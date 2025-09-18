@@ -98,7 +98,8 @@ public class Trail {
      * Calls SqlBasedTrailRepo to get new trail id
      */
     public Trail(int id, String name, String translation, String region, String difficulty, String completionType,
-                 String completionInfo, String description, String thumbUrl, String webUrl, String cultureUrl) {
+                 String completionInfo, String description, String thumbUrl, String webUrl, String cultureUrl,
+                 double userWeight) {
         SqlBasedTrailRepo sqlBasedTrailRepo = new SqlBasedTrailRepo(new DatabaseService());
         if (id == -1) {
             this.id = sqlBasedTrailRepo.getNewTrailId();
@@ -120,7 +121,7 @@ public class Trail {
         this.hasVariableTime = false;
         this.thumbnailURL = thumbUrl;
         this.webpageURL = webUrl;
-        this.userWeight = 0.0;
+        this.userWeight = userWeight;
     }
 
     // Getters
