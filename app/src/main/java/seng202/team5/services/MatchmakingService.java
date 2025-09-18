@@ -2,7 +2,7 @@ package seng202.team5.services;
 
 import seng202.team5.data.SqlBasedKeywordRepo;
 import seng202.team5.data.SqlBasedTrailRepo;
-import seng202.team5.exceptions.MatchMakingFailedException;
+import seng202.team5.exceptions.MatchmakingFailedException;
 import seng202.team5.models.Trail;
 import seng202.team5.models.User;
 
@@ -10,7 +10,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 /**
- * MatchMakingService takes user preferences and trail keywords,
+ * MatchmakingService takes user preferences and trail keywords,
  * then calculates a weighted score for each trail.
  * It categorises trails based on the keywords in the description,
  * computes user-personalised scores, and sorts the trail page using pagination.
@@ -26,7 +26,7 @@ public class MatchmakingService {
     private int maxResults = 100;
 
     /**
-     * Creates a MatchMakingService instance.
+     * Creates a MatchmakingService instance.
      *
      * @param keywordRepo repository for category-to-keyword data from the database
      * @param trailRepo   repository for trail data which are used for scoring and
@@ -42,7 +42,7 @@ public class MatchmakingService {
      *
      * @param user the user whose preferences will be used to generate trail weights
      */
-    public void generateTrailWeights(User user) throws MatchMakingFailedException {
+    public void generateTrailWeights(User user) throws MatchmakingFailedException {
         setUserPreferences(user);
         buildReverseIndex();
         assignWeightsToTrails();
@@ -54,7 +54,7 @@ public class MatchmakingService {
      * map.
      * Case-insensitive matching.
      */
-    private void buildReverseIndex() throws MatchMakingFailedException {
+    private void buildReverseIndex() throws MatchmakingFailedException {
         if (!categoryToKeywords.isEmpty()) {
             for (Map.Entry<String, List<String>> entry : categoryToKeywords.entrySet()) {
                 String category = entry.getKey();
@@ -62,7 +62,7 @@ public class MatchmakingService {
                     keywordToCategory.put(keyword.toLowerCase(Locale.ROOT), category);
                 }
         }} else {
-            throw new MatchMakingFailedException("Category file is empty");
+            throw new MatchmakingFailedException("Category file is empty");
         }
     }
 
@@ -85,7 +85,7 @@ public class MatchmakingService {
      *
      * @param user the user whose preferences will be mapped into category weights.
      */
-    public void setUserPreferences(User user) throws MatchMakingFailedException {
+    public void setUserPreferences(User user) throws MatchmakingFailedException {
         if (user != null) {
             resetWeights();
 
@@ -104,7 +104,7 @@ public class MatchmakingService {
             userWeights.put("Waterfall", user.getWaterfallPreference());
             userWeights.put("Reserve", user.getReservePreference());
         } else {
-            throw new MatchMakingFailedException("User not specified");
+            throw new MatchmakingFailedException("User not specified");
         }
     }
 
@@ -117,15 +117,15 @@ public class MatchmakingService {
      *         set if no
      *         categories match
      */
-    public Set<String> categoriseTrail(Trail trail) throws MatchMakingFailedException {
+    public Set<String> categoriseTrail(Trail trail) throws MatchmakingFailedException {
         // Make sure we have the reverse index built, else categorisation problems arise
 
         try {
             if (keywordToCategory.isEmpty()) {
                 buildReverseIndex();
             }
-        } catch (MatchMakingFailedException e) {
-            throw new MatchMakingFailedException("Keyword to category file is empty");
+        } catch (MatchmakingFailedException e) {
+            throw new MatchmakingFailedException("Keyword to category file is empty");
         }
         Set<String> matchedCategories = new HashSet<>();
         String description = trail.getDescription().toLowerCase(Locale.ROOT);
@@ -200,7 +200,7 @@ public class MatchmakingService {
      * Assigns weights to each trail based on the categories and user preferences.
      * Updates the trail models attributes, categories, and userWeight.
      */
-    public void assignWeightsToTrails() throws MatchMakingFailedException {
+    public void assignWeightsToTrails() throws MatchmakingFailedException {
         List<Trail> trails = trailRepo.getAllTrails();
         if (!trails.isEmpty()) {
             trailWeights.clear();
@@ -215,7 +215,7 @@ public class MatchmakingService {
 
             weightsCalculated = true; }
         else {
-            throw new MatchMakingFailedException("Trails is empty");
+            throw new MatchmakingFailedException("Trails is empty");
         }
     }
 

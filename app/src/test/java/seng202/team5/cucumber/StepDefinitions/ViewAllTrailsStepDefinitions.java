@@ -4,7 +4,7 @@ import io.cucumber.java.Before;
 import io.cucumber.java.en.*;
 import seng202.team5.data.SqlBasedKeywordRepo;
 import seng202.team5.data.SqlBasedTrailRepo;
-import seng202.team5.exceptions.MatchMakingFailedException;
+import seng202.team5.exceptions.MatchmakingFailedException;
 import seng202.team5.models.Trail;
 import seng202.team5.models.User;
 import seng202.team5.services.MatchmakingService;
@@ -117,7 +117,7 @@ public class ViewAllTrailsStepDefinitions {
     }
 
     @And("the dashboard screen of personalised recommended trails is shown")
-    public void theDashboardScreenOfPersonalisedRecommendedTrailsIsShown() throws MatchMakingFailedException {
+    public void theDashboardScreenOfPersonalisedRecommendedTrailsIsShown() throws MatchmakingFailedException {
         matchmakingService = new MatchmakingService(mockKeywordRepo, mockTrailRepo);
 
         // Build a test user with some preferences
