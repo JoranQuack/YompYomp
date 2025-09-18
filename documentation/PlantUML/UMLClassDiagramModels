@@ -1,0 +1,30 @@
+@startuml
+skinparam packageStyle rectangle
+title Models Package — methods only
+
+package "models" {
+
+  enum Question {
+    + Question(question : String, sliderLabels : String[]) : void
+  }
+
+  class Trail {
+    + Trail() : void
+    + toString() : String
+  }
+
+  class User {
+    + User() : void
+    + toString() : String
+  }
+
+  class TrailLog <<to be implemented>>{
+    + TrailLog() : void
+    + toString() : String
+  }
+}
+
+TrailLog -- Trail
+TrailLog -- User
+
+@enduml
