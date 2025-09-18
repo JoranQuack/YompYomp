@@ -1,93 +1,104 @@
-# SENG202-25-Team5
+![YOMPYOMP_LOGO](app/src/main/resources/images/YompYompLogo.png)
 
+# SENG202-25-Team5 - YompYomp
 
+6-person group project to create a New Zealand tramping app, as part of the SENG202 2025 course at the University of Canterbury.
 
-## Getting started
-
-To make it easy for you to get started with GitLab, here's a list of recommended next steps.
-
-Already a pro? Just edit this README.md and make it your own. Want to make it easy? [Use the template at the bottom](#editing-this-readme)!
-
-## Add your files
-
-- [ ] [Create](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#create-a-file) or [upload](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#upload-a-file) files
-- [ ] [Add files using the command line](https://docs.gitlab.com/topics/git/add_files/#add-files-to-a-git-repository) or push an existing Git repository with the following command:
-
-```
-cd existing_repo
-git remote add origin https://eng-git.canterbury.ac.nz/seng202-2025/seng202-25-team5.git
-git branch -M main
-git push -uf origin main
-```
-
-## Integrate with your tools
-
-- [ ] [Set up project integrations](https://eng-git.canterbury.ac.nz/seng202-2025/seng202-25-team5/-/settings/integrations)
-
-## Collaborate with your team
-
-- [ ] [Invite team members and collaborators](https://docs.gitlab.com/ee/user/project/members/)
-- [ ] [Create a new merge request](https://docs.gitlab.com/ee/user/project/merge_requests/creating_merge_requests.html)
-- [ ] [Automatically close issues from merge requests](https://docs.gitlab.com/ee/user/project/issues/managing_issues.html#closing-issues-automatically)
-- [ ] [Enable merge request approvals](https://docs.gitlab.com/ee/user/project/merge_requests/approvals/)
-- [ ] [Set auto-merge](https://docs.gitlab.com/user/project/merge_requests/auto_merge/)
-
-## Test and Deploy
-
-Use the built-in continuous integration in GitLab.
-
-- [ ] [Get started with GitLab CI/CD](https://docs.gitlab.com/ee/ci/quick_start/)
-- [ ] [Analyze your code for known vulnerabilities with Static Application Security Testing (SAST)](https://docs.gitlab.com/ee/user/application_security/sast/)
-- [ ] [Deploy to Kubernetes, Amazon EC2, or Amazon ECS using Auto Deploy](https://docs.gitlab.com/ee/topics/autodevops/requirements.html)
-- [ ] [Use pull-based deployments for improved Kubernetes management](https://docs.gitlab.com/ee/user/clusters/agent/)
-- [ ] [Set up protected environments](https://docs.gitlab.com/ee/ci/environments/protected_environments.html)
-
-***
-
-# Editing this README
-
-When you're ready to make this README your own, just edit this file and use the handy template below (or feel free to structure it however you want - this is just a starting point!). Thanks to [makeareadme.com](https://www.makeareadme.com/) for this template.
-
-## Suggestions for a good README
-
-Every project is different, so consider which of these sections apply to yours. The sections used in the template are suggestions for most open source projects. Also keep in mind that while a README can be too long and detailed, too long is better than too short. If you think your README is too long, consider utilizing another form of documentation rather than cutting out information.
-
-## Name
-Choose a self-explaining name for your project.
+The name of this app was chosen from the definition of the word "yomp", which means "a march with heavy equipment over difficult terrain". The decision to multiply it by 2 was to create a more interesting name for the user, and help with memorability.
 
 ## Description
-Let people know what your project can do specifically. Provide context and add a link to any reference visitors might be unfamiliar with. A list of Features or a Background subsection can also be added here. If there are alternatives to your project, this is a good place to list differentiating factors.
 
-## Badges
-On some READMEs, you may see small images that convey metadata, such as whether or not all the tests are passing for the project. You can use Shields to add some to your README. Many services also have instructions for adding a badge.
+This app loads DOC datasets into a database, profiles the user, and recommends trails to the user based on their preferences. The user can also access each trail to view further information, and will be able to view the route on a map, and the current weather at the location. A trails screen is also included to help user filter, search, and sort for the trail that they would like to find manually.
 
-## Visuals
-Depending on what you are making, it can be a good idea to include screenshots or even a video (you'll frequently see GIFs rather than actual videos). Tools like ttygif can help, but check out Asciinema for a more sophisticated method.
+## Installation and Usage
 
-## Installation
-Within a particular ecosystem, there may be a common way of installing things, such as using Yarn, NuGet, or Homebrew. However, consider the possibility that whoever is reading your README is a novice and would like more guidance. Listing specific steps helps remove ambiguity and gets people to using your project as quickly as possible. If it only runs in a specific context like a particular programming language version or operating system or has dependencies that have to be installed manually, also add a Requirements subsection.
+### Prerequisites
 
-## Usage
-Use examples liberally, and show the expected output if you can. It's helpful to have inline the smallest example of usage that you can demonstrate, while providing links to more sophisticated examples if they are too long to reasonably include in the README.
+- JDK >= 21 [click here to get the latest stable OpenJDK release](https://jdk.java.net/21/)
+- _(optional)_ Gradle [Download](https://gradle.org/releases/) and [Install](https://gradle.org/install/)
 
-## Support
-Tell people where they can go to for help. It can be any combination of an issue tracker, a chat room, an email address, etc.
+### Run Locally
 
-## Roadmap
-If you have ideas for releases in the future, it is a good idea to list them in the README.
+Clone the project
 
-## Contributing
-State if you are open to contributions and what your requirements are for accepting them.
+```bash
+  git clone https://eng-git.canterbury.ac.nz/seng202-2025/seng202-25-team5
+```
 
-For people who want to make changes to your project, it's helpful to have some documentation on how to get started. Perhaps there is a script that they should run or some environment variables that they need to set. Make these steps explicit. These instructions could also be useful to your future self.
+Go to the project directory and run
 
-You can also document commands to lint the code or run tests. These steps help to ensure high code quality and reduce the likelihood that the changes inadvertently break something. Having instructions for running tests is especially helpful if it requires external setup, such as starting a Selenium server for testing in a browser.
+```bash
+  ./gradlew run
+```
 
-## Authors and acknowledgment
-Show your appreciation to those who have contributed to the project.
+### Build Project
 
-## License
-For open source projects, say how it is licensed.
+Create a packaged Jar
 
-## Project status
-If you have run out of energy or time for your project, put a note at the top of the README saying that development has slowed down or stopped completely. Someone may choose to fork your project or volunteer to step in as a maintainer or owner, allowing your project to keep going. You can also make an explicit request for maintainers.
+```bash
+  ./gradlew jar
+```
+
+Go to build directory
+
+```bash
+  cd app/build/libs
+```
+
+Open the application
+
+```bash
+  java -jar yompyomp.jar
+```
+
+> [!IMPORTANT]
+> This Jar is NOT cross-platform, so you must build the jar on the appropriate OS (and machine) to where you want to run it.
+
+### Running Tests
+
+To run tests, run the following command
+
+```bash
+  ./gradlew test
+```
+
+## Current Product Version
+
+### Use Cases and Features Implemented
+
+- **UC_1** Complete Profile Quiz
+- **UC_2** View Personalised Recommended Trails
+- **UC_3** View All Trails
+- **UC_4** Search Trails
+- **UC_5** View Single Trail (without map and weather)
+- **UC_6** Add Missing Trail
+- **UC_7** Modify Existing Trail
+
+### Highlighted Features
+
+These are features the team is most proud of.
+
+- Matchmaking recommendation algorithm
+- Description scanning algorithm for keywords and trail categorisation
+- Setup quiz interface
+- Filtering and sorting features
+- Database operation seamlessness
+- Guest mode functionality
+- Using components to reduce code complexity
+
+### Use Cases and Features Not Yet Implemented
+
+- **UC_8** Log Trip
+- **UC_9** Rate Trip
+- **UC_10** Access Logbook
+- Map features for **UC_5**
+- Weather features for **UC_5**
+
+## Authors
+
+- Hayley Kawelenga
+- Jonny Chan
+- Joran Le Quellec
+- Lam (Lucy) Tran
+- Sam Ladbrook
+- Sienna Robinson
