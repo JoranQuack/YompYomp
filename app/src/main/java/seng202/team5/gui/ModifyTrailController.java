@@ -46,6 +46,8 @@ public class ModifyTrailController extends Controller {
     @FXML
     private TextArea trailDescriptionTextArea;
     @FXML
+    private TextField cultureUrlTextField;
+    @FXML
     private ImageView mapImage;
     @FXML
     private Button saveButton;
@@ -62,8 +64,8 @@ public class ModifyTrailController extends Controller {
         if (trail != null) {
             initializeTextFields();
         }
-        difficultyComboBox.getItems().addAll(List.of("easy", "intermediate", "advanced"));
-        trailTypeComboBox.getItems().addAll(List.of("one way", "loop", "return"));
+        difficultyComboBox.getItems().addAll(List.of("Easy", "Intermediate", "Advanced"));
+        trailTypeComboBox.getItems().addAll(List.of("One way", "Loop", "Return"));
         saveButton.setOnAction(e -> onSaveButtonClicked());
         backButton.setOnAction(e -> onBackButtonClicked());
     }
