@@ -51,7 +51,7 @@ package "data" {
     + getKeywords() : Map<String, List<String>>
   }
 
-  class SqlBasedLogRepo {
+  class SqlBasedLogRepo <<to be implemented>> {
     + SqlBasedLogRepo(databaseService : DatabaseService)
     + getAllLogs() : List<TrailLog>
     + findById(id : int) : Optional<TrailLog>
@@ -69,5 +69,5 @@ SqlBasedKeywordRepo   ..|> IKeyword
 ' Dependencies to QueryHelper
 SqlBasedTrailRepo     *-- QueryHelper
 SqlBasedKeywordRepo   *-- QueryHelper
-SqlBasedLogRepo       *-- QueryHelper
+SqlBasedLogRepo     *-- QueryHelper
 @enduml
