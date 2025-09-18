@@ -162,7 +162,7 @@ public class SetupService {
      * @param trails List of trails to process
      * @return List of processed trails
      */
-    private List<Trail> processTrails(List<Trail> trails) {
+    public List<Trail> processTrails(List<Trail> trails) {
         for (Trail trail : trails) {
             String completionInfo = trail.getCompletionInfo();
 

@@ -38,8 +38,6 @@ public class ModifyTrailController extends Controller {
     @FXML
     private TextField translationTextField;
     @FXML
-    private ComboBox<String> regionComboBox;
-    @FXML
     private ComboBox<String> difficultyComboBox;
     @FXML
     private ComboBox<String> trailTypeComboBox;
@@ -64,11 +62,6 @@ public class ModifyTrailController extends Controller {
         if (trail != null) {
             initializeTextFields();
         }
-        List<String> regionList = new ArrayList<>(List.of("Northland", "Auckland",
-                "Waikato", "Bay of Plenty", "Gisborne", "Hawke's Bay", "Taranaki",
-                "Manawatu-Whanganui", "Tasman", "Wellington", "Nelson", "Marlborough", "West Coast",
-                "Canterbury", "Otago", "Southland"));
-        regionComboBox.getItems().addAll(regionList);
         difficultyComboBox.getItems().addAll(List.of("easy", "intermediate", "advanced"));
         trailTypeComboBox.getItems().addAll(List.of("one way", "loop", "return"));
         saveButton.setOnAction(e -> onSaveButtonClicked());
@@ -113,7 +106,6 @@ public class ModifyTrailController extends Controller {
         }
         String trailName = trailNameTextField.getText();
         String translation = translationTextField.getText();
-        String region = regionComboBox.getValue();
         String difficulty = difficultyComboBox.getValue();
         String trailType = trailTypeComboBox.getValue();
         String completionTime = completionTimeTextField.getText();
