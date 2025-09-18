@@ -72,6 +72,11 @@ public class ModifyTrailController extends Controller {
             regionLabel.setVisible(true);
             regionComboBox.setVisible(true);
         }
+        List<String> regionList = new ArrayList<>(List.of("Northland", "Auckland",
+                "Waikato", "Bay of Plenty", "Gisborne", "Hawke's Bay", "Taranaki",
+                "Manawatu-Whanganui", "Tasman", "Wellington", "Nelson", "Marlborough", "West Coast",
+                "Canterbury", "Otago", "Southland"));
+        regionComboBox.getItems().addAll(regionList);
         difficultyComboBox.getItems().addAll(List.of("Easy", "Intermediate", "Advanced"));
         trailTypeComboBox.getItems().addAll(List.of("One way", "Loop", "Return"));
         saveButton.setOnAction(e -> onSaveButtonClicked());
