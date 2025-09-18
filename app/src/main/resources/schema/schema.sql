@@ -1,5 +1,5 @@
 -- Remember to increment the schema version here when making changes!
--- Schema version: 1.5
+-- Schema version: 1.6
 PRAGMA foreign_keys = off;
 
 BEGIN TRANSACTION;
@@ -28,6 +28,7 @@ CREATE TABLE
         id INTEGER,
         name TEXT,
         translation TEXT,
+        region TEXT,
         description TEXT,
         difficulty TEXT,
         completion_info TEXT,

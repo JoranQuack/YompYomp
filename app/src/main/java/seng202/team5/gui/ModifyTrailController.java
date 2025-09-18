@@ -1,10 +1,7 @@
 package seng202.team5.gui;
 
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
 import seng202.team5.data.DatabaseService;
 import seng202.team5.data.SqlBasedTrailRepo;
@@ -49,6 +46,10 @@ public class ModifyTrailController extends Controller {
     @FXML
     private TextField cultureUrlTextField;
     @FXML
+    private Label regionLabel;
+    @FXML
+    private ComboBox<String> regionComboBox;
+    @FXML
     private ImageView mapImage;
     @FXML
     private Button saveButton;
@@ -64,6 +65,11 @@ public class ModifyTrailController extends Controller {
     private void initialize() {
         if (trail != null) {
             initializeTextFields();
+            regionLabel.setVisible(false);
+            regionComboBox.setVisible(false);
+        } else {
+            regionLabel.setVisible(true);
+            regionComboBox.setVisible(true);
         }
         difficultyComboBox.getItems().addAll(List.of("Easy", "Intermediate", "Advanced"));
         trailTypeComboBox.getItems().addAll(List.of("One way", "Loop", "Return"));
@@ -94,6 +100,8 @@ public class ModifyTrailController extends Controller {
         trailTypeComboBox.setValue(StringManipulator.capitaliseFirstLetter(trail.getCompletionType()));
         trailDescriptionTextArea.setText(trail.getDescription());
         completionTimeTextField.setText(trail.getCompletionInfo());
+        cultureUrlTextField.setText(trail.getCultureUrl());
+        translationTextField.setText(trail.getTranslation());
     }
 
     /**
@@ -113,7 +121,10 @@ public class ModifyTrailController extends Controller {
         String trailType = trailTypeComboBox.getValue();
         String completionTime = completionTimeTextField.getText();
         String trailDescription = trailDescriptionTextArea.getText();
-        return new Trail(trailId, trailName, difficulty, trailDescription, completionTime, trailType);
+        String cultureUrl = cultureUrlTextField.getText();
+        String region = regionComboBox.getValue();
+        return new Trail(trailId, trailName, translation, difficulty, trailType, completionTime,
+                trailDescription, cultureUrl);
     }
 
     @Override

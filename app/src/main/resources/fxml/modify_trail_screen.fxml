@@ -54,9 +54,11 @@
             <Label text="Completion time" />
             <TextField fx:id="completionTimeTextField" />
             <Label text="Trail description" />
-            <TextArea fx:id="trailDescriptionTextArea" prefHeight="130.0" wrapText="true" />
+            <TextArea fx:id="trailDescriptionTextArea" prefHeight="66.0" prefWidth="261.0" wrapText="true" />
             <Label text="Cultural URL" />
             <TextField fx:id="cultureUrlTextField" />
+            <Label fx:id="regionLabel" text="Region" />
+            <ComboBox fx:id="regionComboBox" maxWidth="1.7976931348623157E308" />
          </children>
          <padding>
             <Insets left="20.0" right="20.0" top="10.0" />

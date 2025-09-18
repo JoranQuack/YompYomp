@@ -13,6 +13,7 @@ public class Trail {
     private int id;
     private String name;
     private String translation;
+    private String region;
     private String description;
     private String difficulty;
     private String completionInfo;
@@ -33,6 +34,8 @@ public class Trail {
      *
      * @param id
      * @param name
+     * @param translation
+     * @param region
      * @param difficulty
      * @param description
      * @param completionInfo
@@ -44,14 +47,17 @@ public class Trail {
      * @param hasVariableTime
      * @param thumbnailURL
      * @param webpageURL
+     * @param cultureUrl
      * @param userWeight
      */
-    public Trail(int id, String name, String difficulty, String description, String completionInfo,
-            int minCompletionTimeMinutes, int maxCompletionTimeMinutes, String completionType, String timeUnit,
-            boolean isMultiDay, boolean hasVariableTime, String thumbnailURL, String webpageURL, double userWeight) {
+    public Trail(int id, String name, String translation, String region, String difficulty, String description,
+                 String completionInfo, int minCompletionTimeMinutes, int maxCompletionTimeMinutes,
+                 String completionType, String timeUnit, boolean isMultiDay, boolean hasVariableTime,
+                 String thumbnailURL, String webpageURL, String cultureUrl, double userWeight) {
         this.id = id;
         this.name = name;
-        this.translation = "";
+        this.translation = translation;
+        this.region = region;
         this.difficulty = difficulty;
         this.description = description;
         this.completionInfo = completionInfo;
@@ -63,7 +69,7 @@ public class Trail {
         this.hasVariableTime = hasVariableTime;
         this.thumbnailURL = thumbnailURL;
         this.webpageURL = webpageURL;
-        this.cultureUrl = "";
+        this.cultureUrl = cultureUrl;
         this.userWeight = userWeight;
     }
 
@@ -83,18 +89,17 @@ public class Trail {
      */
     public Trail(int id, String name, String description, String difficulty, String completionInfo,
             String thumbnailURL, String webpageURL) {
-        this(id, name, description, difficulty, completionInfo, 0, 0, "unknown", "unknown",
-                false, false, thumbnailURL, webpageURL, 0.0);
+        this(id, name, "", "", difficulty, description, completionInfo, 0, 0,"unknown", "unknown",
+                false, false, thumbnailURL, webpageURL, "", 0.0);
     }
 
     /**
      * Constructor for Trail class without thumbnailURL, webpageURL
      * Calls SqlBasedTrailRepo to get new trail id
      */
-    public Trail(int id, String name, String translation, String difficulty, String completionType,
+    public Trail(int id, String name, String translation, String region, String difficulty, String completionType,
                  String completionInfo, String description, String cultureUrl) {
-        DatabaseService databaseService = new DatabaseService();
-        SqlBasedTrailRepo sqlBasedTrailRepo = new SqlBasedTrailRepo(databaseService);
+        SqlBasedTrailRepo sqlBasedTrailRepo = new SqlBasedTrailRepo(new DatabaseService());
         if (id == -1) {
             this.id = sqlBasedTrailRepo.getNewTrailId();
         } else {
@@ -102,11 +107,20 @@ public class Trail {
         }
         this.name = name;
         this.translation = translation;
+        this.region = region;
         this.difficulty = difficulty;
         this.completionType = completionType;
         this.completionInfo = completionInfo;
         this.description = description;
         this.cultureUrl = cultureUrl;
+        this.minCompletionTimeMinutes = 0;
+        this.maxCompletionTimeMinutes = 0;
+        this.timeUnit = "unknown";
+        this.isMultiDay = false;
+        this.hasVariableTime = false;
+        this.thumbnailURL = "";
+        this.webpageURL = "";
+        this.userWeight = 0.0;
     }
 
     // Getters
@@ -174,6 +188,18 @@ public class Trail {
         return userWeight;
     }
 
+    public String getCultureUrl() {
+        return cultureUrl;
+    }
+
+    public String getTranslation() {
+        return translation;
+    }
+
+    public String getRegion() {
+        return region;
+    }
+
     // Setters
     public void setId(int id) {
         this.id = id;
@@ -233,5 +259,17 @@ public class Trail {
 
     public void setUserWeight(double userWeight) {
         this.userWeight = userWeight;
+    }
+
+    public void setCultureUrl(String cultureUrl) {
+        this.cultureUrl = cultureUrl;
+    }
+
+    public void setTranslation(String translation) {
+        this.translation = translation;
+    }
+
+    public void setRegion(String region) {
+        this.region = region;
     }
 }
