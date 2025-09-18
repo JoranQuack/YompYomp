@@ -200,4 +200,12 @@ public class SqlBasedTrailRepo implements ITrail {
         stmt.setString(13, trail.getWebpageURL());
         stmt.setDouble(14, trail.getUserWeight());
     }
+
+    /**
+     * Returns a new value of trail id in database
+     */
+    public int getNewTrailId() {
+        String getIdQuery = "SELECT MAX(id) FROM trail";
+        return queryHelper.executeQuerySingle(getIdQuery, null, this::mapRowToTrail).get().getId() + 1;
+    }
 }

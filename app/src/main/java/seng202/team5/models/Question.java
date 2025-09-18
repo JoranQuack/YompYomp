@@ -1,7 +1,7 @@
 package seng202.team5.models;
 
 public enum Question {
-    ONE("Experience", new String[]{"Beginner", "Intermediate", "Expert"}),
+    ONE("Your tramping experience level?", new String[]{"Beginner", "Intermediate", "Expert"}),
     TWO("Preferred gradient of tramp?", new String[]{"Gentle", "Moderate", "Steep"}),
     THREE("Importance of bush/forest areas on tramp?", new String[]{"Not important", "Nice to have", "Must-have"}),
     FOUR("Importance of reserves on tramp?", new String[]{"Not important", "Nice to have", "Must-have"}),

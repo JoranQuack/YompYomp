@@ -60,26 +60,23 @@ public class MatchmakingController extends Controller {
                     return null;
                 }
 
-
-                    // Run the matchmaking process
-                    matchMakingService.generateTrailWeights(user);
-                    return null;
-
-
+                // Run the matchmaking process
+                matchMakingService.generateTrailWeights(user);
+                return null;
             }
 
             @Override
             protected void succeeded() {
-                navigator.launchScreen(new DashboardController(navigator));
+                navigator.launchScreen(new DashboardController(navigator), null);
             }
 
             @Override
             protected void failed() {
                 Throwable exception = getException();
                 System.err.println("Matchmaking failed: " + exception.getMessage());
+                exception.printStackTrace();
+                navigator.launchScreen(new DashboardController(navigator), null);
                 exitThread();
-//                showAlert(AlertType.ERROR, "Matchmaking Failed", exception.getMessage());
-
             }
         };
 
@@ -104,7 +101,7 @@ public class MatchmakingController extends Controller {
     private void exitThread() {
         Thread.currentThread().interrupt();
         showAlert(AlertType.ERROR, "Matchmaking Failed", "Matchmaking failed, please close the application and try again.");
-        super.getNavigator().launchScreen(new DashboardController(super.getNavigator())); //TODO this should take user to guest dashboard screen
+        super.getNavigator().launchScreen(new DashboardController(super.getNavigator()), null); //TODO this should take user to guest dashboard screen
     }
 
 }

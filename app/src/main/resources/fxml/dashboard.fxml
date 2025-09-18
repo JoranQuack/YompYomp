@@ -41,7 +41,15 @@
       </ScrollPane>
       <HBox alignment="CENTER_RIGHT">
          <children>
-            <HBox onMouseClicked="#onViewAllClicked" styleClass="view-all-button">
+            <HBox minWidth="340.0" prefHeight="20.0">
+               <children>
+                  <Button fx:id="addTrailButton" mnemonicParsing="false" text="Add new trail" />
+               </children>
+               <HBox.margin>
+                  <Insets bottom="5.0" left="10.0" top="5.0" />
+               </HBox.margin>
+            </HBox>
+            <HBox alignment="CENTER_LEFT" maxWidth="1.7976931348623157E308" onMouseClicked="#onViewAllClicked" styleClass="view-all-button">
                <children>
                   <Label text="View all" />
                   <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">

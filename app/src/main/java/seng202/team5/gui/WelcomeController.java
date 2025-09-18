@@ -41,7 +41,6 @@ public class WelcomeController extends Controller {
             subtitleLabel.setText("Create a new profile or continue to the dashboard.");
             setUpProfileButton.setText("Create new profile");
             skipButton.setText("Continue");
-            return;
         } else {
             super.getUserService().clearUser();
         }
@@ -54,7 +53,7 @@ public class WelcomeController extends Controller {
     private void onSetUpProfileButtonClicked() {
         super.getUserService().clearUser();
         super.getNavigator()
-                .launchScreen(new ProfileSetupGeneralController(super.getNavigator()));
+                .launchScreen(new ProfileSetupGeneralController(super.getNavigator()), null);
     }
 
     /**
@@ -65,7 +64,7 @@ public class WelcomeController extends Controller {
         if (super.getUserService().getUser() == null) {
             super.getUserService().setGuest(true);
         }
-        super.getNavigator().launchScreen(new DashboardController(super.getNavigator()));
+        super.getNavigator().launchScreen(new DashboardController(super.getNavigator()), null);
     }
 
     @Override

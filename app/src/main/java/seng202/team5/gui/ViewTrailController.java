@@ -10,6 +10,9 @@ import javafx.scene.image.ImageView;
 import seng202.team5.models.Trail;
 import seng202.team5.services.ImageService;
 
+/**
+ * Controller for the view trail screen
+ */
 public class ViewTrailController extends Controller {
 
     private final ImageService imageService;
@@ -19,6 +22,7 @@ public class ViewTrailController extends Controller {
      * Launches the screen with navigator
      *
      * @param navigator screen navigator
+     * @param trail trail object to be displayed on screen
      */
     public ViewTrailController(ScreenNavigator navigator, Trail trail) {
         super(navigator);
@@ -46,6 +50,9 @@ public class ViewTrailController extends Controller {
     private Button backButton;
     // hut labels and images currently invisible
 
+    /**
+     * Initialises the view trail screen with data retrieved from database
+     */
     @FXML
     private void initialize() {
         trailNameLabel.setText(trail.getName());
@@ -57,7 +64,21 @@ public class ViewTrailController extends Controller {
         int matchPercent = (int) Math.round(weight * 100);
         matchLabel.setText(matchPercent + "% match");
         descriptionLabel.setText(trail.getDescription());
+        backButton.setOnAction(e -> onBackButtonClicked());
+        editInfoButton.setOnAction(e -> onEditInfoButtonClicked());
         // TODO: add icon for map
+        // TODO: show completion time
+    }
+
+    @FXML
+    private void onBackButtonClicked() {
+        Controller lastController = super.getNavigator().getLastController();
+        super.getNavigator().launchScreen(lastController, null);
+    }
+
+    @FXML
+    private void onEditInfoButtonClicked() {
+        super.getNavigator().launchScreen(new ModifyTrailController(super.getNavigator(), trail, this), null);
     }
 
     @Override
