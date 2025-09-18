@@ -10,6 +10,14 @@ package "services" {
     + getDefaultTrailImage() : Image
   }
 
+  class LogService {
+    + LogService()
+    + addNewLog(trailLog : TrailLog) : void
+    + removeLogByID(id : int) : bool
+    + removeLogByName(name : String) : bool
+    + getLogBookCount() : int
+}
+
   class MapService {
     + MapService()
     + loadMap() : void
@@ -70,4 +78,5 @@ UserService *-- DatabaseService
 SetupService *-- DatabaseService
 MapService *-- DatabaseService
 WeatherService *-- DatabaseService
+LogService *-- DatabaseService
 @enduml
