@@ -10,7 +10,7 @@ package "services" {
     + getDefaultTrailImage() : Image
   }
 
-  class LogService {
+  class LogService <<to be implemented>>{
     + LogService()
     + addNewLog(trailLog : TrailLog) : void
     + removeLogByID(id : int) : bool
@@ -18,13 +18,13 @@ package "services" {
     + getLogBookCount() : int
 }
 
-  class MapService {
+  class MapService <<to be implemented>>{
     + MapService()
     + loadMap() : void
     + highlightTrail() : void
   }
 
-  class WeatherService {
+  class WeatherService <<to be implemented>>{
     + WeatherService()
     + getCurrent(lat : double, lon : double) : String
     + getTrailForecast(trail : Trail, periodOfDays : int) : List<String>

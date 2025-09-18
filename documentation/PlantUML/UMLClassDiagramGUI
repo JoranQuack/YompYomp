@@ -57,7 +57,7 @@ package "GUI" {
     - showMatches(trails : List<Trail>) : void
   }
 
-  class LogBookController {
+  class LogBookController <<to be implemented>>{
     + LogBookController(n : ScreenNavigator)
     + initialize() : void
     - showLogBook() : void
