@@ -9,6 +9,12 @@ package "services" {
     + getDefaultTrailImage() : Image
   }
 
+  class MapService {
+    + MapService()
+    + loadMap() : void
+    + highlightTrail() : void
+  }
+
   class MatchMakingService {
     + generateTrailWeights(user : User) : void
     + getRecommendedTrails(user : User, limit : int) : List<Trail>
@@ -55,4 +61,5 @@ SearchService *-- DatabaseService
 MatchMakingService *-- DatabaseService
 UserService *-- DatabaseService
 SetupService *-- DatabaseService
+MapService *-- DatabaseService
 @enduml
