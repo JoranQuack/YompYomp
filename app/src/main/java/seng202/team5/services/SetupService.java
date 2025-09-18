@@ -7,8 +7,6 @@ import seng202.team5.data.FileBasedTrailRepo;
 import seng202.team5.data.SqlBasedKeywordRepo;
 import seng202.team5.data.SqlBasedTrailRepo;
 import seng202.team5.models.Trail;
-import seng202.team5.utils.CompletionTimeParser;
-import seng202.team5.utils.DifficultyParser;
 import seng202.team5.utils.TrailsProcessor;
 
 import java.io.File;
@@ -106,6 +104,7 @@ public class SetupService {
      * @param url
      */
     void scrapeTrailImage(String url) {
+        //System.out.println(url);
         String filename = extractFilenameFromUrl(url);
         String imagePath = AppDataManager.getAppData("images/" + filename);
         File imageFile = new File(imagePath);

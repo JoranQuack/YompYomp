@@ -38,6 +38,8 @@ public class SqlBasedTrailRepoTest {
                         CREATE TABLE IF NOT EXISTS trail (
                           id INTEGER PRIMARY KEY,
                           name TEXT NOT NULL,
+                          translation TEXT,
+                          region TEXT,
                           description TEXT,
                           difficulty TEXT,
                           completion_info TEXT,
@@ -49,6 +51,7 @@ public class SqlBasedTrailRepoTest {
                           has_variable_time BOOL,
                           thumb_url TEXT,
                           web_url TEXT,
+                          culture_url TEXT,
                           user_weight REAL
                         )
                     """);

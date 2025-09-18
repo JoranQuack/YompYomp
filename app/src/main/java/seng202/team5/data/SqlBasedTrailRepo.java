@@ -162,9 +162,13 @@ public class SqlBasedTrailRepo implements ITrail {
      * @throws java.sql.SQLException if column cannot be read
      */
     private Trail mapRowToTrail(java.sql.ResultSet rs) throws java.sql.SQLException {
+        //System.out.println(rs.getBoolean("has_variable_time"));
+        //System.out.println(rs.getString("web_url"));
         return new Trail(
                 rs.getInt("id"),
                 rs.getString("name"),
+                rs.getString("translation"),
+                rs.getString("region"),
                 rs.getString("difficulty"),
                 rs.getString("description"),
                 rs.getString("completion_info"),
@@ -176,6 +180,7 @@ public class SqlBasedTrailRepo implements ITrail {
                 rs.getBoolean("has_variable_time"),
                 rs.getString("thumb_url"),
                 rs.getString("web_url"),
+                rs.getString("culture_url"),
                 rs.getDouble("user_weight"));
     }
 
@@ -189,18 +194,21 @@ public class SqlBasedTrailRepo implements ITrail {
     private void setTrailParameters(java.sql.PreparedStatement stmt, Trail trail) throws java.sql.SQLException {
         stmt.setInt(1, trail.getId());
         stmt.setString(2, trail.getName());
-        stmt.setString(3, trail.getDescription());
-        stmt.setString(4, trail.getDifficulty());
-        stmt.setString(5, trail.getCompletionInfo());
-        stmt.setInt(6, trail.getMinCompletionTimeMinutes());
-        stmt.setInt(7, trail.getMaxCompletionTimeMinutes());
-        stmt.setString(8, trail.getCompletionType());
-        stmt.setString(9, trail.getTimeUnit());
-        stmt.setBoolean(10, trail.isMultiDay());
-        stmt.setBoolean(11, trail.hasVariableTime());
-        stmt.setString(12, trail.getThumbnailURL());
-        stmt.setString(13, trail.getWebpageURL());
-        stmt.setDouble(14, trail.getUserWeight());
+        stmt.setString(3, trail.getTranslation());
+        stmt.setString(4, trail.getRegion());
+        stmt.setString(5, trail.getDescription());
+        stmt.setString(6, trail.getDifficulty());
+        stmt.setString(7, trail.getCompletionInfo());
+        stmt.setInt(8, trail.getMinCompletionTimeMinutes());
+        stmt.setInt(9, trail.getMaxCompletionTimeMinutes());
+        stmt.setString(10, trail.getCompletionType());
+        stmt.setString(11, trail.getTimeUnit());
+        stmt.setBoolean(12, trail.isMultiDay());
+        stmt.setBoolean(13, trail.hasVariableTime());
+        stmt.setString(14, trail.getThumbnailURL());
+        stmt.setString(15, trail.getWebpageURL());
+        stmt.setString(16, trail.getCultureUrl());
+        stmt.setDouble(17, trail.getUserWeight());
     }
 
     /**

@@ -32,15 +32,17 @@ class MatchMakingServiceTest {
 
         mockTrailRepo = mock(SqlBasedTrailRepo.class);
         mockTrails = new ArrayList<>(Arrays.asList(
-                new Trail(1, "Alpine Trail", "Easy", "A beautiful alpine trail through the mountains",
+                //int id, String name, String description, String difficulty, String completionInfo,
+                //            String thumbnailURL, String webpageURL
+                new Trail(1, "Alpine Trail", "A beautiful alpine trail through the mountains", "Easy",
                         "2 hours", "thumb1.jpg", "http://example.com/trail1"),
-                new Trail(2, "Forest Trail", "Medium", "A scenic forest trail with wildlife viewing",
+                new Trail(2, "Forest Trail", "A scenic forest trail with wildlife viewing","Medium",
                         "3 hours", "thumb2.jpg", "http://example.com/trail2"),
-                new Trail(3, "Mountain Peak Trail", "Hard", "Challenging trail to the mountain peak",
+                new Trail(3, "Mountain Peak Trail", "Challenging trail to the mountain peak", "Hard",
                         "5 hours", "thumb3.jpg", "http://example.com/trail3"),
-                new Trail(4, "Coastal Walk", "Easy", "Easy coastal walk with ocean views",
+                new Trail(4, "Coastal Walk", "Easy coastal walk with ocean views", "Easy",
                         "1.5 hours", "thumb4.jpg", "http://example.com/trail4"),
-                new Trail(5, "River Trail", "Medium", "Trail following the river through the valley",
+                new Trail(5, "River Trail", "Trail following the river through the valley", "Medium",
                         "2.5 hours", "thumb5.jpg", "http://example.com/trail5")));
         when(mockTrailRepo.getAllTrails()).thenReturn(mockTrails);
 
@@ -291,7 +293,7 @@ class MatchMakingServiceTest {
         User user = makeTestUser();
         matchMakingService.setUserPreferences(user);
 
-        Trail trail = new Trail(6, "Case Test Trail", "Easy", "A FOREST trail with a RIVER nearby",
+        Trail trail = new Trail(6, "Case Test Trail", "A FOREST trail with a RIVER nearby", "Easy",
                 "2 hours", "thumb6.jpg", "http://example.com/trail6");
         Set<String> categories = matchMakingService.categoriseTrail(trail);
         assertTrue(categories.contains("Forest"));

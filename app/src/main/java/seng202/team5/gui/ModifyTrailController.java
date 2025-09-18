@@ -7,6 +7,7 @@ import seng202.team5.data.DatabaseService;
 import seng202.team5.data.SqlBasedTrailRepo;
 import seng202.team5.models.Trail;
 import seng202.team5.utils.StringManipulator;
+import seng202.team5.utils.TrailsProcessor;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -110,10 +111,13 @@ public class ModifyTrailController extends Controller {
      */
     private Trail getUpdatedTrail() {
         int trailId;
+        String region;
         if (trail != null) {
             trailId = trail.getId();
+            region = "";
         } else {
             trailId = -1;
+            region = regionComboBox.getValue();
         }
         String trailName = trailNameTextField.getText();
         String translation = translationTextField.getText();
@@ -122,9 +126,9 @@ public class ModifyTrailController extends Controller {
         String completionTime = completionTimeTextField.getText();
         String trailDescription = trailDescriptionTextArea.getText();
         String cultureUrl = cultureUrlTextField.getText();
-        String region = regionComboBox.getValue();
-        return new Trail(trailId, trailName, translation, difficulty, trailType, completionTime,
-                trailDescription, cultureUrl);
+        List<Trail> updatedTrail = TrailsProcessor.processTrails(List.of(new Trail(trailId, trailName, translation,
+                region, difficulty, trailType, completionTime, trailDescription, cultureUrl)));
+        return updatedTrail.getFirst();
     }
 
     @Override
