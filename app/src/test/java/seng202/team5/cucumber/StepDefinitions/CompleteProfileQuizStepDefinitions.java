@@ -104,7 +104,7 @@ public class CompleteProfileQuizStepDefinitions {
         matchmakingService.setUserPreferences(testUser);
     }
     @And("all trail data is available and has been loaded")
-    public void allTrailDataLoaded() throws LoadingTrailsFailedException {
+    public void allTrailDataLoaded() {
         List<Trail> loadedTrails = searchService.getTrails("", 0);
         assertNotNull(loadedTrails, "Trails should not be null");
         assertEquals(10, loadedTrails.size());
@@ -144,7 +144,7 @@ public class CompleteProfileQuizStepDefinitions {
     }
 
     @And("the basic flow of the application is followed")
-    public void basicFlowOfApplicationFollowed() throws LoadingTrailsFailedException, MatchMakingFailedException {
+    public void basicFlowOfApplicationFollowed() throws MatchMakingFailedException {
         allTrailDataLoaded();
         systemBeginsMatchMaking();
         systemShowsLoadingScreen("Matchmaking in progress...");

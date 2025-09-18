@@ -45,7 +45,7 @@ public class SearchServiceTest {
 
     @Test
     @DisplayName("Should return all of the trails (showing only 20 per page) if search query is empty")
-    void testSearchTrailsEmptyQuery() throws LoadingTrailsFailedException {
+    void testSearchTrailsEmptyQuery() {
         searchService.updateSearch("");
         List<Trail> trails = searchService.getPage(0);
 
@@ -57,7 +57,7 @@ public class SearchServiceTest {
 
     @Test
     @DisplayName("Should return trails independently of case")
-    void testSearchTrailsCaseInsensitive() throws LoadingTrailsFailedException {
+    void testSearchTrailsCaseInsensitive() {
         searchService.updateSearch("trail");
         List<Trail> lowerCase = searchService.getPage(0);
 
@@ -80,7 +80,7 @@ public class SearchServiceTest {
 
     @Test
     @DisplayName("Should return empty list when no trails match search query")
-    void testSearchTrailsNoMatches() throws LoadingTrailsFailedException {
+    void testSearchTrailsNoMatches() {
         searchService.updateSearch("nonexistent");
         List<Trail> trails = searchService.getPage(0);
 
@@ -115,7 +115,7 @@ public class SearchServiceTest {
 
     @Test
     @DisplayName("Should handle pagination correctly")
-    void testPagination() throws LoadingTrailsFailedException {
+    void testPagination() {
         searchService.setMaxResults(2);
         searchService.updateSearch("");
 
