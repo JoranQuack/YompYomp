@@ -4,7 +4,6 @@ import io.cucumber.java.Before;
 import io.cucumber.java.en.*;
 import seng202.team5.data.SqlBasedKeywordRepo;
 import seng202.team5.data.SqlBasedTrailRepo;
-import seng202.team5.exceptions.LoadingTrailsFailedException;
 import seng202.team5.exceptions.MatchMakingFailedException;
 import seng202.team5.gui.MatchmakingController;
 import seng202.team5.models.Trail;

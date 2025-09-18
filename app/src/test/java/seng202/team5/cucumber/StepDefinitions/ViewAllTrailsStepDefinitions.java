@@ -2,10 +2,8 @@ package seng202.team5.cucumber.StepDefinitions;
 
 import io.cucumber.java.Before;
 import io.cucumber.java.en.*;
-import org.mockito.Mockito;
 import seng202.team5.data.SqlBasedKeywordRepo;
 import seng202.team5.data.SqlBasedTrailRepo;
-import seng202.team5.exceptions.LoadingTrailsFailedException;
 import seng202.team5.exceptions.MatchMakingFailedException;
 import seng202.team5.models.Trail;
 import seng202.team5.models.User;

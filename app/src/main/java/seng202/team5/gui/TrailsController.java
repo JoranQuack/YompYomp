@@ -10,11 +10,8 @@ import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.VBox;
 import seng202.team5.data.DatabaseService;
 import seng202.team5.data.SqlBasedTrailRepo;
-import seng202.team5.exceptions.LoadingTrailsFailedException;
-import seng202.team5.exceptions.MatchMakingFailedException;
 import seng202.team5.gui.components.NavbarComponent;
 import seng202.team5.gui.components.TrailCardComponent;
-import seng202.team5.exceptions.LoadingTrailsFailedException;
 import seng202.team5.models.Trail;
 import seng202.team5.services.SearchService;
 
@@ -102,6 +99,10 @@ public class TrailsController extends Controller {
         // Check if searchService is still null and handle gracefully
         if (searchService == null) {
             resultsLabel.setText("No trails available");
+            Label noResultsLabel = new Label(
+                    "There are no trails available, as the application has failed. Please close the application and try again.");
+            trailsContainer.getChildren().add(noResultsLabel);
+            showAlert(Alert.AlertType.ERROR, "Trails failed to load", "Failed to load trails, please close the application and try again.");
             return;
         }
 
@@ -229,14 +230,9 @@ public class TrailsController extends Controller {
      * Method to update the search results display.
      */
     private void updateSearchDisplay() {
-        try {
             List<Trail> trails = searchService.getPage(0);
             updateTrailsDisplay(trails);
             resetPageChoiceBox();
-        } catch (LoadingTrailsFailedException e) {
-            showAlert(Alert.AlertType.ERROR, "Loading Trails Failed", "Failed to load trails, please close the application and try again");
-            super.getNavigator().launchScreen(new DashboardController(super.getNavigator())); //TODO this should take user to respective dashboard screen
-        }
     }
 
     /**

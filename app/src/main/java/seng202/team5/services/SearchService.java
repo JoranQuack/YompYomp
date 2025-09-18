@@ -9,7 +9,6 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import seng202.team5.data.SqlBasedTrailRepo;
-import seng202.team5.exceptions.LoadingTrailsFailedException;
 import seng202.team5.models.Trail;
 
 /**
@@ -203,11 +202,8 @@ public class SearchService {
      * @param page The page number (0-based)
      * @return List of trails for the specified page
      */
-    public List<Trail> getPage (int page) throws LoadingTrailsFailedException {
+    public List<Trail> getPage (int page) {
         updateTrails();
-        if (filteredTrails == null) {
-            throw new LoadingTrailsFailedException("Failed to get trails");
-        }
         int startIndex = page * maxResults;
 
         return filteredTrails.stream()

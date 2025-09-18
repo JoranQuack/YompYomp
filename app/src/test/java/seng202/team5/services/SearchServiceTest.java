@@ -6,7 +6,6 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import seng202.team5.data.SqlBasedTrailRepo;
-import seng202.team5.exceptions.LoadingTrailsFailedException;
 import seng202.team5.models.Trail;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
