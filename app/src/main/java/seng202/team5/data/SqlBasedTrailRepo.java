@@ -1,5 +1,6 @@
 package seng202.team5.data;
 
+import seng202.team5.exceptions.MatchMakingFailedException;
 import seng202.team5.models.Trail;
 
 import java.util.List;
@@ -116,9 +117,9 @@ public class SqlBasedTrailRepo implements ITrail {
      *
      * @param trails List of trails to insert into database
      */
-    public void upsertAll(List<Trail> trails) {
+    public void upsertAll(List<Trail> trails) throws MatchMakingFailedException {
         if (trails.isEmpty())
-            return;
+            throw new MatchMakingFailedException("Trails is empty.");
         for (Trail trail : trails) {
             upsert(trail);
         }
@@ -197,5 +198,13 @@ public class SqlBasedTrailRepo implements ITrail {
         stmt.setString(12, trail.getThumbnailURL());
         stmt.setString(13, trail.getWebpageURL());
         stmt.setDouble(14, trail.getUserWeight());
+    }
+
+    /**
+     * Returns a new value of trail id in database
+     */
+    public int getNewTrailId() {
+        String getIdQuery = "SELECT MAX(id) FROM trail";
+        return queryHelper.executeQuerySingle(getIdQuery, null, this::mapRowToTrail).get().getId() + 1;
     }
 }

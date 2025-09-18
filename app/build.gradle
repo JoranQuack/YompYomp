@@ -38,6 +38,31 @@ dependencies {
     implementation 'org.xerial:sqlite-jdbc:3.50.3.0'
 
     implementation 'org.controlsfx:controlsfx:11.2.2'
+
+    //Cucumber for acceptance testing
+    // https://mvnrepository.com/artifact/io.cucumber/cucumber-junit-platform-engine
+    testImplementation 'io.cucumber:cucumber-junit-platform-engine:7.5.0'
+
+    // https://mvnrepository.com/artifact/io.cucumber/cucumber-java
+    testImplementation 'io.cucumber:cucumber-java:7.5.0'
+
+    // https://mvnrepository.com/artifact/io.cucumber/cucumber-junit
+    testImplementation "io.cucumber:cucumber-junit:7.5.0"
+
+    // https://mvnrepository.com/artifact/org.junit.platform/junit-platform-suite
+    testImplementation 'org.junit.platform:junit-platform-suite:1.8.2'
+
+    // https://mvnrepository.com/artifact/org.junit.jupiter/junit-jupiter-api
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'
+
+    // https://mvnrepository.com/artifact/org.junit.jupiter/junit-jupiter
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.8.1'
+
+    // https://mvnrepository.com/artifact/org.junit.vintage/junit-vintage-engine
+    testImplementation 'org.junit.vintage:junit-vintage-engine:5.7.2'
+
+    // https://mvnrepository.com/artifact/org.assertj/assertj-core
+    testImplementation 'org.assertj:assertj-core:3.23.1'
 }
 
 // Apply a specific Java toolchain to ease working on different environments.
@@ -77,6 +102,29 @@ jacoco {
 }
 
 test {
+    finalizedBy jacocoTestReport
+}
+
+tasks.register("cucumber", Test) {
+    group = "verification"
+
+    useJUnitPlatform()
+
+    filter {
+        includeTestsMatching "seng202.team5.cucumber.*"
+    }
+
+    testLogging {
+        events "failed"
+        exceptionFormat "full"
+    }
+
+    finalizedBy jacocoTestReport
+}
+
+tasks.named("check") {
+    dependsOn test, cucumber
+
     finalizedBy jacocoTestReport
 }
 

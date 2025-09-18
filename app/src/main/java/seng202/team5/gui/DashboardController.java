@@ -29,6 +29,9 @@ public class DashboardController extends Controller {
     private FlowPane trailsContainer;
 
     @FXML
+    private Button addTrailButton;
+
+    @FXML
     private Button searchButton;
 
     @FXML
@@ -77,16 +80,22 @@ public class DashboardController extends Controller {
         SqlBasedTrailRepo repo = new SqlBasedTrailRepo(new DatabaseService());
         List<Trail> trails = repo.getRecommendedTrails();
         initializeRecommendedTrails(trails);
+        addTrailButton.setOnAction(e -> onAddTrailButtonClicked());
     }
 
     @FXML
     private void onViewAllClicked() {
-        super.getNavigator().launchScreen(new TrailsController(super.getNavigator()));
+        super.getNavigator().launchScreen(new TrailsController(super.getNavigator()), null);
+    }
+
+    @FXML
+    private void onAddTrailButtonClicked() {
+        super.getNavigator().launchScreen(new ModifyTrailController(super.getNavigator(), null, this), null);
     }
 
     @FXML
     private void onSearchButtonClicked() {
-        super.getNavigator().launchScreen(new TrailsController(super.getNavigator(), searchBarTextField.getText()));
+        super.getNavigator().launchScreen(new TrailsController(super.getNavigator(), searchBarTextField.getText()), null);
     }
 
     /**
@@ -105,7 +114,13 @@ public class DashboardController extends Controller {
             VBox.setMargin(trailCard, new Insets(10));
 
             trailsContainer.getChildren().add(trailCard);
+            trailCard.setOnMouseClicked(e -> onTrailCardClicked(trail));
         }
+    }
+
+    @FXML
+    private void onTrailCardClicked(Trail trail) {
+        super.getNavigator().launchScreen(new ViewTrailController(super.getNavigator(), trail), this);
     }
 
     @Override

@@ -7,6 +7,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import seng202.team5.data.SqlBasedKeywordRepo;
 import seng202.team5.data.SqlBasedTrailRepo;
+import seng202.team5.exceptions.MatchMakingFailedException;
 import seng202.team5.models.Trail;
 import seng202.team5.models.User;
 
@@ -15,8 +16,8 @@ import java.util.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-class MatchMakingServiceTest {
-    private MatchMakingService matchMakingService;
+class MatchmakingServiceTest {
+    private MatchmakingService matchMakingService;
     @Mock
     private SqlBasedTrailRepo mockTrailRepo;
     @Mock
@@ -44,7 +45,7 @@ class MatchMakingServiceTest {
                         "2.5 hours", "thumb5.jpg", "http://example.com/trail5")));
         when(mockTrailRepo.getAllTrails()).thenReturn(mockTrails);
 
-        matchMakingService = new MatchMakingService(mockKeywordRepo, mockTrailRepo);
+        matchMakingService = new MatchmakingService(mockKeywordRepo, mockTrailRepo);
     }
 
     /**
@@ -88,7 +89,7 @@ class MatchMakingServiceTest {
      * Calculated the expected weighted score for a trail, based on the given
      * strength contribution and coverage values. This helper function is used in
      * tests
-     * to independently verify the scoring logic in {@link MatchMakingService}.
+     * to independently verify the scoring logic in {@link MatchmakingService}.
      *
      * @param strengthSum the total weighted sum of matched trail categories
      * @param matched     the number of trail categories that match user preferences
@@ -101,12 +102,12 @@ class MatchMakingServiceTest {
     private double expectedScore(double strengthSum, int matched, int total, double maxScore) {
         double strength = strengthSum / maxScore;
         double coverage = (double) matched / total;
-        return MatchMakingService.STRENGTH_WEIGHT * strength + (1 - MatchMakingService.STRENGTH_WEIGHT) * coverage;
+        return MatchmakingService.STRENGTH_WEIGHT * strength + (1 - MatchmakingService.STRENGTH_WEIGHT) * coverage;
     }
 
     @Test
     @DisplayName("Should correctly map user preferences")
-    void testUserWeightsPopulatedCorrectly() {
+    void testUserWeightsPopulatedCorrectly() throws MatchMakingFailedException {
         User user = makeTestUser();
         matchMakingService.setUserPreferences(user);
 
@@ -127,7 +128,7 @@ class MatchMakingServiceTest {
 
     @Test
     @DisplayName("Should categorise trail correctly based on description")
-    void testCategoriseTrail() {
+    void testCategoriseTrail() throws MatchMakingFailedException {
         Trail trail = mockTrails.getFirst();
         Set<String> categories = matchMakingService.categoriseTrail(trail);
         assertTrue(categories.contains("Alpine"));
@@ -144,7 +145,7 @@ class MatchMakingServiceTest {
 
     @Test
     @DisplayName("Should assign weights to trails correctly, according to their category")
-    void testAssignWeightsToTrails() {
+    void testAssignWeightsToTrails() throws MatchMakingFailedException {
         User user = makeTestUser();
         matchMakingService.setUserPreferences(user);
         matchMakingService.assignWeightsToTrails();
@@ -168,7 +169,7 @@ class MatchMakingServiceTest {
 
     @Test
     @DisplayName("Should return recommended trails sorted by weight")
-    void testGetTrailsSortedByWeight() {
+    void testGetTrailsSortedByWeight() throws MatchMakingFailedException {
         User user = makeTestUser();
         matchMakingService.setUserPreferences(user);
         matchMakingService.assignWeightsToTrails();
@@ -184,7 +185,7 @@ class MatchMakingServiceTest {
 
     @Test
     @DisplayName("Should return paginated personalised trails")
-    void testGetPersonalisedTrails() {
+    void testGetPersonalisedTrails() throws MatchMakingFailedException {
         User user = makeTestUser();
         matchMakingService.setUserPreferences(user);
         matchMakingService.assignWeightsToTrails();
@@ -201,7 +202,7 @@ class MatchMakingServiceTest {
         assertEquals(0, page1.size());
 
         // Test with a smaller maxResults for multipage test
-        MatchMakingService customMaxService = new MatchMakingService(mockKeywordRepo, mockTrailRepo);
+        MatchmakingService customMaxService = new MatchmakingService(mockKeywordRepo, mockTrailRepo);
         customMaxService.setMaxResults(2); // Simulate smaller page size
         customMaxService.setUserPreferences(user);
         customMaxService.assignWeightsToTrails();
@@ -232,7 +233,7 @@ class MatchMakingServiceTest {
 
     @Test
     @DisplayName("Should return a partial match")
-    void testPartialMatchTrail() {
+    void testPartialMatchTrail() throws MatchMakingFailedException {
         User user = makeTestUser();
         matchMakingService.setUserPreferences(user);
 
@@ -249,7 +250,7 @@ class MatchMakingServiceTest {
 
     @Test
     @DisplayName("Should return the same score as partial match even with duplicate words")
-    void testDuplicateKeywords() {
+    void testDuplicateKeywords() throws MatchMakingFailedException {
         User user = makeTestUser();
         matchMakingService.setUserPreferences(user);
 
@@ -261,7 +262,7 @@ class MatchMakingServiceTest {
 
     @Test
     @DisplayName("No match should return 0%")
-    void testNoMatchTrail() {
+    void testNoMatchTrail() throws MatchMakingFailedException {
         User user = makeTestUser();
         matchMakingService.setUserPreferences(user);
 
@@ -273,7 +274,7 @@ class MatchMakingServiceTest {
 
     @Test
     @DisplayName("Perfect match should return 100%")
-    void TestPerfectMatch() {
+    void TestPerfectMatch() throws MatchMakingFailedException {
         User user = makeTestUser();
         matchMakingService.setUserPreferences(user);
 
@@ -287,7 +288,7 @@ class MatchMakingServiceTest {
 
     @Test
     @DisplayName("Case-insensitive matching should still count keywords")
-    void testCaseSensitivity() {
+    void testCaseSensitivity() throws MatchMakingFailedException {
         User user = makeTestUser();
         matchMakingService.setUserPreferences(user);
 
@@ -301,7 +302,7 @@ class MatchMakingServiceTest {
 
     @Test
     @DisplayName("Empty list should give match of 0%")
-    void testNullOrEmptyKeywords() {
+    void testNullOrEmptyKeywords() throws MatchMakingFailedException {
         User user = makeTestUser();
         matchMakingService.setUserPreferences(user);
 

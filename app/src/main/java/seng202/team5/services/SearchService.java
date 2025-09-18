@@ -200,7 +200,7 @@ public class SearchService {
      * @param page The page number (0-based)
      * @return List of trails for the specified page
      */
-    public List<Trail> getPage(int page) {
+    public List<Trail> getPage (int page) {
         updateTrails();
         int startIndex = page * maxResults;
 

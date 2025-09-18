@@ -19,6 +19,7 @@ public class ScreenNavigator {
 
     private final Stage stage;
     private final BorderPane rootPane;
+    private Controller lastController;
 
     /**
      * Constructor for ScreenNavigator
@@ -28,6 +29,7 @@ public class ScreenNavigator {
     public ScreenNavigator(Stage stage) {
         this.stage = stage;
         this.rootPane = new BorderPane();
+        this.lastController = null;
         Scene scene = new Scene(rootPane, 1200, 800);
         stage.setScene(scene);
 
@@ -59,16 +61,22 @@ public class ScreenNavigator {
      *
      * @param controller The JavaFX screen controller for the screen to be launched
      */
-    public void launchScreen(Controller controller) {
+    public void launchScreen(Controller controller, Controller lastController) {
         try {
+            if (lastController != null) {
+                this.lastController = lastController;
+            }
             FXMLLoader setupLoader = new FXMLLoader(getClass().getResource(controller.getFxmlFile()));
             setupLoader.setControllerFactory(param -> controller);
             Parent setupParent = setupLoader.load();
             rootPane.setCenter(setupParent);
             stage.setTitle(controller.getTitle());
         } catch (IOException e) {
-            System.err.println("Could not load screen: " + e.getMessage());
-            e.printStackTrace();
+            controller.onLoadFailed(e);
         }
+    }
+
+    public Controller getLastController() {
+        return lastController;
     }
 }
