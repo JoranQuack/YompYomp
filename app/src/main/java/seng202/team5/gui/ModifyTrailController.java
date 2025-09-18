@@ -9,6 +9,7 @@ import javafx.scene.image.ImageView;
 import seng202.team5.data.DatabaseService;
 import seng202.team5.data.SqlBasedTrailRepo;
 import seng202.team5.models.Trail;
+import seng202.team5.utils.StringManipulator;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -89,10 +90,10 @@ public class ModifyTrailController extends Controller {
     @FXML
     private void initializeTextFields() {
         trailNameTextField.setText(trail.getName());
-        difficultyComboBox.setValue(trail.getDifficulty());
-        //trailTypeComboBox.setValue(trail.getType());
-        //completionTimeTextField.setText(trail.getCompletionTime());
+        difficultyComboBox.setValue(StringManipulator.capitaliseFirstLetter(trail.getDifficulty()));
+        trailTypeComboBox.setValue(StringManipulator.capitaliseFirstLetter(trail.getCompletionType()));
         trailDescriptionTextArea.setText(trail.getDescription());
+        completionTimeTextField.setText(trail.getCompletionInfo());
     }
 
     /**

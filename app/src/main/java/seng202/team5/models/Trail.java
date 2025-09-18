@@ -12,6 +12,7 @@ public class Trail {
     // base variables from DOC dataset (some may be irrelevant)
     private int id;
     private String name;
+    private String translation;
     private String description;
     private String difficulty;
     private String completionInfo;
@@ -23,6 +24,7 @@ public class Trail {
     private boolean hasVariableTime;
     private String thumbnailURL;
     private String webpageURL;
+    private String cultureUrl;
     private Set<String> categories = new HashSet<>();
     private double userWeight;
 
@@ -49,6 +51,7 @@ public class Trail {
             boolean isMultiDay, boolean hasVariableTime, String thumbnailURL, String webpageURL, double userWeight) {
         this.id = id;
         this.name = name;
+        this.translation = "";
         this.difficulty = difficulty;
         this.description = description;
         this.completionInfo = completionInfo;
@@ -60,6 +63,7 @@ public class Trail {
         this.hasVariableTime = hasVariableTime;
         this.thumbnailURL = thumbnailURL;
         this.webpageURL = webpageURL;
+        this.cultureUrl = "";
         this.userWeight = userWeight;
     }
 
@@ -84,10 +88,11 @@ public class Trail {
     }
 
     /**
-     * Constructor for Trail class without thumbnailURL, webpageURL, dateLoaded, x, y
+     * Constructor for Trail class without thumbnailURL, webpageURL
      * Calls SqlBasedTrailRepo to get new trail id
      */
-    public Trail(int id, String name, String difficulty, String description, String completionTime, String type) {
+    public Trail(int id, String name, String translation, String difficulty, String completionType,
+                 String completionInfo, String description, String cultureUrl) {
         DatabaseService databaseService = new DatabaseService();
         SqlBasedTrailRepo sqlBasedTrailRepo = new SqlBasedTrailRepo(databaseService);
         if (id == -1) {
@@ -96,10 +101,12 @@ public class Trail {
             this.id = id;
         }
         this.name = name;
+        this.translation = translation;
         this.difficulty = difficulty;
+        this.completionType = completionType;
+        this.completionInfo = completionInfo;
         this.description = description;
-        //this.completionTime = completionTime;
-        //this.type = type;
+        this.cultureUrl = cultureUrl;
     }
 
     // Getters
