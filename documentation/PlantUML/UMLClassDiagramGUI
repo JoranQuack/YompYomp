@@ -43,13 +43,6 @@ package "GUI" {
     - onSkip() : void
   }
 
-  class SetupController {
-    + SetupController(n : ScreenNavigator)
-    + initialize() : void
-    - onNext() : void
-    - onBack() : void
-  }
-
   class MatchmakingController {
     + MatchmakingController(n : ScreenNavigator)
     + initialize() : void
@@ -83,7 +76,6 @@ package "GUI" {
   Controller <|-- DashboardController
   Controller <|-- TrailsController
   Controller <|-- WelcomeController
-  Controller <|-- SetupController
   Controller <|-- MatchmakingController
   Controller <|-- ProfileQuizController
   Controller <|-- ProfileSetupGeneralController
