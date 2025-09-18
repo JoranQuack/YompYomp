@@ -47,37 +47,28 @@ public class CompleteProfileQuizStepDefinitions {
 
         when(mockKeywordRepo.getKeywords()).thenReturn(mockKeywords);
         //fake trails
-        List<Trail> mockTrails = new ArrayList<>(Arrays.asList(
-                new Trail(1, "Alpine Trail", "Easy", "A beautiful alpine trail through the mountains",
-                        "2 hours", "Walking", "thumb1.jpg", "http://example.com/trail1",
-                        "2024-01-01", 123.45, 67.89),
-                new Trail(2, "Forest Trail", "Medium", "A scenic forest trail with wildlife viewing",
-                        "3 hours", "Walking", "thumb2.jpg", "http://example.com/trail2",
-                        "2024-01-02", 234.56, 78.90),
-                new Trail(3, "Mountain Peak Trail", "Hard", "Challenging trail to the mountain peak",
-                        "5 hours", "Hiking", "thumb3.jpg", "http://example.com/trail3",
-                        "2024-01-03", 345.67, 89.01),
-                new Trail(4, "Coastal Walk", "Easy", "Easy coastal walk with ocean views",
-                        "1.5 hours", "Walking", "thumb4.jpg", "http://example.com/trail4",
-                        "2024-01-04", 456.78, 90.12),
-                new Trail(5, "River Trail", "Medium", "Trail following the river through the valley",
-                        "2.5 hours", "Walking", "thumb5.jpg", "http://example.com/trail5",
-                        "2024-01-05", 567.89, 101.23),
-                new Trail(6, "Lakeside Loop", "Easy", "Gentle walk around the lake with picnic spots",
-                        "2 hours", "Walking", "thumb6.jpg", "http://example.com/trail6",
-                        "2024-01-06", 612.34, 102.45),
-                new Trail(7, "Glacier Path", "Hard", "Tough hike across glacial terrain with stunning views",
-                        "6 hours", "Hiking", "thumb7.jpg", "http://example.com/trail7",
-                        "2024-01-07", 723.45, 113.56),
-                new Trail(8, "Wetlands Walk", "Medium", "Scenic walk through wetlands and bird habitats",
-                        "2 hours", "Walking", "thumb8.jpg", "http://example.com/trail8",
-                        "2024-01-08", 834.56, 124.67),
-                new Trail(9, "Volcanic Ridge Track", "Hard", "Challenging climb along a volcanic ridge",
-                        "4.5 hours", "Hiking", "thumb9.jpg", "http://example.com/trail9",
-                        "2024-01-09", 945.67, 135.78),
-                new Trail(10, "Bushland Circuit", "Medium", "Loop trail through dense bush with native flora",
-                        "3 hours", "Walking", "thumb10.jpg", "http://example.com/trail10",
-                        "2024-01-10", 1056.78, 146.89)));
+
+        List<Trail> mockTrails = Arrays.asList(
+                new Trail(1, "Alpine Trail", "A beautiful alpine trail through the mountains", "Easy",
+                        "2 hours", "thumb1.jpg", "http://example.com/trail1"),
+                new Trail(2, "Forest Trail", "A scenic forest trail with wildlife viewing", "Medium",
+                        "3 hours", "thumb2.jpg", "http://example.com/trail2"),
+                new Trail(3, "Mountain Peak Trail", "Challenging trail to the mountain peak", "Hard",
+                        "5 hours", "thumb3.jpg", "http://example.com/trail3"),
+                new Trail(4, "Coastal Walk", "Easy coastal walk with ocean views", "Easy",
+                        "1.5 hours", "thumb4.jpg", "http://example.com/trail4"),
+                new Trail(5, "River Trail", "Trail following the river through the valley", "Medium",
+                        "2.5 hours", "thumb5.jpg", "http://example.com/trail5"),
+                new Trail(6, "Lakeside Loop", "Loop trail around the serene lake", "Easy",
+                        "2 hours", "thumb6.jpg", "http://example.com/trail6"),
+                new Trail(7, "Glacier Path", "Trail through icy glaciers, suitable for experienced hikers", "Hard",
+                        "6 hours", "thumb7.jpg", "http://example.com/trail7"),
+                new Trail(8, "Bushland Circuit", "Circuit trail through native bush", "Medium",
+                        "3 hours", "thumb8.jpg", "http://example.com/trail8"),
+                new Trail(9, "Volcanic Ridge Track", "Trail along volcanic ridges with dramatic views", "Hard",
+                        "4 hours", "thumb9.jpg", "http://example.com/trail9"),
+                new Trail(10, "Wetlands Walk", "Easy walk through wetlands, great for birdwatching", "Easy",
+                        "1.5 hours", "thumb10.jpg", "http://example.com/trail10"));
         when(mockTrailRepo.getAllTrails()).thenReturn(mockTrails);
         searchService = new SearchService(mockTrailRepo);
         matchmakingService = new MatchmakingService(mockKeywordRepo, mockTrailRepo);
@@ -103,9 +94,10 @@ public class CompleteProfileQuizStepDefinitions {
 
         matchmakingService.setUserPreferences(testUser);
     }
+
     @And("all trail data is available and has been loaded")
     public void allTrailDataLoaded() {
-        List<Trail> loadedTrails = searchService.getTrails("", 0);
+        List<Trail> loadedTrails = searchService.getPage(0);
         assertNotNull(loadedTrails, "Trails should not be null");
         assertEquals(10, loadedTrails.size());
     }
