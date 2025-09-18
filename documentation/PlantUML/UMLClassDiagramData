@@ -5,6 +5,7 @@ title Data Package
 
 package "data" {
 
+  ' Interfaces first (leftmost)
   interface ITrail {
     + getAllTrails() : List<Trail>
     + findById(id : int) : Optional<Trail>
@@ -15,6 +16,7 @@ package "data" {
     + getKeywords() : Map<String, List<String>>
   }
 
+  ' File-based classes next
   class FileBasedTrailRepo {
     + FileBasedTrailRepo(csvFilePath : String)
     + getAllTrails() : List<Trail>
@@ -27,6 +29,14 @@ package "data" {
     + getKeywords() : Map<String, List<String>>
   }
 
+  ' QueryHelper placed before SQL classes to reduce backtracking
+  class QueryHelper {
+    + QueryHelper(databaseService : DatabaseService)
+    + executeQuery(sql : String, paramSetter : ParameterSetter, rowMapper : RowMapper) : List
+    + executeUpdate(sql : String, paramSetter : ParameterSetter) : int
+  }
+
+  ' SQL-based classes follow
   class SqlBasedTrailRepo {
     + SqlBasedTrailRepo(databaseService : DatabaseService)
     + getAllTrails() : List<Trail>
@@ -41,18 +51,23 @@ package "data" {
     + getKeywords() : Map<String, List<String>>
   }
 
-  class QueryHelper {
-    + QueryHelper(databaseService : DatabaseService)
-    + executeQuery(sql : String, paramSetter : ParameterSetter, rowMapper : RowMapper) : List
-    + executeUpdate(sql : String, paramSetter : ParameterSetter) : int
+  class SqlBasedLogRepo {
+    + SqlBasedLogRepo(databaseService : DatabaseService)
+    + getAllLogs() : List<TrailLog>
+    + findById(id : int) : Optional<TrailLog>
+    + deleteById(id : int) : void
+    + upsert(trailLog : TrailLog) : void
   }
 }
 
+' Interface implementations
 FileBasedTrailRepo    ..|> ITrail
 SqlBasedTrailRepo     ..|> ITrail
 FileBasedKeywordRepo  ..|> IKeyword
 SqlBasedKeywordRepo   ..|> IKeyword
 
+' Dependencies to QueryHelper
 SqlBasedTrailRepo     *-- QueryHelper
 SqlBasedKeywordRepo   *-- QueryHelper
+SqlBasedLogRepo       *-- QueryHelper
 @enduml
