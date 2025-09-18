@@ -72,8 +72,7 @@ public class ScreenNavigator {
             rootPane.setCenter(setupParent);
             stage.setTitle(controller.getTitle());
         } catch (IOException e) {
-            System.err.println("Could not load screen: " + e.getMessage());
-            e.printStackTrace();
+            controller.onLoadFailed(e);
         }
     }
 

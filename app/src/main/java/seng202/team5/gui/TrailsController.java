@@ -4,11 +4,8 @@ import java.util.List;
 
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
-import javafx.scene.control.Button;
-import javafx.scene.control.ChoiceBox;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
-import javafx.scene.control.ToggleButton;
+import javafx.scene.control.*;
+import javafx.scene.control.*;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.VBox;
 import seng202.team5.data.DatabaseService;
@@ -102,6 +99,10 @@ public class TrailsController extends Controller {
         // Check if searchService is still null and handle gracefully
         if (searchService == null) {
             resultsLabel.setText("No trails available");
+            Label noResultsLabel = new Label(
+                    "There are no trails available, as the application has failed. Please close the application and try again.");
+            trailsContainer.getChildren().add(noResultsLabel);
+            showAlert(Alert.AlertType.ERROR, "Trails failed to load", "Failed to load trails, please close the application and try again.");
             return;
         }
 
@@ -229,9 +230,9 @@ public class TrailsController extends Controller {
      * Method to update the search results display.
      */
     private void updateSearchDisplay() {
-        List<Trail> trails = searchService.getPage(0);
-        updateTrailsDisplay(trails);
-        resetPageChoiceBox();
+            List<Trail> trails = searchService.getPage(0);
+            updateTrailsDisplay(trails);
+            resetPageChoiceBox();
     }
 
     /**

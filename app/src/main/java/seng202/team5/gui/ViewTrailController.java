@@ -1,6 +1,7 @@
 package seng202.team5.gui;
 
 import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
@@ -88,5 +89,15 @@ public class ViewTrailController extends Controller {
     @Override
     protected String getTitle() {
         return "View Trail Screen";
+    }
+
+    /**
+     * Handles the case where the View Trail Screen fails to load
+     * by displaying an alert to the user
+     * @param e the exception that occurred while loading the trail screen
+     */
+    @Override
+    public void onLoadFailed(Exception e) {
+        showAlert(Alert.AlertType.ERROR, "Trail Card Failed To Load", "Loading selected trail failed, please close the application and try again.");
     }
 }

@@ -2,6 +2,7 @@ package seng202.team5.services;
 
 import seng202.team5.data.SqlBasedKeywordRepo;
 import seng202.team5.data.SqlBasedTrailRepo;
+import seng202.team5.exceptions.MatchMakingFailedException;
 import seng202.team5.models.Trail;
 import seng202.team5.models.User;
 
@@ -14,7 +15,7 @@ import java.util.stream.Collectors;
  * It categorises trails based on the keywords in the description,
  * computes user-personalised scores, and sorts the trail page using pagination.
  */
-public class MatchMakingService {
+public class MatchmakingService {
     public static final double STRENGTH_WEIGHT = 0.8; //80% strength 20% coverage
     private final Map<String, List<String>> categoryToKeywords; // category -> keywords
     private final Map<String, String> keywordToCategory = new HashMap<>(); // keyword -> category
@@ -31,7 +32,7 @@ public class MatchMakingService {
      * @param trailRepo   repository for trail data which are used for scoring and
      *                    sorting
      */
-    public MatchMakingService(SqlBasedKeywordRepo keywordRepo, SqlBasedTrailRepo trailRepo) {
+    public MatchmakingService(SqlBasedKeywordRepo keywordRepo, SqlBasedTrailRepo trailRepo) {
         this.categoryToKeywords = keywordRepo.getKeywords();
         this.trailRepo = trailRepo;
     }
@@ -41,7 +42,7 @@ public class MatchMakingService {
      *
      * @param user the user whose preferences will be used to generate trail weights
      */
-    public void generateTrailWeights(User user) {
+    public void generateTrailWeights(User user) throws MatchMakingFailedException {
         setUserPreferences(user);
         buildReverseIndex();
         assignWeightsToTrails();
@@ -53,12 +54,15 @@ public class MatchMakingService {
      * map.
      * Case-insensitive matching.
      */
-    private void buildReverseIndex() {
-        for (Map.Entry<String, List<String>> entry : categoryToKeywords.entrySet()) {
-            String category = entry.getKey();
-            for (String keyword : entry.getValue()) {
-                keywordToCategory.put(keyword.toLowerCase(Locale.ROOT), category);
-            }
+    private void buildReverseIndex() throws MatchMakingFailedException {
+        if (!categoryToKeywords.isEmpty()) {
+            for (Map.Entry<String, List<String>> entry : categoryToKeywords.entrySet()) {
+                String category = entry.getKey();
+                for (String keyword : entry.getValue()) {
+                    keywordToCategory.put(keyword.toLowerCase(Locale.ROOT), category);
+                }
+        }} else {
+            throw new MatchMakingFailedException("Category file is empty");
         }
     }
 
@@ -81,23 +85,27 @@ public class MatchMakingService {
      *
      * @param user the user whose preferences will be mapped into category weights.
      */
-    public void setUserPreferences(User user) {
-        resetWeights();
+    public void setUserPreferences(User user) throws MatchMakingFailedException {
+        if (user != null) {
+            resetWeights();
 
-        // Yes/No simplified to 0 or 5
-        userWeights.put("FamilyFriendly", user.isFamilyFriendly() ? 5 : 0);
-        userWeights.put("Accessible", user.isAccessible() ? 5 : 0);
+            // Yes/No simplified to 0 or 5
+            userWeights.put("FamilyFriendly", user.isFamilyFriendly() ? 5 : 0);
+            userWeights.put("Accessible", user.isAccessible() ? 5 : 0);
 
-        userWeights.put("Difficult", user.getExperienceLevel());
-        userWeights.put("Rocky", user.getGradientPreference());
-        userWeights.put("Forest", user.getBushPreference());
-        userWeights.put("Wet", user.getLakeRiverPreference());
-        userWeights.put("Beach", user.getCoastPreference());
-        userWeights.put("Alpine", user.getMountainPreference());
-        userWeights.put("Wildlife", user.getWildlifePreference());
-        userWeights.put("Historical", user.getHistoricPreference());
-        userWeights.put("Waterfall", user.getWaterfallPreference());
-        userWeights.put("Reserve", user.getReservePreference());
+            userWeights.put("Difficult", user.getExperienceLevel());
+            userWeights.put("Rocky", user.getGradientPreference());
+            userWeights.put("Forest", user.getBushPreference());
+            userWeights.put("Wet", user.getLakeRiverPreference());
+            userWeights.put("Beach", user.getCoastPreference());
+            userWeights.put("Alpine", user.getMountainPreference());
+            userWeights.put("Wildlife", user.getWildlifePreference());
+            userWeights.put("Historical", user.getHistoricPreference());
+            userWeights.put("Waterfall", user.getWaterfallPreference());
+            userWeights.put("Reserve", user.getReservePreference());
+        } else {
+            throw new MatchMakingFailedException("User not specified");
+        }
     }
 
     /**
@@ -109,12 +117,16 @@ public class MatchMakingService {
      *         set if no
      *         categories match
      */
-    public Set<String> categoriseTrail(Trail trail) {
+    public Set<String> categoriseTrail(Trail trail) throws MatchMakingFailedException {
         // Make sure we have the reverse index built, else categorisation problems arise
-        if (keywordToCategory.isEmpty()) {
-            buildReverseIndex();
-        }
 
+        try {
+            if (keywordToCategory.isEmpty()) {
+                buildReverseIndex();
+            }
+        } catch (MatchMakingFailedException e) {
+            throw new MatchMakingFailedException("Keyword to category file is empty");
+        }
         Set<String> matchedCategories = new HashSet<>();
         String description = trail.getDescription().toLowerCase(Locale.ROOT);
 
@@ -188,19 +200,23 @@ public class MatchMakingService {
      * Assigns weights to each trail based on the categories and user preferences.
      * Updates the trail models attributes, categories, and userWeight.
      */
-    public void assignWeightsToTrails() {
+    public void assignWeightsToTrails() throws MatchMakingFailedException {
         List<Trail> trails = trailRepo.getAllTrails();
-        trailWeights.clear();
+        if (!trails.isEmpty()) {
+            trailWeights.clear();
 
-        for (Trail trail : trails) {
-            Set<String> categories = categoriseTrail(trail);
-            double weight = scoreTrail(categories);
-            trail.setCategories(categories);
-            trail.setUserWeight(weight);
-            trailWeights.put(trail.getId(), weight);
+            for (Trail trail : trails) {
+                Set<String> categories = categoriseTrail(trail);
+                double weight = scoreTrail(categories);
+                trail.setCategories(categories);
+                trail.setUserWeight(weight);
+                trailWeights.put(trail.getId(), weight);
+            }
+
+            weightsCalculated = true; }
+        else {
+            throw new MatchMakingFailedException("Trails is empty");
         }
-
-        weightsCalculated = true;
     }
 
     /**
@@ -212,9 +228,6 @@ public class MatchMakingService {
      * @return the trail's cached weight
      */
     public double getTrailWeight(int trailId) {
-        if (!weightsCalculated) {
-            assignWeightsToTrails();
-        }
         return trailWeights.getOrDefault(trailId, 0.0);
     }
 
@@ -227,10 +240,6 @@ public class MatchMakingService {
      * @return list of trails sorted (descending) by personalised weight
      */
     private List<Trail> getSortedTrails() {
-        if (!weightsCalculated) {
-            assignWeightsToTrails();
-        }
-
         return trailRepo.getAllTrails().stream()
                 .peek(trail -> trail.setUserWeight(getTrailWeight(trail.getId())))
                 .sorted((t1, t2) -> {
