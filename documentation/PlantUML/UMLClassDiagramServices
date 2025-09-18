@@ -15,6 +15,12 @@ package "services" {
     + highlightTrail() : void
   }
 
+  class WeatherService {
+    + WeatherService()
+    + getCurrent(lat : double, lon : double) : String
+    + getTrailForecast(trail : Trail, periodOfDays : int) : List<String>
+}
+
   class MatchMakingService {
     + generateTrailWeights(user : User) : void
     + getRecommendedTrails(user : User, limit : int) : List<Trail>
@@ -62,4 +68,5 @@ MatchMakingService *-- DatabaseService
 UserService *-- DatabaseService
 SetupService *-- DatabaseService
 MapService *-- DatabaseService
+WeatherService *-- DatabaseService
 @enduml
