@@ -7,7 +7,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import seng202.team5.data.SqlBasedKeywordRepo;
 import seng202.team5.data.SqlBasedTrailRepo;
-import seng202.team5.exceptions.MatchMakingFailedException;
+import seng202.team5.exceptions.MatchmakingFailedException;
 import seng202.team5.models.Trail;
 import seng202.team5.models.User;
 
@@ -17,7 +17,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 class MatchmakingServiceTest {
-    private MatchmakingService matchMakingService;
+    private MatchmakingService matchmakingService;
     @Mock
     private SqlBasedTrailRepo mockTrailRepo;
     @Mock
@@ -47,7 +47,7 @@ class MatchmakingServiceTest {
                         "2.5 hours", "thumb5.jpg", "http://example.com/trail5")));
         when(mockTrailRepo.getAllTrails()).thenReturn(mockTrails);
 
-        matchMakingService = new MatchmakingService(mockKeywordRepo, mockTrailRepo);
+        matchmakingService = new MatchmakingService(mockKeywordRepo, mockTrailRepo);
     }
 
     /**
@@ -109,11 +109,11 @@ class MatchmakingServiceTest {
 
     @Test
     @DisplayName("Should correctly map user preferences")
-    void testUserWeightsPopulatedCorrectly() throws MatchMakingFailedException {
+    void testUserWeightsPopulatedCorrectly() throws MatchmakingFailedException {
         User user = makeTestUser();
-        matchMakingService.setUserPreferences(user);
+        matchmakingService.setUserPreferences(user);
 
-        Map<String, Integer> userWeights = matchMakingService.getUserWeights();
+        Map<String, Integer> userWeights = matchmakingService.getUserWeights();
         assertEquals(5, userWeights.get("FamilyFriendly"));
         assertEquals(0, userWeights.get("Accessible"));
         assertEquals(3, userWeights.get("Difficult"));
@@ -130,16 +130,16 @@ class MatchmakingServiceTest {
 
     @Test
     @DisplayName("Should categorise trail correctly based on description")
-    void testCategoriseTrail() throws MatchMakingFailedException {
+    void testCategoriseTrail() throws MatchmakingFailedException {
         Trail trail = mockTrails.getFirst();
-        Set<String> categories = matchMakingService.categoriseTrail(trail);
+        Set<String> categories = matchmakingService.categoriseTrail(trail);
         assertTrue(categories.contains("Alpine"));
         assertFalse(categories.contains("Wet"));
         assertFalse(categories.contains("Forest"));
         assertEquals(1, categories.size());
 
         trail = mockTrails.get(4);
-        categories = matchMakingService.categoriseTrail(trail);
+        categories = matchmakingService.categoriseTrail(trail);
         assertTrue(categories.contains("Wet"));
         assertFalse(categories.contains("Alpine"));
         assertEquals(1, categories.size());
@@ -147,18 +147,18 @@ class MatchmakingServiceTest {
 
     @Test
     @DisplayName("Should assign weights to trails correctly, according to their category")
-    void testAssignWeightsToTrails() throws MatchMakingFailedException {
+    void testAssignWeightsToTrails() throws MatchmakingFailedException {
         User user = makeTestUser();
-        matchMakingService.setUserPreferences(user);
-        matchMakingService.assignWeightsToTrails();
+        matchmakingService.setUserPreferences(user);
+        matchmakingService.assignWeightsToTrails();
 
-        double weight1 = matchMakingService.getTrailWeight(1); // Alpine Trail
-        double weight2 = matchMakingService.getTrailWeight(2); // Forest Trail
-        double weight3 = matchMakingService.getTrailWeight(3); // Mountain Peak Trail
-        double weight4 = matchMakingService.getTrailWeight(4); // Coastal Walk
-        double weight5 = matchMakingService.getTrailWeight(5); // River Trail
+        double weight1 = matchmakingService.getTrailWeight(1); // Alpine Trail
+        double weight2 = matchmakingService.getTrailWeight(2); // Forest Trail
+        double weight3 = matchmakingService.getTrailWeight(3); // Mountain Peak Trail
+        double weight4 = matchmakingService.getTrailWeight(4); // Coastal Walk
+        double weight5 = matchmakingService.getTrailWeight(5); // River Trail
         System.out.println(weight5);
-        final double maxScore = matchMakingService.getMaxScore(); // Max score = 5 + 0 + 3 + 2 + 4 + 1 + 5 + 0 + 4 + 2 +
+        final double maxScore = matchmakingService.getMaxScore(); // Max score = 5 + 0 + 3 + 2 + 4 + 1 + 5 + 0 + 4 + 2 +
                                                                   // 3 + 0 = 29
         assertEquals(expectedScore(4.0, 1, 1, maxScore), weight1, 0.0001); // Alpine Trail (Alpine: 4)
         assertEquals(expectedScore((4.0 + 2.0), 2, 2, maxScore), weight2, 0.0001); // Forest Trail (Forest: 4, Wildlife:
@@ -171,12 +171,12 @@ class MatchmakingServiceTest {
 
     @Test
     @DisplayName("Should return recommended trails sorted by weight")
-    void testGetTrailsSortedByWeight() throws MatchMakingFailedException {
+    void testGetTrailsSortedByWeight() throws MatchmakingFailedException {
         User user = makeTestUser();
-        matchMakingService.setUserPreferences(user);
-        matchMakingService.assignWeightsToTrails();
+        matchmakingService.setUserPreferences(user);
+        matchmakingService.assignWeightsToTrails();
 
-        List<Trail> sortedTrails = matchMakingService.getTrailsSortedByWeight();
+        List<Trail> sortedTrails = matchmakingService.getTrailsSortedByWeight();
         assertEquals(5, sortedTrails.size());
         assertEquals("Mountain Peak Trail", sortedTrails.getFirst().getName()); // 0.3931
         assertEquals("Forest Trail", sortedTrails.get(1).getName()); // 0.3656
@@ -187,12 +187,12 @@ class MatchmakingServiceTest {
 
     @Test
     @DisplayName("Should return paginated personalised trails")
-    void testGetPersonalisedTrails() throws MatchMakingFailedException {
+    void testGetPersonalisedTrails() throws MatchmakingFailedException {
         User user = makeTestUser();
-        matchMakingService.setUserPreferences(user);
-        matchMakingService.assignWeightsToTrails();
+        matchmakingService.setUserPreferences(user);
+        matchmakingService.assignWeightsToTrails();
 
-        List<Trail> page0 = matchMakingService.getPersonalisedTrails(0);
+        List<Trail> page0 = matchmakingService.getPersonalisedTrails(0);
         assertEquals(5, page0.size());
         assertEquals("Mountain Peak Trail", page0.getFirst().getName());
         assertEquals("Forest Trail", page0.get(1).getName());
@@ -200,7 +200,7 @@ class MatchmakingServiceTest {
         assertEquals("River Trail", page0.get(3).getName());
         assertEquals("Alpine Trail", page0.getLast().getName());
 
-        List<Trail> page1 = matchMakingService.getPersonalisedTrails(1);
+        List<Trail> page1 = matchmakingService.getPersonalisedTrails(1);
         assertEquals(0, page1.size());
 
         // Test with a smaller maxResults for multipage test
@@ -230,73 +230,73 @@ class MatchmakingServiceTest {
     @Test
     @DisplayName("Should throw exception for invalid pagination")
     void testInvalidPagination() {
-        assertThrows(IllegalArgumentException.class, () -> matchMakingService.getPersonalisedTrails(-1));
+        assertThrows(IllegalArgumentException.class, () -> matchmakingService.getPersonalisedTrails(-1));
     }
 
     @Test
     @DisplayName("Should return a partial match")
-    void testPartialMatchTrail() throws MatchMakingFailedException {
+    void testPartialMatchTrail() throws MatchmakingFailedException {
         User user = makeTestUser();
-        matchMakingService.setUserPreferences(user);
+        matchmakingService.setUserPreferences(user);
 
         Set<String> categories = new HashSet<>(Arrays.asList("Wet", "Forest", "Alpine"));
 
-        double score = matchMakingService.scoreTrail(categories);
+        double score = matchmakingService.scoreTrail(categories);
         // Matched weights: Wet(5) + Forest(4) + Alpine(4) = 13, Max score = 29, 13/29 ≈
         // 0.4483
         // 3 matched categories / 3 total categories for the trail
         // 0.8 * 13/29 + 0.2 * 3/3 ≈
         // 0.5586
-        assertEquals(expectedScore(5.0 + 4.0 + 4.0, 3, 3, matchMakingService.getMaxScore()), score, 0.0001);
+        assertEquals(expectedScore(5.0 + 4.0 + 4.0, 3, 3, matchmakingService.getMaxScore()), score, 0.0001);
     }
 
     @Test
     @DisplayName("Should return the same score as partial match even with duplicate words")
-    void testDuplicateKeywords() throws MatchMakingFailedException {
+    void testDuplicateKeywords() throws MatchmakingFailedException {
         User user = makeTestUser();
-        matchMakingService.setUserPreferences(user);
+        matchmakingService.setUserPreferences(user);
 
         Set<String> categories = new HashSet<>(Arrays.asList("Wet", "Forest", "Alpine", "Wet", "Forest"));
-        double score = matchMakingService.scoreTrail(categories);
+        double score = matchmakingService.scoreTrail(categories);
         // Duplicates are ignored in a Set, so same as partial match: 0.5586
-        assertEquals(expectedScore(5.0 + 4.0 + 4.0, 3, 3, matchMakingService.getMaxScore()), score, 0.0001);
+        assertEquals(expectedScore(5.0 + 4.0 + 4.0, 3, 3, matchmakingService.getMaxScore()), score, 0.0001);
     }
 
     @Test
     @DisplayName("No match should return 0%")
-    void testNoMatchTrail() throws MatchMakingFailedException {
+    void testNoMatchTrail() throws MatchmakingFailedException {
         User user = makeTestUser();
-        matchMakingService.setUserPreferences(user);
+        matchmakingService.setUserPreferences(user);
 
         Set<String> categories = new HashSet<>(Arrays.asList("Gorge", "Biking"));
-        double score = matchMakingService.scoreTrail(categories);
+        double score = matchmakingService.scoreTrail(categories);
         // No matching categories, score = 0/29 * 0.8 + 0 * 0.2 = 0.0
         assertEquals(0.0, score, 0.0001);
     }
 
     @Test
     @DisplayName("Perfect match should return 100%")
-    void TestPerfectMatch() throws MatchMakingFailedException {
+    void TestPerfectMatch() throws MatchmakingFailedException {
         User user = makeTestUser();
-        matchMakingService.setUserPreferences(user);
+        matchmakingService.setUserPreferences(user);
 
         // trail contains all keywords in repo
         Set<String> categories = new HashSet<>(Arrays.asList("FamilyFriendly", "Accessible", "Difficult", "Rocky",
                 "Forest", "Reserve", "Wet", "Beach", "Alpine", "Wildlife", "Historical", "Waterfall"));
-        double score = matchMakingService.scoreTrail(categories);
+        double score = matchmakingService.scoreTrail(categories);
         // All categories match, max score = 29/29 * 0.8 + 12/12 * 0.2= 1.0
         assertEquals(1.0, score, 0.0001);
     }
 
     @Test
     @DisplayName("Case-insensitive matching should still count keywords")
-    void testCaseSensitivity() throws MatchMakingFailedException {
+    void testCaseSensitivity() throws MatchmakingFailedException {
         User user = makeTestUser();
-        matchMakingService.setUserPreferences(user);
+        matchmakingService.setUserPreferences(user);
 
         Trail trail = new Trail(6, "Case Test Trail", "Easy", "A FOREST trail with a RIVER nearby",
                 "2 hours", "thumb6.jpg", "http://example.com/trail6");
-        Set<String> categories = matchMakingService.categoriseTrail(trail);
+        Set<String> categories = matchmakingService.categoriseTrail(trail);
         assertTrue(categories.contains("Forest"));
         assertTrue(categories.contains("Wet"));
         assertEquals(2, categories.size());
@@ -304,12 +304,12 @@ class MatchmakingServiceTest {
 
     @Test
     @DisplayName("Empty list should give match of 0%")
-    void testNullOrEmptyKeywords() throws MatchMakingFailedException {
+    void testNullOrEmptyKeywords() throws MatchmakingFailedException {
         User user = makeTestUser();
-        matchMakingService.setUserPreferences(user);
+        matchmakingService.setUserPreferences(user);
 
-        double nullScore = matchMakingService.scoreTrail(null);
-        double emptyScore = matchMakingService.scoreTrail(new HashSet<>());
+        double nullScore = matchmakingService.scoreTrail(null);
+        double emptyScore = matchmakingService.scoreTrail(new HashSet<>());
         assertEquals(0, nullScore, 0.0001);
         assertEquals(0, emptyScore, 0.0001);
 

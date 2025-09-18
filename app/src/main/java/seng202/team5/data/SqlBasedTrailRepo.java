@@ -1,6 +1,6 @@
 package seng202.team5.data;
 
-import seng202.team5.exceptions.MatchMakingFailedException;
+import seng202.team5.exceptions.MatchmakingFailedException;
 import seng202.team5.models.Trail;
 
 import java.util.List;
@@ -120,9 +120,9 @@ public class SqlBasedTrailRepo implements ITrail {
      *
      * @param trails List of trails to insert into database
      */
-    public void upsertAll(List<Trail> trails) throws MatchMakingFailedException {
+    public void upsertAll(List<Trail> trails) throws MatchmakingFailedException {
         if (trails.isEmpty())
-            throw new MatchMakingFailedException("Trails is empty.");
+            throw new MatchmakingFailedException("Trails is empty.");
         for (Trail trail : trails) {
             upsert(trail);
         }

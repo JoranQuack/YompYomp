@@ -4,7 +4,7 @@ import io.cucumber.java.Before;
 import io.cucumber.java.en.*;
 import seng202.team5.data.SqlBasedKeywordRepo;
 import seng202.team5.data.SqlBasedTrailRepo;
-import seng202.team5.exceptions.MatchMakingFailedException;
+import seng202.team5.exceptions.MatchmakingFailedException;
 import seng202.team5.gui.MatchmakingController;
 import seng202.team5.models.Trail;
 import seng202.team5.models.User;
@@ -78,7 +78,7 @@ public class CompleteProfileQuizStepDefinitions {
     }
 
     @Given("the user has completed the profile quiz")
-    public void userHasCompletedProfileQuiz() throws MatchMakingFailedException {
+    public void userHasCompletedProfileQuiz() throws MatchmakingFailedException {
         testUser.setIsFamilyFriendly(true);
         testUser.setIsAccessible(false);
         testUser.setExperienceLevel(3);
@@ -103,7 +103,7 @@ public class CompleteProfileQuizStepDefinitions {
     }
 
     @When("the system begins match making")
-    public void systemBeginsMatchMaking() throws MatchMakingFailedException {
+    public void systemBeginsMatchmaking() throws MatchmakingFailedException {
         matchmakingService.generateTrailWeights(testUser);
     }
 
@@ -117,7 +117,7 @@ public class CompleteProfileQuizStepDefinitions {
     }
 
     @Given("the user had previously completed the profile quiz and has matchmaking results saved")
-    public void userHasPreviouslyCompletedQuiz() throws MatchMakingFailedException {
+    public void userHasPreviouslyCompletedQuiz() throws MatchmakingFailedException {
         userHasCompletedProfileQuiz();
 
         // Simulate system has already run matchmaking before
@@ -131,14 +131,14 @@ public class CompleteProfileQuizStepDefinitions {
     }
 
     @Then("the user will be taken back to original questions for the profile")
-    public void userTakenBackToOriginalQuestions() throws MatchMakingFailedException {
+    public void userTakenBackToOriginalQuestions() throws MatchmakingFailedException {
         userHasCompletedProfileQuiz();
     }
 
     @And("the basic flow of the application is followed")
-    public void basicFlowOfApplicationFollowed() throws MatchMakingFailedException {
+    public void basicFlowOfApplicationFollowed() throws MatchmakingFailedException {
         allTrailDataLoaded();
-        systemBeginsMatchMaking();
+        systemBeginsMatchmaking();
         systemShowsLoadingScreen("Matchmaking in progress...");
     }
 }
