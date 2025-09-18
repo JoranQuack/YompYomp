@@ -5,9 +5,9 @@ import java.sql.SQLException;
 import java.util.List;
 
 import seng202.team5.data.DatabaseService;
+import seng202.team5.data.QueryHelper;
 import seng202.team5.data.SqlBasedTrailRepo;
 import seng202.team5.models.User;
-import seng202.team5.utils.QueryHelper;
 
 public class UserService {
     private boolean isGuest;

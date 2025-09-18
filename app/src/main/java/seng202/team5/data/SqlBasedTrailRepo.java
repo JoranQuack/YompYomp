@@ -1,7 +1,6 @@
 package seng202.team5.data;
 
 import seng202.team5.models.Trail;
-import seng202.team5.utils.QueryHelper;
 
 import java.util.List;
 import java.util.Optional;
