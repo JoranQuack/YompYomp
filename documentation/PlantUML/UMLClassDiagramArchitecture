@@ -1,11 +1,8 @@
-WORK IN PROGRESS
-
-
 @startuml
 left to right direction
 title YompYomp UML Class Diagram - Architecture and Package View
 
-package "---" {
+package "Application" {
   class FXAppEntry
   class App
 }
@@ -22,6 +19,7 @@ package "Service" {
   class UserService
   class MatchMakingService
   class ImageService
+  class DatabaseService
 }
 
 package "DataAccess (SQLite DB)" {
@@ -31,7 +29,6 @@ package "DataAccess (SQLite DB)" {
   class FileBasedKeywordRepo
   class SQLBasedKeywordRepo
   class SQLBasedTrailRepo
-  class DatabaseService
 }
 
 package "GUI" {
@@ -76,16 +73,10 @@ WelcomeController ..> UserService
 NavbarComponent ..> ImageService
 
 
-UserService *-- DatabaseService
-SetupService *-- DatabaseService
-SearchService *-- DatabaseService
-MatchMakingService *-- DatabaseService
-
-
 SearchService ..> ITrail
 SetupService ..> ITrail
 SetupService ..> IKeyword
-MatchMakingService ..> IKeyword
+'  MatchMakingService ..> IKeyword
 
 ITrail <|.. FileBasedTrailRepo
 ITrail <|.. SQLBasedTrailRepo
@@ -98,6 +89,5 @@ MatchMakingService ..> Trail
 SearchService ..> Trail
 SetupService ..> Trail
 ProfileQuizController ..> Question
-
-
+App ..> FXAppEntry
 @enduml
