@@ -34,7 +34,6 @@ public class MatchmakingService {
      */
     public MatchmakingService(SqlBasedKeywordRepo keywordRepo, SqlBasedTrailRepo trailRepo) {
         this.categoryToKeywords = keywordRepo.getKeywords();
-        System.out.println("Categories loaded: " + categoryToKeywords.size());
         this.trailRepo = trailRepo;
     }
 
@@ -138,10 +137,6 @@ public class MatchmakingService {
                 matchedCategories.add(entry.getValue());
             }
         }
-
-        System.out.println("Trail: " + trail.getName());
-        System.out.println("Description: " + trail.getDescription());
-        System.out.println("Matched categories: " + matchedCategories);
 
         return matchedCategories;
     }

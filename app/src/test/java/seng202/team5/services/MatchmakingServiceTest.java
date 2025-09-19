@@ -157,21 +157,13 @@ class MatchmakingServiceTest {
         double weight3 = matchmakingService.getTrailWeight(3); // Mountain Peak Trail
         double weight4 = matchmakingService.getTrailWeight(4); // Coastal Walk
         double weight5 = matchmakingService.getTrailWeight(5); // River Trail
-        System.out.println(weight5);
         final double maxScore = matchmakingService.getMaxScore(); // Max score = 5 + 0 + 3 + 2 + 4 + 1 + 5 + 1 + 4 + 2 +
                                                                   // 3 + 1 = 31
         assertEquals(expectedScore(4.0, 1, 1, maxScore), weight1, 0.0001); // Alpine Trail (Alpine: 4)
         assertEquals(expectedScore((4.0 + 2.0), 2, 2, maxScore), weight2, 0.0001); // Forest Trail (Forest: 4, Wildlife: 2)
         assertEquals(expectedScore((4.0 + 3.0), 2, 2, maxScore), weight3, 0.0001); // Mountain Peak Trail (Alpine: 4, Difficult: 3)
         assertEquals(expectedScore((5.0 + 1.0), 2, 2, maxScore), weight4, 0.0001); // Coastal Walk (Beach: 1, FamilyFriendly: 5)
-        assertEquals(expectedScore(5.0, 1, 1, maxScore), weight5, 0.0001); // River Trail (Wet: 5)
-
-        System.out.println("Expected: " + expectedScore(4.0, 1, 1, maxScore));
-        System.out.println("Expected: " + expectedScore((4.0 + 2.0), 2, 2, maxScore));
-        System.out.println("Expected: " + expectedScore((4.0 + 3.0), 2, 2, maxScore));
-        System.out.println("Expected: " + expectedScore(5.0 + 1.0, 2, 2, maxScore));
-        System.out.println("Expected: " + expectedScore(5.0, 1, 1, maxScore));
-
+        assertEquals(expectedScore(5.0, 1, 1, maxScore), weight5, 0.0001); // River Trail (Wet: 5);
     }
 
     @Test

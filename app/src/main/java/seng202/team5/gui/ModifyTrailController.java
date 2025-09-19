@@ -5,10 +5,8 @@ import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
 import seng202.team5.data.DatabaseService;
-import seng202.team5.data.SqlBasedKeywordRepo;
 import seng202.team5.data.SqlBasedTrailRepo;
 import seng202.team5.models.Trail;
-import seng202.team5.services.MatchmakingService;
 import seng202.team5.utils.StringManipulator;
 import seng202.team5.utils.TrailsProcessor;
 
@@ -24,7 +22,6 @@ public class ModifyTrailController extends Controller {
     private Controller lastController;
     private DatabaseService databaseService;
     private SqlBasedTrailRepo sqlBasedTrailRepo;
-    private MatchmakingService matchmakingService;
 
     /**
      * Launches the screen with navigator
@@ -38,8 +35,6 @@ public class ModifyTrailController extends Controller {
         this.lastController = lastController;
         this.databaseService = new DatabaseService();
         this.sqlBasedTrailRepo = new SqlBasedTrailRepo(databaseService);
-        this.matchmakingService = new MatchmakingService(new SqlBasedKeywordRepo(databaseService),
-                new SqlBasedTrailRepo(databaseService));
     }
 
     @FXML
@@ -149,16 +144,20 @@ public class ModifyTrailController extends Controller {
         String region;
         String thumbUrl;
         String webUrl;
+        double userWeight;
         if (trail != null) {
             trailId = trail.getId();
             region = "";
             thumbUrl = trail.getThumbnailURL();
             webUrl = trail.getWebpageURL();
+            userWeight = trail.getUserWeight();
         } else {
             trailId = -1;
             region = regionComboBox.getValue();
             thumbUrl = "";
             webUrl = "";
+            userWeight = 0.5;
+            // TODO: implement calculation for new trail
         }
         String trailName = trailNameTextField.getText();
         String translation = translationTextField.getText();
@@ -167,7 +166,6 @@ public class ModifyTrailController extends Controller {
         String completionTime = completionTimeTextField.getText();
         String trailDescription = trailDescriptionTextArea.getText();
         String cultureUrl = cultureUrlTextField.getText();
-        double userWeight = trail.getUserWeight();
         List<Trail> updatedTrail = TrailsProcessor.processTrails(List.of(new Trail(trailId, trailName, translation,
                 region, difficulty, trailType, completionTime, trailDescription, thumbUrl, webUrl, cultureUrl, userWeight)));
         return updatedTrail.getFirst();
