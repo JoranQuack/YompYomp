@@ -4,8 +4,6 @@ import io.cucumber.java.Before;
 import io.cucumber.java.en.*;
 import seng202.team5.data.SqlBasedKeywordRepo;
 import seng202.team5.data.SqlBasedTrailRepo;
-import seng202.team5.exceptions.MatchmakingFailedException;
-import seng202.team5.gui.TrailsController;
 import seng202.team5.models.Trail;
 import seng202.team5.models.User;
 import seng202.team5.services.MatchmakingService;
@@ -13,20 +11,21 @@ import seng202.team5.services.SearchService;
 
 import java.util.*;
 
-import static org.junit.jupiter.api.Assertions.*;
+
+import static org.junit.Assert.assertNotNull;
 import static org.mockito.Mockito.*;
 
-public class ViewAllTrailsStepDefinitions {
+public class ViewHighlightedTrailsStepDefinitions {
     private MatchmakingService matchmakingService;
     private SearchService searchService;
     private SqlBasedKeywordRepo mockKeywordRepo;
     private SqlBasedTrailRepo mockTrailRepo;
-    private User testUser;
-    private Map<String, Integer> userWeights;
     private List<Trail> displayedTrails;
+    private User testUser;
+
 
     @Before
-    public void setUp(){
+    public void setUp() {
         // Mock the repos
         mockKeywordRepo = mock(SqlBasedKeywordRepo.class);
         mockTrailRepo = mock(SqlBasedTrailRepo.class);
@@ -48,6 +47,7 @@ public class ViewAllTrailsStepDefinitions {
 
         when(mockKeywordRepo.getKeywords()).thenReturn(mockKeywords);
         // fake trails
+
         List<Trail> mockTrails = Arrays.asList(
                 new Trail(1, "Alpine Trail", "A beautiful alpine trail through the mountains", "Easy",
                         "2 hours", "thumb1.jpg", "http://example.com/trail1"),
@@ -73,62 +73,34 @@ public class ViewAllTrailsStepDefinitions {
         searchService = new SearchService(mockTrailRepo);
     }
 
-    @Given("the user has loaded the application and is on the welcome screen")
-    public void theUserHasLoadedTheApplicationAndIsOnTheWelcomeScreen() {
-        // setUp() is run
+    @When("the system loads up the application for the guest user")
+    public void theSystemLoadsUpTheApplicationForTheGuestUser() {
+        displayedTrails = searchService.getPage(0); // retrieves an arbitrary set of trails
     }
 
-    @When("the user selects to skip profile set up")
-    public void theUserSelectsToSkipProfileSetup() {
-        testUser = null; // no user preferences, no matchmaking
-    }
-
-    @And("user selects the Trails button")
-    public void theUserSelectsTheTrailsButton() {
-        displayedTrails = searchService.getPage(0);
-    }
-
-    @Then("the system changes to the all-trails screen")
-    public void theSystemChangesToTheAllTrailsScreen() {
+    @Then("the system directs the user from the start screen to the dashboard highlighted trails")
+    public void theSystemDirectsTheUserFromTheStartScreenToTheDashboardHighlightedTrails() {
         assertNotNull(displayedTrails);
     }
 
-    @And("system displays a list of trails in alphabetical order")
-    public void systemDisplaysAListOfTrailsInAlphabeticalOrder() {
-        List<String> trailNames = displayedTrails.stream()
-                .map(Trail::getName)
-                .toList();
-
-        // Make a copy and sort it alphabetically
-        List<String> sortedNames = new ArrayList<>(trailNames);
-        Collections.sort(sortedNames, String.CASE_INSENSITIVE_ORDER);
-
-        // Assert that the displayed list matches the alphabetically sorted list
-        assertEquals(sortedNames, trailNames);
+    @When("the user navigates to the main.db file")
+    public void userNavigatesToMaindbFile() {
+        // user navigates to file
     }
 
-    @And("the dashboard screen of personalised recommended trails is shown")
-    public void theDashboardScreenOfPersonalisedRecommendedTrailsIsShown() throws MatchmakingFailedException {
-        matchmakingService = new MatchmakingService(mockKeywordRepo, mockTrailRepo);
+    @And("user deletes the file resetting the application")
+    public void userDeletesTheFileResettingTheApplication() {
+        testUser = null;
+    }
 
-        // Build a test user with some preferences
+    @Then("the user can restart the application")
+    public void userRestartsApplication() {
+        matchmakingService = new MatchmakingService(mockKeywordRepo, mockTrailRepo);
         testUser = new User();
-        testUser.setIsFamilyFriendly(true);
-        testUser.setIsAccessible(false);
-        testUser.setExperienceLevel(3);
-        testUser.setGradientPreference(2);
-        testUser.setBushPreference(4);
-        testUser.setLakeRiverPreference(1);
-        testUser.setCoastPreference(5);
-        testUser.setMountainPreference(3);
-        testUser.setWildlifePreference(4);
-        testUser.setHistoricPreference(0);
-        testUser.setWaterfallPreference(5);
-        testUser.setReservePreference(2);
+    }
 
-        matchmakingService = new MatchmakingService(mockKeywordRepo, mockTrailRepo);
-        matchmakingService.setUserPreferences(testUser);
-        displayedTrails = matchmakingService.getTrailsSortedByWeight();
-        assertNotNull(displayedTrails);
+    @And("follow the basic flow instructions to find the highlighted page")
+    public void followTheBasicFlowInstructionsToFindTheHighlightedPage() {
+        theSystemLoadsUpTheApplicationForTheGuestUser(); // user follows basic flow
     }
 }

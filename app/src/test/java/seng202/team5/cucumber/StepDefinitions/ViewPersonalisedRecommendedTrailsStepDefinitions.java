@@ -1,9 +1,7 @@
 package seng202.team5.cucumber.StepDefinitions;
 
 import io.cucumber.java.Before;
-import io.cucumber.java.en.And;
-import io.cucumber.java.en.Then;
-import io.cucumber.java.en.When;
+import io.cucumber.java.en.*;
 import seng202.team5.data.SqlBasedKeywordRepo;
 import seng202.team5.data.SqlBasedTrailRepo;
 import seng202.team5.exceptions.MatchmakingFailedException;
@@ -15,19 +13,18 @@ import seng202.team5.services.SearchService;
 import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 public class ViewPersonalisedRecommendedTrailsStepDefinitions {
     private SearchService searchService;
-    private List<Trail> orderedTrails;
+    private MatchmakingService matchmakingService;
     private SqlBasedTrailRepo mockTrailRepo;
     private SqlBasedKeywordRepo mockKeywordRepo;
-    private MatchmakingService matchmakingService;
-    private Map<String, Integer> userWeights;
+    private List<Trail> orderedTrails;
     private User testUser;
     private User currentUser;
+    private Map<String, Integer> userWeights;
 
     @Before
     public void setUp() {
@@ -35,7 +32,7 @@ public class ViewPersonalisedRecommendedTrailsStepDefinitions {
         mockKeywordRepo = mock(SqlBasedKeywordRepo.class);
         mockTrailRepo = mock(SqlBasedTrailRepo.class);
 
-        //fake keyword data
+        // fake keyword data
         Map<String, List<String>> mockKeywords = new HashMap<>();
         mockKeywords.put("FamilyFriendly", Arrays.asList("children", "easy"));
         mockKeywords.put("Accessible", Arrays.asList("accessible", "abilities"));
@@ -51,7 +48,7 @@ public class ViewPersonalisedRecommendedTrailsStepDefinitions {
         mockKeywords.put("Waterfall", Arrays.asList("waterfall", "falls"));
 
         when(mockKeywordRepo.getKeywords()).thenReturn(mockKeywords);
-        //fake trails
+        // fake trails
         List<Trail> mockTrails = Arrays.asList(
                 new Trail(1, "Alpine Trail", "A beautiful alpine trail through the mountains", "Easy",
                         "2 hours", "thumb1.jpg", "http://example.com/trail1"),
@@ -92,7 +89,7 @@ public class ViewPersonalisedRecommendedTrailsStepDefinitions {
         matchmakingService = new MatchmakingService(mockKeywordRepo, mockTrailRepo);
         orderedTrails = matchmakingService.getTrailsSortedByWeight();
 
-        //check ordering
+        // check ordering
         for (int i = 0; i < orderedTrails.size() - 1; i++) {
             double currentWeight = orderedTrails.get(i).getUserWeight();
             double nextWeight = orderedTrails.get(i + 1).getUserWeight();
