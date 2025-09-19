@@ -2,7 +2,7 @@ package seng202.team5.models;
 
 import java.util.Date;
 
-public class LogTrail {
+public class TripLog {
     //Some basic variables
     private int id;
     private User user;
@@ -19,8 +19,8 @@ public class LogTrail {
 
 
     //Constructor for base variables
-    public LogTrail(int id, User user, Trail trail, Date dateCompleted, int actualDuration, String weatherExperienced,
-                    String personalDifficulty, int rating, boolean isMultiDayTrip, String tripId, String notes) {
+    public TripLog(int id, User user, Trail trail, Date dateCompleted, int actualDuration, String weatherExperienced,
+                   String personalDifficulty, int rating, boolean isMultiDayTrip, String tripId, String notes) {
         this.id = id;
         this.user = user;
         this.trail = trail;
