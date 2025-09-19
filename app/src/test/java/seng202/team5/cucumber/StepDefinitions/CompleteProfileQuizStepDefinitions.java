@@ -30,7 +30,7 @@ public class CompleteProfileQuizStepDefinitions {
         mockKeywordRepo = mock(SqlBasedKeywordRepo.class);
         mockTrailRepo = mock(SqlBasedTrailRepo.class);
 
-        //fake keyword data
+        // fake keyword data
         Map<String, List<String>> mockKeywords = new HashMap<>();
         mockKeywords.put("FamilyFriendly", Arrays.asList("children", "easy"));
         mockKeywords.put("Accessible", Arrays.asList("accessible", "abilities"));
@@ -46,7 +46,7 @@ public class CompleteProfileQuizStepDefinitions {
         mockKeywords.put("Waterfall", Arrays.asList("waterfall", "falls"));
 
         when(mockKeywordRepo.getKeywords()).thenReturn(mockKeywords);
-        //fake trails
+        // fake trails
 
         List<Trail> mockTrails = Arrays.asList(
                 new Trail(1, "Alpine Trail", "A beautiful alpine trail through the mountains", "Easy",

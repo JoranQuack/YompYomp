@@ -2,37 +2,28 @@ package seng202.team5.cucumber.StepDefinitions;
 
 import io.cucumber.java.Before;
 import io.cucumber.java.en.*;
-import javafx.scene.control.Alert;
-import org.mockito.Mockito;
 import seng202.team5.data.SqlBasedKeywordRepo;
 import seng202.team5.data.SqlBasedTrailRepo;
 import seng202.team5.exceptions.MatchmakingFailedException;
-import seng202.team5.gui.ScreenNavigator;
 import seng202.team5.gui.TrailsController;
-import seng202.team5.gui.components.NavbarComponent;
 import seng202.team5.models.Trail;
 import seng202.team5.models.User;
 import seng202.team5.services.MatchmakingService;
 import seng202.team5.services.SearchService;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 public class ViewAllTrailsStepDefinitions {
-    private User testUser;
-    private SqlBasedKeywordRepo mockKeywordRepo;
-    private SqlBasedTrailRepo mockTrailRepo;
     private MatchmakingService matchmakingService;
     private SearchService searchService;
+    private SqlBasedKeywordRepo mockKeywordRepo;
+    private SqlBasedTrailRepo mockTrailRepo;
+    private User testUser;
     private Map<String, Integer> userWeights;
     private List<Trail> displayedTrails;
-    private String errorMessage;
-    private TrailsController mockController;
 
     @Before
     public void setUp(){
@@ -40,7 +31,7 @@ public class ViewAllTrailsStepDefinitions {
         mockKeywordRepo = mock(SqlBasedKeywordRepo.class);
         mockTrailRepo = mock(SqlBasedTrailRepo.class);
 
-        //fake keyword data
+        // fake keyword data
         Map<String, List<String>> mockKeywords = new HashMap<>();
         mockKeywords.put("FamilyFriendly", Arrays.asList("children", "easy"));
         mockKeywords.put("Accessible", Arrays.asList("accessible", "abilities"));
@@ -56,7 +47,7 @@ public class ViewAllTrailsStepDefinitions {
         mockKeywords.put("Waterfall", Arrays.asList("waterfall", "falls"));
 
         when(mockKeywordRepo.getKeywords()).thenReturn(mockKeywords);
-        //fake trails
+        // fake trails
         List<Trail> mockTrails = Arrays.asList(
                 new Trail(1, "Alpine Trail", "A beautiful alpine trail through the mountains", "Easy",
                         "2 hours", "thumb1.jpg", "http://example.com/trail1"),
@@ -84,12 +75,12 @@ public class ViewAllTrailsStepDefinitions {
 
     @Given("the user has loaded the application and is on the welcome screen")
     public void theUserHasLoadedTheApplicationAndIsOnTheWelcomeScreen() {
-        //setUp() is run
+        // setUp() is run
     }
 
     @When("the user selects to skip profile set up")
     public void theUserSelectsToSkipProfileSetup() {
-        testUser = null; //no user preferences, no matchmaking
+        testUser = null; // no user preferences, no matchmaking
     }
 
     @And("user selects the Trails button")
