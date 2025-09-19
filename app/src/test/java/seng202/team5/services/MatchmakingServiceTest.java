@@ -29,21 +29,21 @@ class MatchmakingServiceTest {
         MockitoAnnotations.openMocks(this);
 
         Map<String, List<String>> mockKeywords = createMockKeywordData();
-        when(mockKeywordRepo.getKeywords()).thenReturn(mockKeywords);
+        when(mockKeywordRepo.getKeywords()).thenReturn(createMockKeywordData());
 
         mockTrailRepo = mock(SqlBasedTrailRepo.class);
         mockTrails = new ArrayList<>(Arrays.asList(
                 //int id, String name, String description, String difficulty, String completionInfo,
                 //            String thumbnailURL, String webpageURL
-                new Trail(1, "Alpine Trail", "A beautiful alpine trail through the mountains", "Easy",
+                new Trail(1, "Alpine Trail", "Easy", "A beautiful alpine trail through the mountains",
                         "2 hours", "thumb1.jpg", "http://example.com/trail1"),
-                new Trail(2, "Forest Trail", "A scenic forest trail with wildlife viewing","Medium",
+                new Trail(2, "Forest Trail", "Medium","A scenic forest trail with wildlife viewing",
                         "3 hours", "thumb2.jpg", "http://example.com/trail2"),
-                new Trail(3, "Mountain Peak Trail", "Challenging trail to the mountain peak", "Hard",
+                new Trail(3, "Mountain Peak Trail", "Hard", "Challenging trail to the mountain peak",
                         "5 hours", "thumb3.jpg", "http://example.com/trail3"),
-                new Trail(4, "Coastal Walk", "Easy coastal walk with ocean views", "Easy",
+                new Trail(4, "Coastal Walk", "Easy", "Easy coastal walk with ocean views",
                         "1.5 hours", "thumb4.jpg", "http://example.com/trail4"),
-                new Trail(5, "River Trail", "Trail following the river through the valley", "Medium",
+                new Trail(5, "River Trail", "Medium", "Trail following the river through the valley",
                         "2.5 hours", "thumb5.jpg", "http://example.com/trail5")));
         when(mockTrailRepo.getAllTrails()).thenReturn(mockTrails);
 
@@ -79,11 +79,11 @@ class MatchmakingServiceTest {
         user.setBushPreference(4);
         user.setReservePreference(1);
         user.setLakeRiverPreference(5);
-        user.setCoastPreference(0);
+        user.setCoastPreference(1);
         user.setMountainPreference(4);
         user.setWildlifePreference(2);
         user.setHistoricPreference(3);
-        user.setWaterfallPreference(0);
+        user.setWaterfallPreference(1);
         return user;
     }
 
@@ -121,11 +121,11 @@ class MatchmakingServiceTest {
         assertEquals(4, userWeights.get("Forest"));
         assertEquals(1, userWeights.get("Reserve"));
         assertEquals(5, userWeights.get("Wet"));
-        assertEquals(0, userWeights.get("Beach"));
+        assertEquals(1, userWeights.get("Beach"));
         assertEquals(4, userWeights.get("Alpine"));
         assertEquals(2, userWeights.get("Wildlife"));
         assertEquals(3, userWeights.get("Historical"));
-        assertEquals(0, userWeights.get("Waterfall"));
+        assertEquals(1, userWeights.get("Waterfall"));
     }
 
     @Test
@@ -158,15 +158,20 @@ class MatchmakingServiceTest {
         double weight4 = matchmakingService.getTrailWeight(4); // Coastal Walk
         double weight5 = matchmakingService.getTrailWeight(5); // River Trail
         System.out.println(weight5);
-        final double maxScore = matchmakingService.getMaxScore(); // Max score = 5 + 0 + 3 + 2 + 4 + 1 + 5 + 0 + 4 + 2 +
-                                                                  // 3 + 0 = 29
+        final double maxScore = matchmakingService.getMaxScore(); // Max score = 5 + 0 + 3 + 2 + 4 + 1 + 5 + 1 + 4 + 2 +
+                                                                  // 3 + 1 = 31
         assertEquals(expectedScore(4.0, 1, 1, maxScore), weight1, 0.0001); // Alpine Trail (Alpine: 4)
-        assertEquals(expectedScore((4.0 + 2.0), 2, 2, maxScore), weight2, 0.0001); // Forest Trail (Forest: 4, Wildlife:
-                                                                                   // 2)
-        assertEquals(expectedScore(4.0 + 3.0, 2, 2, maxScore), weight3, 0.0001); // Mountain Peak Trail (Alpine: 4,
-                                                                                 // Difficult: 3)
-        assertEquals(expectedScore(5.0, 2, 2, maxScore), weight4, 0.0001); // Coastal Walk (Beach: 0, FamilyFriendly: 5)
+        assertEquals(expectedScore((4.0 + 2.0), 2, 2, maxScore), weight2, 0.0001); // Forest Trail (Forest: 4, Wildlife: 2)
+        assertEquals(expectedScore((4.0 + 3.0), 2, 2, maxScore), weight3, 0.0001); // Mountain Peak Trail (Alpine: 4, Difficult: 3)
+        assertEquals(expectedScore((5.0 + 1.0), 2, 2, maxScore), weight4, 0.0001); // Coastal Walk (Beach: 1, FamilyFriendly: 5)
         assertEquals(expectedScore(5.0, 1, 1, maxScore), weight5, 0.0001); // River Trail (Wet: 5)
+
+        System.out.println("Expected: " + expectedScore(4.0, 1, 1, maxScore));
+        System.out.println("Expected: " + expectedScore((4.0 + 2.0), 2, 2, maxScore));
+        System.out.println("Expected: " + expectedScore((4.0 + 3.0), 2, 2, maxScore));
+        System.out.println("Expected: " + expectedScore(5.0 + 1.0, 2, 2, maxScore));
+        System.out.println("Expected: " + expectedScore(5.0, 1, 1, maxScore));
+
     }
 
     @Test
@@ -177,12 +182,14 @@ class MatchmakingServiceTest {
         matchmakingService.assignWeightsToTrails();
 
         List<Trail> sortedTrails = matchmakingService.getTrailsSortedByWeight();
+
         assertEquals(5, sortedTrails.size());
-        assertEquals("Mountain Peak Trail", sortedTrails.getFirst().getName()); // 0.3931
-        assertEquals("Forest Trail", sortedTrails.get(1).getName()); // 0.3656
-        assertEquals("Coastal Walk", sortedTrails.get(2).getName()); // 0.3379 equal but alphabetical
-        assertEquals("River Trail", sortedTrails.get(3).getName()); // 0.3379 ^^
-        assertEquals("Alpine Trail", sortedTrails.getLast().getName()); // 0.3103
+        assertEquals("Mountain Peak Trail", sortedTrails.getFirst().getName()); // 0.3806
+        assertEquals("Coastal Walk", sortedTrails.get(1).getName()); // 0.3548 alphabetically first
+        assertEquals("Forest Trail", sortedTrails.get(2).getName()); // 0.3548
+        assertEquals("River Trail", sortedTrails.get(3).getName()); // 0.3290
+        assertEquals("Alpine Trail", sortedTrails.getLast().getName()); // 0.3032
+
     }
 
     @Test
@@ -195,8 +202,8 @@ class MatchmakingServiceTest {
         List<Trail> page0 = matchmakingService.getPersonalisedTrails(0);
         assertEquals(5, page0.size());
         assertEquals("Mountain Peak Trail", page0.getFirst().getName());
-        assertEquals("Forest Trail", page0.get(1).getName());
-        assertEquals("Coastal Walk", page0.get(2).getName()); // alphabetical again
+        assertEquals("Coastal Walk", page0.get(1).getName()); // alphabetical again
+        assertEquals("Forest Trail", page0.get(2).getName());
         assertEquals("River Trail", page0.get(3).getName());
         assertEquals("Alpine Trail", page0.getLast().getName());
 
@@ -212,11 +219,11 @@ class MatchmakingServiceTest {
         List<Trail> customPage0 = customMaxService.getPersonalisedTrails(0);
         assertEquals(2, customPage0.size());
         assertEquals("Mountain Peak Trail", customPage0.getFirst().getName());
-        assertEquals("Forest Trail", customPage0.getLast().getName());
+        assertEquals("Coastal Walk", customPage0.getLast().getName());
 
         List<Trail> customPage1 = customMaxService.getPersonalisedTrails(1);
         assertEquals(2, customPage1.size());
-        assertEquals("Coastal Walk", customPage1.getFirst().getName());
+        assertEquals("Forest Trail", customPage1.getFirst().getName());
         assertEquals("River Trail", customPage1.getLast().getName());
 
         List<Trail> customPage2 = customMaxService.getPersonalisedTrails(2);

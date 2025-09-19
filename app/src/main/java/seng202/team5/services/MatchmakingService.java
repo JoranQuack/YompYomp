@@ -139,6 +139,10 @@ public class MatchmakingService {
             }
         }
 
+        System.out.println("Trail: " + trail.getName());
+        System.out.println("Description: " + trail.getDescription());
+        System.out.println("Matched categories: " + matchedCategories);
+
         return matchedCategories;
     }
 
@@ -183,18 +187,18 @@ public class MatchmakingService {
             return 0.0;
         }
 
-        // strength part
+        // strength part: how much each trail matters to the user
         double strength = trailCategories.stream()
                 .mapToInt(category -> userWeights.getOrDefault(category, 0))
                 .sum() / maxScore;
 
-        // coverage part
+        // coverage part: what fraction of the trail's categories are relevant to the user
         long matched = trailCategories.stream()
-                .filter(category -> userWeights.containsKey(category))
+                .filter(userWeights::containsKey)
                 .count();
         double coverage = (double) matched / trailCategories.size();
 
-        // blend of strength and coverage
+        // blend of strength and coverage: STRENGTH_WEIGHT = 0.8 for 80% strength 20% coverage, see MatchmakingServiceTest for an example
         return STRENGTH_WEIGHT * strength + (1 - STRENGTH_WEIGHT) * coverage;
     }
 
