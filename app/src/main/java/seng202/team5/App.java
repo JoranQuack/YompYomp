@@ -11,6 +11,8 @@ import java.util.concurrent.Executors;
  * Launches the application.
  */
 public class App {
+    private static SetupService setupService;
+
     /**
      * Application entry point. It handles the starting of the executer and then
      * calls FXAppEntry to start the UI
@@ -18,13 +20,15 @@ public class App {
      * @param args Command line arguments
      */
     public static void main(String[] args) {
+        setupService = new SetupService();
+
         ExecutorService setupExec = Executors.newSingleThreadExecutor(r -> {
             Thread thread = new Thread(r, "setup-worker");
             thread.setDaemon(true);
             return thread;
         });
 
-        runSetupInBackground(new SetupService(), setupExec);
+        runSetupInBackground(setupService, setupExec);
         // shutdown hook for when application closed
         Runtime.getRuntime().addShutdownHook(new Thread(setupExec::shutdown));
 
@@ -46,6 +50,15 @@ public class App {
                 e.printStackTrace();
             }
         });
+    }
+
+    /**
+     * Gets the setup service instance
+     * 
+     * @return the setup service instance
+     */
+    public static SetupService getSetupService() {
+        return setupService;
     }
 
 }

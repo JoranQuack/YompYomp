@@ -27,6 +27,7 @@ public class SetupService {
     private final DatabaseService databaseService;
     private final SqlBasedTrailRepo sqlTrailRepo;
     private final FileBasedTrailRepo fileTrailRepo;
+    private volatile boolean databaseSetupComplete = false;
 
     /**
      * Constructor for setup service with custom SQLBasedRepo and FileBasedRepo for
@@ -69,7 +70,8 @@ public class SetupService {
             return;
         }
 
-        if (databaseService.databaseExists() || !databaseService.isSchemaUpToDate()) {
+        // Only create database if it doesn't exist or schema is outdated
+        if (!databaseService.databaseExists() || !databaseService.isSchemaUpToDate()) {
             try {
                 if (databaseService.databaseExists()) {
                     System.out.println("Database schema is outdated. Deleting database.");
@@ -82,20 +84,20 @@ public class SetupService {
                 System.err.println("Error setting up database: " + e.getMessage());
                 e.printStackTrace();
             }
+
             syncDbFromTrailFile();
         }
 
-
-
-
-
-        // Populate keywords table coz we need dat stuff later
+        // Always check and populate keywords table if needed
         SqlBasedKeywordRepo sqlBasedKeywordRepo = new SqlBasedKeywordRepo(databaseService);
         if (!isCategoryTablePopulated(sqlBasedKeywordRepo)) {
             FileBasedKeywordRepo fileBasedKeywordRepo = new FileBasedKeywordRepo(
                     "/datasets/Categories_and_Keywords.csv");
             sqlBasedKeywordRepo.insertCategoriesAndKeywords(fileBasedKeywordRepo.getKeywords());
         }
+
+        databaseSetupComplete = true;
+        System.out.println("Database setup complete.");
     }
 
     /**
@@ -105,7 +107,6 @@ public class SetupService {
      * @param url
      */
     void scrapeTrailImage(String url) {
-        //System.out.println(url);
         String filename = extractFilenameFromUrl(url);
         String imagePath = AppDataManager.getAppData("images/" + filename);
         File imageFile = new File(imagePath);
@@ -165,5 +166,28 @@ public class SetupService {
     public void setupApplication() {
         setupDatabase();
         scrapeAllTrailImages();
+    }
+
+    /**
+     * Checks if database setup is complete
+     *
+     * @return true if database setup is complete, false otherwise
+     */
+    public boolean isDatabaseSetupComplete() {
+        return databaseSetupComplete;
+    }
+
+    /**
+     * Waits for database setup to complete
+     */
+    public void waitForDatabaseSetup() {
+        while (!databaseSetupComplete) {
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                break;
+            }
+        }
     }
 }

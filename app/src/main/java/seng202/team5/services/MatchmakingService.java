@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
  * computes user-personalised scores, and sorts the trail page using pagination.
  */
 public class MatchmakingService {
-    public static final double STRENGTH_WEIGHT = 0.8; //80% strength 20% coverage
+    public static final double STRENGTH_WEIGHT = 0.8; // 80% strength 20% coverage
     private final Map<String, List<String>> categoryToKeywords; // category -> keywords
     private final Map<String, String> keywordToCategory = new HashMap<>(); // keyword -> category
     private final Map<String, Integer> userWeights = new HashMap<>(); // Higher weight is more favourable
@@ -34,6 +34,7 @@ public class MatchmakingService {
      */
     public MatchmakingService(SqlBasedKeywordRepo keywordRepo, SqlBasedTrailRepo trailRepo) {
         this.categoryToKeywords = keywordRepo.getKeywords();
+        System.out.println("Categories loaded: " + categoryToKeywords.size());
         this.trailRepo = trailRepo;
     }
 
@@ -214,8 +215,8 @@ public class MatchmakingService {
                 trailWeights.put(trail.getId(), weight);
             }
 
-            weightsCalculated = true; }
-        else {
+            weightsCalculated = true;
+        } else {
             throw new MatchmakingFailedException("Trails is empty");
         }
     }
