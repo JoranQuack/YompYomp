@@ -55,13 +55,14 @@ public class MatchmakingService {
      * Case-insensitive matching.
      */
     private void buildReverseIndex() throws MatchmakingFailedException {
-        if (!categoryToKeywords.isEmpty()) {
+        if (categoryToKeywords != null) {
             for (Map.Entry<String, List<String>> entry : categoryToKeywords.entrySet()) {
                 String category = entry.getKey();
                 for (String keyword : entry.getValue()) {
                     keywordToCategory.put(keyword.toLowerCase(Locale.ROOT), category);
                 }
-        }} else {
+            }
+        } else {
             throw new MatchmakingFailedException("Category file is empty");
         }
     }

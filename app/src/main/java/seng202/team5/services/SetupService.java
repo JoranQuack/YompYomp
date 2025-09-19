@@ -69,24 +69,25 @@ public class SetupService {
             return;
         }
 
-        if (databaseService.databaseExists() || databaseService.isSchemaUpToDate()) {
-            return;
-        }
+        if (databaseService.databaseExists() || !databaseService.isSchemaUpToDate()) {
+            try {
+                if (databaseService.databaseExists()) {
+                    System.out.println("Database schema is outdated. Deleting database.");
+                    databaseService.deleteDatabase();
+                }
 
-        try {
-            if (databaseService.databaseExists()) {
-                System.out.println("Database schema is outdated. Deleting database.");
-                databaseService.deleteDatabase();
+                // Create the database and tables
+                databaseService.createDatabaseIfNotExists();
+            } catch (Exception e) {
+                System.err.println("Error setting up database: " + e.getMessage());
+                e.printStackTrace();
             }
-
-            // Create the database and tables
-            databaseService.createDatabaseIfNotExists();
-        } catch (Exception e) {
-            System.err.println("Error setting up database: " + e.getMessage());
-            e.printStackTrace();
+            syncDbFromTrailFile();
         }
 
-        syncDbFromTrailFile();
+
+
+
 
         // Populate keywords table coz we need dat stuff later
         SqlBasedKeywordRepo sqlBasedKeywordRepo = new SqlBasedKeywordRepo(databaseService);
