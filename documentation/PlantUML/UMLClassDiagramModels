@@ -18,13 +18,19 @@ package "models" {
     + toString() : String
   }
 
-  class TrailLog <<to be implemented>>{
-    + TrailLog() : void
+  class TripLog <<to be implemented>> {
+    + TripLog() : void
+    + toString() : String
+  }
+
+  class Location <<to be implemented>> {
+    + Location() : void
     + toString() : String
   }
 }
 
-TrailLog -- Trail
-TrailLog -- User
+TripLog -- Trail
+TripLog -- User
+TripLog -- Location
 
 @enduml
