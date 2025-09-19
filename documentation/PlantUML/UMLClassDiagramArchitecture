@@ -11,6 +11,7 @@ package "Models" {
   class Trail
   class User
   enum Question
+  class TrailLog
 }
 
 package "Service" {
@@ -19,7 +20,9 @@ package "Service" {
   class UserService
   class MatchMakingService
   class ImageService
-  class DatabaseService
+  class WeatherService <<to be implemented>>
+  class MapService <<to be implemented>>
+  class LogService <<to be implemented>>
 }
 
 package "DataAccess (SQLite DB)" {
@@ -29,9 +32,12 @@ package "DataAccess (SQLite DB)" {
   class FileBasedKeywordRepo
   class SQLBasedKeywordRepo
   class SQLBasedTrailRepo
+  class SQLBasedLogRepo
+  class DatabaseService
 }
 
 package "GUI" {
+  class LogBookController <<to be implemented>>
   class ScreenNavigator
   abstract class Controller
   class WelcomeController
@@ -59,6 +65,7 @@ Controller <|-- MatchmakingController
 Controller <|-- ProfileQuizController
 Controller <|-- DashboardController
 Controller <|-- TrailsController
+Controller <|-- LogBookController
 
 Controller ..> NavbarComponent
 Controller ..> TrailCardComponent
@@ -71,12 +78,15 @@ MatchmakingController ..> MatchMakingService
 DashboardController ..> SearchService
 WelcomeController ..> UserService
 NavbarComponent ..> ImageService
-
+TrailsController ..> MapService
+LogBookController ..> LogService
+TrailsController ..> WeatherService
 
 SearchService ..> ITrail
 SetupService ..> ITrail
 SetupService ..> IKeyword
-'  MatchMakingService ..> IKeyword
+LogService ..> SQLBasedLogRepo
+LogService ..> ITrail
 
 ITrail <|.. FileBasedTrailRepo
 ITrail <|.. SQLBasedTrailRepo
