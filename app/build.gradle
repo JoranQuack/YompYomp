@@ -89,6 +89,7 @@ javafx {
 
 jar {
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+    archiveBaseName = 'yompyomp'
     manifest {
         attributes 'Main-Class': 'seng202.team5.App'
     }
