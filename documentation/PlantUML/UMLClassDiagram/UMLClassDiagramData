@@ -1,0 +1,73 @@
+@startuml
+left to right direction
+skinparam packageStyle rectangle
+title Data Package
+
+package "data" {
+
+  ' Interfaces first (leftmost)
+  interface ITrail {
+    + getAllTrails() : List<Trail>
+    + findById(id : int) : Optional<Trail>
+    + countTrails() : int
+  }
+
+  interface IKeyword {
+    + getKeywords() : Map<String, List<String>>
+  }
+
+  ' File-based classes next
+  class FileBasedTrailRepo {
+    + FileBasedTrailRepo(csvFilePath : String)
+    + getAllTrails() : List<Trail>
+    + findById(id : int) : Optional<Trail>
+    + countTrails() : int
+  }
+
+  class FileBasedKeywordRepo {
+    + FileBasedKeywordRepo(filePath : String)
+    + getKeywords() : Map<String, List<String>>
+  }
+
+  ' QueryHelper placed before SQL classes to reduce backtracking
+  class QueryHelper {
+    + QueryHelper(databaseService : DatabaseService)
+    + executeQuery(sql : String, paramSetter : ParameterSetter, rowMapper : RowMapper) : List
+    + executeUpdate(sql : String, paramSetter : ParameterSetter) : int
+  }
+
+  ' SQL-based classes follow
+  class SqlBasedTrailRepo {
+    + SqlBasedTrailRepo(databaseService : DatabaseService)
+    + getAllTrails() : List<Trail>
+    + getRecommendedTrails() : List<Trail>
+    + findById(id : int) : Optional<Trail>
+    + upsert(trail : Trail) : void
+    + deleteById(id : int) : void
+  }
+
+  class SqlBasedKeywordRepo {
+    + SqlBasedKeywordRepo(databaseService : DatabaseService)
+    + getKeywords() : Map<String, List<String>>
+  }
+
+  class SqlBasedLogRepo <<to be implemented>> {
+    + SqlBasedLogRepo(databaseService : DatabaseService)
+    + getAllLogs() : List<TrailLog>
+    + findById(id : int) : Optional<TrailLog>
+    + deleteById(id : int) : void
+    + upsert(trailLog : TrailLog) : void
+  }
+}
+
+' Interface implementations
+FileBasedTrailRepo    ..|> ITrail
+SqlBasedTrailRepo     ..|> ITrail
+FileBasedKeywordRepo  ..|> IKeyword
+SqlBasedKeywordRepo   ..|> IKeyword
+
+' Dependencies to QueryHelper
+SqlBasedTrailRepo     *-- QueryHelper
+SqlBasedKeywordRepo   *-- QueryHelper
+SqlBasedLogRepo     *-- QueryHelper
+@enduml

@@ -1,0 +1,82 @@
+@startuml
+left to right direction
+skinparam packageStyle rectangle
+title Services Package
+
+package "services" {
+
+  class ImageService {
+    + loadTrailImage(url : String) : Image
+    + getDefaultTrailImage() : Image
+  }
+
+  class LogService <<to be implemented>>{
+    + LogService()
+    + addNewLog(trailLog : TrailLog) : void
+    + removeLogByID(id : int) : bool
+    + removeLogByName(name : String) : bool
+    + getLogBookCount() : int
+}
+
+  class MapService <<to be implemented>>{
+    + MapService()
+    + loadMap() : void
+    + highlightTrail() : void
+  }
+
+  class WeatherService <<to be implemented>>{
+    + WeatherService()
+    + getCurrent(lat : double, lon : double) : String
+    + getTrailForecast(trail : Trail, periodOfDays : int) : List<String>
+}
+
+  class MatchMakingService {
+    + generateTrailWeights(user : User) : void
+    + getRecommendedTrails(user : User, limit : int) : List<Trail>
+    + categoriseTrail(trail : Trail) : Set<String>
+    + scoreTrail(trailCategories : Set<String>) : double
+    + getPersonalisedTrails(page : int) : List<Trail>
+  }
+
+  class SearchService {
+    + setMaxResults(n : int) : void
+    + getNumberOfTrails() : int
+    + getNumberOfPages(query : String) : int
+    + getPage(page : int) : List<Trail>
+    + search(query : String, page : int) : List<Trail>
+  }
+
+  class SetupService {
+    + SetupService()
+    + setupDatabase() : void
+    + scrapeTrailImage(url : String) : void
+    + syncDB() : void
+    + setupApplicaiton() : void
+  }
+
+  class UserService {
+    + getUser() : User
+    + setUserParameters(stmt : PreparedStatement, user : User) : void
+    - loadUserFromDatabase() : User
+  }
+
+  class DatabaseService {
+    + DatabaseService()
+    + DatabaseService(databasePath : String)
+    + getConnection() : Connection
+    + databaseExists() : boolean
+    + deleteDatabase() : boolean
+    + createDatabaseIfNotExists() : void
+    + isSchemaUpToDate() : boolean
+  }
+
+}
+
+SearchService *-- DatabaseService
+MatchMakingService *-- DatabaseService
+UserService *-- DatabaseService
+SetupService *-- DatabaseService
+MapService *-- DatabaseService
+WeatherService *-- DatabaseService
+LogService *-- DatabaseService
+@enduml

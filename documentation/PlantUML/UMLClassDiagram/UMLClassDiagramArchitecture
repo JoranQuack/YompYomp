@@ -1,0 +1,103 @@
+@startuml
+left to right direction
+title YompYomp UML Class Diagram - Architecture and Package View
+
+package "Application" {
+  class FXAppEntry
+  class App
+}
+
+package "Models" {
+  class Trail
+  class User
+  enum Question
+  class TripLog
+}
+
+package "Service" {
+  class SetupService
+  class SearchService
+  class UserService
+  class MatchMakingService
+  class ImageService
+  class WeatherService <<to be implemented>>
+  class MapService <<to be implemented>>
+  class LogService <<to be implemented>>
+}
+
+package "DataAccess (SQLite DB)" {
+  interface ITrail
+  interface IKeyword
+  class FileBasedTrailRepo
+  class FileBasedKeywordRepo
+  class SQLBasedKeywordRepo
+  class SQLBasedTrailRepo
+  class SQLBasedLogRepo
+  class DatabaseService
+}
+
+package "GUI" {
+  class LogBookController <<to be implemented>>
+  class ScreenNavigator
+  abstract class Controller
+  class WelcomeController
+  class DashboardController
+  class MatchmakingController
+  class ProfileQuizController
+  class ProfileSetupGeneralController
+  class TrailsController
+  package "Components" {
+    class NavbarComponent
+    class TrailCardComponent
+  }
+}
+
+'skinparam linetype ortho
+
+'Controller relationships
+FXAppEntry --> ScreenNavigator
+ScreenNavigator ..> Controller
+
+'Inheritence with the abstract controller class
+Controller <|-- WelcomeController
+Controller <|-- ProfileSetupGeneralController
+Controller <|-- MatchmakingController
+Controller <|-- ProfileQuizController
+Controller <|-- DashboardController
+Controller <|-- TrailsController
+Controller <|-- LogBookController
+
+Controller ..> NavbarComponent
+Controller ..> TrailCardComponent
+
+App ..> SetupService
+TrailsController ..> SearchService
+ProfileSetupGeneralController ..> UserService
+ProfileQuizController ..> UserService
+MatchmakingController ..> MatchMakingService
+DashboardController ..> SearchService
+WelcomeController ..> UserService
+NavbarComponent ..> ImageService
+TrailsController ..> MapService
+LogBookController ..> LogService
+TrailsController ..> WeatherService
+
+SearchService ..> ITrail
+SetupService ..> ITrail
+SetupService ..> IKeyword
+LogService ..> SQLBasedLogRepo
+LogService ..> ITrail
+
+ITrail <|.. FileBasedTrailRepo
+ITrail <|.. SQLBasedTrailRepo
+IKeyword <|.. FileBasedKeywordRepo
+IKeyword <|.. SQLBasedKeywordRepo
+
+UserService ..> User
+MatchMakingService ..> User
+MatchMakingService ..> Trail
+SearchService ..> Trail
+SetupService ..> Trail
+ProfileQuizController ..> Question
+App ..> FXAppEntry
+@enduml

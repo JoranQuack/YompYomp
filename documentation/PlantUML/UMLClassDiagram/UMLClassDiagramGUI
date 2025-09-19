@@ -1,0 +1,109 @@
+@startuml
+left to right direction
+skinparam packageStyle rectangle
+title GUI Package
+
+package "GUI" {
+
+  abstract class Controller {
+    + setNavigator(n : ScreenNavigator) : void
+    + showError(message : String) : void
+  }
+
+  class ScreenNavigator {
+    + launch(controller : Controller) : void
+  }
+
+  class FXAppEntry {
+    + start(stage : Stage) : void
+    + main(args : String[]) : void
+  }
+  FXAppEntry -up-|> Application
+  FXAppEntry ..> ScreenNavigator
+  hide Application
+
+  class TrailsController {
+    + TrailsController()
+    + TrailsController(n : ScreenNavigator)
+    + initialize() : void
+    - updateDisplay(trails : List<Trail>) : void
+  }
+
+  class DashboardController {
+    + DashboardController()
+    + DashboardController(n : ScreenNavigator)
+    + initialize() : void
+    - updateTrailsDisplay(trails : List<Trail>) : void
+  }
+
+  class WelcomeController {
+    + WelcomeController(n : ScreenNavigator)
+    + initialize() : void
+    - onSetup() : void
+    - onSkip() : void
+  }
+
+  class MatchmakingController {
+    + MatchmakingController(n : ScreenNavigator)
+    + initialize() : void
+    - startMatchmaking() : void
+    - showMatches(trails : List<Trail>) : void
+  }
+
+  class LogBookController <<to be implemented>>{
+    + LogBookController(n : ScreenNavigator)
+    + initialize() : void
+    - showLogBook() : void
+    - highlightTrailLog() : bool
+}
+
+  class ProfileQuizController {
+    + ProfileQuizController(n : ScreenNavigator)
+    + initialize() : void
+    - updateQuestionView() : void
+    - next() : void
+    - previous() : void
+    - submit() : void
+  }
+
+  class ProfileSetupGeneralController {
+    + ProfileSetupGeneralController(n : ScreenNavigator)
+    + initialize() : void
+    - saveUserPreferences() : void
+    - onContinue() : void
+  }
+
+  Controller <|-- DashboardController
+  Controller <|-- TrailsController
+  Controller <|-- WelcomeController
+  Controller <|-- MatchmakingController
+  Controller <|-- ProfileQuizController
+  Controller <|-- ProfileSetupGeneralController
+  Controller <|-- LogBookController
+
+  package "components" as components {
+    class TrailCardComponent {
+      + setTrail(trail : Trail) : void
+      + setMatchScore(score : double) : void
+      + onOpenDetails() : void
+    }
+
+    class NavbarComponent {
+      + setPage(index : int) : void
+      + onHome() : void
+      + onTrails() : void
+      + onProfile() : void
+      + onSettings() : void
+    }
+  }
+
+  NavbarComponent --> DashboardController
+  NavbarComponent --> TrailsController
+
+  DashboardController -- components.TrailCardComponent
+  TrailsController -- components.TrailCardComponent
+
+  Controller --> ScreenNavigator
+  ScreenNavigator ..> Controller
+}
+@enduml
