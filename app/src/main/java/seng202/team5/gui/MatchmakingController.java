@@ -4,6 +4,7 @@ import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ProgressIndicator;
+import seng202.team5.App;
 import seng202.team5.data.DatabaseService;
 import seng202.team5.data.SqlBasedKeywordRepo;
 import seng202.team5.data.SqlBasedTrailRepo;
@@ -11,8 +12,6 @@ import seng202.team5.models.User;
 import seng202.team5.services.MatchmakingService;
 
 public class MatchmakingController extends Controller {
-    private MatchmakingService matchmakingService;
-
     @FXML
     private ProgressIndicator progressIndicator;
 
@@ -23,10 +22,6 @@ public class MatchmakingController extends Controller {
      */
     public MatchmakingController(ScreenNavigator navigator) {
         super(navigator);
-        DatabaseService databaseService = new DatabaseService();
-        matchmakingService = new MatchmakingService(
-                new SqlBasedKeywordRepo(databaseService),
-                new SqlBasedTrailRepo(databaseService));
 
         // Use Platform.runLater to execute
         javafx.application.Platform.runLater(this::startMatchmaking);
@@ -50,12 +45,24 @@ public class MatchmakingController extends Controller {
         progressIndicator.setProgress(-1.0);
 
         final ScreenNavigator navigator = super.getNavigator();
-        final User user = super.getUserService().getUser();
 
         // Create a background task for the matchmaking process
         Task<Void> matchmakingTask = new Task<Void>() {
             @Override
             protected Void call() throws Exception {
+                // Wait for database setup before we can matchmake
+                System.out.println("Waiting for database setup to complete...");
+                App.getSetupService().waitForDatabaseSetup();
+                System.out.println("Database setup complete, starting matchmaking...");
+
+                // Create MatchmakingService AFTER database setup is complete
+                DatabaseService databaseService = new DatabaseService();
+                MatchmakingService matchmakingService = new MatchmakingService(
+                        new SqlBasedKeywordRepo(databaseService),
+                        new SqlBasedTrailRepo(databaseService));
+
+                // Get user AFTER database setup is complete
+                User user = getUserService().getUser();
                 if (user == null) {
                     return null;
                 }
@@ -100,8 +107,9 @@ public class MatchmakingController extends Controller {
      */
     private void exitThread() {
         Thread.currentThread().interrupt();
-        showAlert(AlertType.ERROR, "Matchmaking Failed", "Matchmaking failed, please close the application and try again.");
-        super.getNavigator().launchScreen(new DashboardController(super.getNavigator()), null); //TODO this should take user to guest dashboard screen
+        showAlert(AlertType.ERROR, "Matchmaking Failed",
+                "Matchmaking failed, please close the application and try again.");
+        super.getNavigator().launchScreen(new DashboardController(super.getNavigator()), null);
     }
 
 }
