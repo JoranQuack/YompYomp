@@ -1,5 +1,5 @@
 -- Remember to increment the schema version here when making changes!
--- Schema version: 1.4
+-- Schema version: 1.6
 PRAGMA foreign_keys = off;
 
 BEGIN TRANSACTION;
@@ -27,8 +27,10 @@ CREATE TABLE
     IF NOT EXISTS trail (
         id INTEGER,
         name TEXT,
-        description TEXT,
+        translation TEXT,
+        region TEXT,
         difficulty TEXT,
+        description TEXT,
         completion_info TEXT,
         min_completion_time_minutes INTEGER,
         max_completion_time_minutes INTEGER,
@@ -38,6 +40,7 @@ CREATE TABLE
         has_variable_time BOOL,
         thumb_URL TEXT,
         web_URL TEXT,
+        culture_URL TEXT,
         user_weight REAL,
         PRIMARY KEY (id)
     );

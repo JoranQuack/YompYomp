@@ -48,7 +48,6 @@ public class ViewTrailController extends Controller {
     private ImageView trailThumbnail;
     @FXML
     private Button backButton;
-    // hut labels and images currently invisible
 
     /**
      * Initialises the view trail screen with data retrieved from database
@@ -56,7 +55,6 @@ public class ViewTrailController extends Controller {
     @FXML
     private void initialize() {
         trailNameLabel.setText(trail.getName());
-
         Image trailImage = imageService.loadTrailImage(trail.getThumbnailURL());
         trailThumbnail.setImage(trailImage);
         double weight = trail.getUserWeight();
@@ -66,8 +64,13 @@ public class ViewTrailController extends Controller {
         descriptionLabel.setText(trail.getDescription());
         backButton.setOnAction(e -> onBackButtonClicked());
         editInfoButton.setOnAction(e -> onEditInfoButtonClicked());
+        if (!trail.getTranslation().isEmpty()) {
+            translationLabel.setText(trail.getTranslation());
+            translationLabel.setVisible(true);
+        } else {
+            translationLabel.setVisible(false);
+        }
         // TODO: add icon for map
-        // TODO: show completion time
     }
 
     @FXML

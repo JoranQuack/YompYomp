@@ -23,14 +23,16 @@ public class SqlBasedTrailRepo implements ITrail {
 
     private static final String UPSERT_SQL = """
             INSERT INTO trail (
-                id, name, description, difficulty, completion_info, min_completion_time_minutes,
+                id, name, translation, region, difficulty, description, completion_info, min_completion_time_minutes,
                 max_completion_time_minutes, completion_type, time_unit, is_multi_day, has_variable_time,
-                thumb_url, web_url, user_weight
-            ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)
+                thumb_url, web_url, culture_url, user_weight
+            ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
             ON CONFLICT(id) DO UPDATE SET
                 name=excluded.name,
-                description=excluded.description,
+                translation=excluded.translation,
+                region=excluded.region,
                 difficulty=excluded.difficulty,
+                description=excluded.description,
                 completion_info=excluded.completion_info,
                 min_completion_time_minutes=excluded.min_completion_time_minutes,
                 max_completion_time_minutes=excluded.max_completion_time_minutes,
@@ -40,6 +42,7 @@ public class SqlBasedTrailRepo implements ITrail {
                 has_variable_time=excluded.has_variable_time,
                 thumb_url=excluded.thumb_url,
                 web_url=excluded.web_url,
+                culture_url=excluded.culture_url,
                 user_weight=excluded.user_weight
             """;
 
@@ -162,6 +165,8 @@ public class SqlBasedTrailRepo implements ITrail {
         return new Trail(
                 rs.getInt("id"),
                 rs.getString("name"),
+                rs.getString("translation"),
+                rs.getString("region"),
                 rs.getString("difficulty"),
                 rs.getString("description"),
                 rs.getString("completion_info"),
@@ -173,7 +178,19 @@ public class SqlBasedTrailRepo implements ITrail {
                 rs.getBoolean("has_variable_time"),
                 rs.getString("thumb_url"),
                 rs.getString("web_url"),
+                rs.getString("culture_url"),
                 rs.getDouble("user_weight"));
+    }
+
+    /**
+     * Maps the result returned from MAX(id) to an integer
+     *
+     * @param rs result set
+     * @return integer of max id
+     * @throws java.sql.SQLException if column cannot be read
+     */
+    private int mapMaxId(java.sql.ResultSet rs) throws java.sql.SQLException {
+        return rs.getInt("MAX(id)");
     }
 
     /**
@@ -186,18 +203,21 @@ public class SqlBasedTrailRepo implements ITrail {
     private void setTrailParameters(java.sql.PreparedStatement stmt, Trail trail) throws java.sql.SQLException {
         stmt.setInt(1, trail.getId());
         stmt.setString(2, trail.getName());
-        stmt.setString(3, trail.getDescription());
-        stmt.setString(4, trail.getDifficulty());
-        stmt.setString(5, trail.getCompletionInfo());
-        stmt.setInt(6, trail.getMinCompletionTimeMinutes());
-        stmt.setInt(7, trail.getMaxCompletionTimeMinutes());
-        stmt.setString(8, trail.getCompletionType());
-        stmt.setString(9, trail.getTimeUnit());
-        stmt.setBoolean(10, trail.isMultiDay());
-        stmt.setBoolean(11, trail.hasVariableTime());
-        stmt.setString(12, trail.getThumbnailURL());
-        stmt.setString(13, trail.getWebpageURL());
-        stmt.setDouble(14, trail.getUserWeight());
+        stmt.setString(3, trail.getTranslation());
+        stmt.setString(4, trail.getRegion());
+        stmt.setString(5, trail.getDifficulty());
+        stmt.setString(6, trail.getDescription());
+        stmt.setString(7, trail.getCompletionInfo());
+        stmt.setInt(8, trail.getMinCompletionTimeMinutes());
+        stmt.setInt(9, trail.getMaxCompletionTimeMinutes());
+        stmt.setString(10, trail.getCompletionType());
+        stmt.setString(11, trail.getTimeUnit());
+        stmt.setBoolean(12, trail.isMultiDay());
+        stmt.setBoolean(13, trail.hasVariableTime());
+        stmt.setString(14, trail.getThumbnailURL());
+        stmt.setString(15, trail.getWebpageURL());
+        stmt.setString(16, trail.getCultureUrl());
+        stmt.setDouble(17, trail.getUserWeight());
     }
 
     /**
@@ -205,6 +225,6 @@ public class SqlBasedTrailRepo implements ITrail {
      */
     public int getNewTrailId() {
         String getIdQuery = "SELECT MAX(id) FROM trail";
-        return queryHelper.executeQuerySingle(getIdQuery, null, this::mapRowToTrail).get().getId() + 1;
+        return queryHelper.executeQuerySingle(getIdQuery, null, this::mapMaxId).get() + 1;
     }
 }

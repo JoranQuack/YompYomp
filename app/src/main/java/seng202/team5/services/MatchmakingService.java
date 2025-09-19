@@ -34,7 +34,6 @@ public class MatchmakingService {
      */
     public MatchmakingService(SqlBasedKeywordRepo keywordRepo, SqlBasedTrailRepo trailRepo) {
         this.categoryToKeywords = keywordRepo.getKeywords();
-        System.out.println("Categories loaded: " + categoryToKeywords.size());
         this.trailRepo = trailRepo;
     }
 
@@ -56,7 +55,7 @@ public class MatchmakingService {
      * Case-insensitive matching.
      */
     private void buildReverseIndex() throws MatchmakingFailedException {
-        if (!categoryToKeywords.isEmpty()) {
+        if (categoryToKeywords != null) {
             for (Map.Entry<String, List<String>> entry : categoryToKeywords.entrySet()) {
                 String category = entry.getKey();
                 for (String keyword : entry.getValue()) {
@@ -183,18 +182,18 @@ public class MatchmakingService {
             return 0.0;
         }
 
-        // strength part
+        // strength part: how much each trail matters to the user
         double strength = trailCategories.stream()
                 .mapToInt(category -> userWeights.getOrDefault(category, 0))
                 .sum() / maxScore;
 
-        // coverage part
+        // coverage part: what fraction of the trail's categories are relevant to the user
         long matched = trailCategories.stream()
-                .filter(category -> userWeights.containsKey(category))
+                .filter(userWeights::containsKey)
                 .count();
         double coverage = (double) matched / trailCategories.size();
 
-        // blend of strength and coverage
+        // blend of strength and coverage: STRENGTH_WEIGHT = 0.8 for 80% strength 20% coverage, see MatchmakingServiceTest for an example
         return STRENGTH_WEIGHT * strength + (1 - STRENGTH_WEIGHT) * coverage;
     }
 

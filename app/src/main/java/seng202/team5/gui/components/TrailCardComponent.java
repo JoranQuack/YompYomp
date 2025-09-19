@@ -12,6 +12,7 @@ import javafx.scene.layout.VBox;
 import seng202.team5.models.Trail;
 import seng202.team5.services.ImageService;
 import seng202.team5.utils.CompletionTimeParser;
+import seng202.team5.utils.StringManipulator;
 
 public class TrailCardComponent extends VBox {
 
@@ -51,31 +52,19 @@ public class TrailCardComponent extends VBox {
     }
 
     /**
-     * Capitalise the first letter of a string.
-     *
-     * @param str The input string
-     * @return The capitalised string
-     */
-    private String capitaliseFirstLetter(String str) {
-        if (str == null || str.isEmpty()) {
-            return str;
-        }
-        return str.substring(0, 1).toUpperCase() + str.substring(1);
-    }
-
-    /**
      * Completion time formatting.
      *
      * @param trail
      */
     private String formatCompletionTime(Trail trail) {
         if (trail.getMinCompletionTimeMinutes() == trail.getMaxCompletionTimeMinutes()) {
-            return capitaliseFirstLetter(
+            return StringManipulator.capitaliseFirstLetter(
                     CompletionTimeParser.formatMinutesToString(trail.getMinCompletionTimeMinutes()));
         }
-        return capitaliseFirstLetter(CompletionTimeParser.formatMinutesToString(trail.getMinCompletionTimeMinutes()))
+        return StringManipulator.capitaliseFirstLetter(
+                CompletionTimeParser.formatMinutesToString(trail.getMinCompletionTimeMinutes()))
                 + " - "
-                + capitaliseFirstLetter(
+                + StringManipulator.capitaliseFirstLetter(
                         CompletionTimeParser.formatMinutesToString(trail.getMaxCompletionTimeMinutes()));
     }
 
@@ -93,7 +82,7 @@ public class TrailCardComponent extends VBox {
         regionLabel.setVisible(false); // Hide region label for now
 
         if (!trail.getDifficulty().contains("unknown")) {
-            difficultyLabel.setText(capitaliseFirstLetter(trail.getDifficulty()));
+            difficultyLabel.setText(StringManipulator.capitaliseFirstLetter(trail.getDifficulty()));
         } else {
             difficultyLabel.setVisible(false);
         }
@@ -105,7 +94,7 @@ public class TrailCardComponent extends VBox {
         }
 
         if (!trail.getCompletionType().contains("unknown")) {
-            typeLabel.setText(capitaliseFirstLetter(trail.getCompletionType()));
+            typeLabel.setText(StringManipulator.capitaliseFirstLetter(trail.getCompletionType()));
         } else {
             typeLabel.setVisible(false);
         }
