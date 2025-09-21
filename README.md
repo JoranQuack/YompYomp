@@ -1,4 +1,6 @@
-![YOMPYOMP_LOGO](app/src/main/resources/images/YompYompLogo.png)
+<div style="display: flex; justify-content: center">
+    <img src="app/src/main/resources/images/YompYompLogo.png" alt="YOMPYOMP_LOGO" width="500"/>
+</div>
 
 # SENG202-25-Team5 - YompYomp
 
