@@ -96,9 +96,9 @@ These are features the team is most proud of.
 
 ## Authors
 
-- Hayley Kawelenga
-- Jonny Chan
-- Joran Le Quellec
-- Lam (Lucy) Tran
-- Sam Ladbrook
-- Sienna Robinson
+- [Hayley Kawelenga](https://eng-git.canterbury.ac.nz/hka105)
+- [Jonny Chan](https://eng-git.canterbury.ac.nz/jch485)
+- [Joran Le Quellec](https://eng-git.canterbury.ac.nz/jle209)
+- [Lam (Lucy) Tran](https://eng-git.canterbury.ac.nz/ltr53)
+- [Sam Ladbrook](https://eng-git.canterbury.ac.nz/sla202)
+- [Sienna Robinson](https://eng-git.canterbury.ac.nz/sro179)
