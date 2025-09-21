@@ -2,6 +2,8 @@
     <img src="app/src/main/resources/images/YompYompLogo.png" alt="YOMPYOMP_LOGO" width="500"/>
 </div>
 
+[![Pipeline](https://eng-git.canterbury.ac.nz/seng202-2025/seng202-25-team5/badges/main/coverage.svg)](https://eng-git.canterbury.ac.nz/seng202-2025/seng202-25-team5/)
+
 # SENG202-25-Team5 - YompYomp
 
 6-person group project to create a New Zealand tramping app, as part of the SENG202 2025 course at the University of Canterbury.
