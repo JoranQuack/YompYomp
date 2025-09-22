@@ -77,11 +77,12 @@ To run tests, run the following command
 
 - **UC_1** Complete Profile Quiz
 - **UC_2** View Personalised Recommended Trails
-- **UC_3** View All Trails
-- **UC_4** Search Trails
-- **UC_5** View Single Trail (without map and weather)
-- **UC_6** Add Missing Trail
-- **UC_7** Modify Existing Trail
+- **UC_3** View Highlighted Trails
+- **UC_4** View All Trails
+- **UC_5** Search Trails
+- **UC_6** View Single Trail (without map and weather)
+- **UC_7** Add Missing Trail
+- **UC_8** Modify Existing Trail
 
 ### Highlighted Features
 
@@ -97,11 +98,11 @@ These are features the team is most proud of.
 
 ### Use Cases and Features Not Yet Implemented
 
-- **UC_8** Log Trip
-- **UC_9** Rate Trip
-- **UC_10** Access Logbook
-- Map features for **UC_5**
-- Weather features for **UC_5**
+- **UC_9** Log Trip
+- **UC_10** Rate Trip
+- **UC_11** Access Logbook
+- Map features for **UC_6**
+- Weather features for **UC_6**
 
 ## Authors
 
