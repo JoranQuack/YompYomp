@@ -1,6 +1,6 @@
-<p align="center">
+<center>
     <img src="app/src/main/resources/images/YompYompLogo.png" alt="YOMPYOMP_LOGO" width="500"/>
-</p>
+</center>
 
 [![Pipeline](https://eng-git.canterbury.ac.nz/seng202-2025/seng202-25-team5/badges/main/pipeline.svg)](https://eng-git.canterbury.ac.nz/seng202-2025/seng202-25-team5/)
 
