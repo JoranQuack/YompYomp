@@ -29,7 +29,6 @@ test_coverage:
         coverage_format: cobertura
         path: app/build/reports/jacoco/test/jacocoTestReport.xml
     paths:
-      - app/build/reports/jacoco/test/html/
       - app/build/jacocoHtml/
     expire_in: 30 days
   allow_failure: false
