@@ -5,7 +5,7 @@
 <div align="center">
 
 [![Pipeline](https://eng-git.canterbury.ac.nz/seng202-2025/seng202-25-team5/badges/main/pipeline.svg)](https://eng-git.canterbury.ac.nz/seng202-2025/seng202-25-team5/)
-[![coverage report](https://eng-git.canterbury.ac.nz/seng202-2025/seng202-25-team5/badges/main/coverage.svg)](https://eng-git.canterbury.ac.nz/seng202-2025/seng202-25-team5/-/commits/main)
+[![coverage report](https://eng-git.canterbury.ac.nz/seng202-2025/seng202-25-team5/badges/documentation/coverage.svg)](https://eng-git.canterbury.ac.nz/seng202-2025/seng202-25-team5/-/commits/documentation)
 
 </div>
 
