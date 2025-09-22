@@ -137,6 +137,17 @@ jacocoTestReport {
         html.required = true
         html.outputLocation = layout.buildDirectory.dir('jacocoHtml')
     }
+    afterEvaluate {
+        classDirectories.setFrom(files(classDirectories.files.collect {
+            fileTree(dir: it, exclude: [
+                'seng202/team5/gui/**',
+                'seng202/team5/gui/components/**',
+                'seng202/team5/models/**',
+                'seng202/team5/App.class',
+                'seng202/team5/exceptions/**'
+            ])
+        }))
+    }
 }
 
 javadoc {
