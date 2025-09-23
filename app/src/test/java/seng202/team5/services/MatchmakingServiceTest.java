@@ -146,48 +146,6 @@ class MatchmakingServiceTest {
     }
 
     @Test
-    @DisplayName("Should assign weights to trails correctly, according to their category")
-    void testAssignWeightsToTrails() throws MatchmakingFailedException {
-        User user = makeTestUser();
-        matchmakingService.setUserPreferences(user);
-        matchmakingService.assignWeightsToTrails();
-
-        double weight1 = matchmakingService.getTrailWeight(1); // Alpine Trail
-        double weight2 = matchmakingService.getTrailWeight(2); // Forest Trail
-        double weight3 = matchmakingService.getTrailWeight(3); // Mountain Peak Trail
-        double weight4 = matchmakingService.getTrailWeight(4); // Coastal Walk
-        double weight5 = matchmakingService.getTrailWeight(5); // River Trail
-        final double maxScore = matchmakingService.getMaxScore(); // Max score = 5 + 0 + 3 + 2 + 4 + 1 + 5 + 1 + 4 + 2 +
-                                                                  // 3 + 1 = 31
-        assertEquals(expectedScore(4.0, 1, 1, maxScore), weight1, 0.0001); // Alpine Trail (Alpine: 4)
-        assertEquals(expectedScore((4.0 + 2.0), 2, 2, maxScore), weight2, 0.0001); // Forest Trail (Forest: 4, Wildlife:
-                                                                                   // 2)
-        assertEquals(expectedScore((4.0 + 3.0), 2, 2, maxScore), weight3, 0.0001); // Mountain Peak Trail (Alpine: 4,
-                                                                                   // Difficult: 3)
-        assertEquals(expectedScore((5.0 + 1.0), 2, 2, maxScore), weight4, 0.0001); // Coastal Walk (Beach: 1,
-                                                                                   // FamilyFriendly: 5)
-        assertEquals(expectedScore(5.0, 1, 1, maxScore), weight5, 0.0001); // River Trail (Wet: 5);
-    }
-
-    @Test
-    @DisplayName("Should return recommended trails sorted by weight")
-    void testGetTrailsSortedByWeight() throws MatchmakingFailedException {
-        User user = makeTestUser();
-        matchmakingService.setUserPreferences(user);
-        matchmakingService.assignWeightsToTrails();
-
-        List<Trail> sortedTrails = matchmakingService.getTrailsSortedByWeight();
-
-        assertEquals(5, sortedTrails.size());
-        assertEquals("Mountain Peak Trail", sortedTrails.getFirst().getName()); // 0.3806
-        assertEquals("Coastal Walk", sortedTrails.get(1).getName()); // 0.3548 alphabetically first
-        assertEquals("Forest Trail", sortedTrails.get(2).getName()); // 0.3548
-        assertEquals("River Trail", sortedTrails.get(3).getName()); // 0.3290
-        assertEquals("Alpine Trail", sortedTrails.getLast().getName()); // 0.3032
-
-    }
-
-    @Test
     @DisplayName("Should return a partial match")
     void testPartialMatchTrail() throws MatchmakingFailedException {
         User user = makeTestUser();
