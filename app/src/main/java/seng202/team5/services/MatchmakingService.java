@@ -22,7 +22,6 @@ public class MatchmakingService {
     private final Map<String, Integer> userWeights = new HashMap<>(); // Higher weight is more favourable
     private final Map<Integer, Double> trailWeights = new HashMap<>(); // Identified by trail ID
     private SqlBasedTrailRepo trailRepo;
-    private int maxResults = 100;
 
     /**
      * Creates a MatchmakingService instance.
@@ -261,42 +260,6 @@ public class MatchmakingService {
      */
     public List<Trail> getTrailsSortedByWeight() {
         return getSortedTrails();
-    }
-
-    /**
-     * Returns a page of trails sorted by their personalised weight.
-     *
-     * @param page the page number (0-based)
-     * @return a list containing up to pageSize trails for the specified page
-     */
-    public List<Trail> getPersonalisedTrails(int page) {
-        if (page < 0) {
-            throw new IllegalArgumentException("Page number must be non-negative.");
-        }
-
-        List<Trail> sortedTrails = getSortedTrails();
-        int startIndex = page * maxResults;
-        return sortedTrails.stream()
-                .skip(startIndex)
-                .limit(maxResults)
-                .collect(Collectors.toList());
-    }
-
-    /**
-     * Gets max results
-     */
-    public int getMaxResults() {
-        return maxResults;
-    }
-
-    /**
-     * Set max results
-     */
-    public void setMaxResults(int maxResults) {
-        if (maxResults <= 0) {
-            throw new IllegalArgumentException("Max results must be positive.");
-        }
-        this.maxResults = maxResults;
     }
 
     /**
