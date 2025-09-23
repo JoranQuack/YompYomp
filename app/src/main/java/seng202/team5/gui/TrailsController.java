@@ -5,11 +5,11 @@ import java.util.List;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.scene.control.*;
-import javafx.scene.control.*;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.VBox;
 import seng202.team5.data.DatabaseService;
 import seng202.team5.data.SqlBasedTrailRepo;
+import seng202.team5.data.SqlBasedFilterOptionsRepo;
 import seng202.team5.gui.components.NavbarComponent;
 import seng202.team5.gui.components.TrailCardComponent;
 import seng202.team5.models.Trail;
@@ -81,7 +81,10 @@ public class TrailsController extends Controller {
      * Initializes the search service.
      */
     private void initializeSearchService() {
-        this.searchService = new SearchService(new SqlBasedTrailRepo(new DatabaseService()));
+        DatabaseService databaseService = new DatabaseService();
+        SqlBasedTrailRepo trailRepo = new SqlBasedTrailRepo(databaseService);
+        SqlBasedFilterOptionsRepo filterOptionsRepo = new SqlBasedFilterOptionsRepo(databaseService);
+        this.searchService = new SearchService(trailRepo, filterOptionsRepo);
     }
 
     /**
@@ -102,7 +105,8 @@ public class TrailsController extends Controller {
             Label noResultsLabel = new Label(
                     "There are no trails available, as the application has failed. Please close the application and try again.");
             trailsContainer.getChildren().add(noResultsLabel);
-            showAlert(Alert.AlertType.ERROR, "Trails failed to load", "Failed to load trails, please close the application and try again.");
+            showAlert(Alert.AlertType.ERROR, "Trails failed to load",
+                    "Failed to load trails, please close the application and try again.");
             return;
         }
 
@@ -147,9 +151,6 @@ public class TrailsController extends Controller {
      * @param filterType The filter type identifier
      */
     private void initializeChoiceBox(ChoiceBox<String> choiceBox, String filterType) {
-        choiceBox.getSelectionModel().selectedItemProperty().addListener(
-                (observable, oldValue, newValue) -> onFilterChanged());
-
         List<String> options = searchService.getFilterOptions(filterType);
 
         // Special sorting for difficulty
@@ -159,6 +160,8 @@ public class TrailsController extends Controller {
 
         choiceBox.getItems().addAll(options);
         choiceBox.setValue(searchService.getDefaultFilterValue(filterType));
+        choiceBox.getSelectionModel().selectedItemProperty().addListener(
+                (observable, oldValue, newValue) -> onFilterChanged());
     }
 
     /**
@@ -190,9 +193,6 @@ public class TrailsController extends Controller {
      * Initialises the sort choice box with the available sort options that we have
      */
     private void initializeSortChoiceBox() {
-        sortChoiceBox.getSelectionModel().selectedItemProperty().addListener(
-                (observable, oldValue, newValue) -> onSortChanged());
-
         List<String> sortOptions = searchService.getSortOptions();
         sortChoiceBox.getItems().addAll(sortOptions);
 
@@ -202,6 +202,9 @@ public class TrailsController extends Controller {
         } else {
             sortChoiceBox.setValue("Match");
         }
+
+        sortChoiceBox.getSelectionModel().selectedItemProperty().addListener(
+                (observable, oldValue, newValue) -> onSortChanged());
     }
 
     /**
@@ -230,9 +233,9 @@ public class TrailsController extends Controller {
      * Method to update the search results display.
      */
     private void updateSearchDisplay() {
-            List<Trail> trails = searchService.getPage(0);
-            updateTrailsDisplay(trails);
-            resetPageChoiceBox();
+        List<Trail> trails = searchService.getPage(0);
+        updateTrailsDisplay(trails);
+        resetPageChoiceBox();
     }
 
     /**
