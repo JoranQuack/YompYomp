@@ -22,7 +22,6 @@ public class MatchmakingService {
     private final Map<String, Integer> userWeights = new HashMap<>(); // Higher weight is more favourable
     private final Map<Integer, Double> trailWeights = new HashMap<>(); // Identified by trail ID
     private SqlBasedTrailRepo trailRepo;
-    private boolean weightsCalculated = false;
     private int maxResults = 100;
 
     /**
@@ -74,7 +73,6 @@ public class MatchmakingService {
     private void resetWeights() {
         userWeights.clear();
         trailWeights.clear();
-        weightsCalculated = false;
     }
 
     /**
@@ -187,13 +185,15 @@ public class MatchmakingService {
                 .mapToInt(category -> userWeights.getOrDefault(category, 0))
                 .sum() / maxScore;
 
-        // coverage part: what fraction of the trail's categories are relevant to the user
+        // coverage part: what fraction of the trail's categories are relevant to the
+        // user
         long matched = trailCategories.stream()
                 .filter(userWeights::containsKey)
                 .count();
         double coverage = (double) matched / trailCategories.size();
 
-        // blend of strength and coverage: STRENGTH_WEIGHT = 0.8 for 80% strength 20% coverage, see MatchmakingServiceTest for an example
+        // blend of strength and coverage: STRENGTH_WEIGHT = 0.8 for 80% strength 20%
+        // coverage, see MatchmakingServiceTest for an example
         return STRENGTH_WEIGHT * strength + (1 - STRENGTH_WEIGHT) * coverage;
     }
 
@@ -214,7 +214,6 @@ public class MatchmakingService {
                 trailWeights.put(trail.getId(), weight);
             }
 
-            weightsCalculated = true;
         } else {
             throw new MatchmakingFailedException("Trails is empty");
         }
