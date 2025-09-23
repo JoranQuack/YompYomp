@@ -1,72 +1,57 @@
 package seng202.team5.services;
 
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.function.BiPredicate;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-
+import seng202.team5.data.SqlBasedFilterOptionsRepo;
 import seng202.team5.data.SqlBasedTrailRepo;
 import seng202.team5.models.Trail;
 
+import java.util.*;
+import java.util.stream.Collectors;
+
 /**
- * Service for searching and filtering trails with pagination support.
- * Provides trail search functionality and pagination calculations.
+ * Service class responsible for searching, sorting, filtering trails
  */
 public class SearchService {
+
+    /**
+     * Default values for different filter types.
+     */
+    private static final Map<String, String> DEFAULT_VALUES = Map.of(
+            "completionType", "All types",
+            "timeUnit", "All durations",
+            "difficulty", "All difficulties",
+            "multiDay", "Any time range");
+
+    /**
+     * Predefined difficulty order for sorting.
+     */
+    private static final List<String> DIFFICULTY_ORDER = List.of(
+            "easiest", "easy", "intermediate", "advanced", "expert");
+
+    private final SqlBasedFilterOptionsRepo filterOptionsRepo;
+
     private List<Trail> trails;
     private List<Trail> filteredTrails;
     private Map<String, String> filters;
-    private int maxResults = 50;
-    private String currentSortBy = "name"; // Default sorting by name
-    private boolean isAscending = true; // Default to ascending order
 
-    /** Ordered list of difficulty levels for proper sorting */
-    private static final List<String> DIFFICULTY_ORDER = List.of("easiest", "easy", "intermediate", "advanced",
-            "expert");
+    private int maxResults = 50;
+    private String currentSortBy = "name";
+    private boolean isAscending = true;
 
     /**
-     * Configuration for a filter type containing all necessary metadata.
+     * Creates SearchService with database-backed filter options.
      */
-    private static class FilterConfig {
-        final String allOptionText;
-        final Function<Trail, String> fieldExtractor;
-        final BiPredicate<Trail, String> predicate;
-
-        FilterConfig(String allOptionText, Function<Trail, String> fieldExtractor,
-                BiPredicate<Trail, String> predicate) {
-            this.allOptionText = allOptionText;
-            this.fieldExtractor = fieldExtractor;
-            this.predicate = predicate;
-        }
+    public SearchService(SqlBasedTrailRepo sqlBasedTrailRepo, SqlBasedFilterOptionsRepo filterOptionsRepo) {
+        this.filterOptionsRepo = filterOptionsRepo;
+        this.trails = sqlBasedTrailRepo.getAllTrails();
+        this.filteredTrails = trails;
+        this.filters = new HashMap<>();
     }
 
-    // Centralized filter configuration - adding a new filter only requires one line
-    // here!
-    private final Map<String, FilterConfig> filterConfigs = Map.of(
-            "query", new FilterConfig("", Trail::getName,
-                    (trail, value) -> isNullOrEmpty(value) ||
-                            trail.getName().toLowerCase().contains(value.strip().toLowerCase())),
-            "completionType", new FilterConfig("All types", Trail::getCompletionType,
-                    (trail, value) -> isNullOrEmpty(value) || value.equals("All types") ||
-                            trail.getCompletionType().equalsIgnoreCase(value)),
-            "timeUnit", new FilterConfig("All durations", Trail::getTimeUnit,
-                    (trail, value) -> isNullOrEmpty(value) || value.equals("All durations") ||
-                            trail.getTimeUnit().equalsIgnoreCase(value)),
-            "difficulty", new FilterConfig("All difficulties", Trail::getDifficulty,
-                    (trail, value) -> isNullOrEmpty(value) || value.equals("All difficulties") ||
-                            trail.getDifficulty().equalsIgnoreCase(value)),
-            "multiDay", new FilterConfig("Any time range", trail -> trail.isMultiDay() ? "Multi-day" : "Day walk",
-                    (trail, value) -> isNullOrEmpty(value) || value.equals("Any time range") ||
-                            (value.equals("Multi-day") && trail.isMultiDay()) ||
-                            (value.equals("Day walk") && !trail.isMultiDay())));
-
     /**
-     * Creates SearchService with injected SQLBasedTrailRepo.
+     * Legacy constructor for testing (fallback without filter options repo).
      */
     public SearchService(SqlBasedTrailRepo sqlBasedTrailRepo) {
+        this.filterOptionsRepo = null;
         this.trails = sqlBasedTrailRepo.getAllTrails();
         this.filteredTrails = trails;
         this.filters = new HashMap<>();
@@ -75,33 +60,85 @@ public class SearchService {
     /**
      * Calculates the total number of pages required to display the currently
      * filtered list of trails.
-     *
-     * @return The total number of pages required to display the filtered trails
      */
     public int getNumberOfPages() {
-        updateTrails(); // Ensure filteredTrails is up to date
+        if (maxResults <= 0) {
+            return 1;
+        }
         return (int) Math.ceil((double) filteredTrails.size() / maxResults);
     }
 
     /**
-     * Gets the total number of trails available in the dataset.
-     *
-     * @return The total number of trails
+     * Gets the total number of trails in the filtered results.
      */
     public int getNumberOfTrails() {
         return filteredTrails.size();
     }
 
     /**
-     * Updates the filtered trails based on all active filters and applies sorting.
+     * Gets a specific page of trails from the filtered results.
+     *
+     * @param page the page number (0-indexed)
+     * @return list of trails for the specified page
+     */
+    public List<Trail> getPage(int page) {
+        updateTrails();
+        int startIndex = page * maxResults;
+        return filteredTrails.stream()
+                .skip(startIndex)
+                .limit(maxResults)
+                .collect(Collectors.toList());
+    }
+
+    /**
+     * Updates trails based on current filters and sort settings.
      */
     private void updateTrails() {
-        this.filteredTrails = trails.stream()
-                .filter(trail -> filterConfigs.entrySet().stream()
-                        .allMatch(entry -> entry.getValue().predicate.test(trail, filters.get(entry.getKey()))))
+        filteredTrails = trails.stream()
+                .filter(this::matchesAllFilters)
                 .filter(this::shouldIncludeInSort)
                 .sorted(getSortComparator())
                 .collect(Collectors.toList());
+    }
+
+    /**
+     * Checks if a trail matches all current filters.
+     */
+    private boolean matchesAllFilters(Trail trail) {
+        String query = filters.get("query");
+        if (query != null && !query.isEmpty() &&
+                !trail.getName().toLowerCase().contains(query.toLowerCase())) {
+            return false;
+        }
+
+        String completionType = filters.get("completionType");
+        if (completionType != null && !completionType.equals("All types") &&
+                !trail.getCompletionType().equalsIgnoreCase(completionType)) {
+            return false;
+        }
+
+        String timeUnit = filters.get("timeUnit");
+        if (timeUnit != null && !timeUnit.equals("All durations") &&
+                !trail.getTimeUnit().equalsIgnoreCase(timeUnit)) {
+            return false;
+        }
+
+        String difficulty = filters.get("difficulty");
+        if (difficulty != null && !difficulty.equals("All difficulties") &&
+                !trail.getDifficulty().equalsIgnoreCase(difficulty)) {
+            return false;
+        }
+
+        String multiDay = filters.get("multiDay");
+        if (multiDay != null && !multiDay.equals("Any time range")) {
+            boolean isMultiDay = trail.isMultiDay();
+            if (multiDay.equals("Multi-day") && !isMultiDay)
+                return false;
+            if (multiDay.equals("Day walk") && isMultiDay)
+                return false;
+        }
+
+        return true;
     }
 
     /**
@@ -119,10 +156,32 @@ public class SearchService {
     }
 
     /**
-     * Gets the comparator for the current sort
+     * Updates a specific filter and refreshes the trail list.
+     */
+    public void updateFilter(String filter, String filterString) {
+        filters.put(filter, filterString);
+    }
+
+    /**
+     * Sets the current search query.
+     */
+    public void setCurrentQuery(String query) {
+        filters.put("query", query);
+    }
+
+    /**
+     * Updates the search query and refreshes results.
+     */
+    public void updateSearch(String query) {
+        setCurrentQuery(query);
+    }
+
+    /**
+     * Gets the comparator for sorting trails based on current settings.
      */
     private Comparator<Trail> getSortComparator() {
         Comparator<Trail> comparator;
+
         switch (currentSortBy.toLowerCase()) {
             case "name":
                 comparator = Comparator.comparing(Trail::getName, String.CASE_INSENSITIVE_ORDER);
@@ -145,7 +204,7 @@ public class SearchService {
     }
 
     /**
-     * Gets a comparator for difficulty
+     * Gets a comparator for sorting by difficulty level.
      */
     private Comparator<Trail> getDifficultyComparator() {
         return Comparator.comparing(trail -> {
@@ -156,162 +215,79 @@ public class SearchService {
     }
 
     /**
-     * Utility method to check if a string is null or empty after trimming.
-     */
-    private boolean isNullOrEmpty(String str) {
-        return str == null || str.strip().isEmpty();
-    }
-
-    /**
-     * Updates a specific filter with the given value.
-     *
-     * @param filter       The filter type (e.g., "completionType", "difficulty")
-     * @param filterString The value to filter by
-     */
-    public void updateFilter(String filter, String filterString) {
-        if (!filterConfigs.containsKey(filter)) {
-            throw new IllegalArgumentException("Unknown filter: " + filter);
-        }
-        filters.put(filter, filterString);
-    }
-
-    /**
-     * Updates the current search query.
-     *
-     * @param query The search query to filter trail names by
-     */
-    public void setCurrentQuery(String query) {
-        filters.put("query", query);
-    }
-
-    /**
-     * Updates the search query (alias for setCurrentQuery for backward
-     * compatibility).
-     *
-     * @param query The search query to filter trail names by
-     */
-    public void updateSearch(String query) {
-        setCurrentQuery(query);
-    }
-
-    /**
-     * Gets the trails for the specified page.
-     *
-     * @param page The page number (0-based)
-     * @return List of trails for the specified page
-     */
-    public List<Trail> getPage (int page) {
-        updateTrails();
-        int startIndex = page * maxResults;
-
-        return filteredTrails.stream()
-                .skip(startIndex)
-                .limit(maxResults)
-                .collect(Collectors.toList());
-    }
-
-    /**
-     * Generic method to get distinct values from trails based on a field extractor.
-     *
-     * @param fieldExtractor Function to extract the desired field from a Trail
-     * @return List of distinct values excluding "unknown"
-     */
-    public List<String> getDistinctTrailValues(Function<Trail, String> fieldExtractor) {
-        return trails.stream()
-                .map(fieldExtractor)
-                .distinct()
-                .filter(value -> !value.equals("unknown"))
-                .collect(Collectors.toList());
-    }
-
-    /**
-     * Gets filter options for a filter type
-     *
-     * @param filterType The filter type
-     * @return List of filter options with "All" option first
+     * Gets available filter options for a specific filter type.
      */
     public List<String> getFilterOptions(String filterType) {
-        FilterConfig config = filterConfigs.get(filterType);
-        if (config == null) {
-            throw new IllegalArgumentException("Unknown filter type: " + filterType);
+        if (filterOptionsRepo != null) {
+            if (!filterOptionsRepo.hasFilterOptions(filterType)) {
+                filterOptionsRepo.refreshAllFilterOptions();
+            }
+
+            List<String> options = new ArrayList<>();
+
+            String defaultValue = DEFAULT_VALUES.get(filterType);
+            if (defaultValue != null) {
+                options.add(defaultValue);
+            }
+
+            List<String> dbOptions = filterOptionsRepo.getFilterOptions(filterType);
+            for (String option : dbOptions) {
+                if (!option.isEmpty()) {
+                    String capitalized = option.substring(0, 1).toUpperCase() + option.substring(1);
+                    options.add(capitalized);
+                }
+            }
+
+            return options;
         }
 
-        List<String> options = new java.util.ArrayList<>();
-
-        if (!config.allOptionText.isEmpty()) {
-            options.add(config.allOptionText);
-        }
-
-        getDistinctTrailValues(config.fieldExtractor).stream()
-                .map(value -> value.substring(0, 1).toUpperCase() + value.substring(1))
-                .forEach(options::add);
-
-        return options;
+        return null;
     }
 
     /**
-     * Gets the default "All" value for a specific filter type.
-     *
-     * @param filterType The filter type
-     * @return The default "All" value for the filter
+     * Gets the default filter value for a specific filter type.
      */
     public String getDefaultFilterValue(String filterType) {
-        FilterConfig config = filterConfigs.get(filterType);
-        if (config == null) {
-            throw new IllegalArgumentException("Unknown filter type: " + filterType);
-        }
-        return config.allOptionText;
+        return DEFAULT_VALUES.getOrDefault(filterType, "All");
     }
 
     /**
-     * Sets a new max results limit for pagination.
-     *
-     * @param maxResults The maximum number of results per page
+     * Sets the maximum number of results per page.
      */
     public void setMaxResults(int maxResults) {
         this.maxResults = maxResults;
     }
 
     /**
-     * Gets the current max results limit for pagination.
-     *
-     * @return The maximum number of results per page
+     * Gets the maximum number of results per page.
      */
     public int getMaxResults() {
         return maxResults;
     }
 
     /**
-     * Sets the sorting criteria.
-     *
-     * @param sortBy The field to sort by ("name", "time", "difficulty")
+     * Sets the field to sort by.
      */
     public void setSortBy(String sortBy) {
         this.currentSortBy = sortBy;
     }
 
     /**
-     * Gets the current sorting criteria.
-     *
-     * @return The current sort field
+     * Gets the current sort field.
      */
     public String getSortBy() {
         return currentSortBy;
     }
 
     /**
-     * Gets available sorting options.
-     *
-     * @return List of available sort options
+     * Gets available sort options.
      */
     public List<String> getSortOptions() {
         return List.of("Name", "Time", "Difficulty", "Match");
     }
 
     /**
-     * Sets the sort order.
-     *
-     * @param ascending true for ascending, false for descending
+     * Sets whether sorting should be ascending.
      */
     public void setSortAscending(boolean ascending) {
         this.isAscending = ascending;
@@ -319,20 +295,15 @@ public class SearchService {
 
     /**
      * Gets the current sort order.
-     *
-     * @return true if ascending, false if descending
      */
     public boolean isSortAscending() {
         return isAscending;
     }
 
     /**
-     * Gets the difficulty order list for consistent sorting.
-     *
-     * @return List of difficulty levels in order
+     * Gets the difficulty order for UI components.
      */
     public static List<String> getDifficultyOrder() {
         return DIFFICULTY_ORDER;
     }
-
 }
