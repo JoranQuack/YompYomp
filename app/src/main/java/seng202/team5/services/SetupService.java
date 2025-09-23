@@ -38,17 +38,8 @@ public class SetupService {
      * @param sqlBasedTrailRepo
      * @param fileTrailRepo
      */
-    public SetupService(SqlBasedTrailRepo sqlBasedTrailRepo, FileBasedTrailRepo fileTrailRepo) {
-        this.sqlTrailRepo = sqlBasedTrailRepo;
-        this.fileTrailRepo = fileTrailRepo;
-        databaseService = null;
-    }
-
-    /**
-     * Constructor for setup service
-     */
-    public SetupService() {
-        this.databaseService = new DatabaseService();
+    public SetupService(DatabaseService databaseService) {
+        this.databaseService = databaseService;
         this.sqlTrailRepo = new SqlBasedTrailRepo(databaseService);
         this.fileTrailRepo = new FileBasedTrailRepo("/datasets/DOC_Walking_Experiences_7994760352369043452.csv");
     }
@@ -96,7 +87,7 @@ public class SetupService {
             FileBasedKeywordRepo fileBasedKeywordRepo = new FileBasedKeywordRepo(
                     "/datasets/Categories_and_Keywords.csv");
             sqlBasedKeywordRepo.insertCategoriesAndKeywords(fileBasedKeywordRepo.getKeywords());
-            MatchmakingService matchmakingService = new MatchmakingService(sqlBasedKeywordRepo, sqlTrailRepo);
+            MatchmakingService matchmakingService = new MatchmakingService(databaseService);
             try {
                 matchmakingService.categoriseAllTrails();
             } catch (MatchmakingFailedException e) {

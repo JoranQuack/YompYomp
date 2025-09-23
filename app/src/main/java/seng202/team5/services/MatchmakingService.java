@@ -1,5 +1,6 @@
 package seng202.team5.services;
 
+import seng202.team5.data.DatabaseService;
 import seng202.team5.data.SqlBasedKeywordRepo;
 import seng202.team5.data.SqlBasedTrailRepo;
 import seng202.team5.exceptions.MatchmakingFailedException;
@@ -30,9 +31,9 @@ public class MatchmakingService {
      * @param trailRepo   repository for trail data which are used for scoring and
      *                    sorting
      */
-    public MatchmakingService(SqlBasedKeywordRepo keywordRepo, SqlBasedTrailRepo trailRepo) {
-        this.keywordRepo = keywordRepo;
-        this.trailRepo = trailRepo;
+    public MatchmakingService(DatabaseService databaseService) {
+        this.keywordRepo = new SqlBasedKeywordRepo(databaseService);
+        this.trailRepo = new SqlBasedTrailRepo(databaseService);
         this.categoryToKeywords = keywordRepo.getKeywords();
     }
 

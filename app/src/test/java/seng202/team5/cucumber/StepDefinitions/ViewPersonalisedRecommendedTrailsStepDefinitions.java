@@ -2,6 +2,7 @@ package seng202.team5.cucumber.StepDefinitions;
 
 import io.cucumber.java.Before;
 import io.cucumber.java.en.*;
+import seng202.team5.data.DatabaseService;
 import seng202.team5.data.SqlBasedKeywordRepo;
 import seng202.team5.data.SqlBasedTrailRepo;
 import seng202.team5.exceptions.MatchmakingFailedException;
@@ -72,7 +73,7 @@ public class ViewPersonalisedRecommendedTrailsStepDefinitions {
                         "1.5 hours", "thumb10.jpg", "http://example.com/trail10"));
         when(mockTrailRepo.getAllTrails()).thenReturn(mockTrails);
         searchService = new SearchService(mockTrailRepo);
-        matchmakingService = new MatchmakingService(mockKeywordRepo, mockTrailRepo);
+        matchmakingService = new MatchmakingService(new DatabaseService());
 
         // Build a test user with some preferences
         testUser = new User();
@@ -86,7 +87,7 @@ public class ViewPersonalisedRecommendedTrailsStepDefinitions {
 
     @And("the trails are ordered by highest to lowest match")
     public void trailsOrderedByHighestToLowest() {
-        matchmakingService = new MatchmakingService(mockKeywordRepo, mockTrailRepo);
+        matchmakingService = new MatchmakingService(new DatabaseService());
         orderedTrails = matchmakingService.getTrailsSortedByWeight();
 
         // check ordering

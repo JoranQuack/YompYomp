@@ -5,6 +5,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+
+import seng202.team5.data.DatabaseService;
 import seng202.team5.data.SqlBasedKeywordRepo;
 import seng202.team5.data.SqlBasedTrailRepo;
 import seng202.team5.exceptions.MatchmakingFailedException;
@@ -47,7 +49,7 @@ class MatchmakingServiceTest {
                         "2.5 hours", "thumb5.jpg", "http://example.com/trail5")));
         when(mockTrailRepo.getAllTrails()).thenReturn(mockTrails);
 
-        matchmakingService = new MatchmakingService(mockKeywordRepo, mockTrailRepo);
+        matchmakingService = new MatchmakingService(new DatabaseService());
     }
 
     /**

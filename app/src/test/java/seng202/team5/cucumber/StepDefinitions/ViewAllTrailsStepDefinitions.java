@@ -2,6 +2,7 @@ package seng202.team5.cucumber.StepDefinitions;
 
 import io.cucumber.java.Before;
 import io.cucumber.java.en.*;
+import seng202.team5.data.DatabaseService;
 import seng202.team5.data.SqlBasedKeywordRepo;
 import seng202.team5.data.SqlBasedTrailRepo;
 import seng202.team5.exceptions.MatchmakingFailedException;
@@ -26,7 +27,7 @@ public class ViewAllTrailsStepDefinitions {
     private List<Trail> displayedTrails;
 
     @Before
-    public void setUp(){
+    public void setUp() {
         // Mock the repos
         mockKeywordRepo = mock(SqlBasedKeywordRepo.class);
         mockTrailRepo = mock(SqlBasedTrailRepo.class);
@@ -109,7 +110,7 @@ public class ViewAllTrailsStepDefinitions {
 
     @And("the dashboard screen of personalised recommended trails is shown")
     public void theDashboardScreenOfPersonalisedRecommendedTrailsIsShown() throws MatchmakingFailedException {
-        matchmakingService = new MatchmakingService(mockKeywordRepo, mockTrailRepo);
+        matchmakingService = new MatchmakingService(new DatabaseService());
 
         // Build a test user with some preferences
         testUser = new User();
@@ -126,7 +127,7 @@ public class ViewAllTrailsStepDefinitions {
         testUser.setWaterfallPreference(5);
         testUser.setReservePreference(2);
 
-        matchmakingService = new MatchmakingService(mockKeywordRepo, mockTrailRepo);
+        matchmakingService = new MatchmakingService(new DatabaseService());
         matchmakingService.setUserPreferences(testUser);
         displayedTrails = matchmakingService.getTrailsSortedByWeight();
         assertNotNull(displayedTrails);

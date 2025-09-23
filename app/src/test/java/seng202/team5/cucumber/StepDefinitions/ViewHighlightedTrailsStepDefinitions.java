@@ -2,6 +2,7 @@ package seng202.team5.cucumber.StepDefinitions;
 
 import io.cucumber.java.Before;
 import io.cucumber.java.en.*;
+import seng202.team5.data.DatabaseService;
 import seng202.team5.data.SqlBasedKeywordRepo;
 import seng202.team5.data.SqlBasedTrailRepo;
 import seng202.team5.models.Trail;
@@ -10,7 +11,6 @@ import seng202.team5.services.MatchmakingService;
 import seng202.team5.services.SearchService;
 
 import java.util.*;
-
 
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.Mockito.*;
@@ -22,7 +22,6 @@ public class ViewHighlightedTrailsStepDefinitions {
     private SqlBasedTrailRepo mockTrailRepo;
     private List<Trail> displayedTrails;
     private User testUser;
-
 
     @Before
     public void setUp() {
@@ -95,7 +94,7 @@ public class ViewHighlightedTrailsStepDefinitions {
 
     @Then("the user can restart the application")
     public void userRestartsApplication() {
-        matchmakingService = new MatchmakingService(mockKeywordRepo, mockTrailRepo);
+        matchmakingService = new MatchmakingService(new DatabaseService());
         testUser = new User();
     }
 

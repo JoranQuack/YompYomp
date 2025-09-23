@@ -6,9 +6,6 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressIndicator;
 import seng202.team5.App;
-import seng202.team5.data.DatabaseService;
-import seng202.team5.data.SqlBasedKeywordRepo;
-import seng202.team5.data.SqlBasedTrailRepo;
 import seng202.team5.models.User;
 import seng202.team5.services.MatchmakingService;
 
@@ -71,10 +68,7 @@ public class LoadingController extends Controller {
                 }
 
                 // Create MatchmakingService AFTER database setup is complete
-                DatabaseService databaseService = new DatabaseService();
-                MatchmakingService matchmakingService = new MatchmakingService(
-                        new SqlBasedKeywordRepo(databaseService),
-                        new SqlBasedTrailRepo(databaseService));
+                MatchmakingService matchmakingService = new MatchmakingService(App.getDatabaseService());
 
                 // Get user AFTER database setup is complete
                 User user = getUserService().getUser();

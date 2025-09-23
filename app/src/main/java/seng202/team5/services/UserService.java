@@ -42,15 +42,6 @@ public class UserService {
             """;
 
     /**
-     * Constructor for UserService
-     */
-    public UserService() {
-        this.isGuest = false;
-        this.databaseService = new DatabaseService();
-        this.queryHelper = new QueryHelper(databaseService);
-    }
-
-    /**
      * Constructor for UserService with custom DatabaseService (for testing)
      *
      * @param databaseService the database service to use

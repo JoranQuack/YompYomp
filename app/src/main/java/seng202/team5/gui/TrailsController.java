@@ -7,9 +7,7 @@ import javafx.geometry.Insets;
 import javafx.scene.control.*;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.VBox;
-import seng202.team5.data.DatabaseService;
-import seng202.team5.data.SqlBasedTrailRepo;
-import seng202.team5.data.SqlBasedFilterOptionsRepo;
+import seng202.team5.App;
 import seng202.team5.gui.components.NavbarComponent;
 import seng202.team5.gui.components.TrailCardComponent;
 import seng202.team5.models.Trail;
@@ -81,10 +79,7 @@ public class TrailsController extends Controller {
      * Initializes the search service.
      */
     private void initializeSearchService() {
-        DatabaseService databaseService = new DatabaseService();
-        SqlBasedTrailRepo trailRepo = new SqlBasedTrailRepo(databaseService);
-        SqlBasedFilterOptionsRepo filterOptionsRepo = new SqlBasedFilterOptionsRepo(databaseService);
-        this.searchService = new SearchService(trailRepo, filterOptionsRepo);
+        this.searchService = new SearchService(App.getDatabaseService());
     }
 
     /**

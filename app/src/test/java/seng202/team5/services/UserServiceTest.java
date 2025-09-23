@@ -72,7 +72,7 @@ public class UserServiceTest {
     @Test
     @DisplayName("Should create UserService instance with default DatabaseService")
     void testConstructor() {
-        UserService newService = new UserService();
+        UserService newService = new UserService(new DatabaseService());
         assertNotNull(newService);
     }
 

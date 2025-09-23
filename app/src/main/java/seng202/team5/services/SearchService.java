@@ -1,5 +1,6 @@
 package seng202.team5.services;
 
+import seng202.team5.data.DatabaseService;
 import seng202.team5.data.SqlBasedFilterOptionsRepo;
 import seng202.team5.data.SqlBasedTrailRepo;
 import seng202.team5.models.Trail;
@@ -40,9 +41,9 @@ public class SearchService {
     /**
      * Creates SearchService with database-backed filter options.
      */
-    public SearchService(SqlBasedTrailRepo sqlBasedTrailRepo, SqlBasedFilterOptionsRepo filterOptionsRepo) {
-        this.filterOptionsRepo = filterOptionsRepo;
-        this.trails = sqlBasedTrailRepo.getAllTrails();
+    public SearchService(DatabaseService databaseService) {
+        this.filterOptionsRepo = new SqlBasedFilterOptionsRepo(databaseService);
+        this.trails = new SqlBasedTrailRepo(databaseService).getAllTrails();
         this.filteredTrails = trails;
         this.filters = new HashMap<>();
     }
