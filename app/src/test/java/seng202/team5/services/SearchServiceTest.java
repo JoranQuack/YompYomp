@@ -94,14 +94,17 @@ public class SearchServiceTest {
         searchService.setMaxResults(2);
 
         searchService.updateSearch("");
+        searchService.updateTrails();
         int pages = searchService.getNumberOfPages();
         assertEquals(3, pages, "need 3 pages for 5 with 2 per page");
 
         searchService.updateSearch("trail");
+        searchService.updateTrails();
         int pagesFiltered = searchService.getNumberOfPages();
         assertEquals(2, pagesFiltered, "need 2 pages for 4 with 2 per page");
 
         searchService.updateSearch("nonexistent");
+        searchService.updateTrails();
         int pagesNoMatch = searchService.getNumberOfPages();
         assertEquals(0, pagesNoMatch, "need 0 pages when no trails match");
     }
