@@ -1,4 +1,13 @@
-![YOMPYOMP_LOGO](app/src/main/resources/images/YompYompLogo.png)
+<div align="center">
+    <img src="app/src/main/resources/images/YompYompLogo.png" alt="YOMPYOMP_LOGO" width="500"/>
+</div>
+
+<div align="center">
+
+[![Pipeline](https://eng-git.canterbury.ac.nz/seng202-2025/seng202-25-team5/badges/main/pipeline.svg)](https://eng-git.canterbury.ac.nz/seng202-2025/seng202-25-team5/)
+[![coverage report](https://eng-git.canterbury.ac.nz/seng202-2025/seng202-25-team5/badges/main/coverage.svg)](https://eng-git.canterbury.ac.nz/seng202-2025/seng202-25-team5/-/commits/main)
+
+</div>
 
 # SENG202-25-Team5 - YompYomp
 
@@ -68,11 +77,12 @@ To run tests, run the following command
 
 - **UC_1** Complete Profile Quiz
 - **UC_2** View Personalised Recommended Trails
-- **UC_3** View All Trails
-- **UC_4** Search Trails
-- **UC_5** View Single Trail (without map and weather)
-- **UC_6** Add Missing Trail
-- **UC_7** Modify Existing Trail
+- **UC_3** View Highlighted Trails
+- **UC_4** View All Trails
+- **UC_5** Search Trails
+- **UC_6** View Single Trail (without map and weather)
+- **UC_7** Add Missing Trail
+- **UC_8** Modify Existing Trail
 
 ### Highlighted Features
 
@@ -88,17 +98,17 @@ These are features the team is most proud of.
 
 ### Use Cases and Features Not Yet Implemented
 
-- **UC_8** Log Trip
-- **UC_9** Rate Trip
-- **UC_10** Access Logbook
-- Map features for **UC_5**
-- Weather features for **UC_5**
+- **UC_9** Log Trip
+- **UC_10** Rate Trip
+- **UC_11** Access Logbook
+- Map features for **UC_6**
+- Weather features for **UC_6**
 
 ## Authors
 
-- Hayley Kawelenga
-- Jonny Chan
-- Joran Le Quellec
-- Lam (Lucy) Tran
-- Sam Ladbrook
-- Sienna Robinson
+- [Hayley Kawelenga](https://eng-git.canterbury.ac.nz/hka105)
+- [Jonny Chan](https://eng-git.canterbury.ac.nz/jch485)
+- [Joran Le Quellec](https://eng-git.canterbury.ac.nz/jle209)
+- [Lam (Lucy) Tran](https://eng-git.canterbury.ac.nz/ltr53)
+- [Sam Ladbrook](https://eng-git.canterbury.ac.nz/sla202)
+- [Sienna Robinson](https://eng-git.canterbury.ac.nz/sro179)
