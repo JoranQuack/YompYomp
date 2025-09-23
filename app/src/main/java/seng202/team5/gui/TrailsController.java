@@ -280,7 +280,8 @@ public class TrailsController extends Controller {
      */
     private void resetPageChoiceBox() {
         pageChoiceBox.getItems().clear();
-        for (int i = 0; i < searchService.getNumberOfPages(); i++) {
+        int numPages = searchService.getNumberOfPages();
+        for (int i = 0; i < numPages; i++) {
             pageChoiceBox.getItems().add(String.valueOf(i + 1));
         }
         pageChoiceBox.setValue("1");
