@@ -1,5 +1,6 @@
 -- Remember to increment the schema version here when making changes!
--- Schema version: 1.8
+-- Schema version: 2.0 Remember to increment the schema version here when making changes!
+-- Schema version: 1.1
 PRAGMA foreign_keys = off;
 
 BEGIN TRANSACTION;
@@ -76,6 +77,17 @@ CREATE TABLE
         historicPreference INTEGER,
         waterfallPreference INTEGER,
         isProfileComplete BOOL DEFAULT 0
+    );
+
+-- Table: filterOptions
+DROP TABLE IF EXISTS filterOptions;
+
+CREATE TABLE
+    IF NOT EXISTS filterOptions (
+        filterType TEXT NOT NULL,
+        optionValue TEXT NOT NULL,
+        displayOrder INTEGER DEFAULT 0,
+        PRIMARY KEY (filterType, optionValue)
     );
 
 COMMIT TRANSACTION;
