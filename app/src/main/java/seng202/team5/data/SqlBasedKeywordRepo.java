@@ -66,6 +66,11 @@ public class SqlBasedKeywordRepo implements IKeyword {
         return results.get(0);
     }
 
+    /**
+     * Inserts categories and their associated keywords into the database.
+     *
+     * @param keywords
+     */
     public void insertCategoriesAndKeywords(Map<String, List<String>> keywords) {
         for (Map.Entry<String, List<String>> entry : keywords.entrySet()) {
             String category = entry.getKey();
@@ -86,5 +91,43 @@ public class SqlBasedKeywordRepo implements IKeyword {
                         });
             }
         }
+    }
+
+    /**
+     * Assigns categories to a trail in the database.
+     *
+     * @param trailId
+     * @param categories
+     */
+    public void assignTrailCategories(int trailId, Set<String> categories) {
+        for (String category : categories) {
+            queryHelper.executeUpdate(
+                    "INSERT OR IGNORE INTO trailCategory (trailId, categoryId) " +
+                            "SELECT ?, id FROM category WHERE name = ?",
+                    stmt -> {
+                        stmt.setInt(1, trailId);
+                        stmt.setString(2, category);
+                    });
+        }
+    }
+
+    /**
+     * Gets all categories for a given trail.
+     *
+     * @param trailId
+     * @return set of category names
+     */
+    public Set<String> getCategoriesForTrail(int trailId) {
+        Set<String> categories = new HashSet<>();
+        queryHelper.executeQuery(
+                "SELECT c.name FROM category c " +
+                        "JOIN trailCategory tc ON c.id = tc.categoryId " +
+                        "WHERE tc.trailId = ?",
+                stmt -> stmt.setInt(1, trailId),
+                rs -> {
+                    categories.add(rs.getString("name"));
+                    return null;
+                });
+        return categories;
     }
 }

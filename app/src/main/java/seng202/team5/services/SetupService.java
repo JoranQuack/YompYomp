@@ -6,6 +6,7 @@ import seng202.team5.data.FileBasedKeywordRepo;
 import seng202.team5.data.FileBasedTrailRepo;
 import seng202.team5.data.SqlBasedKeywordRepo;
 import seng202.team5.data.SqlBasedTrailRepo;
+import seng202.team5.exceptions.MatchmakingFailedException;
 import seng202.team5.models.Trail;
 import seng202.team5.utils.TrailsProcessor;
 
@@ -94,6 +95,13 @@ public class SetupService {
             FileBasedKeywordRepo fileBasedKeywordRepo = new FileBasedKeywordRepo(
                     "/datasets/Categories_and_Keywords.csv");
             sqlBasedKeywordRepo.insertCategoriesAndKeywords(fileBasedKeywordRepo.getKeywords());
+            MatchmakingService matchmakingService = new MatchmakingService(sqlBasedKeywordRepo, sqlTrailRepo);
+            try {
+                matchmakingService.categoriseAllTrails();
+            } catch (MatchmakingFailedException e) {
+                System.err.println("Error generating trail weights: " + e.getMessage());
+                e.printStackTrace();
+            }
         }
 
         databaseSetupComplete = true;
@@ -157,8 +165,6 @@ public class SetupService {
             e.printStackTrace();
         }
     }
-
-
 
     /**
      * Calls key functions to set up application

@@ -18,9 +18,9 @@ import java.util.stream.Collectors;
 public class MatchmakingService {
     public static final double STRENGTH_WEIGHT = 0.8; // 80% strength 20% coverage
     private final Map<String, List<String>> categoryToKeywords; // category -> keywords
-    private final Map<String, String> keywordToCategory = new HashMap<>(); // keyword -> category
     private final Map<String, Integer> userWeights = new HashMap<>(); // Higher weight is more favourable
     private final Map<Integer, Double> trailWeights = new HashMap<>(); // Identified by trail ID
+    private SqlBasedKeywordRepo keywordRepo;
     private SqlBasedTrailRepo trailRepo;
 
     /**
@@ -31,8 +31,9 @@ public class MatchmakingService {
      *                    sorting
      */
     public MatchmakingService(SqlBasedKeywordRepo keywordRepo, SqlBasedTrailRepo trailRepo) {
-        this.categoryToKeywords = keywordRepo.getKeywords();
+        this.keywordRepo = keywordRepo;
         this.trailRepo = trailRepo;
+        this.categoryToKeywords = keywordRepo.getKeywords();
     }
 
     /**
@@ -52,7 +53,8 @@ public class MatchmakingService {
      * map.
      * Case-insensitive matching.
      */
-    private void buildReverseIndex() throws MatchmakingFailedException {
+    private Map<String, String> buildReverseIndex() throws MatchmakingFailedException {
+        Map<String, String> keywordToCategory = new HashMap<>();
         if (categoryToKeywords != null) {
             for (Map.Entry<String, List<String>> entry : categoryToKeywords.entrySet()) {
                 String category = entry.getKey();
@@ -63,6 +65,7 @@ public class MatchmakingService {
         } else {
             throw new MatchmakingFailedException("Category file is empty");
         }
+        return keywordToCategory;
     }
 
     /**
@@ -116,15 +119,8 @@ public class MatchmakingService {
      *         categories match
      */
     public Set<String> categoriseTrail(Trail trail) throws MatchmakingFailedException {
-        // Make sure we have the reverse index built, else categorisation problems arise
+        Map<String, String> keywordToCategory = buildReverseIndex();
 
-        try {
-            if (keywordToCategory.isEmpty()) {
-                buildReverseIndex();
-            }
-        } catch (MatchmakingFailedException e) {
-            throw new MatchmakingFailedException("Keyword to category file is empty");
-        }
         Set<String> matchedCategories = new HashSet<>();
         String description = trail.getDescription().toLowerCase(Locale.ROOT);
 
@@ -136,6 +132,17 @@ public class MatchmakingService {
         }
 
         return matchedCategories;
+    }
+
+    /**
+     * Categorises all trails in the repository.
+     */
+    public void categoriseAllTrails() throws MatchmakingFailedException {
+        List<Trail> trails = trailRepo.getAllTrails();
+        for (Trail trail : trails) {
+            Set<String> categories = categoriseTrail(trail);
+            keywordRepo.assignTrailCategories(trail.getId(), categories);
+        }
     }
 
     /**
@@ -206,7 +213,7 @@ public class MatchmakingService {
             trailWeights.clear();
 
             for (Trail trail : trails) {
-                Set<String> categories = categoriseTrail(trail);
+                Set<String> categories = keywordRepo.getCategoriesForTrail(trail.getId());
                 double weight = scoreTrail(categories);
                 trail.setCategories(categories);
                 trail.setUserWeight(weight);
