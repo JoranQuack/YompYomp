@@ -93,7 +93,7 @@ public class SearchService {
     /**
      * Updates trails based on current filters and sort settings.
      */
-    private void updateTrails() {
+    public void updateTrails() {
         filteredTrails = trails.stream()
                 .filter(this::matchesAllFilters)
                 .filter(this::shouldIncludeInSort)
