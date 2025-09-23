@@ -13,7 +13,7 @@ public class SqlBasedKeywordRepo implements IKeyword {
     private static final String SELECT_ALL_CATEGORIES_WITH_KEYWORDS = """
             SELECT c.name as category_name, k.value as keyword_value
             FROM category c
-            LEFT JOIN keyword k ON c.id = k.category_id
+            LEFT JOIN keyword k ON c.id = k.categoryId
             ORDER BY c.name, k.value
             """;
 
@@ -78,7 +78,7 @@ public class SqlBasedKeywordRepo implements IKeyword {
             // Insert keywords
             for (String keyword : keywordList) {
                 queryHelper.executeUpdate(
-                        "INSERT OR IGNORE INTO keyword (value, category_id) " +
+                        "INSERT OR IGNORE INTO keyword (value, categoryId) " +
                                 "SELECT ?, id FROM category WHERE name = ?",
                         stmt -> {
                             stmt.setString(1, keyword);

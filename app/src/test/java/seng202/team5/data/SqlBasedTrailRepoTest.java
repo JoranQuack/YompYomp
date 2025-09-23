@@ -43,17 +43,17 @@ public class SqlBasedTrailRepoTest {
                           region TEXT,
                           description TEXT,
                           difficulty TEXT,
-                          completion_info TEXT,
-                          min_completion_time_minutes INTEGER,
-                          max_completion_time_minutes INTEGER,
-                          completion_type TEXT,
-                          time_unit TEXT,
-                          is_multi_day BOOL,
-                          has_variable_time BOOL,
-                          thumb_url TEXT,
-                          web_url TEXT,
-                          culture_url TEXT,
-                          user_weight REAL
+                          completionInfo TEXT,
+                          minCompletionTimeMinutes INTEGER,
+                          maxCompletionTimeMinutes INTEGER,
+                          completionType TEXT,
+                          timeUnit TEXT,
+                          isMultiDay BOOL,
+                          hasVariableTime BOOL,
+                          thumbUrl TEXT,
+                          webUrl TEXT,
+                          cultureUrl TEXT,
+                          userWeight REAL
                         )
                     """);
             stmt.execute("DELETE FROM trail");
