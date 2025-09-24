@@ -153,8 +153,9 @@ public class MatchmakingService {
         List<Trail> trails = trailRepo.getAllTrails();
         for (Trail trail : trails) {
             Set<String> categories = categoriseTrail(trail);
-            keywordRepo.assignTrailCategories(trail.getId(), categories);
+            trail.setCategories(categories);
         }
+        keywordRepo.assignTrailCategories(trails);
     }
 
     /**

@@ -2,6 +2,8 @@ package seng202.team5.data;
 
 import java.util.*;
 
+import seng202.team5.models.Trail;
+
 /**
  * Repository for accessing keyword and category data from the database.
  * This class provides methods to retrieve keywords grouped by categories from
@@ -102,13 +104,15 @@ public class SqlBasedKeywordRepo implements IKeyword {
      * @param trailId    The trail ID
      * @param categories Set of category names to assign
      */
-    public void assignTrailCategories(int trailId, Set<String> categories) {
-        if (categories.isEmpty())
+    public void assignTrailCategories(List<Trail> trails) {
+        if (trails.isEmpty())
             return;
 
         List<TrailCategoryEntry> entries = new ArrayList<>();
-        for (String category : categories) {
-            entries.add(new TrailCategoryEntry(trailId, category));
+        for (Trail trail : trails) {
+            for (String category : trail.getCategories()) {
+                entries.add(new TrailCategoryEntry(trail.getId(), category));
+            }
         }
 
         queryHelper.executeBatch(
