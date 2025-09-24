@@ -22,28 +22,11 @@ public class SqlBasedTrailRepo implements ITrail {
     private static final String SELECT_BY_ID = SELECT_ALL + " WHERE id = ?";
 
     private static final String UPSERT_SQL = """
-            INSERT INTO trail (
+            INSERT OR IGNORE INTO trail (
                 id, name, translation, region, difficulty, description, completionInfo, minCompletionTimeMinutes,
                 maxCompletionTimeMinutes, completionType, timeUnit, isMultiDay, hasVariableTime,
                 thumbUrl, webUrl, cultureUrl, userWeight
             ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
-            ON CONFLICT(id) DO UPDATE SET
-                name=excluded.name,
-                translation=excluded.translation,
-                region=excluded.region,
-                difficulty=excluded.difficulty,
-                description=excluded.description,
-                completionInfo=excluded.completionInfo,
-                minCompletionTimeMinutes=excluded.minCompletionTimeMinutes,
-                maxCompletionTimeMinutes=excluded.maxCompletionTimeMinutes,
-                completionType=excluded.completionType,
-                timeUnit=excluded.timeUnit,
-                isMultiDay=excluded.isMultiDay,
-                hasVariableTime=excluded.hasVariableTime,
-                thumbUrl=excluded.thumbUrl,
-                webUrl=excluded.webUrl,
-                cultureUrl=excluded.cultureUrl,
-                userWeight=excluded.userWeight
             """;
 
     private static final String DELETE_SQL = "DELETE FROM trail WHERE id = ?";
@@ -123,9 +106,8 @@ public class SqlBasedTrailRepo implements ITrail {
     public void upsertAll(List<Trail> trails) throws MatchmakingFailedException {
         if (trails.isEmpty())
             throw new MatchmakingFailedException("Trails is empty.");
-        for (Trail trail : trails) {
-            upsert(trail);
-        }
+
+        queryHelper.executeBatch(UPSERT_SQL, trails, this::setTrailParameters);
     }
 
     /**
