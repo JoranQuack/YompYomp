@@ -63,7 +63,34 @@ public class SqlBasedKeywordRepo implements IKeyword {
             }
         });
 
-        return results.get(0);
+        return results.getFirst();
+    }
+
+    /**
+     * Counts the number of keywords in the database.
+     *
+     * @return the number of keywords
+     */
+    private int countKeywords() {
+        List<Integer> results = queryHelper.executeQuery("SELECT COUNT(*) AS count FROM keyword", null, rs -> {
+            if (rs.next()) {
+                return rs.getInt("count");
+            } else {
+                return 0;
+            }
+        });
+
+        return results.getFirst();
+    }
+
+    /**
+     * Determines if the keyword and category tables are populated
+     *
+     * @return bool
+     */
+    public boolean areTablesPopulated() {
+        System.out.println("categories: " + countCategories() + " keywords: " + countKeywords());
+        return countCategories() > 0 && countKeywords() > 0;
     }
 
     /**
