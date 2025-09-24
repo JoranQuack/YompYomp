@@ -55,15 +55,9 @@ public class SqlBasedKeywordRepo implements IKeyword {
      * @return the number of categories
      */
     public int countCategories() {
-        List<Integer> results = queryHelper.executeQuery("SELECT COUNT(*) AS count FROM category", null, rs -> {
-            if (rs.next()) {
-                return rs.getInt("count");
-            } else {
-                return 0;
-            }
-        });
-
-        return results.getFirst();
+        return queryHelper.executeCountQuery(
+                "SELECT COUNT(*) FROM category LIMIT 1",
+                null);
     }
 
     /**
@@ -72,15 +66,9 @@ public class SqlBasedKeywordRepo implements IKeyword {
      * @return the number of keywords
      */
     private int countKeywords() {
-        List<Integer> results = queryHelper.executeQuery("SELECT COUNT(*) AS count FROM keyword", null, rs -> {
-            if (rs.next()) {
-                return rs.getInt("count");
-            } else {
-                return 0;
-            }
-        });
-
-        return results.getFirst();
+        return queryHelper.executeCountQuery(
+                "SELECT COUNT(*) FROM keyword LIMIT 1",
+                null);
     }
 
     /**
