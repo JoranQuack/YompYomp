@@ -72,7 +72,7 @@ public class CompleteProfileQuizStepDefinitions {
                         "1.5 hours", "thumb10.jpg", "http://example.com/trail10"));
         when(mockTrailRepo.getAllTrails()).thenReturn(mockTrails);
         searchService = new SearchService(mockTrailRepo);
-        matchmakingService = new MatchmakingService(new DatabaseService());
+        matchmakingService = new MatchmakingService(mockKeywordRepo, mockTrailRepo);
 
         // Build a test user with some preferences
         testUser = new User();

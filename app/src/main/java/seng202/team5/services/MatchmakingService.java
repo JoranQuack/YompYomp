@@ -27,13 +27,24 @@ public class MatchmakingService {
     /**
      * Creates a MatchmakingService instance.
      *
-     * @param keywordRepo repository for category-to-keyword data from the database
-     * @param trailRepo   repository for trail data which are used for scoring and
-     *                    sorting
+     * @param databaseService the database service to use for data access
      */
     public MatchmakingService(DatabaseService databaseService) {
         this.keywordRepo = new SqlBasedKeywordRepo(databaseService);
         this.trailRepo = new SqlBasedTrailRepo(databaseService);
+        this.categoryToKeywords = keywordRepo.getKeywords();
+    }
+
+    /**
+     * Creates a MatchmakingService instance for testing with custom repos
+     *
+     * @param keywordRepo repository for category-to-keyword data from the database
+     * @param trailRepo   repository for trail data which are used for scoring and
+     *                    sorting
+     */
+    public MatchmakingService(SqlBasedKeywordRepo keywordRepo, SqlBasedTrailRepo trailRepo) {
+        this.keywordRepo = keywordRepo;
+        this.trailRepo = trailRepo;
         this.categoryToKeywords = keywordRepo.getKeywords();
     }
 

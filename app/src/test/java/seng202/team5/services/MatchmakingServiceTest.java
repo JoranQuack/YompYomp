@@ -49,7 +49,7 @@ class MatchmakingServiceTest {
                         "2.5 hours", "thumb5.jpg", "http://example.com/trail5")));
         when(mockTrailRepo.getAllTrails()).thenReturn(mockTrails);
 
-        matchmakingService = new MatchmakingService(new DatabaseService());
+        matchmakingService = new MatchmakingService(mockKeywordRepo, mockTrailRepo);
     }
 
     /**

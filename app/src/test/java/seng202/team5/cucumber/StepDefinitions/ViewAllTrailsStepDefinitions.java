@@ -110,7 +110,7 @@ public class ViewAllTrailsStepDefinitions {
 
     @And("the dashboard screen of personalised recommended trails is shown")
     public void theDashboardScreenOfPersonalisedRecommendedTrailsIsShown() throws MatchmakingFailedException {
-        matchmakingService = new MatchmakingService(new DatabaseService());
+        matchmakingService = new MatchmakingService(mockKeywordRepo, mockTrailRepo);
 
         // Build a test user with some preferences
         testUser = new User();
@@ -127,7 +127,7 @@ public class ViewAllTrailsStepDefinitions {
         testUser.setWaterfallPreference(5);
         testUser.setReservePreference(2);
 
-        matchmakingService = new MatchmakingService(new DatabaseService());
+        matchmakingService = new MatchmakingService(mockKeywordRepo, mockTrailRepo);
         matchmakingService.setUserPreferences(testUser);
         displayedTrails = matchmakingService.getTrailsSortedByWeight();
         assertNotNull(displayedTrails);

@@ -94,7 +94,7 @@ public class ViewHighlightedTrailsStepDefinitions {
 
     @Then("the user can restart the application")
     public void userRestartsApplication() {
-        matchmakingService = new MatchmakingService(new DatabaseService());
+        matchmakingService = new MatchmakingService(mockKeywordRepo, mockTrailRepo);
         testUser = new User();
     }
 
