@@ -120,18 +120,19 @@ public class SetupService {
      * Creates the database if it doesn't exist.
      */
     private void createDbActions() {
-        if (!databaseService.databaseExists() || !databaseService.isSchemaUpToDate()) {
-            try {
-                if (databaseService.databaseExists()) {
-                    System.out.println("Database schema is outdated. Deleting database.");
-                    databaseService.deleteDatabase();
-                }
+        if (databaseService.databaseExists() && databaseService.isSchemaUpToDate()) {
+            return;
+        }
 
-                databaseService.createDatabaseIfNotExists();
-            } catch (Exception e) {
-                System.err.println("Error setting up database: " + e.getMessage());
-                e.printStackTrace();
+        try {
+            if (databaseService.databaseExists()) {
+                System.out.println("Database schema is outdated. Deleting database.");
+                databaseService.deleteDatabase();
             }
+            databaseService.createDatabaseIfNotExists();
+        } catch (Exception e) {
+            System.err.println("Error setting up database: " + e.getMessage());
+            e.printStackTrace();
         }
     }
 
@@ -161,7 +162,6 @@ public class SetupService {
      * Syncs keywords in the database.
      */
     public void syncKeywords() {
-        // Always check and populate keywords table if needed
         SqlBasedKeywordRepo sqlBasedKeywordRepo = new SqlBasedKeywordRepo(databaseService);
         FileBasedKeywordRepo fileBasedKeywordRepo = new FileBasedKeywordRepo(
                 "/datasets/Categories_and_Keywords.csv");
