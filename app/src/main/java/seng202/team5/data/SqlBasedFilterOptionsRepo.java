@@ -147,18 +147,6 @@ public class SqlBasedFilterOptionsRepo {
     }
 
     /**
-     * Checks if filter options are cached in the database.
-     *
-     * @return true if any filter options exist, false otherwise
-     */
-    public boolean areFilterOptionsStored() {
-        Integer count = queryHelper.executeCountQuery(
-                "SELECT COUNT(*) FROM filterOptions LIMIT 1",
-                null);
-        return count != null && count > 0;
-    }
-
-    /**
      * Gets all available filter types that have options.
      *
      * @return List of filter types

@@ -61,26 +61,6 @@ public class SqlBasedKeywordRepo implements IKeyword {
     }
 
     /**
-     * Counts the number of keywords in the database.
-     *
-     * @return the number of keywords
-     */
-    private int countKeywords() {
-        return queryHelper.executeCountQuery(
-                "SELECT COUNT(*) FROM keyword LIMIT 1",
-                null);
-    }
-
-    /**
-     * Determines if the keyword and category tables are populated
-     *
-     * @return bool
-     */
-    public boolean areTablesPopulated() {
-        return countCategories() > 0 && countKeywords() > 0;
-    }
-
-    /**
      * Inserts categories and their associated keywords into the database.
      *
      * @param keywords Map of category names to lists of keywords
