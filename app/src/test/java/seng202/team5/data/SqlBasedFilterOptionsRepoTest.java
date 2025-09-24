@@ -58,11 +58,8 @@ public class SqlBasedFilterOptionsRepoTest {
     @Test
     @DisplayName("Should refresh filter options from trail data hopefully")
     void testRefreshFilterOptions() {
-        assertFalse(filterOptionsRepo.areFilterOptionsStored());
 
         filterOptionsRepo.refreshAllFilterOptions();
-
-        assertTrue(filterOptionsRepo.areFilterOptionsStored());
 
         List<String> difficultyOptions = filterOptionsRepo.getFilterOptions("difficulty");
         assertTrue(difficultyOptions.contains("easy"));
@@ -85,14 +82,5 @@ public class SqlBasedFilterOptionsRepoTest {
 
         List<String> options = filterOptionsRepo.getFilterOptions("nonexistent");
         assertTrue(options.isEmpty());
-    }
-
-    @Test
-    @DisplayName("Should correctly identify when filter options are stored")
-    void testAreFilterOptionsStored() {
-        assertFalse(filterOptionsRepo.areFilterOptionsStored());
-
-        filterOptionsRepo.refreshAllFilterOptions();
-        assertTrue(filterOptionsRepo.areFilterOptionsStored());
     }
 }

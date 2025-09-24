@@ -32,8 +32,7 @@ public class SetupService {
     private volatile boolean databaseSetupComplete = false;
 
     /**
-     * Constructor for setup service with custom SQLBasedRepo and FileBasedRepo for
-     * testing
+     * Main constructor with database service
      *
      * @param sqlBasedTrailRepo
      * @param fileTrailRepo
@@ -63,52 +62,14 @@ public class SetupService {
             System.err.println("Database service is null - cannot setup database");
             return;
         }
-        System.out.println("Database setup started");
-        // Only create database if it doesn't exist or schema is outdated
-        if (!databaseService.databaseExists() || !databaseService.isSchemaUpToDate()) {
-            try {
-                if (databaseService.databaseExists()) {
-                    System.out.println("Database schema is outdated. Deleting database.");
-                    databaseService.deleteDatabase();
-                }
 
-                // Create the database and tables
-                databaseService.createDatabaseIfNotExists();
-            } catch (Exception e) {
-                System.err.println("Error setting up database: " + e.getMessage());
-                e.printStackTrace();
-            }
-
-            syncDbFromTrailFile();
-        }
-
-        System.out.println("Checking keywords table");
-        // Always check and populate keywords table if needed
-        SqlBasedKeywordRepo sqlBasedKeywordRepo = new SqlBasedKeywordRepo(databaseService);
-        if (!sqlBasedKeywordRepo.areTablesPopulated()) {
-            System.out.println("Populating keywords table");
-            FileBasedKeywordRepo fileBasedKeywordRepo = new FileBasedKeywordRepo(
-                    "/datasets/Categories_and_Keywords.csv");
-            sqlBasedKeywordRepo.insertCategoriesAndKeywords(fileBasedKeywordRepo.getKeywords());
-            MatchmakingService matchmakingService = new MatchmakingService(databaseService);
-            try {
-                matchmakingService.categoriseAllTrails();
-            } catch (MatchmakingFailedException e) {
-                System.err.println("Error generating trail weights: " + e.getMessage());
-                e.printStackTrace();
-            }
-        }
-
-        System.out.println("Checking filter options");
-        // Populate filter options for improved performance
-        SqlBasedFilterOptionsRepo filterOptionsRepo = new SqlBasedFilterOptionsRepo(databaseService);
-        if (!filterOptionsRepo.areFilterOptionsStored()) {
-            System.out.println("Populating filter options");
-            filterOptionsRepo.refreshAllFilterOptions();
-        }
+        createDbActions();
+        syncDbFromTrailFile();
+        syncKeywords();
+        syncFilterOptions();
 
         databaseSetupComplete = true;
-        System.out.println("Database setup complete.");
+        System.out.println("db setup complete");
     }
 
     /**
@@ -156,6 +117,26 @@ public class SetupService {
     }
 
     /**
+     * Creates the database if it doesn't exist.
+     */
+    private void createDbActions() {
+        if (databaseService.databaseExists() && databaseService.isSchemaUpToDate()) {
+            return;
+        }
+
+        try {
+            if (databaseService.databaseExists()) {
+                System.out.println("Database schema is outdated. Deleting database.");
+                databaseService.deleteDatabase();
+            }
+            databaseService.createDatabaseIfNotExists();
+        } catch (Exception e) {
+            System.err.println("Error setting up database: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+    /**
      * Upserts into DB to keep up to date
      */
     public void syncDbFromTrailFile() {
@@ -165,6 +146,31 @@ public class SetupService {
             sqlTrailRepo.upsertAll(trails);
         } catch (Exception e) {
             System.err.println("Error syncing database from trail file: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Syncs filter options in the database.
+     */
+    public void syncFilterOptions() {
+        SqlBasedFilterOptionsRepo filterOptionsRepo = new SqlBasedFilterOptionsRepo(databaseService);
+        filterOptionsRepo.refreshAllFilterOptions();
+    }
+
+    /**
+     * Syncs keywords in the database.
+     */
+    public void syncKeywords() {
+        SqlBasedKeywordRepo sqlBasedKeywordRepo = new SqlBasedKeywordRepo(databaseService);
+        FileBasedKeywordRepo fileBasedKeywordRepo = new FileBasedKeywordRepo(
+                "/datasets/Categories_and_Keywords.csv");
+        sqlBasedKeywordRepo.insertCategoriesAndKeywords(fileBasedKeywordRepo.getKeywords());
+        MatchmakingService matchmakingService = new MatchmakingService(databaseService);
+        try {
+            matchmakingService.categoriseAllTrails();
+        } catch (MatchmakingFailedException e) {
+            System.err.println("Error generating trail weights: " + e.getMessage());
             e.printStackTrace();
         }
     }

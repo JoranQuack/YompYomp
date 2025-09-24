@@ -29,8 +29,18 @@ public class DatabaseService {
         String url = "jdbc:sqlite:" + databasePath;
 
         Connection connection = DriverManager.getConnection(url);
-        // Enable foreign keys
-        connection.createStatement().execute("PRAGMA foreign_keys = ON");
+
+        try (Statement stmt = connection.createStatement()) {
+            // Enable foreign keys
+            stmt.execute("PRAGMA foreign_keys = ON");
+
+            // Hopefully performance optimisations (for SQLite on Linux)
+            stmt.execute("PRAGMA synchronous = NORMAL");
+            stmt.execute("PRAGMA journal_mode = WAL");
+            stmt.execute("PRAGMA temp_store = MEMORY");
+            stmt.execute("PRAGMA mmap_size = 268435456");
+        }
+
         return connection;
     }
 

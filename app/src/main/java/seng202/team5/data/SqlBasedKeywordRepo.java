@@ -55,87 +55,70 @@ public class SqlBasedKeywordRepo implements IKeyword {
      * @return the number of categories
      */
     public int countCategories() {
-        List<Integer> results = queryHelper.executeQuery("SELECT COUNT(*) AS count FROM category", null, rs -> {
-            if (rs.next()) {
-                return rs.getInt("count");
-            } else {
-                return 0;
-            }
-        });
-
-        return results.getFirst();
-    }
-
-    /**
-     * Counts the number of keywords in the database.
-     *
-     * @return the number of keywords
-     */
-    private int countKeywords() {
-        List<Integer> results = queryHelper.executeQuery("SELECT COUNT(*) AS count FROM keyword", null, rs -> {
-            if (rs.next()) {
-                return rs.getInt("count");
-            } else {
-                return 0;
-            }
-        });
-
-        return results.getFirst();
-    }
-
-    /**
-     * Determines if the keyword and category tables are populated
-     *
-     * @return bool
-     */
-    public boolean areTablesPopulated() {
-        System.out.println("categories: " + countCategories() + " keywords: " + countKeywords());
-        return countCategories() > 0 && countKeywords() > 0;
+        return queryHelper.executeCountQuery(
+                "SELECT COUNT(*) FROM category LIMIT 1",
+                null);
     }
 
     /**
      * Inserts categories and their associated keywords into the database.
      *
-     * @param keywords
+     * @param keywords Map of category names to lists of keywords
      */
     public void insertCategoriesAndKeywords(Map<String, List<String>> keywords) {
+        // Categories
+        List<String> categoryNames = new ArrayList<>(keywords.keySet());
+        if (!categoryNames.isEmpty()) {
+            queryHelper.executeBatch("INSERT OR IGNORE INTO category (name) VALUES (?)",
+                    categoryNames,
+                    (stmt, category) -> stmt.setString(1, category));
+        }
+
+        // Keywords
+        List<KeywordEntry> keywordEntries = new ArrayList<>();
         for (Map.Entry<String, List<String>> entry : keywords.entrySet()) {
             String category = entry.getKey();
             List<String> keywordList = entry.getValue();
 
-            // Insert category
-            queryHelper.executeUpdate("INSERT OR IGNORE INTO category (name) VALUES (?)",
-                    stmt -> stmt.setString(1, category));
-
-            // Insert keywords
             for (String keyword : keywordList) {
-                queryHelper.executeUpdate(
-                        "INSERT OR IGNORE INTO keyword (value, categoryId) " +
-                                "SELECT ?, id FROM category WHERE name = ?",
-                        stmt -> {
-                            stmt.setString(1, keyword);
-                            stmt.setString(2, category);
-                        });
+                keywordEntries.add(new KeywordEntry(keyword, category));
             }
+        }
+        if (!keywordEntries.isEmpty()) {
+            queryHelper.executeBatch(
+                    "INSERT OR IGNORE INTO keyword (value, categoryId) " +
+                            "SELECT ?, id FROM category WHERE name = ?",
+                    keywordEntries,
+                    (stmt, keywordEntry) -> {
+                        stmt.setString(1, keywordEntry.keyword);
+                        stmt.setString(2, keywordEntry.category);
+                    });
         }
     }
 
     /**
      * Assigns categories to a trail in the database.
      *
-     * @param trailId
-     * @param categories
+     * @param trailId    The trail ID
+     * @param categories Set of category names to assign
      */
     public void assignTrailCategories(int trailId, Set<String> categories) {
+        if (categories.isEmpty())
+            return;
+
+        List<TrailCategoryEntry> entries = new ArrayList<>();
         for (String category : categories) {
-            queryHelper.executeUpdate(
-                    "INSERT OR IGNORE INTO trailCategory (trailId, categoryId) " +
-                            "SELECT ?, id FROM category WHERE name = ?",
-                    stmt -> {
-                        stmt.setInt(1, trailId);
-                        stmt.setString(2, category);
-                    });
+            entries.add(new TrailCategoryEntry(trailId, category));
         }
+
+        queryHelper.executeBatch(
+                "INSERT OR IGNORE INTO trailCategory (trailId, categoryId) " +
+                        "SELECT ?, id FROM category WHERE name = ?",
+                entries,
+                (stmt, entry) -> {
+                    stmt.setInt(1, entry.trailId);
+                    stmt.setString(2, entry.category);
+                });
     }
 
     /**
@@ -156,5 +139,31 @@ public class SqlBasedKeywordRepo implements IKeyword {
                     return null;
                 });
         return categories;
+    }
+
+    /**
+     * Helper class to represent a keyword entry for batch processing.
+     */
+    private static class KeywordEntry {
+        final String keyword;
+        final String category;
+
+        KeywordEntry(String keyword, String category) {
+            this.keyword = keyword;
+            this.category = category;
+        }
+    }
+
+    /**
+     * Helper class to represent a trail-category association for batch processing.
+     */
+    private static class TrailCategoryEntry {
+        final int trailId;
+        final String category;
+
+        TrailCategoryEntry(int trailId, String category) {
+            this.trailId = trailId;
+            this.category = category;
+        }
     }
 }
