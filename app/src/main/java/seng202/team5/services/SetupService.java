@@ -47,10 +47,11 @@ public class SetupService {
     /**
      * Checks if the category table is populated.
      *
-     * @param sqlBasedKeywordRepo
+     * @param sqlBasedKeywordRepo keyword repo to be used
      * @return true if the category table is populated, false otherwise.
      */
     boolean isCategoryTablePopulated(SqlBasedKeywordRepo sqlBasedKeywordRepo) {
+        System.out.println(sqlBasedKeywordRepo.countCategories());
         return sqlBasedKeywordRepo.countCategories() > 0;
     }
 
@@ -62,7 +63,7 @@ public class SetupService {
             System.err.println("Database service is null - cannot setup database");
             return;
         }
-
+        System.out.println("Database setup started");
         // Only create database if it doesn't exist or schema is outdated
         if (!databaseService.databaseExists() || !databaseService.isSchemaUpToDate()) {
             try {
@@ -81,9 +82,11 @@ public class SetupService {
             syncDbFromTrailFile();
         }
 
+        System.out.println("Checking keywords table");
         // Always check and populate keywords table if needed
         SqlBasedKeywordRepo sqlBasedKeywordRepo = new SqlBasedKeywordRepo(databaseService);
-        if (!isCategoryTablePopulated(sqlBasedKeywordRepo)) {
+        if (!sqlBasedKeywordRepo.areTablesPopulated()) {
+            System.out.println("Populating keywords table");
             FileBasedKeywordRepo fileBasedKeywordRepo = new FileBasedKeywordRepo(
                     "/datasets/Categories_and_Keywords.csv");
             sqlBasedKeywordRepo.insertCategoriesAndKeywords(fileBasedKeywordRepo.getKeywords());
@@ -96,10 +99,11 @@ public class SetupService {
             }
         }
 
+        System.out.println("Checking filter options");
         // Populate filter options for improved performance
         SqlBasedFilterOptionsRepo filterOptionsRepo = new SqlBasedFilterOptionsRepo(databaseService);
         if (!filterOptionsRepo.areFilterOptionsStored()) {
-            System.out.println("Populating filter options for improved performance...");
+            System.out.println("Populating filter options");
             filterOptionsRepo.refreshAllFilterOptions();
         }
 
@@ -111,7 +115,7 @@ public class SetupService {
      * Scrapes trail image from its URL and downloads it to the data/images/
      * directory.
      *
-     * @param url
+     * @param url URL of image to scrape
      */
     void scrapeTrailImage(String url) {
         String filename = extractFilenameFromUrl(url);
