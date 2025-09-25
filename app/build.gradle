@@ -63,6 +63,10 @@ dependencies {
 
     // https://mvnrepository.com/artifact/org.assertj/assertj-core
     testImplementation 'org.assertj:assertj-core:3.23.1'
+
+    // https://mvnrepository.com/artifact/com.googlecode.json-simple/json-simple
+    implementation 'com.googlecode.json-simple:json-simple:1.1.1'
+
 }
 
 // Apply a specific Java toolchain to ease working on different environments.
@@ -96,6 +100,11 @@ jar {
     from {
         configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
     }
+}
+
+run {
+    // Add the internal JavaFX API to the module path
+    jvmArgs = ['--module-path', classpath.asPath, '--add-exports', 'javafx.web/com.sun.javafx.webkit=ALL-UNNAMED']
 }
 
 jacoco {
