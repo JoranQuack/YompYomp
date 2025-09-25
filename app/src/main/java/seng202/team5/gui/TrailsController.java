@@ -191,15 +191,15 @@ public class TrailsController extends Controller {
         List<String> sortOptions = searchService.getSortOptions();
         sortChoiceBox.getItems().addAll(sortOptions);
 
+        sortChoiceBox.getSelectionModel().selectedItemProperty().addListener(
+                (observable, oldValue, newValue) -> onSortChanged());
+
         if (super.getUserService().isGuest()) {
             sortChoiceBox.getItems().remove("Match");
             sortChoiceBox.setValue("Name");
         } else {
             sortChoiceBox.setValue("Match");
         }
-
-        sortChoiceBox.getSelectionModel().selectedItemProperty().addListener(
-                (observable, oldValue, newValue) -> onSortChanged());
     }
 
     /**
