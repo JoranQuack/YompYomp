@@ -80,7 +80,7 @@
       </VBox>
       <VBox prefHeight="400.0" prefWidth="382.0" spacing="10.0">
          <children>
-            <WebView fx:id="webView" prefHeight="196.0" prefWidth="362.0" />
+            <WebView fx:id="trailMapView" prefHeight="196.0" prefWidth="362.0" />
             <HBox prefHeight="20.0" prefWidth="200.0">
                <VBox.margin>
                   <Insets />

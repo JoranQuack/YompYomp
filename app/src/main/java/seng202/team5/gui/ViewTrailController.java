@@ -1,5 +1,7 @@
 package seng202.team5.gui;
 
+import com.sun.javafx.webkit.WebConsoleListener;
+import javafx.concurrent.Worker;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
@@ -8,7 +10,10 @@ import javafx.scene.control.ProgressBar;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.web.WebEngine;
-import javafx.scene.web.WebView;import seng202.team5.models.Trail;
+import javafx.scene.web.WebView;
+import netscape.javascript.JSObject;
+import org.controlsfx.control.tableview2.filter.filtereditor.SouthFilter;
+import seng202.team5.models.Trail;
 import seng202.team5.services.ImageService;
 
 /**
@@ -18,6 +23,11 @@ public class ViewTrailController extends Controller {
 
     private final ImageService imageService;
     private Trail trail;
+
+    private WebEngine webEngine;
+    private JavaScriptBridge javaScriptBridge;
+    private JSObject javaScriptConnector;
+    //private Geolocator geolocator;
 
     /**
      * Launches the screen with navigator
@@ -72,7 +82,44 @@ public class ViewTrailController extends Controller {
             translationLabel.setVisible(false);
         }
         // TODO: add icon for map
+
+        // Map methods below
+        javaScriptBridge = new JavaScriptBridge();
+        initMap();
     }
+
+    /**
+     * Initialises the WebView loading in the appropriate html and initialising important communicator
+     * objects between Java and Javascript
+     */
+    private void initMap() {
+        webEngine = trailMapView.getEngine();
+        webEngine.setJavaScriptEnabled(true);
+        webEngine.load(Controller.class.getResource("/html/map.html").toExternalForm());
+        //Forwards console.log() output from any javascript to info log
+        WebConsoleListener.setDefaultListener((view, message, lineNumber, sourceID) ->
+        System.out.printf(String.format("Map WebView console log line: %d, message : %s", lineNumber, message)));
+
+        webEngine.getLoadWorker().stateProperty().addListener(
+                (ov, oldState, newState) -> {
+                    // if javascript loads successfully
+                    if (newState == Worker.State.SUCCEEDED) {
+                        // set our bridge object
+                        JSObject window = (JSObject) webEngine.executeScript("window");
+                        window.setMember("javaScriptBridge", javaScriptBridge);
+                        // get a reference to the js object that has a reference to the js methods we need to use in java
+                        javaScriptConnector = (JSObject) webEngine.executeScript("jsConnector");
+                        // call the javascript function to initialise the map
+                        javaScriptConnector.call("initMap");
+                    }
+                });
+    }
+
+//    @FXML
+//    private void addLocation() {
+//        Position newMarker = geolocator.queryAddress(getaddressfrom text field);
+//        javaScriptConnector.call("addMarker", gettext);
+//    }
 
     @FXML
     private void onBackButtonClicked() {
