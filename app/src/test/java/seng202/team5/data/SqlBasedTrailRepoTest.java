@@ -53,7 +53,9 @@ public class SqlBasedTrailRepoTest {
                           thumb_url TEXT,
                           web_url TEXT,
                           culture_url TEXT,
-                          user_weight REAL
+                          user_weight REAL,
+                          lat REAL,
+                          lon REAL
                         )
                     """);
             stmt.execute("DELETE FROM trail");
