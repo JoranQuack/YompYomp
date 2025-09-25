@@ -81,7 +81,8 @@ public class ViewTrailController extends Controller {
 
     @FXML
     private void onEditInfoButtonClicked() {
-        super.getNavigator().launchScreen(new ModifyTrailController(super.getNavigator(), trail, this), null);
+        super.getNavigator().launchScreen(new ModifyTrailController(super.getNavigator(), trail,
+                this), null);
     }
 
     @Override

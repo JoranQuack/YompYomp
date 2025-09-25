@@ -95,7 +95,8 @@ public class ModifyTrailController extends Controller {
     private void onSaveButtonClicked() {
         if (userInputValidation()) {
             sqlBasedTrailRepo.upsert(getUpdatedTrail());
-            super.getNavigator().launchScreen(lastController, lastController.getNavigator().getLastController());
+            super.getNavigator().launchScreen(new ViewTrailController(super.getNavigator(), getUpdatedTrail()),
+                    lastController.getNavigator().getLastController());
         } else {
             emptyFieldLabel.setText("Please make sure all required fields are filled!");
             emptyFieldLabel.setTextFill(Color.RED);
