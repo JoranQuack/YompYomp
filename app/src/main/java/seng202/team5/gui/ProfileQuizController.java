@@ -51,12 +51,15 @@ public class ProfileQuizController extends Controller {
     private ProgressBar quizProgressBar;
 
     /**
-     * Initializes the quiz screen with the first two questions
+     * Initialises the quiz screen with the first two questions
      */
     @FXML
     private void initialize() {
-        setSliders(slider1);
-        setSliders(slider2);
+        User user = super.getUserService().getUser();
+        int[] sliderValues = getUserPreferences(user);
+
+        setSliders(slider1, sliderValues[0]);
+        setSliders(slider2, sliderValues[1]);
         setProgressBar();
         setQuestionLabel();
         if (quizId == 9) {
@@ -73,18 +76,18 @@ public class ProfileQuizController extends Controller {
      * @param slider Slider object on quiz screen
      */
     @FXML
-    private void setSliders(Slider slider) {
+    private void setSliders(Slider slider, int initialValue) {
         slider.setSnapToTicks(true);
         slider.setMajorTickUnit(1);
         slider.setMinorTickCount(0);
         slider.setBlockIncrement(1);
         slider.setMin(1);
         slider.setMax(5);
-        slider.setValue(3);
+        slider.setValue(initialValue);
     }
 
     /**
-     * Sets quiz progress shown on progress bar
+     * Sets quiz progress shown on the progress bar
      */
     @FXML
     private void setProgressBar() {
@@ -131,6 +134,26 @@ public class ProfileQuizController extends Controller {
         }
     }
 
+    private int[] getUserPreferences(User user) {
+        if (user == null) {
+            return new int[] {3, 3};
+        }
+
+        return switch (quizId) {
+            case 1 -> new int[]{user.getExperienceLevel() == 0 ? 3 : user.getExperienceLevel(),
+                                user.getGradientPreference() == 0 ? 3 : user.getGradientPreference()};
+            case 3 -> new int[]{user.getBushPreference() == 0 ? 3 : user.getBushPreference(),
+                                user.getReservePreference() == 0 ? 3 : user.getReservePreference()};
+            case 5 -> new int[]{user.getLakeRiverPreference() == 0 ? 3 : user.getLakeRiverPreference(),
+                                user.getCoastPreference() == 0 ? 3 : user.getCoastPreference()};
+            case 7 -> new int[]{user.getMountainPreference() == 0 ? 3 : user.getMountainPreference(),
+                                user.getWildlifePreference() == 0 ? 3 : user.getWildlifePreference()};
+            case 9 -> new int[]{user.getHistoricPreference() == 0 ? 3 : user.getHistoricPreference(),
+                                user.getWaterfallPreference() == 0 ? 3 : user.getWaterfallPreference()};
+            default -> new int[]{3, 3};
+        };
+    }
+
     /**
      * Action method for continue button
      * Launches the quiz screen again with next questions if not at the end of quiz
@@ -144,14 +167,14 @@ public class ProfileQuizController extends Controller {
             super.getNavigator()
                     .launchScreen(new ProfileQuizController(super.getNavigator(), quizId), null);
         } else {
-            // Mark profile as complete and save final state
+            // Mark the user's profile as complete and save the final state
             super.getUserService().markProfileComplete();
             super.getNavigator().launchScreen(new MatchmakingController(super.getNavigator()), null);
         }
     }
 
     /**
-     * Sets labels on the slider based on question shown
+     * Sets labels on the slider based on the question shown
      *
      * @param sliderLabels array of labels based on question - taken from enum
      */
@@ -170,7 +193,7 @@ public class ProfileQuizController extends Controller {
     }
 
     /**
-     * Gets values from sliders and sets attributes of User object
+     * Gets values from sliders and sets attributes of a User object
      */
     private void setUserPreferences() {
         User user = super.getUserService().getUser();
