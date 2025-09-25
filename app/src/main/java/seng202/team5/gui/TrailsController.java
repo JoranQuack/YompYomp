@@ -13,6 +13,8 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.VBox;
+import javafx.concurrent.Task;
+import javafx.application.Platform;
 import seng202.team5.App;
 import seng202.team5.gui.components.NavbarComponent;
 import seng202.team5.gui.components.TrailCardComponent;
@@ -95,7 +97,63 @@ public class TrailsController extends Controller {
         setupUIComponents();
         isUpdating = false;
 
-        loadInitialData();
+        // show loading stuff straight away
+        showLoadingState();
+
+        // Load data asynchronously
+        loadInitialDataAsync();
+    }
+
+    /**
+     * Shows a loading state while trails are being fetched.
+     */
+    private void showLoadingState() {
+        trailsContainer.getChildren().clear();
+        Label loadingLabel = new Label("Loading trails...");
+        trailsContainer.getChildren().add(loadingLabel);
+        resultsLabel.setText("Loading...");
+    }
+
+    /**
+     * Loads initial data asynchronously
+     */
+    private void loadInitialDataAsync() {
+        Task<Void> loadTask = new Task<Void>() {
+            @Override
+            protected Void call() throws Exception {
+                if (searchText != null) {
+                    searchService.setCurrentQuery(searchText);
+                }
+                searchService.getPage(0);
+                return null;
+            }
+
+            @Override
+            protected void succeeded() {
+                // JavaFX app thread
+                Platform.runLater(() -> {
+                    if (searchText != null) {
+                        executeDashboardSearch();
+                    } else {
+                        updateSearchDisplay();
+                    }
+                });
+            }
+
+            @Override
+            protected void failed() {
+                Platform.runLater(() -> {
+                    trailsContainer.getChildren().clear();
+                    Label errorLabel = new Label("Failed to load trails. Please try again.");
+                    trailsContainer.getChildren().add(errorLabel);
+                    resultsLabel.setText("Error loading trails");
+                });
+            }
+        };
+
+        Thread loadThread = new Thread(loadTask);
+        loadThread.setDaemon(true);
+        loadThread.start();
     }
 
     /**
@@ -135,18 +193,6 @@ public class TrailsController extends Controller {
         setupSortChoiceBox();
         setupToggleButton();
         setupPageChoiceBoxListener();
-    }
-
-    /**
-     * Loads initial data based on whether there's an initial search text from the
-     * dashboard screen
-     */
-    private void loadInitialData() {
-        if (searchText != null) {
-            executeDashboardSearch();
-        } else {
-            updateSearchDisplay();
-        }
     }
 
     /**
