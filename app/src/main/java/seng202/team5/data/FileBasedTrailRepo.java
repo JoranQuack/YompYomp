@@ -60,7 +60,7 @@ public class FileBasedTrailRepo implements ITrail {
                 }
                 // checks that the CSV line is the right length, otherwise skips to ensure
                 // it doesn't break
-                if (values.length != 10) {
+                if (values.length != 11) {
                     System.err.println("Invalid CSV line: " + Arrays.toString(values));
                     continue;
                 }
