@@ -36,15 +36,15 @@ class MatchmakingServiceTest {
                 //int id, String name, String description, String difficulty, String completionInfo,
                 //            String thumbnailURL, String webpageURL
                 new Trail(1, "Alpine Trail", "Easy", "A beautiful alpine trail through the mountains",
-                        "2 hours", "thumb1.jpg", "http://example.com/trail1"),
+                        "2 hours", "thumb1.jpg", "http://example.com/trail1", 0.0, 0.0),
                 new Trail(2, "Forest Trail", "Medium","A scenic forest trail with wildlife viewing",
-                        "3 hours", "thumb2.jpg", "http://example.com/trail2"),
+                        "3 hours", "thumb2.jpg", "http://example.com/trail2", 0.0, 0.0),
                 new Trail(3, "Mountain Peak Trail", "Hard", "Challenging trail to the mountain peak",
-                        "5 hours", "thumb3.jpg", "http://example.com/trail3"),
+                        "5 hours", "thumb3.jpg", "http://example.com/trail3", 0.0, 0.0),
                 new Trail(4, "Coastal Walk", "Easy", "Easy coastal walk with ocean views",
-                        "1.5 hours", "thumb4.jpg", "http://example.com/trail4"),
+                        "1.5 hours", "thumb4.jpg", "http://example.com/trail4", 0.0, 0.0),
                 new Trail(5, "River Trail", "Medium", "Trail following the river through the valley",
-                        "2.5 hours", "thumb5.jpg", "http://example.com/trail5")));
+                        "2.5 hours", "thumb5.jpg", "http://example.com/trail5", 0.0, 0.0)));
         when(mockTrailRepo.getAllTrails()).thenReturn(mockTrails);
 
         matchmakingService = new MatchmakingService(mockKeywordRepo, mockTrailRepo);
@@ -294,7 +294,7 @@ class MatchmakingServiceTest {
         matchmakingService.setUserPreferences(user);
 
         Trail trail = new Trail(6, "Case Test Trail", "Easy", "A FOREST trail with a RIVER nearby",
-                "2 hours", "thumb6.jpg", "http://example.com/trail6");
+                "2 hours", "thumb6.jpg", "http://example.com/trail6", 0.0, 0.0);
         Set<String> categories = matchmakingService.categoriseTrail(trail);
         assertTrue(categories.contains("Forest"));
         assertTrue(categories.contains("Wet"));
