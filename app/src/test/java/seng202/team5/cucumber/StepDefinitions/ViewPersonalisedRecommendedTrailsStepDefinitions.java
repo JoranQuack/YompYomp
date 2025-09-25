@@ -51,7 +51,7 @@ public class ViewPersonalisedRecommendedTrailsStepDefinitions {
         // fake trails
         List<Trail> mockTrails = Arrays.asList(
                 new Trail(1, "Alpine Trail", "A beautiful alpine trail through the mountains", "Easy",
-                        "2 hours", "thumb1.jpg", "http://example.com/trail1", 0.0, 0/0),
+                        "2 hours", "thumb1.jpg", "http://example.com/trail1", 0.0, 0.0),
                 new Trail(2, "Forest Trail", "A scenic forest trail with wildlife viewing", "Medium",
                         "3 hours", "thumb2.jpg", "http://example.com/trail2", 0.0, 0.0),
                 new Trail(3, "Mountain Peak Trail", "Challenging trail to the mountain peak", "Hard",
