@@ -225,8 +225,10 @@ public class MatchmakingService {
         if (!trails.isEmpty()) {
             trailWeights.clear();
 
+            Map<Integer, Set<String>> allTrailCategories = keywordRepo.getAllTrailCategories();
+
             for (Trail trail : trails) {
-                Set<String> categories = keywordRepo.getCategoriesForTrail(trail.getId());
+                Set<String> categories = allTrailCategories.getOrDefault(trail.getId(), new HashSet<>());
                 double weight = scoreTrail(categories);
                 trail.setCategories(categories);
                 trail.setUserWeight(weight);

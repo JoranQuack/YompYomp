@@ -146,6 +146,32 @@ public class SqlBasedKeywordRepo implements IKeyword {
     }
 
     /**
+     * Gets all categories for all trails in a single batch query.
+     * This is much more efficient than calling getCategoriesForTrail() for each
+     * trail individually.
+     *
+     * @return Map of trail ID to set of category names
+     */
+    public Map<Integer, Set<String>> getAllTrailCategories() {
+        Map<Integer, Set<String>> trailCategories = new HashMap<>();
+        queryHelper.executeQuery(
+                "SELECT tc.trailId, c.name as category_name " +
+                        "FROM trailCategory tc " +
+                        "JOIN category c ON tc.categoryId = c.id " +
+                        "ORDER BY tc.trailId",
+                null,
+                rs -> {
+                    int trailId = rs.getInt("trailId");
+                    String categoryName = rs.getString("category_name");
+
+                    trailCategories.putIfAbsent(trailId, new HashSet<>());
+                    trailCategories.get(trailId).add(categoryName);
+                    return null;
+                });
+        return trailCategories;
+    }
+
+    /**
      * Helper class to represent a keyword entry for batch processing.
      */
     private static class KeywordEntry {
