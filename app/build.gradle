@@ -31,6 +31,9 @@ dependencies {
     // This dependency is used by the application.
     implementation libs.guava
 
+    // Weather API dependency
+    implementation 'com.google.code.gson:gson:2.10.1'
+
     //this dependency is used of the CSV reader method
     implementation 'com.opencsv:opencsv:5.12.0'
 
