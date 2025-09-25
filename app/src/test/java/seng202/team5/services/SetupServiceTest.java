@@ -229,7 +229,7 @@ public class SetupServiceTest {
 
         SqlBasedTrailRepo testTrailRepo = new SqlBasedTrailRepo(testDbService);
         Trail existingTrail = new Trail(1, "ExistingTrail", "Description", "Easy", "1hr",
-                "url", "url");
+                "url", "url", 0.0, 0.0);
         testTrailRepo.upsertAll(Arrays.asList(existingTrail));
 
         SetupService testSetupService = new SetupService(testDbService);
