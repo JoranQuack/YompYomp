@@ -1,6 +1,7 @@
 package seng202.team5.gui;
 
 import java.util.List;
+import java.util.ArrayList;
 
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
@@ -21,6 +22,9 @@ public class TrailsController extends Controller {
     /** Service for searching and filtering trails */
     private SearchService searchService;
     private String searchText;
+
+    /** Pool of reusable trail card components to avoid recreating them */
+    private final List<TrailCardComponent> trailCardPool = new ArrayList<>();
 
     @FXML
     private VBox navbarContainer;
@@ -105,26 +109,23 @@ public class TrailsController extends Controller {
             return;
         }
 
-        pageChoiceBox.getSelectionModel().selectedItemProperty().addListener(
-                (observable, oldValue, newValue) -> onPageSelected());
         initializeFilterChoiceBoxes();
 
         // check if the user searched from dashboard
         if (searchText != null) {
             executeDashboardSearch();
-        } else {
-            updateSearchDisplay();
         }
-
+        updateSearchDisplay();
     }
 
     /**
-     * This method is used to populate and click the search button on the trails
+     * This method is used to populate and execute search on the trails
      * page if a search is made from the dashboard page
      */
     private void executeDashboardSearch() {
         searchBarTextField.setText(searchText);
-        searchButton.fire();
+        searchService.setCurrentQuery(searchText);
+        updateSearchDisplay();
     }
 
     /**
@@ -191,15 +192,15 @@ public class TrailsController extends Controller {
         List<String> sortOptions = searchService.getSortOptions();
         sortChoiceBox.getItems().addAll(sortOptions);
 
-        sortChoiceBox.getSelectionModel().selectedItemProperty().addListener(
-                (observable, oldValue, newValue) -> onSortChanged());
-
         if (super.getUserService().isGuest()) {
             sortChoiceBox.getItems().remove("Match");
             sortChoiceBox.setValue("Name");
         } else {
             sortChoiceBox.setValue("Match");
         }
+
+        sortChoiceBox.getSelectionModel().selectedItemProperty().addListener(
+                (observable, oldValue, newValue) -> onSortChanged());
     }
 
     /**
@@ -234,35 +235,46 @@ public class TrailsController extends Controller {
     }
 
     /**
-     * Updates display with trail cards.
+     * Updates display with trail cards using component reuse for better
+     * performance.
      *
      * @param trails List of trails to display
      */
     private void updateTrailsDisplay(List<Trail> trails) {
+        System.out.println("updating trails display");
         trailsContainer.getChildren().clear();
 
         if (trails.isEmpty()) {
             Label noResultsLabel = new Label(
                     "No trails match your search. Please try adjusting your search and filter preferences.");
             trailsContainer.getChildren().add(noResultsLabel);
+            resultsLabel.setText("No trails found.");
             return;
         }
 
-        for (Trail trail : trails) {
-            TrailCardComponent trailCard = new TrailCardComponent(super.getUserService().isGuest());
+        boolean isGuest = super.getUserService().isGuest();
+        Insets cardMargin = new Insets(10);
+
+        for (int i = 0; i < trails.size(); i++) {
+            Trail trail = trails.get(i);
+            TrailCardComponent trailCard;
+
+            // Reuse existing component or create new one if needed
+            if (i < trailCardPool.size()) {
+                trailCard = trailCardPool.get(i);
+            } else {
+                trailCard = new TrailCardComponent(isGuest);
+                trailCardPool.add(trailCard);
+                VBox.setMargin(trailCard, cardMargin);
+            }
+
             trailCard.setData(trail);
-
-            // Add some spacing between cards
-            VBox.setMargin(trailCard, new Insets(10));
-            trailsContainer.getChildren().add(trailCard);
             trailCard.setOnMouseClicked(e -> onTrailCardClicked(trail));
+            trailsContainer.getChildren().add(trailCard);
         }
 
-        if (trails.isEmpty()) {
-            resultsLabel.setText("No trails found.");
-        } else {
-            resultsLabel.setText(trails.size() + "/" + searchService.getNumberOfTrails() + " trails showing");
-        }
+        // Update results label
+        resultsLabel.setText(trails.size() + "/" + searchService.getNumberOfTrails() + " trails showing");
     }
 
     @FXML
@@ -276,10 +288,18 @@ public class TrailsController extends Controller {
     private void resetPageChoiceBox() {
         pageChoiceBox.getItems().clear();
         int numPages = searchService.getNumberOfPages();
-        for (int i = 0; i < numPages; i++) {
-            pageChoiceBox.getItems().add(String.valueOf(i + 1));
+
+        if (numPages > 0) {
+            String[] pageItems = new String[numPages];
+            for (int i = 0; i < numPages; i++) {
+                pageItems[i] = String.valueOf(i + 1);
+            }
+            pageChoiceBox.getItems().addAll(pageItems);
+            pageChoiceBox.setValue("1");
         }
-        pageChoiceBox.setValue("1");
+
+        pageChoiceBox.getSelectionModel().selectedItemProperty().addListener(
+                (observable, oldValue, newValue) -> onPageSelected());
     }
 
     /**
