@@ -57,7 +57,7 @@ public class MatchmakingService {
         setUserPreferences(user);
         buildReverseIndex();
         assignWeightsToTrails();
-        trailRepo.upsertAll(getSortedTrails());
+        trailRepo.updateUserWeights(getSortedTrails());
     }
 
     /**

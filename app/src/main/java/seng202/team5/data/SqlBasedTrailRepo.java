@@ -111,6 +111,22 @@ public class SqlBasedTrailRepo implements ITrail {
     }
 
     /**
+     * Updates the trail user weights
+     *
+     * @param trails List of trails to update user weights for
+     */
+    public void updateUserWeights(List<Trail> trails) {
+        if (trails.isEmpty())
+            return;
+
+        String sql = "UPDATE trail SET userWeight = ? WHERE id = ?";
+        queryHelper.executeBatch(sql, trails, (stmt, trail) -> {
+            stmt.setDouble(1, trail.getUserWeight());
+            stmt.setInt(2, trail.getId());
+        });
+    }
+
+    /**
      * Deletes a trail by its primary key
      *
      * @param id the trail identifier to delete
