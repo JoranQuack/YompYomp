@@ -8,7 +8,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.io.InputStreamReader;
 import java.io.InputStream;
-import org.locationtech.proj4j.*;
 
 /**
  * FileBasedTrailRepo is responsible for loading the trail data from the DOC
@@ -17,7 +16,6 @@ import org.locationtech.proj4j.*;
  */
 public class FileBasedTrailRepo implements ITrail {
 
-    private static final CRSFactory crsFactory = new CRSFactory();
     // List containing all the trails from the CSV
     private final List<Trail> trails = new ArrayList<>();
 
@@ -89,18 +87,6 @@ public class FileBasedTrailRepo implements ITrail {
             System.out.println("Error with file: " + filePath + ": " + e.getMessage());
         }
         return trails;
-    }
-
-    private double[] convertCoordinates(double x, double y) {
-        CoordinateReferenceSystem nztm2000 = crsFactory.createFromName("EPSG:2193");
-        CoordinateReferenceSystem wgs84 = crsFactory.createFromName("EPSG:4326");
-        CoordinateTransform transform = new CoordinateTransformFactory().createTransform(nztm2000, wgs84);
-
-        ProjCoordinate src = new ProjCoordinate(x, y);
-        ProjCoordinate dest = new ProjCoordinate();
-        transform.transform(src, dest);
-
-        return new double[]{dest.x, dest.y};
     }
 
     /**
