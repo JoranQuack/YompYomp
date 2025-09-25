@@ -26,7 +26,7 @@ public class SqlBasedTrailRepo implements ITrail {
                 id, name, translation, region, difficulty, description, completion_info, min_completion_time_minutes,
                 max_completion_time_minutes, completion_type, time_unit, is_multi_day, has_variable_time,
                 thumb_url, web_url, culture_url, user_weight, lat, lon
-            ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?, ?, ?)
+            ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
             ON CONFLICT(id) DO UPDATE SET
                 name=excluded.name,
                 translation=excluded.translation,
@@ -43,7 +43,7 @@ public class SqlBasedTrailRepo implements ITrail {
                 thumb_url=excluded.thumb_url,
                 web_url=excluded.web_url,
                 culture_url=excluded.culture_url,
-                user_weight=excluded.user_weight
+                user_weight=excluded.user_weight,
                 lat=excluded.lat,
                 lon=excluded.lon
             """;
@@ -222,6 +222,8 @@ public class SqlBasedTrailRepo implements ITrail {
         stmt.setString(15, trail.getWebpageURL());
         stmt.setString(16, trail.getCultureUrl());
         stmt.setDouble(17, trail.getUserWeight());
+        stmt.setDouble(18, trail.getLat());
+        stmt.setDouble(19, trail.getLon());
     }
 
     /**
