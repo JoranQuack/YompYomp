@@ -42,6 +42,8 @@ CREATE TABLE
         web_URL TEXT,
         culture_URL TEXT,
         user_weight REAL,
+        lat REAL,
+        lon REAL,
         PRIMARY KEY (id)
     );
 

@@ -19,6 +19,7 @@ public class FileBasedTrailRepo implements ITrail {
     // List containing all the trails from the CSV
     private final List<Trail> trails = new ArrayList<>();
 
+
     /**
      * Constructor - Loads trails from the DOC CSV file path
      *
@@ -59,7 +60,7 @@ public class FileBasedTrailRepo implements ITrail {
                 }
                 // checks that the CSV line is the right length, otherwise skips to ensure
                 // it doesn't break
-                if (values.length != 10) {
+                if (values.length != 11) {
                     System.err.println("Invalid CSV line: " + Arrays.toString(values));
                     continue;
                 }
@@ -72,10 +73,12 @@ public class FileBasedTrailRepo implements ITrail {
                 String completionInfo = values[4];
                 String thumbnailURL = values[6];
                 String webpageURL = values[7];
+                double lat = Double.parseDouble(values[9]);
+                double lon = Double.parseDouble(values[10]);
 
                 // create the new trail object
                 Trail newTrail = new Trail(id, name, difficulty, description, completionInfo,
-                        thumbnailURL, webpageURL);
+                        thumbnailURL, webpageURL, lat, lon);
 
                 // add the new trail object to the list
                 trails.add(newTrail);

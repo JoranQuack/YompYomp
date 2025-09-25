@@ -51,25 +51,25 @@ public class ViewPersonalisedRecommendedTrailsStepDefinitions {
         // fake trails
         List<Trail> mockTrails = Arrays.asList(
                 new Trail(1, "Alpine Trail", "A beautiful alpine trail through the mountains", "Easy",
-                        "2 hours", "thumb1.jpg", "http://example.com/trail1"),
+                        "2 hours", "thumb1.jpg", "http://example.com/trail1", 0.0, 0.0),
                 new Trail(2, "Forest Trail", "A scenic forest trail with wildlife viewing", "Medium",
-                        "3 hours", "thumb2.jpg", "http://example.com/trail2"),
+                        "3 hours", "thumb2.jpg", "http://example.com/trail2", 0.0, 0.0),
                 new Trail(3, "Mountain Peak Trail", "Challenging trail to the mountain peak", "Hard",
-                        "5 hours", "thumb3.jpg", "http://example.com/trail3"),
+                        "5 hours", "thumb3.jpg", "http://example.com/trail3", 0.0, 0.0),
                 new Trail(4, "Coastal Walk", "Easy coastal walk with ocean views", "Easy",
-                        "1.5 hours", "thumb4.jpg", "http://example.com/trail4"),
+                        "1.5 hours", "thumb4.jpg", "http://example.com/trail4", 0.0, 0.0),
                 new Trail(5, "River Trail", "Trail following the river through the valley", "Medium",
-                        "2.5 hours", "thumb5.jpg", "http://example.com/trail5"),
+                        "2.5 hours", "thumb5.jpg", "http://example.com/trail5", 0.0, 0.0),
                 new Trail(6, "Lakeside Loop", "Loop trail around the serene lake", "Easy",
-                        "2 hours", "thumb6.jpg", "http://example.com/trail6"),
+                        "2 hours", "thumb6.jpg", "http://example.com/trail6", 0.0, 0.0),
                 new Trail(7, "Glacier Path", "Trail through icy glaciers, suitable for experienced hikers", "Hard",
-                        "6 hours", "thumb7.jpg", "http://example.com/trail7"),
+                        "6 hours", "thumb7.jpg", "http://example.com/trail7", 0.0, 0.0),
                 new Trail(8, "Bushland Circuit", "Circuit trail through native bush", "Medium",
-                        "3 hours", "thumb8.jpg", "http://example.com/trail8"),
+                        "3 hours", "thumb8.jpg", "http://example.com/trail8", 0.0, 0.0),
                 new Trail(9, "Volcanic Ridge Track", "Trail along volcanic ridges with dramatic views", "Hard",
-                        "4 hours", "thumb9.jpg", "http://example.com/trail9"),
+                        "4 hours", "thumb9.jpg", "http://example.com/trail9", 0.0, 0.0),
                 new Trail(10, "Wetlands Walk", "Easy walk through wetlands, great for birdwatching", "Easy",
-                        "1.5 hours", "thumb10.jpg", "http://example.com/trail10"));
+                        "1.5 hours", "thumb10.jpg", "http://example.com/trail10", 0.0, 0.0));
         when(mockTrailRepo.getAllTrails()).thenReturn(mockTrails);
         searchService = new SearchService(mockTrailRepo);
         matchmakingService = new MatchmakingService(mockKeywordRepo, mockTrailRepo);
