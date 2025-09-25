@@ -174,9 +174,9 @@ public class SetupServiceTest {
         SqlBasedTrailRepo testTrailRepo = new SqlBasedTrailRepo(testDbService);
 
         Trail trail1 = new Trail(1, "Trail1", "Description1", "Easy", "1hr",
-                "https://example.com/image1.jpg", "url1");
+                "https://example.com/image1.jpg", "url1", 0.0, 0.0);
         Trail trail2 = new Trail(2, "Trail2", "Description2", "Medium", "2hr",
-                "https://example.com/image2.jpg", "url2");
+                "https://example.com/image2.jpg", "url2", 0.0, 0.0);
 
         List<Trail> trails = Arrays.asList(trail1, trail2);
         testTrailRepo.upsertAll(trails);
@@ -274,7 +274,7 @@ public class SetupServiceTest {
         SqlBasedTrailRepo testTrailRepo = new SqlBasedTrailRepo(testDbService);
 
         Trail trailWithNullUrl = new Trail(1, "Trail1", "Description1", "Easy", "1hr",
-                null, "url1");
+                null, "url1", 0.0, 0.0);
 
         List<Trail> trails = Arrays.asList(trailWithNullUrl);
         testTrailRepo.upsertAll(trails);

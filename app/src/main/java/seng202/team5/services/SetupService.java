@@ -40,7 +40,7 @@ public class SetupService {
     public SetupService(DatabaseService databaseService) {
         this.databaseService = databaseService;
         this.sqlTrailRepo = new SqlBasedTrailRepo(databaseService);
-        this.fileTrailRepo = new FileBasedTrailRepo("/datasets/DOC_Walking_Experiences_7994760352369043452.csv");
+        this.fileTrailRepo = new FileBasedTrailRepo("/datasets/DOC_Walking_Experiences_-2195374600472221140.csv");
     }
 
     /**
@@ -144,6 +144,7 @@ public class SetupService {
             List<Trail> source = fileTrailRepo.getAllTrails();
             List<Trail> trails = TrailsProcessor.processTrails(source);
             sqlTrailRepo.upsertAll(trails);
+            System.out.println("Sync trails complete, " + sqlTrailRepo.countTrails() + " trails.");
         } catch (Exception e) {
             System.err.println("Error syncing database from trail file: " + e.getMessage());
             e.printStackTrace();

@@ -25,8 +25,8 @@ public class SqlBasedTrailRepo implements ITrail {
             INSERT OR IGNORE INTO trail (
                 id, name, translation, region, difficulty, description, completionInfo, minCompletionTimeMinutes,
                 maxCompletionTimeMinutes, completionType, timeUnit, isMultiDay, hasVariableTime,
-                thumbUrl, webUrl, cultureUrl, userWeight
-            ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
+                thumbUrl, webUrl, cultureUrl, userWeight, lat, lon
+            ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
             """;
 
     private static final String DELETE_SQL = "DELETE FROM trail WHERE id = ?";
@@ -177,7 +177,9 @@ public class SqlBasedTrailRepo implements ITrail {
                 rs.getString("thumbUrl"),
                 rs.getString("webUrl"),
                 rs.getString("cultureUrl"),
-                rs.getDouble("userWeight"));
+                rs.getDouble("userWeight"),
+                rs.getDouble("lat"),
+                rs.getDouble("lon"));
     }
 
     /**
@@ -216,6 +218,8 @@ public class SqlBasedTrailRepo implements ITrail {
         stmt.setString(15, trail.getWebpageURL());
         stmt.setString(16, trail.getCultureUrl());
         stmt.setDouble(17, trail.getUserWeight());
+        stmt.setDouble(18, trail.getLat());
+        stmt.setDouble(19, trail.getLon());
     }
 
     /**

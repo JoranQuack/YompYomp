@@ -43,6 +43,8 @@ CREATE TABLE
         webUrl TEXT,
         cultureUrl TEXT,
         userWeight REAL,
+        lat REAL,
+        lon REAL,
         PRIMARY KEY (id)
     );
 

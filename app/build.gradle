@@ -84,7 +84,7 @@ tasks.named('test') {
 
 javafx {
     version = "21.0.2"
-    modules = ['javafx.controls', 'javafx.fxml']
+    modules = ['javafx.controls', 'javafx.fxml', 'javafx.web']
 }
 
 jar {
@@ -136,6 +136,17 @@ jacocoTestReport {
         csv.required = false
         html.required = true
         html.outputLocation = layout.buildDirectory.dir('jacocoHtml')
+    }
+    afterEvaluate {
+        classDirectories.setFrom(files(classDirectories.files.collect {
+            fileTree(dir: it, exclude: [
+                'seng202/team5/gui/**',
+                'seng202/team5/gui/components/**',
+                'seng202/team5/models/**',
+                'seng202/team5/App.class',
+                'seng202/team5/exceptions/**'
+            ])
+        }))
     }
 }
 

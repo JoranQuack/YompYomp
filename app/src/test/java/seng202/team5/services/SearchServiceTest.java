@@ -27,15 +27,15 @@ public class SearchServiceTest {
         // mock trail data
         mockTrails = Arrays.asList(
                 new Trail(1, "Alpine Trail", "A beautiful alpine trail through the mountains", "Easy",
-                        "2 hours", "thumb1.jpg", "http://example.com/trail1"),
+                        "2 hours", "thumb1.jpg", "http://example.com/trail1", 0.0, 0.0),
                 new Trail(2, "Forest Trail", "A scenic forest trail with wildlife viewing", "Medium",
-                        "3 hours", "thumb2.jpg", "http://example.com/trail2"),
+                        "3 hours", "thumb2.jpg", "http://example.com/trail2", 0.0, 0.0),
                 new Trail(3, "Mountain Peak Trail", "Challenging trail to the mountain peak", "Hard",
-                        "5 hours", "thumb3.jpg", "http://example.com/trail3"),
+                        "5 hours", "thumb3.jpg", "http://example.com/trail3", 0.0, 0.0),
                 new Trail(4, "Coastal Walk", "Easy coastal walk with ocean views", "Easy",
-                        "1.5 hours", "thumb4.jpg", "http://example.com/trail4"),
+                        "1.5 hours", "thumb4.jpg", "http://example.com/trail4", 0.0, 0.0),
                 new Trail(5, "River Trail", "Trail following the river through the valley", "Medium",
-                        "2.5 hours", "thumb5.jpg", "http://example.com/trail5"));
+                        "2.5 hours", "thumb5.jpg", "http://example.com/trail5", 0.0, 0.0));
 
         when(mockTrailRepo.getAllTrails()).thenReturn(mockTrails);
 
