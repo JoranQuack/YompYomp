@@ -1,5 +1,6 @@
 -- Remember to increment the schema version here when making changes!
--- Schema version: 1.6
+-- Schema version: 2.0 Remember to increment the schema version here when making changes!
+-- Schema version: 1.1
 PRAGMA foreign_keys = off;
 
 BEGIN TRANSACTION;
@@ -16,8 +17,8 @@ DROP TABLE IF EXISTS keyword;
 CREATE TABLE
     IF NOT EXISTS keyword (
         value TEXT NOT NULL,
-        category_id INTEGER NOT NULL REFERENCES category (id),
-        PRIMARY KEY (value, category_id)
+        categoryId INTEGER NOT NULL REFERENCES category (id),
+        PRIMARY KEY (value, categoryId)
     );
 
 -- Table: trail
@@ -31,18 +32,30 @@ CREATE TABLE
         region TEXT,
         difficulty TEXT,
         description TEXT,
-        completion_info TEXT,
-        min_completion_time_minutes INTEGER,
-        max_completion_time_minutes INTEGER,
-        completion_type TEXT,
-        time_unit TEXT,
-        is_multi_day BOOL,
-        has_variable_time BOOL,
-        thumb_URL TEXT,
-        web_URL TEXT,
-        culture_URL TEXT,
-        user_weight REAL,
+        completionInfo TEXT,
+        minCompletionTimeMinutes INTEGER,
+        maxCompletionTimeMinutes INTEGER,
+        completionType TEXT,
+        timeUnit TEXT,
+        isMultiDay BOOL,
+        hasVariableTime BOOL,
+        thumbUrl TEXT,
+        webUrl TEXT,
+        cultureUrl TEXT,
+        userWeight REAL,
+        lat REAL,
+        lon REAL,
         PRIMARY KEY (id)
+    );
+
+-- Table: trailCategory
+DROP TABLE IF EXISTS trailCategory;
+
+CREATE TABLE
+    IF NOT EXISTS trailCategory (
+        trailId INTEGER NOT NULL REFERENCES trail (id),
+        categoryId INTEGER NOT NULL REFERENCES category (id),
+        PRIMARY KEY (trailId, categoryId)
     );
 
 -- Table: user
@@ -66,6 +79,17 @@ CREATE TABLE
         historicPreference INTEGER,
         waterfallPreference INTEGER,
         isProfileComplete BOOL DEFAULT 0
+    );
+
+-- Table: filterOptions
+DROP TABLE IF EXISTS filterOptions;
+
+CREATE TABLE
+    IF NOT EXISTS filterOptions (
+        filterType TEXT NOT NULL,
+        optionValue TEXT NOT NULL,
+        displayOrder INTEGER DEFAULT 0,
+        PRIMARY KEY (filterType, optionValue)
     );
 
 COMMIT TRANSACTION;

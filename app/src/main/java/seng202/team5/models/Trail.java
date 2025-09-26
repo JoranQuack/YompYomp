@@ -28,6 +28,8 @@ public class Trail {
     private String cultureUrl;
     private Set<String> categories = new HashSet<>();
     private double userWeight;
+    private double lat;
+    private double lon;
 
     /**
      * Constructor for Trail class with userWeight and enhanced time fields
@@ -53,7 +55,7 @@ public class Trail {
     public Trail(int id, String name, String translation, String region, String difficulty, String description,
                  String completionInfo, int minCompletionTimeMinutes, int maxCompletionTimeMinutes,
                  String completionType, String timeUnit, boolean isMultiDay, boolean hasVariableTime,
-                 String thumbnailURL, String webpageURL, String cultureUrl, double userWeight) {
+                 String thumbnailURL, String webpageURL, String cultureUrl, double userWeight, double lat, double lon) {
         this.id = id;
         this.name = name;
         this.translation = translation;
@@ -71,6 +73,8 @@ public class Trail {
         this.webpageURL = webpageURL;
         this.cultureUrl = cultureUrl;
         this.userWeight = userWeight;
+        this.lat = lat;
+        this.lon = lon;
     }
 
     /**
@@ -88,9 +92,9 @@ public class Trail {
      * @param webpageURL
      */
     public Trail(int id, String name, String difficulty, String description, String completionInfo,
-            String thumbnailURL, String webpageURL) {
+            String thumbnailURL, String webpageURL, double lat, double lon) {
         this(id, name, "", "", difficulty, description, completionInfo, 0, 0,"unknown", "unknown",
-                false, false, thumbnailURL, webpageURL, "", 0.0);
+                false, false, thumbnailURL, webpageURL, "", 0.0, lat, lon);
     }
 
     /**
@@ -99,7 +103,7 @@ public class Trail {
      */
     public Trail(int id, String name, String translation, String region, String difficulty, String completionType,
                  String completionInfo, String description, String thumbUrl, String webUrl, String cultureUrl,
-                 double userWeight) {
+                 double userWeight, double lat, double lon) {
         SqlBasedTrailRepo sqlBasedTrailRepo = new SqlBasedTrailRepo(new DatabaseService());
         if (id == -1) {
             this.id = sqlBasedTrailRepo.getNewTrailId();
@@ -122,6 +126,8 @@ public class Trail {
         this.thumbnailURL = thumbUrl;
         this.webpageURL = webUrl;
         this.userWeight = userWeight;
+        this.lat = lat;
+        this.lon = lon;
     }
 
     // Getters
@@ -201,6 +207,14 @@ public class Trail {
         return region;
     }
 
+    public double getLat() {
+        return lat;
+    }
+
+    public double getLon() {
+        return lon;
+    }
+
     // Setters
     public void setId(int id) {
         this.id = id;
@@ -272,5 +286,13 @@ public class Trail {
 
     public void setRegion(String region) {
         this.region = region;
+    }
+
+    public void setLat(double lat) {
+        this.lat = lat;
+    }
+
+    public void setLon(double lon) {
+        this.lon = lon;
     }
 }

@@ -2,15 +2,9 @@ package seng202.team5.gui;
 
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.DialogPane;
-import javafx.scene.image.Image;
-import javafx.stage.Stage;
+import seng202.team5.App;
 import seng202.team5.gui.components.NavbarComponent;
 import seng202.team5.services.UserService;
-
-import java.util.Objects;
-import java.util.Optional;
 
 /**
  * Abstract parent class for all UI controller classes.
@@ -27,7 +21,7 @@ public abstract class Controller {
     protected Controller() {
         this.navigator = null; // Will be set later via setter
         this.navbarController = null; // Will be set later via setter
-        this.userService = new UserService(); // Create new instance for FXML controllers
+        this.userService = new UserService(App.getDatabaseService()); // Create new instance for FXML controllers
     }
 
     /**
@@ -37,7 +31,7 @@ public abstract class Controller {
      */
     protected Controller(final ScreenNavigator navigator) {
         this.navigator = navigator;
-        this.userService = new UserService();
+        this.userService = new UserService(App.getDatabaseService());
         this.navbarController = new NavbarComponent(navigator, userService);
     }
 
@@ -57,12 +51,13 @@ public abstract class Controller {
         alert.setHeaderText(null);
         alert.setGraphic(null);
 
-//        Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
-//        stage.getIcons().add(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/icon.png"))));
+        // Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
+        // stage.getIcons().add(new
+        // Image(Objects.requireNonNull(getClass().getResourceAsStream("/icon.png"))));
 
-//        DialogPane dialogPane = alert.getDialogPane();
-//        dialogPane.getStylesheets().add(
-//                Objects.requireNonNull(getClass().getResource("/styles/global.css")).toExternalForm());
+        // DialogPane dialogPane = alert.getDialogPane();
+        // dialogPane.getStylesheets().add(
+        // Objects.requireNonNull(getClass().getResource("/styles/global.css")).toExternalForm());
 
         alert.showAndWait();
     }
@@ -75,6 +70,7 @@ public abstract class Controller {
      * output. Controllers may override this method to provide
      * screen-specific error handling, such as displaying an alert
      * message to the user
+     *
      * @param e the exception thrown while attempting to load the screen
      */
     public void onLoadFailed(Exception e) {

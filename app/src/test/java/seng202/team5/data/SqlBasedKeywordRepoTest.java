@@ -44,11 +44,11 @@ public class SqlBasedKeywordRepoTest {
             stmt.execute("""
                     CREATE TABLE IF NOT EXISTS keyword (
                         value       TEXT    NOT NULL,
-                        category_id INTEGER NOT NULL
+                        categoryId INTEGER NOT NULL
                                             REFERENCES category (id),
                         PRIMARY KEY (
                             value,
-                            category_id
+                            categoryId
                         )
                     )
                     """);
@@ -58,12 +58,12 @@ public class SqlBasedKeywordRepoTest {
             stmt.execute("INSERT INTO category (id, name) VALUES (1, 'FamilyFriendly')");
             stmt.execute("INSERT INTO category (id, name) VALUES (2, 'Forest')");
             stmt.execute("INSERT INTO category (id, name) VALUES (3, 'Alpine')");
-            stmt.execute("INSERT INTO keyword (value, category_id) VALUES ('children', 1)");
-            stmt.execute("INSERT INTO keyword (value, category_id) VALUES ('easy', 1)");
-            stmt.execute("INSERT INTO keyword (value, category_id) VALUES ('forest', 2)");
-            stmt.execute("INSERT INTO keyword (value, category_id) VALUES ('bush', 2)");
-            stmt.execute("INSERT INTO keyword (value, category_id) VALUES ('mountain', 3)");
-            stmt.execute("INSERT INTO keyword (value, category_id) VALUES ('alpine', 3)");
+            stmt.execute("INSERT INTO keyword (value, categoryId) VALUES ('children', 1)");
+            stmt.execute("INSERT INTO keyword (value, categoryId) VALUES ('easy', 1)");
+            stmt.execute("INSERT INTO keyword (value, categoryId) VALUES ('forest', 2)");
+            stmt.execute("INSERT INTO keyword (value, categoryId) VALUES ('bush', 2)");
+            stmt.execute("INSERT INTO keyword (value, categoryId) VALUES ('mountain', 3)");
+            stmt.execute("INSERT INTO keyword (value, categoryId) VALUES ('alpine', 3)");
         }
     }
 

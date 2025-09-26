@@ -8,7 +8,7 @@
 
 <fx:root alignment="CENTER_LEFT" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minWidth="400.0" spacing="10.0" type="HBox" xmlns="http://javafx.com/javafx/21.0.2" xmlns:fx="http://javafx.com/fxml/1">
    <children>
-      <HBox prefWidth="80.0">
+      <HBox prefWidth="100.0">
          <children>
             <ImageView fitHeight="40.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true">
                <image>
@@ -23,7 +23,7 @@
             <Button fx:id="trailsButton" mnemonicParsing="false" text="Trails" />
          </children>
       </HBox>
-      <HBox alignment="CENTER" prefWidth="80.0">
+      <HBox alignment="CENTER_RIGHT" prefWidth="100.0">
          <children>
             <Button fx:id="redoQuizButton" alignment="CENTER" mnemonicParsing="false" text="Redo Quiz" HBox.hgrow="ALWAYS">
                <HBox.margin>

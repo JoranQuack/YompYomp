@@ -104,7 +104,7 @@ public class DatabaseSetupTest {
 
                 while (columns.next()) {
                     String columnName = columns.getString("COLUMN_NAME").toLowerCase();
-                    if ("user_weight".equals(columnName)) {
+                    if ("userweight".equals(columnName)) {
                         hasUserWeight = true;
                     } else if ("id".equals(columnName)) {
                         hasId = true;
@@ -113,7 +113,7 @@ public class DatabaseSetupTest {
                     }
                 }
 
-                assertTrue(hasUserWeight, "Trail table should have user_weight column");
+                assertTrue(hasUserWeight, "Trail table should have userWeight column");
                 assertTrue(hasId, "Trail table should have id column");
                 assertTrue(hasName, "Trail table should have name column");
             }

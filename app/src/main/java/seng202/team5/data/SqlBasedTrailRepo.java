@@ -22,28 +22,11 @@ public class SqlBasedTrailRepo implements ITrail {
     private static final String SELECT_BY_ID = SELECT_ALL + " WHERE id = ?";
 
     private static final String UPSERT_SQL = """
-            INSERT INTO trail (
-                id, name, translation, region, difficulty, description, completion_info, min_completion_time_minutes,
-                max_completion_time_minutes, completion_type, time_unit, is_multi_day, has_variable_time,
-                thumb_url, web_url, culture_url, user_weight
-            ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
-            ON CONFLICT(id) DO UPDATE SET
-                name=excluded.name,
-                translation=excluded.translation,
-                region=excluded.region,
-                difficulty=excluded.difficulty,
-                description=excluded.description,
-                completion_info=excluded.completion_info,
-                min_completion_time_minutes=excluded.min_completion_time_minutes,
-                max_completion_time_minutes=excluded.max_completion_time_minutes,
-                completion_type=excluded.completion_type,
-                time_unit=excluded.time_unit,
-                is_multi_day=excluded.is_multi_day,
-                has_variable_time=excluded.has_variable_time,
-                thumb_url=excluded.thumb_url,
-                web_url=excluded.web_url,
-                culture_url=excluded.culture_url,
-                user_weight=excluded.user_weight
+            INSERT OR IGNORE INTO trail (
+                id, name, translation, region, difficulty, description, completionInfo, minCompletionTimeMinutes,
+                maxCompletionTimeMinutes, completionType, timeUnit, isMultiDay, hasVariableTime,
+                thumbUrl, webUrl, cultureUrl, userWeight, lat, lon
+            ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
             """;
 
     private static final String DELETE_SQL = "DELETE FROM trail WHERE id = ?";
@@ -74,7 +57,7 @@ public class SqlBasedTrailRepo implements ITrail {
      * @return a list of recommended trails
      */
     public List<Trail> getRecommendedTrails() {
-        String sql = SELECT_ALL + " ORDER BY user_weight DESC, name ASC LIMIT 8";
+        String sql = SELECT_ALL + " ORDER BY userWeight DESC, name ASC LIMIT 8";
         return queryHelper.executeQuery(sql, null, this::mapRowToTrail);
     }
 
@@ -85,7 +68,7 @@ public class SqlBasedTrailRepo implements ITrail {
      * @return boolean indicating if trail has been processed
      */
     public boolean isTrailProcessed(Trail trail) {
-        String sql = "SELECT COUNT(*) FROM trail WHERE id = ? AND completion_type IS NOT NULL AND completion_type != 'unknown'";
+        String sql = "SELECT COUNT(*) FROM trail WHERE id = ? AND completionType IS NOT NULL AND completionType != 'unknown'";
         Integer count = queryHelper.executeCountQuery(sql, stmt -> stmt.setInt(1, trail.getId()));
         return count != null && count > 0;
     }
@@ -123,9 +106,24 @@ public class SqlBasedTrailRepo implements ITrail {
     public void upsertAll(List<Trail> trails) throws MatchmakingFailedException {
         if (trails.isEmpty())
             throw new MatchmakingFailedException("Trails is empty.");
-        for (Trail trail : trails) {
-            upsert(trail);
-        }
+
+        queryHelper.executeBatch(UPSERT_SQL, trails, this::setTrailParameters);
+    }
+
+    /**
+     * Updates the trail user weights
+     *
+     * @param trails List of trails to update user weights for
+     */
+    public void updateUserWeights(List<Trail> trails) {
+        if (trails.isEmpty())
+            return;
+
+        String sql = "UPDATE trail SET userWeight = ? WHERE id = ?";
+        queryHelper.executeBatch(sql, trails, (stmt, trail) -> {
+            stmt.setDouble(1, trail.getUserWeight());
+            stmt.setInt(2, trail.getId());
+        });
     }
 
     /**
@@ -141,7 +139,7 @@ public class SqlBasedTrailRepo implements ITrail {
      * Clears all user weight values from database
      */
     public void clearUserWeights() {
-        queryHelper.executeUpdate("UPDATE trail SET user_weight = NULL", null);
+        queryHelper.executeUpdate("UPDATE trail SET userWeight = NULL", null);
     }
 
     /**
@@ -169,17 +167,19 @@ public class SqlBasedTrailRepo implements ITrail {
                 rs.getString("region"),
                 rs.getString("difficulty"),
                 rs.getString("description"),
-                rs.getString("completion_info"),
-                rs.getInt("min_completion_time_minutes"),
-                rs.getInt("max_completion_time_minutes"),
-                rs.getString("completion_type"),
-                rs.getString("time_unit"),
-                rs.getBoolean("is_multi_day"),
-                rs.getBoolean("has_variable_time"),
-                rs.getString("thumb_url"),
-                rs.getString("web_url"),
-                rs.getString("culture_url"),
-                rs.getDouble("user_weight"));
+                rs.getString("completionInfo"),
+                rs.getInt("minCompletionTimeMinutes"),
+                rs.getInt("maxCompletionTimeMinutes"),
+                rs.getString("completionType"),
+                rs.getString("timeUnit"),
+                rs.getBoolean("isMultiDay"),
+                rs.getBoolean("hasVariableTime"),
+                rs.getString("thumbUrl"),
+                rs.getString("webUrl"),
+                rs.getString("cultureUrl"),
+                rs.getDouble("userWeight"),
+                rs.getDouble("lat"),
+                rs.getDouble("lon"));
     }
 
     /**
@@ -218,6 +218,8 @@ public class SqlBasedTrailRepo implements ITrail {
         stmt.setString(15, trail.getWebpageURL());
         stmt.setString(16, trail.getCultureUrl());
         stmt.setDouble(17, trail.getUserWeight());
+        stmt.setDouble(18, trail.getLat());
+        stmt.setDouble(19, trail.getLon());
     }
 
     /**

@@ -64,7 +64,7 @@ public class WelcomeController extends Controller {
         if (super.getUserService().getUser() == null) {
             super.getUserService().setGuest(true);
         }
-        super.getNavigator().launchScreen(new DashboardController(super.getNavigator()), null);
+        super.getNavigator().launchScreen(new LoadingController(super.getNavigator(), true), null);
     }
 
     @Override
