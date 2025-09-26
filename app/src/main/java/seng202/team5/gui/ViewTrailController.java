@@ -119,7 +119,6 @@ public class ViewTrailController extends Controller {
     @FXML
     private void addLocation() {
         javaScriptConnector.call("addMarker", trail.getLat(), trail.getLon());
-        System.out.println(trail.getLat() + " " + trail.getLon());
     }
 
     @FXML
