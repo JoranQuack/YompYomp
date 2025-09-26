@@ -64,6 +64,27 @@
             <WebView fx:id="trailMapView" prefHeight="266.0" prefWidth="489.0" />
             <HBox alignment="BOTTOM_RIGHT" prefHeight="225.0">
                <children>
+                  <Label fx:id="latitudeLabel" prefHeight="17.0" prefWidth="0.0" text="Latitude">
+                     <HBox.margin>
+                        <Insets bottom="210.0" />
+                     </HBox.margin>
+                  </Label>
+                  <Label fx:id="invalidNumberLabel" text="Label" />
+                  <TextField fx:id="latitudeTextField" prefHeight="1.0" prefWidth="126.0">
+                     <HBox.margin>
+                        <Insets bottom="165.0" />
+                     </HBox.margin>
+                  </TextField>
+                  <Label fx:id="longitudeLabel" text="Longitude">
+                     <HBox.margin>
+                        <Insets bottom="210.0" />
+                     </HBox.margin>
+                  </Label>
+                  <TextField fx:id="longitudeTextField" prefHeight="25.0" prefWidth="140.0">
+                     <HBox.margin>
+                        <Insets bottom="165.0" right="60.0" />
+                     </HBox.margin>
+                  </TextField>
                   <VBox alignment="BOTTOM_RIGHT" maxWidth="1.7976931348623157E308" spacing="10.0">
                      <children>
                         <Label fx:id="emptyFieldLabel" text="Label" />
