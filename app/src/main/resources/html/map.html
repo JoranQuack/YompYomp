@@ -24,14 +24,15 @@
 <script>
     let map;
     var javaScriptBridge;
-    let markers = [];
+    let activeMarker = null;
 
     /**
      * This object can be returned to our java code, where we can call the functions we define inside it
      */
     let jsConnector = {
         addMarker: addMarker,
-        initMap: initMap
+        initMap: initMap,
+        enableClick: enableClick
     };
 
     /**
@@ -48,24 +49,32 @@
         new L.TileLayer('https://tile.csse.canterbury.ac.nz/hot/{z}/{x}/{y}.png', { // UCs tilemap server
             attribution: '© OpenStreetMap contributors<br>Served by University of Canterbury'
         }).addTo(map)
-
-        map.on("click", (map_event) => {
-            var latlng = map.mouseEventToLatLng(map_event.originalEvent)
-            javaScriptBridge.addMarkerFromClick(`{"lat": ${latlng.lat}, "lng": ${latlng.lng}}`)
-        }) //TODO configure function for adding marker when user clicks
     }
 
     /**
      * Adds a marker to the map and stores it in the markers array for later use (e.g. removal)
-     * @param title tooltip to display on hover
      * @param lat latitude to place marker at
      * @param lng longitude to place marker at
      */
     function addMarker(lat, lng) {
-        var m = new L.Marker([lat, lng])
-        m.addTo(map)
-        markers.push(m)
+        if (activeMarker) {
+            // Move existing marker instead of adding new
+            activeMarker.setLatLng([lat, lng]);
+        } else {
+            // First time: create marker
+            activeMarker = new L.Marker([lat, lng]).addTo(map);
+        }
         map.setView([lat, lng], 13); // zoom in on the marker
+    }
+
+    /**
+     * defines on click event that calls java code
+     */
+    function enableClick() {
+        map.on("click", (map_event) => {
+            var latlng = map.mouseEventToLatLng(map_event.originalEvent)
+            javaScriptBridge.addMarkerFromClick(`{"lat": ${latlng.lat}, "lng": ${latlng.lng}}`)
+        })
     }
 </script>
 </body>
