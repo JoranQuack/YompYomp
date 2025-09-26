@@ -12,7 +12,6 @@ import javafx.scene.image.ImageView;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
 import netscape.javascript.JSObject;
-import org.controlsfx.control.tableview2.filter.filtereditor.SouthFilter;
 import seng202.team5.models.Trail;
 import seng202.team5.services.ImageService;
 
@@ -110,16 +109,18 @@ public class ViewTrailController extends Controller {
                         // get a reference to the js object that has a reference to the js methods we need to use in java
                         javaScriptConnector = (JSObject) webEngine.executeScript("jsConnector");
                         // call the javascript function to initialise the map
-                        javaScriptConnector.call("initMap");
+                        javaScriptConnector.call("initMap", trail.getLat(), trail.getLon());
+
+                        addLocation();
                     }
                 });
     }
 
-//    @FXML
-//    private void addLocation() {
-//        Position newMarker = geolocator.queryAddress(getaddressfrom text field);
-//        javaScriptConnector.call("addMarker", gettext);
-//    }
+    @FXML
+    private void addLocation() {
+        javaScriptConnector.call("addMarker", trail.getLat(), trail.getLon());
+        System.out.println(trail.getLat() + " " + trail.getLon());
+    }
 
     @FXML
     private void onBackButtonClicked() {
