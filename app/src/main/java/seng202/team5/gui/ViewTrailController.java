@@ -82,8 +82,6 @@ public class ViewTrailController extends Controller {
         }
         // TODO: add icon for map
 
-        // Map methods below
-        javaScriptBridge = new JavaScriptBridge();
         initMap();
     }
 
@@ -105,7 +103,6 @@ public class ViewTrailController extends Controller {
                     if (newState == Worker.State.SUCCEEDED) {
                         // set our bridge object
                         JSObject window = (JSObject) webEngine.executeScript("window");
-                        window.setMember("javaScriptBridge", javaScriptBridge);
                         // get a reference to the js object that has a reference to the js methods we need to use in java
                         javaScriptConnector = (JSObject) webEngine.executeScript("jsConnector");
                         // call the javascript function to initialise the map
