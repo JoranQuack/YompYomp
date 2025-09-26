@@ -113,6 +113,9 @@ public class ViewTrailController extends Controller {
                 });
     }
 
+    /**
+     * adds a location marker for the coordinates of the selected trail
+     */
     @FXML
     private void addLocation() {
         javaScriptConnector.call("addMarker", trail.getLat(), trail.getLon());

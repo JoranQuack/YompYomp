@@ -3,8 +3,10 @@ package seng202.team5.gui;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
-import java.text.ParseException;
-
+/**
+ * A bridge that handles communication between the JavaScript code
+ * running inside the WebView (map.html) and the JavaFX {@link ModifyTrailController}
+ */
 public class JavaScriptBridge {
 
     public void addMarkerFromClick(String latlng){
