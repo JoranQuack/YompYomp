@@ -74,6 +74,8 @@ public class TrailCardComponent extends VBox {
      * @param trail The trail object to display
      */
     public void setData(Trail trail) {
+        resetComponentVisibility();
+
         title.setText(trail.getName());
 
         Image trailImage = imageService.loadTrailImage(trail.getThumbnailURL());
@@ -105,6 +107,17 @@ public class TrailCardComponent extends VBox {
         } else {
             updateMatchBar(trail);
         }
+    }
+
+    /**
+     * Resets component visibility states for proper reuse.
+     */
+    private void resetComponentVisibility() {
+        difficultyLabel.setVisible(true);
+        durationLabel.setVisible(true);
+        typeLabel.setVisible(true);
+        matchBar.setVisible(true);
+        matchLabel.setVisible(true);
     }
 
     /**

@@ -2,10 +2,11 @@ package seng202.team5.cucumber.StepDefinitions;
 
 import io.cucumber.java.Before;
 import io.cucumber.java.en.*;
+import seng202.team5.data.DatabaseService;
 import seng202.team5.data.SqlBasedKeywordRepo;
 import seng202.team5.data.SqlBasedTrailRepo;
 import seng202.team5.exceptions.MatchmakingFailedException;
-import seng202.team5.gui.MatchmakingController;
+import seng202.team5.gui.LoadingController;
 import seng202.team5.models.Trail;
 import seng202.team5.models.User;
 import seng202.team5.services.MatchmakingService;
@@ -109,7 +110,7 @@ public class CompleteProfileQuizStepDefinitions {
 
     @Then("the user sees a loading screen for between 1 and 10 seconds with the message {string}")
     public void systemShowsLoadingScreen(String message) {
-        MatchmakingController mockController = mock(MatchmakingController.class);
+        LoadingController mockController = mock(LoadingController.class);
         when(mockController.getTitle()).thenReturn("Matchmaking in progress...");
 
         String actualTitle = mockController.getTitle();
