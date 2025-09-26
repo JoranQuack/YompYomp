@@ -127,9 +127,19 @@ public class ModifyTrailController extends Controller {
                         // get a reference to the js object that has a reference to the js methods we need to use in java
                         javaScriptConnector = (JSObject) webEngine.executeScript("jsConnector");
                         // call the javascript function to initialise the map
-                        javaScriptConnector.call("initMap", -44.0, 171.0); // arbitrary location for now
+                        if (trail != null) {
+                            javaScriptConnector.call("initMap", trail.getLat(), trail.getLon());
+                            addLocation();
+                        } else {
+                            javaScriptConnector.call("initMap", -44.0, 171.0); // arbitrary location for now
+                        }
                     }
                 });
+    }
+
+    @FXML
+    private void addLocation() {
+        javaScriptConnector.call("addMarker", trail.getLat(), trail.getLon());
     }
 
     @FXML
