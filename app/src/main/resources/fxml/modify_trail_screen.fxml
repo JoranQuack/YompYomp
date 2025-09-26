@@ -1,17 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.ComboBox?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.TextArea?>
-<?import javafx.scene.control.TextField?>
-<?import javafx.scene.image.ImageView?>
-<?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.VBox?>
-<?import javafx.scene.text.Font?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.scene.web.*?>
 
-<HBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="550.0" prefWidth="800.0" spacing="10.0" xmlns="http://javafx.com/javafx/21.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="seng202.team5.gui.ModifyTrailController">
+<HBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="550.0" prefWidth="800.0" spacing="10.0" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="seng202.team5.gui.ModifyTrailController">
    <children>
       <VBox prefHeight="550.0" prefWidth="305.0" spacing="10.0">
          <children>
@@ -66,7 +61,7 @@
       </VBox>
       <VBox alignment="TOP_CENTER" prefHeight="550.0" prefWidth="493.0" spacing="10.0">
          <children>
-            <ImageView fx:id="mapImage" fitHeight="257.0" fitWidth="446.0" pickOnBounds="true" preserveRatio="true" />
+            <WebView fx:id="trailMapView" prefHeight="266.0" prefWidth="489.0" />
             <HBox alignment="BOTTOM_RIGHT" prefHeight="225.0">
                <children>
                   <VBox alignment="BOTTOM_RIGHT" maxWidth="1.7976931348623157E308" spacing="10.0">
