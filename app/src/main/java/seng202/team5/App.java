@@ -1,5 +1,6 @@
 package seng202.team5;
 
+import seng202.team5.data.DatabaseService;
 import seng202.team5.gui.FXAppEntry;
 import seng202.team5.services.SetupService;
 
@@ -12,6 +13,7 @@ import java.util.concurrent.Executors;
  */
 public class App {
     private static SetupService setupService;
+    private static final DatabaseService databaseService = new DatabaseService();
 
     /**
      * Application entry point. It handles the starting of the executer and then
@@ -20,7 +22,7 @@ public class App {
      * @param args Command line arguments
      */
     public static void main(String[] args) {
-        setupService = new SetupService();
+        setupService = new SetupService(databaseService);
 
         ExecutorService setupExec = Executors.newSingleThreadExecutor(r -> {
             Thread thread = new Thread(r, "setup-worker");
@@ -54,11 +56,20 @@ public class App {
 
     /**
      * Gets the setup service instance
-     * 
+     *
      * @return the setup service instance
      */
     public static SetupService getSetupService() {
         return setupService;
+    }
+
+    /**
+     * Gets the database service instance
+     *
+     * @return the database service instance
+     */
+    public static DatabaseService getDatabaseService() {
+        return databaseService;
     }
 
 }

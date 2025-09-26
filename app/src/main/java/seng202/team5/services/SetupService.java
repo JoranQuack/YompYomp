@@ -6,6 +6,8 @@ import seng202.team5.data.FileBasedKeywordRepo;
 import seng202.team5.data.FileBasedTrailRepo;
 import seng202.team5.data.SqlBasedKeywordRepo;
 import seng202.team5.data.SqlBasedTrailRepo;
+import seng202.team5.data.SqlBasedFilterOptionsRepo;
+import seng202.team5.exceptions.MatchmakingFailedException;
 import seng202.team5.models.Trail;
 import seng202.team5.utils.TrailsProcessor;
 
@@ -30,23 +32,13 @@ public class SetupService {
     private volatile boolean databaseSetupComplete = false;
 
     /**
-     * Constructor for setup service with custom SQLBasedRepo and FileBasedRepo for
-     * testing
+     * Main constructor with database service
      *
      * @param sqlBasedTrailRepo
      * @param fileTrailRepo
      */
-    public SetupService(SqlBasedTrailRepo sqlBasedTrailRepo, FileBasedTrailRepo fileTrailRepo) {
-        this.sqlTrailRepo = sqlBasedTrailRepo;
-        this.fileTrailRepo = fileTrailRepo;
-        databaseService = null;
-    }
-
-    /**
-     * Constructor for setup service
-     */
-    public SetupService() {
-        this.databaseService = new DatabaseService();
+    public SetupService(DatabaseService databaseService) {
+        this.databaseService = databaseService;
         this.sqlTrailRepo = new SqlBasedTrailRepo(databaseService);
         this.fileTrailRepo = new FileBasedTrailRepo("/datasets/DOC_Walking_Experiences_-2195374600472221140.csv");
     }
@@ -54,10 +46,11 @@ public class SetupService {
     /**
      * Checks if the category table is populated.
      *
-     * @param sqlBasedKeywordRepo
+     * @param sqlBasedKeywordRepo keyword repo to be used
      * @return true if the category table is populated, false otherwise.
      */
     boolean isCategoryTablePopulated(SqlBasedKeywordRepo sqlBasedKeywordRepo) {
+        System.out.println(sqlBasedKeywordRepo.countCategories());
         return sqlBasedKeywordRepo.countCategories() > 0;
     }
 
@@ -70,41 +63,20 @@ public class SetupService {
             return;
         }
 
-        // Only create database if it doesn't exist or schema is outdated
-        if (!databaseService.databaseExists() || !databaseService.isSchemaUpToDate()) {
-            try {
-                if (databaseService.databaseExists()) {
-                    System.out.println("Database schema is outdated. Deleting database.");
-                    databaseService.deleteDatabase();
-                }
-
-                // Create the database and tables
-                databaseService.createDatabaseIfNotExists();
-            } catch (Exception e) {
-                System.err.println("Error setting up database: " + e.getMessage());
-                e.printStackTrace();
-            }
-
-            syncDbFromTrailFile();
-        }
-
-        // Always check and populate keywords table if needed
-        SqlBasedKeywordRepo sqlBasedKeywordRepo = new SqlBasedKeywordRepo(databaseService);
-        if (!isCategoryTablePopulated(sqlBasedKeywordRepo)) {
-            FileBasedKeywordRepo fileBasedKeywordRepo = new FileBasedKeywordRepo(
-                    "/datasets/Categories_and_Keywords.csv");
-            sqlBasedKeywordRepo.insertCategoriesAndKeywords(fileBasedKeywordRepo.getKeywords());
-        }
+        createDbActions();
+        syncDbFromTrailFile();
+        syncKeywords();
+        syncFilterOptions();
 
         databaseSetupComplete = true;
-        System.out.println("Database setup complete.");
+        System.out.println("db setup complete");
     }
 
     /**
      * Scrapes trail image from its URL and downloads it to the data/images/
      * directory.
      *
-     * @param url
+     * @param url URL of image to scrape
      */
     void scrapeTrailImage(String url) {
         String filename = extractFilenameFromUrl(url);
@@ -145,6 +117,26 @@ public class SetupService {
     }
 
     /**
+     * Creates the database if it doesn't exist.
+     */
+    private void createDbActions() {
+        if (databaseService.databaseExists() && databaseService.isSchemaUpToDate()) {
+            return;
+        }
+
+        try {
+            if (databaseService.databaseExists()) {
+                System.out.println("Database schema is outdated. Deleting database.");
+                databaseService.deleteDatabase();
+            }
+            databaseService.createDatabaseIfNotExists();
+        } catch (Exception e) {
+            System.err.println("Error setting up database: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+    /**
      * Upserts into DB to keep up to date
      */
     public void syncDbFromTrailFile() {
@@ -159,7 +151,30 @@ public class SetupService {
         }
     }
 
+    /**
+     * Syncs filter options in the database.
+     */
+    public void syncFilterOptions() {
+        SqlBasedFilterOptionsRepo filterOptionsRepo = new SqlBasedFilterOptionsRepo(databaseService);
+        filterOptionsRepo.refreshAllFilterOptions();
+    }
 
+    /**
+     * Syncs keywords in the database.
+     */
+    public void syncKeywords() {
+        SqlBasedKeywordRepo sqlBasedKeywordRepo = new SqlBasedKeywordRepo(databaseService);
+        FileBasedKeywordRepo fileBasedKeywordRepo = new FileBasedKeywordRepo(
+                "/datasets/Categories_and_Keywords.csv");
+        sqlBasedKeywordRepo.insertCategoriesAndKeywords(fileBasedKeywordRepo.getKeywords());
+        MatchmakingService matchmakingService = new MatchmakingService(databaseService);
+        try {
+            matchmakingService.categoriseAllTrails();
+        } catch (MatchmakingFailedException e) {
+            System.err.println("Error generating trail weights: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
 
     /**
      * Calls key functions to set up application

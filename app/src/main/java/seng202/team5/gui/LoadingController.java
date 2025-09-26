@@ -3,25 +3,30 @@ package seng202.team5.gui;
 import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.Label;
 import javafx.scene.control.ProgressIndicator;
 import seng202.team5.App;
-import seng202.team5.data.DatabaseService;
-import seng202.team5.data.SqlBasedKeywordRepo;
-import seng202.team5.data.SqlBasedTrailRepo;
 import seng202.team5.models.User;
 import seng202.team5.services.MatchmakingService;
 
-public class MatchmakingController extends Controller {
+public class LoadingController extends Controller {
+
+    private boolean isMatchmakingComplete = false;
+
     @FXML
     private ProgressIndicator progressIndicator;
+
+    @FXML
+    private Label statusLabel;
 
     /**
      * Constructs the controller with navigator
      *
      * @param navigator screen navigator
      */
-    public MatchmakingController(ScreenNavigator navigator) {
+    public LoadingController(ScreenNavigator navigator, boolean isMatchmakingComplete) {
         super(navigator);
+        this.isMatchmakingComplete = isMatchmakingComplete;
 
         // Use Platform.runLater to execute
         javafx.application.Platform.runLater(this::startMatchmaking);
@@ -34,6 +39,11 @@ public class MatchmakingController extends Controller {
     private void initialize() {
         if (progressIndicator != null) {
             progressIndicator.setProgress(-1.0); // Indeterminate progress
+        }
+        if (isMatchmakingComplete) {
+            statusLabel.setText("Just a moment...");
+        } else {
+            statusLabel.setText("Matching you to your favourite trails...");
         }
     }
 
@@ -51,15 +61,14 @@ public class MatchmakingController extends Controller {
             @Override
             protected Void call() throws Exception {
                 // Wait for database setup before we can matchmake
-                System.out.println("Waiting for database setup to complete...");
                 App.getSetupService().waitForDatabaseSetup();
-                System.out.println("Database setup complete, starting matchmaking...");
+
+                if (isMatchmakingComplete) {
+                    return null;
+                }
 
                 // Create MatchmakingService AFTER database setup is complete
-                DatabaseService databaseService = new DatabaseService();
-                MatchmakingService matchmakingService = new MatchmakingService(
-                        new SqlBasedKeywordRepo(databaseService),
-                        new SqlBasedTrailRepo(databaseService));
+                MatchmakingService matchmakingService = new MatchmakingService(App.getDatabaseService());
 
                 // Get user AFTER database setup is complete
                 User user = getUserService().getUser();
@@ -94,12 +103,12 @@ public class MatchmakingController extends Controller {
 
     @Override
     protected String getFxmlFile() {
-        return "/fxml/matchmaking.fxml";
+        return "/fxml/loading.fxml";
     }
 
     @Override
     public String getTitle() {
-        return "Matchmaking In Progress";
+        return "Getting the app ready...";
     }
 
     /**
