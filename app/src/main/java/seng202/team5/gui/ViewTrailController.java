@@ -7,7 +7,8 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import seng202.team5.models.Trail;
+import javafx.scene.web.WebEngine;
+import javafx.scene.web.WebView;import seng202.team5.models.Trail;
 import seng202.team5.services.ImageService;
 
 /**
@@ -43,7 +44,7 @@ public class ViewTrailController extends Controller {
     @FXML
     private Button editInfoButton;
     @FXML
-    private ImageView trailMap;
+    private WebView trailMapView;
     @FXML
     private ImageView trailThumbnail;
     @FXML

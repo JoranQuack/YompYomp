@@ -93,6 +93,46 @@ public class QueryHelper {
         }
     }
 
+    /**
+     * Execute batch updates when inserting/updating multiple records (fast)
+     *
+     * @param sql         the SQL statement to execute for EACH item
+     * @param items       the list of items to process
+     * @param paramSetter functional interface to set parameters for each item
+     * @return array of update counts for each batch item
+     */
+    public <T> int[] executeBatch(String sql, List<T> items, BatchParameterSetter<T> paramSetter) {
+        if (items.isEmpty()) {
+            return new int[0];
+        }
+
+        try (Connection conn = databaseService.getConnection();
+                PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            // temp disable auto-commit for speeeeeed
+            conn.setAutoCommit(false);
+
+            try {
+                for (T item : items) {
+                    paramSetter.setParameters(stmt, item);
+                    stmt.addBatch();
+                }
+
+                int[] results = stmt.executeBatch();
+                conn.commit(); // Commit all at once
+                return results;
+
+            } catch (SQLException e) {
+                conn.rollback();
+                throw e;
+            } finally {
+                conn.setAutoCommit(true);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Batch execution failed: " + sql, e);
+        }
+    }
+
     @FunctionalInterface
     public interface ParameterSetter {
         void setParameters(PreparedStatement stmt) throws SQLException;
@@ -101,5 +141,10 @@ public class QueryHelper {
     @FunctionalInterface
     public interface RowMapper<T> {
         T mapRow(ResultSet rs) throws SQLException;
+    }
+
+    @FunctionalInterface
+    public interface BatchParameterSetter<T> {
+        void setParameters(PreparedStatement stmt, T item) throws SQLException;
     }
 }

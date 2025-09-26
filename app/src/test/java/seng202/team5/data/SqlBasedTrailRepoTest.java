@@ -43,17 +43,19 @@ public class SqlBasedTrailRepoTest {
                           region TEXT,
                           description TEXT,
                           difficulty TEXT,
-                          completion_info TEXT,
-                          min_completion_time_minutes INTEGER,
-                          max_completion_time_minutes INTEGER,
-                          completion_type TEXT,
-                          time_unit TEXT,
-                          is_multi_day BOOL,
-                          has_variable_time BOOL,
-                          thumb_url TEXT,
-                          web_url TEXT,
-                          culture_url TEXT,
-                          user_weight REAL
+                          completionInfo TEXT,
+                          minCompletionTimeMinutes INTEGER,
+                          maxCompletionTimeMinutes INTEGER,
+                          completionType TEXT,
+                          timeUnit TEXT,
+                          isMultiDay BOOL,
+                          hasVariableTime BOOL,
+                          thumbUrl TEXT,
+                          webUrl TEXT,
+                          cultureUrl TEXT,
+                          userWeight REAL,
+                          lat REAL,
+                          lon REAL
                         )
                     """);
             stmt.execute("DELETE FROM trail");
@@ -97,7 +99,7 @@ public class SqlBasedTrailRepoTest {
     @Test
     @DisplayName("Should upsert one row into table correctly")
     void testUpsert() throws SQLException {
-        sqlBasedTrailRepo.upsert(new Trail(3, "Test3", "Test Trail 3", "Medium", null, null, null));
+        sqlBasedTrailRepo.upsert(new Trail(3, "Test3", "Test Trail 3", "Medium", null, null, null, 0.0, 0.0));
         assertEquals(3, sqlBasedTrailRepo.countTrails());
         assertTrue(sqlBasedTrailRepo.findById(3).isPresent());
         assertEquals("Test3", sqlBasedTrailRepo.findById(3).get().getName());
@@ -107,9 +109,9 @@ public class SqlBasedTrailRepoTest {
     @DisplayName("Should upsert all of the list of trails")
     void testUpsertAll() throws SQLException, MatchmakingFailedException {
         sqlBasedTrailRepo.upsertAll(List.of(
-                new Trail(4, "Test4", "Test Trail 4", "Easy", null, null, null),
-                new Trail(5, "Test5", "Test Trail 5", "Medium", null, null, null),
-                new Trail(6, "Test6", "Test Trail 6", "Medium", null, null, null)));
+                new Trail(4, "Test4", "Test Trail 4", "Easy", null, null, null, 0.0, 0.0),
+                new Trail(5, "Test5", "Test Trail 5", "Medium", null, null, null, 0.0, 0.0),
+                new Trail(6, "Test6", "Test Trail 6", "Medium", null, null, null, 0.0, 0.0)));
         assertEquals(5, sqlBasedTrailRepo.countTrails());
         assertTrue(sqlBasedTrailRepo.findById(5).isPresent());
     }
