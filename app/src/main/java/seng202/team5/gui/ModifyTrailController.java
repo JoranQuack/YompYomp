@@ -166,8 +166,11 @@ public class ModifyTrailController extends Controller {
         String completionTime = completionTimeTextField.getText();
         String trailDescription = trailDescriptionTextArea.getText();
         String cultureUrl = cultureUrlTextField.getText();
+        //currently new trails will have lat and lon of 0.0
+        //untill we get map working
+        //TODO: update lat and lon when map is implemented
         List<Trail> updatedTrail = TrailsProcessor.processTrails(List.of(new Trail(trailId, trailName, translation,
-                region, difficulty, trailType, completionTime, trailDescription, thumbUrl, webUrl, cultureUrl, userWeight)));
+                region, difficulty, trailType, completionTime, trailDescription, thumbUrl, webUrl, cultureUrl, userWeight, 0.0, 0.0)));
         return updatedTrail.getFirst();
     }
 

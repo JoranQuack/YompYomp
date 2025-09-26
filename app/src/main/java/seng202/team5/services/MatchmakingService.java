@@ -1,5 +1,6 @@
 package seng202.team5.services;
 
+import seng202.team5.data.DatabaseService;
 import seng202.team5.data.SqlBasedKeywordRepo;
 import seng202.team5.data.SqlBasedTrailRepo;
 import seng202.team5.exceptions.MatchmakingFailedException;
@@ -18,23 +19,33 @@ import java.util.stream.Collectors;
 public class MatchmakingService {
     public static final double STRENGTH_WEIGHT = 0.8; // 80% strength 20% coverage
     private final Map<String, List<String>> categoryToKeywords; // category -> keywords
-    private final Map<String, String> keywordToCategory = new HashMap<>(); // keyword -> category
     private final Map<String, Integer> userWeights = new HashMap<>(); // Higher weight is more favourable
     private final Map<Integer, Double> trailWeights = new HashMap<>(); // Identified by trail ID
+    private SqlBasedKeywordRepo keywordRepo;
     private SqlBasedTrailRepo trailRepo;
-    private boolean weightsCalculated = false;
-    private int maxResults = 100;
 
     /**
      * Creates a MatchmakingService instance.
+     *
+     * @param databaseService the database service to use for data access
+     */
+    public MatchmakingService(DatabaseService databaseService) {
+        this.keywordRepo = new SqlBasedKeywordRepo(databaseService);
+        this.trailRepo = new SqlBasedTrailRepo(databaseService);
+        this.categoryToKeywords = keywordRepo.getKeywords();
+    }
+
+    /**
+     * Creates a MatchmakingService instance for testing with custom repos
      *
      * @param keywordRepo repository for category-to-keyword data from the database
      * @param trailRepo   repository for trail data which are used for scoring and
      *                    sorting
      */
     public MatchmakingService(SqlBasedKeywordRepo keywordRepo, SqlBasedTrailRepo trailRepo) {
-        this.categoryToKeywords = keywordRepo.getKeywords();
+        this.keywordRepo = keywordRepo;
         this.trailRepo = trailRepo;
+        this.categoryToKeywords = keywordRepo.getKeywords();
     }
 
     /**
@@ -46,7 +57,7 @@ public class MatchmakingService {
         setUserPreferences(user);
         buildReverseIndex();
         assignWeightsToTrails();
-        trailRepo.upsertAll(getSortedTrails());
+        trailRepo.updateUserWeights(getSortedTrails());
     }
 
     /**
@@ -54,7 +65,8 @@ public class MatchmakingService {
      * map.
      * Case-insensitive matching.
      */
-    private void buildReverseIndex() throws MatchmakingFailedException {
+    private Map<String, String> buildReverseIndex() throws MatchmakingFailedException {
+        Map<String, String> keywordToCategory = new HashMap<>();
         if (categoryToKeywords != null) {
             for (Map.Entry<String, List<String>> entry : categoryToKeywords.entrySet()) {
                 String category = entry.getKey();
@@ -65,6 +77,7 @@ public class MatchmakingService {
         } else {
             throw new MatchmakingFailedException("Category file is empty");
         }
+        return keywordToCategory;
     }
 
     /**
@@ -74,7 +87,6 @@ public class MatchmakingService {
     private void resetWeights() {
         userWeights.clear();
         trailWeights.clear();
-        weightsCalculated = false;
     }
 
     /**
@@ -119,15 +131,8 @@ public class MatchmakingService {
      *         categories match
      */
     public Set<String> categoriseTrail(Trail trail) throws MatchmakingFailedException {
-        // Make sure we have the reverse index built, else categorisation problems arise
+        Map<String, String> keywordToCategory = buildReverseIndex();
 
-        try {
-            if (keywordToCategory.isEmpty()) {
-                buildReverseIndex();
-            }
-        } catch (MatchmakingFailedException e) {
-            throw new MatchmakingFailedException("Keyword to category file is empty");
-        }
         Set<String> matchedCategories = new HashSet<>();
         String description = trail.getDescription().toLowerCase(Locale.ROOT);
 
@@ -139,6 +144,18 @@ public class MatchmakingService {
         }
 
         return matchedCategories;
+    }
+
+    /**
+     * Categorises all trails in the repository.
+     */
+    public void categoriseAllTrails() throws MatchmakingFailedException {
+        List<Trail> trails = trailRepo.getAllTrails();
+        for (Trail trail : trails) {
+            Set<String> categories = categoriseTrail(trail);
+            trail.setCategories(categories);
+        }
+        keywordRepo.assignTrailCategories(trails);
     }
 
     /**
@@ -187,13 +204,15 @@ public class MatchmakingService {
                 .mapToInt(category -> userWeights.getOrDefault(category, 0))
                 .sum() / maxScore;
 
-        // coverage part: what fraction of the trail's categories are relevant to the user
+        // coverage part: what fraction of the trail's categories are relevant to the
+        // user
         long matched = trailCategories.stream()
                 .filter(userWeights::containsKey)
                 .count();
         double coverage = (double) matched / trailCategories.size();
 
-        // blend of strength and coverage: STRENGTH_WEIGHT = 0.8 for 80% strength 20% coverage, see MatchmakingServiceTest for an example
+        // blend of strength and coverage: STRENGTH_WEIGHT = 0.8 for 80% strength 20%
+        // coverage, see MatchmakingServiceTest for an example
         return STRENGTH_WEIGHT * strength + (1 - STRENGTH_WEIGHT) * coverage;
     }
 
@@ -206,15 +225,16 @@ public class MatchmakingService {
         if (!trails.isEmpty()) {
             trailWeights.clear();
 
+            Map<Integer, Set<String>> allTrailCategories = keywordRepo.getAllTrailCategories();
+
             for (Trail trail : trails) {
-                Set<String> categories = categoriseTrail(trail);
+                Set<String> categories = allTrailCategories.getOrDefault(trail.getId(), new HashSet<>());
                 double weight = scoreTrail(categories);
                 trail.setCategories(categories);
                 trail.setUserWeight(weight);
                 trailWeights.put(trail.getId(), weight);
             }
 
-            weightsCalculated = true;
         } else {
             throw new MatchmakingFailedException("Trails is empty");
         }
@@ -262,42 +282,6 @@ public class MatchmakingService {
      */
     public List<Trail> getTrailsSortedByWeight() {
         return getSortedTrails();
-    }
-
-    /**
-     * Returns a page of trails sorted by their personalised weight.
-     *
-     * @param page the page number (0-based)
-     * @return a list containing up to pageSize trails for the specified page
-     */
-    public List<Trail> getPersonalisedTrails(int page) {
-        if (page < 0) {
-            throw new IllegalArgumentException("Page number must be non-negative.");
-        }
-
-        List<Trail> sortedTrails = getSortedTrails();
-        int startIndex = page * maxResults;
-        return sortedTrails.stream()
-                .skip(startIndex)
-                .limit(maxResults)
-                .collect(Collectors.toList());
-    }
-
-    /**
-     * Gets max results
-     */
-    public int getMaxResults() {
-        return maxResults;
-    }
-
-    /**
-     * Set max results
-     */
-    public void setMaxResults(int maxResults) {
-        if (maxResults <= 0) {
-            throw new IllegalArgumentException("Max results must be positive.");
-        }
-        this.maxResults = maxResults;
     }
 
     /**

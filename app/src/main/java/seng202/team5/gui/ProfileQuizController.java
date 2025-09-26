@@ -146,7 +146,7 @@ public class ProfileQuizController extends Controller {
         } else {
             // Mark profile as complete and save final state
             super.getUserService().markProfileComplete();
-            super.getNavigator().launchScreen(new MatchmakingController(super.getNavigator()), null);
+            super.getNavigator().launchScreen(new LoadingController(super.getNavigator(), false), null);
         }
     }
 
