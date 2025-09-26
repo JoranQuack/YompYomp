@@ -30,16 +30,16 @@
      * This object can be returned to our java code, where we can call the functions we define inside it
      */
     let jsConnector = {
-        // addMarker: addMarker, //TODO
+        addMarker: addMarker,
         initMap: initMap
     };
 
     /**
      * creates and initialises the map, also defines on click event that calls java code
      */
-    function initMap() {
+    function initMap(lat, lng) {
         var mapOptions = {
-            center: [-44.0, 171.0],
+            center: [lat, lng],
             zoom: 10
         }
         map = new L.map('map', mapOptions);
@@ -50,7 +50,7 @@
         map.on("click", (map_event) => {
             var latlng = map.mouseEventToLatLng(map_event.originalEvent)
             javaScriptBridge.addMarkerFromClick(`{"lat": ${latlng.lat}, "lng": ${latlng.lng}}`)
-        }) //TODO
+        }) //TODO configure function for adding marker when user clicks
     }
 
     /**
@@ -59,12 +59,12 @@
      * @param lat latitude to place marker at
      * @param lng longitude to place marker at
      */
-    // function addMarker(title, lat, lng) {
-    //     var m = new L.Marker([lat, lng])
-    //     m.bindPopup(title).openPopup()
-    //     m.addTo(map)
-    //     markers.push(m)
-    // } //TODO
+    function addMarker(lat, lng) {
+        var m = new L.Marker([lat, lng])
+        m.addTo(map)
+        markers.push(m)
+        map.setView([lat, lng], 13); // zoom in on the marker
+    }
 </script>
 </body>
 </html>
