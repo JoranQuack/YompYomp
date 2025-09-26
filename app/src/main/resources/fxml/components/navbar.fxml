@@ -6,7 +6,7 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.HBox?>
 
-<fx:root alignment="CENTER_LEFT" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minWidth="400.0" spacing="10.0" type="HBox" xmlns="http://javafx.com/javafx/21.0.2" xmlns:fx="http://javafx.com/fxml/1">
+<fx:root alignment="CENTER_LEFT" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minWidth="400.0" spacing="10.0" type="HBox" xmlns="http://javafx.com/javafx/null" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <HBox prefWidth="100.0">
          <children>
@@ -21,6 +21,7 @@
          <children>
             <Button fx:id="homeButton" mnemonicParsing="false" text="Home" />
             <Button fx:id="trailsButton" mnemonicParsing="false" text="Trails" />
+            <Button fx:id="logbookButton" mnemonicParsing="false" text="Logbook" />
          </children>
       </HBox>
       <HBox alignment="CENTER_RIGHT" prefWidth="100.0">
