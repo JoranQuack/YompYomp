@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Leaflet & OSM Map</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.2.0/dist/leaflet.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.css" />
+    <meta name="viewport" content="initial-scale=1.0">
+    <meta charset="utf-8">
+    <style>
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+        #map {
+            height: 100%;
+        }
+    </style>
+</head>
+<body>
+<div id="map"></div>
+<script src="https://unpkg.com/leaflet@1.2.0/dist/leaflet.js"></script>
+<script src="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.js"></script>
+<script>
+    let map;
+    var javaScriptBridge;
+    let activeMarker = null;
+
+    /**
+     * This object can be returned to our java code, where we can call the functions we define inside it
+     */
+    let jsConnector = {
+        addMarker: addMarker,
+        initMap: initMap,
+        enableClick: enableClick
+    };
+
+    /**
+     * creates and initialises the map
+     * @param lat the latitude that the map will be centered on when initialised
+     * @param lng the longitude that the map will be centered on when initialised
+     */
+    function initMap(lat, lng) {
+        var mapOptions = {
+            center: [lat, lng],
+            zoom: 10
+        }
+        map = new L.map('map', mapOptions);
+        new L.TileLayer('https://tile.csse.canterbury.ac.nz/hot/{z}/{x}/{y}.png', { // UCs tilemap server
+            attribution: '© OpenStreetMap contributors<br>Served by University of Canterbury'
+        }).addTo(map)
+    }
+
+    /**
+     * Adds a marker to the map and stores it in the markers array for later use (e.g. removal)
+     * @param lat latitude to place marker at
+     * @param lng longitude to place marker at
+     */
+    function addMarker(lat, lng) {
+        if (activeMarker) {
+            // Move existing marker instead of adding new
+            activeMarker.setLatLng([lat, lng]);
+        } else {
+            // First time: create marker
+            activeMarker = new L.Marker([lat, lng]).addTo(map);
+        }
+        map.setView([lat, lng], 13); // zoom in on the marker
+    }
+
+    /**
+     * defines on click event that calls java code
+     */
+    function enableClick() {
+        map.on("click", (map_event) => {
+            var latlng = map.mouseEventToLatLng(map_event.originalEvent)
+            javaScriptBridge.addMarkerFromClick(`{"lat": ${latlng.lat}, "lng": ${latlng.lng}}`)
+        })
+    }
+</script>
+</body>
+</html>
