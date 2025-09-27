@@ -259,18 +259,24 @@ public class ModifyTrailController extends Controller {
         String thumbUrl;
         String webUrl;
         double userWeight;
+        Double latitude;
+        Double longitude;
         if (trail != null) {
             trailId = trail.getId();
             region = "";
             thumbUrl = trail.getThumbnailURL();
             webUrl = trail.getWebpageURL();
             userWeight = trail.getUserWeight();
+            latitude = trail.getLat();
+            longitude = trail.getLon();
         } else {
             trailId = -1;
             region = regionComboBox.getValue();
             thumbUrl = "";
             webUrl = "";
             userWeight = 0.5;
+            latitude =  Double.parseDouble(latitudeTextField.getText());
+            longitude =  Double.parseDouble(longitudeTextField.getText());
             // TODO: implement calculation for new trail
         }
         String trailName = trailNameTextField.getText();
@@ -280,8 +286,6 @@ public class ModifyTrailController extends Controller {
         String completionTime = completionTimeTextField.getText();
         String trailDescription = trailDescriptionTextArea.getText();
         String cultureUrl = cultureUrlTextField.getText();
-        Double latitude =  Double.parseDouble(latitudeTextField.getText());
-        Double longitude =  Double.parseDouble(longitudeTextField.getText());
         List<Trail> updatedTrail = TrailsProcessor.processTrails(List.of(new Trail(trailId, trailName, translation,
                 region, difficulty, trailType, completionTime, trailDescription, thumbUrl, webUrl, cultureUrl, userWeight, latitude, longitude)));
         return updatedTrail.getFirst();
