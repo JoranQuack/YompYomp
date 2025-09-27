@@ -31,7 +31,6 @@ public class ViewTrailController extends Controller {
     private WebEngine webEngine;
     private JavaScriptBridge javaScriptBridge;
     private JSObject javaScriptConnector;
-    //private Geolocator geolocator;
 
     /**
      * Launches the screen with navigator

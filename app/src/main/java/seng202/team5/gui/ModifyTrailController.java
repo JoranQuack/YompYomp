@@ -3,10 +3,8 @@ package seng202.team5.gui;
 import com.google.gson.Gson;
 import com.sun.javafx.webkit.WebConsoleListener;
 import javafx.concurrent.Worker;
-import javafx.css.Match;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
-import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
@@ -39,13 +37,14 @@ public class ModifyTrailController extends Controller {
     private WebEngine webEngine;
     private JavaScriptBridge javaScriptBridge;
     private JSObject javaScriptConnector;
-//    private Geolocator geolocator;
 
     /**
      * Launches the screen with navigator
      *
      * @param navigator screen navigator
+     * @param trail the selected trail
      * @param lastController controller of last screen user interacted with
+     * @param searchService searchService
      */
     public ModifyTrailController(ScreenNavigator navigator, Trail trail, Controller lastController, SearchService searchService) {
         super(navigator);
