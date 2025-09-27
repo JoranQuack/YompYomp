@@ -16,6 +16,7 @@ plugins {
 repositories {
     // Use Maven Central for resolving dependencies.
     mavenCentral()
+    maven { url "https://repo.osgeo.org/repository/release/" }
 }
 
 dependencies {
@@ -63,6 +64,10 @@ dependencies {
 
     // https://mvnrepository.com/artifact/org.assertj/assertj-core
     testImplementation 'org.assertj:assertj-core:3.23.1'
+
+    // GeoTools
+    implementation 'org.geotools:gt-main:29.1'
+    implementation 'org.geotools:gt-shapefile:29.1'
 }
 
 // Apply a specific Java toolchain to ease working on different environments.
