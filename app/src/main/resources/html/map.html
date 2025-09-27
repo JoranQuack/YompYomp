@@ -74,13 +74,7 @@
             activeMarker = new L.Marker([lat, lng]).addTo(map);
         }
         if (trail) {
-            const popupContent = `
-                    <b>${trail.name}</b><br>
-                    Difficulty: ${trail.difficulty}<br>
-                    Completion Time: ${trail.completionInfo}<br>
-                    ${trail.description}
-                `;
-                activeMarker.bindPopup(popupContent);
+                activeMarker.bindPopup(buildPopupContent(trail));
         }
         map.setView([lat, lng], 13); // zoom in on the marker
     }
@@ -149,12 +143,7 @@
                 fillOpacity: 0.8
             }).addTo(map);
 
-            const popupContent = `
-                <b>${trail.name}</b><br>
-                Difficulty: ${trail.difficulty}<br>
-                Completion Time: ${trail.completionInfo}<br>
-                ${trail.description}
-            `;
+            const popupContent = buildPopupContent(trail);
             marker.bindPopup(popupContent);
 
             markers.push(marker);
@@ -165,6 +154,23 @@
             const group = L.featureGroup(markers);
             map.fitBounds(group.getBounds());
         }
+    }
+
+    /**
+     * Builds the popup content for a given trail
+     * @param trail the trail object
+     * @returns {string} HTML string for the popup
+     */
+    function buildPopupContent(trail) {
+        return `
+            <b>${trail.name}</b><br>
+            Difficulty: ${trail.difficulty}<br>
+            ${trail.completionInfo && trail.completionInfo.trim() !== ""
+                ? `Completion Time: ${trail.completionInfo}<br>`
+                : ""}
+            ${trail.description}
+        `;
+
     }
 </script>
 </body>
