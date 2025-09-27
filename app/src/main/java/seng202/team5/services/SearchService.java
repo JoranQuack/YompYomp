@@ -58,6 +58,10 @@ public class SearchService {
         this.filters = new HashMap<>();
     }
 
+    /**
+     * Returns all the trails
+     * @return all trails from dataset
+     */
     public List<Trail> getAllTrails() {
         return trails;
     }
