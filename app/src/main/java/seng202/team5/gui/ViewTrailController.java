@@ -39,10 +39,11 @@ public class ViewTrailController extends Controller {
      * @param navigator screen navigator
      * @param trail trail object to be displayed on screen
      */
-    public ViewTrailController(ScreenNavigator navigator, Trail trail) {
+    public ViewTrailController(ScreenNavigator navigator, Trail trail, SearchService searchService) {
         super(navigator);
         this.imageService = new ImageService();
         this.trail = trail;
+        this.searchService = searchService;
     }
 
     @FXML
