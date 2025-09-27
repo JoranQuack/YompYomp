@@ -58,14 +58,29 @@
      * Adds a marker to the map and stores it in the markers array for later use (e.g. removal)
      * @param lat latitude to place marker at
      * @param lng longitude to place marker at
+     * @param trailJson the trail that the marker will be displayed for
      */
-    function addMarker(lat, lng) {
+    function addMarker(lat, lng, trailJson) {
+        let trail = null;
+        if (trailJson) {
+            trail = JSON.parse(trailJson);
+        }
+
         if (activeMarker) {
             // Move existing marker instead of adding new
             activeMarker.setLatLng([lat, lng]);
         } else {
             // First time: create marker
             activeMarker = new L.Marker([lat, lng]).addTo(map);
+        }
+        if (trail) {
+            const popupContent = `
+                    <b>${trail.name}</b><br>
+                    Difficulty: ${trail.difficulty}<br>
+                    Completion Time: ${trail.completionInfo}<br>
+                    ${trail.description}
+                `;
+                activeMarker.bindPopup(popupContent);
         }
         map.setView([lat, lng], 13); // zoom in on the marker
     }
