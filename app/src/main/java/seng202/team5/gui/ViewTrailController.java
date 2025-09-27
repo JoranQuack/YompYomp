@@ -1,5 +1,7 @@
 package seng202.team5.gui;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.sun.javafx.webkit.WebConsoleListener;
 import javafx.concurrent.Worker;
 import javafx.fxml.FXML;
@@ -14,6 +16,8 @@ import javafx.scene.web.WebView;
 import netscape.javascript.JSObject;
 import seng202.team5.models.Trail;
 import seng202.team5.services.ImageService;
+
+import java.util.List;
 
 /**
  * Controller for the view trail screen
@@ -119,6 +123,14 @@ public class ViewTrailController extends Controller {
     @FXML
     private void addLocation() {
         javaScriptConnector.call("addMarker", trail.getLat(), trail.getLon());
+    }
+
+    private void displayTrailsOnMap(List<Trail> trails) {
+        if (javaScriptConnector != null) {
+            Gson gson = new GsonBuilder().create();
+            String trailsJson = gson.toJson(trails);
+            javaScriptConnector.call("displayTrails", trailsJson);
+        }
     }
 
     @FXML
