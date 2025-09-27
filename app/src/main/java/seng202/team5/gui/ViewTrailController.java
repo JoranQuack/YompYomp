@@ -38,6 +38,7 @@ public class ViewTrailController extends Controller {
      *
      * @param navigator screen navigator
      * @param trail trail object to be displayed on screen
+     * @param searchService searchService
      */
     public ViewTrailController(ScreenNavigator navigator, Trail trail, SearchService searchService) {
         super(navigator);
