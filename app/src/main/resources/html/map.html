@@ -106,11 +106,23 @@
         }
     }
 
+    /**
+     * Displays a list of trails on the map as coloured circle markers.
+     * Each trail is represented by a circle marker whose colour is determined by
+     * the trail's difficulty. The currently active marker is not modified
+     * @param trailsJson a JSON string representing an array of trail objects
+     */
     function displayTrails(trailsJson) {
         clearMarkers();
         const trails = JSON.parse(trailsJson);
 
         trails.forEach(trail => {
+            // skip the active marker so it shows as a pin
+            if (activeMarker &&
+                activeMarker.getLatLng().lat === trail.lat &&
+                activeMarker.getLatLng().lng === trail.lon) {
+                return;
+            }
             const color = getColorByDifficulty(trail.difficulty);
 
             const marker = L.circleMarker([trail.lat, trail.lon], {
@@ -125,7 +137,7 @@
             const popupContent = `
                 <b>${trail.name}</b><br>
                 Difficulty: ${trail.difficulty}<br>
-                CompletionTime: ${trail.completionTime}<br>
+                Completion Time: ${trail.completionInfo}<br>
                 ${trail.description}
             `;
             marker.bindPopup(popupContent);
