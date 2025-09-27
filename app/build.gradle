@@ -17,6 +17,7 @@ repositories {
     // Use Maven Central for resolving dependencies.
     mavenCentral()
     maven { url "https://repo.osgeo.org/repository/release/" }
+    maven { url "https://repo1.maven.org/maven2" }
 }
 
 dependencies {
@@ -65,9 +66,32 @@ dependencies {
     // https://mvnrepository.com/artifact/org.assertj/assertj-core
     testImplementation 'org.assertj:assertj-core:3.23.1'
 
-    // GeoTools
-    implementation 'org.geotools:gt-main:29.1'
-    implementation 'org.geotools:gt-shapefile:29.1'
+    // GeoTools - Updated dependencies with proper exclusions
+    implementation ('org.geotools:gt-main:29.1') {
+        exclude group: 'javax.media', module: 'jai_core'
+        exclude group: 'javax.media', module: 'jai_codec'
+        exclude group: 'javax.media', module: 'jai_imageio'
+    }
+    implementation ('org.geotools:gt-shapefile:29.1') {
+        exclude group: 'javax.media', module: 'jai_core'
+        exclude group: 'javax.media', module: 'jai_codec'
+        exclude group: 'javax.media', module: 'jai_imageio'
+    }
+    implementation ('org.geotools:gt-referencing:29.1') {
+        exclude group: 'javax.media', module: 'jai_core'
+        exclude group: 'javax.media', module: 'jai_codec'
+        exclude group: 'javax.media', module: 'jai_imageio'
+    }
+    implementation ('org.geotools:gt-epsg-hsql:29.1') {
+        exclude group: 'javax.media', module: 'jai_core'
+        exclude group: 'javax.media', module: 'jai_codec'
+        exclude group: 'javax.media', module: 'jai_imageio'
+    }
+    implementation ('org.geotools:gt-cql:29.1') {
+        exclude group: 'javax.media', module: 'jai_core'
+        exclude group: 'javax.media', module: 'jai_codec'
+        exclude group: 'javax.media', module: 'jai_imageio'
+    }
 }
 
 // Apply a specific Java toolchain to ease working on different environments.
