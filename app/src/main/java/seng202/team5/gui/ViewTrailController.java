@@ -66,13 +66,14 @@ public class ViewTrailController extends Controller {
     @FXML
     private Button backButton;
     @FXML
-    private CheckBox nearbyTrailsCheckBox;
+    private CheckBox nearbyTrailsCheckbox;
 
     /**
      * Initialises the view trail screen with data retrieved from database
      */
     @FXML
     private void initialize() {
+        trailService = new TrailService();
         trailNameLabel.setText(trail.getName());
         Image trailImage = imageService.loadTrailImage(trail.getThumbnailURL());
         trailThumbnail.setImage(trailImage);
@@ -83,6 +84,15 @@ public class ViewTrailController extends Controller {
         descriptionLabel.setText(trail.getDescription());
         backButton.setOnAction(e -> onBackButtonClicked());
         editInfoButton.setOnAction(e -> onEditInfoButtonClicked());
+        nearbyTrailsCheckbox.setOnAction(e -> {
+            if (nearbyTrailsCheckbox.isSelected()) {
+                List<Trail> nearby = trailService.getNearbyTrails(trail, 20, searchService.getAllTrails());
+                displayTrailsOnMap(nearby);
+            } else {
+                // reset to just the current trail
+                addLocation();
+            }
+        });
         if (!trail.getTranslation().isEmpty()) {
             translationLabel.setText(trail.getTranslation());
             translationLabel.setVisible(true);
@@ -132,6 +142,10 @@ public class ViewTrailController extends Controller {
         javaScriptConnector.call("addMarker", trail.getLat(), trail.getLon(), trailJson);
     }
 
+    /**
+     * displays the nearby trails as circle markers
+     * @param trails the set of nearby trails
+     */
     private void displayTrailsOnMap(List<Trail> trails) {
         if (javaScriptConnector != null) {
             Gson gson = new GsonBuilder().create();
