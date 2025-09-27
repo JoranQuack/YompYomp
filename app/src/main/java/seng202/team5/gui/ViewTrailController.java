@@ -3,10 +3,7 @@ package seng202.team5.gui;
 import com.sun.javafx.webkit.WebConsoleListener;
 import javafx.concurrent.Worker;
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.ProgressBar;
+import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.web.WebEngine;
@@ -58,6 +55,8 @@ public class ViewTrailController extends Controller {
     private ImageView trailThumbnail;
     @FXML
     private Button backButton;
+    @FXML
+    private CheckBox nearbyTrailsCheckBox;
 
     /**
      * Initialises the view trail screen with data retrieved from database

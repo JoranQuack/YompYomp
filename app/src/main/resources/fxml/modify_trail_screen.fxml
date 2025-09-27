@@ -93,7 +93,7 @@
             </HBox>
             <HBox alignment="TOP_RIGHT" prefHeight="100.0" prefWidth="200.0">
                <children>
-                  <HBox minWidth="345.0">
+                  <HBox minWidth="312.0">
                      <children>
                         <VBox spacing="10.0">
                            <children>
@@ -107,7 +107,7 @@
                   <VBox alignment="BOTTOM_RIGHT" maxWidth="1.7976931348623157E308" spacing="10.0">
                      <children>
                         <Button fx:id="saveButton" mnemonicParsing="false" text="Save" />
-                        <Button fx:id="backButton" mnemonicParsing="false" text="Back &amp; Don't save" />
+                        <Button fx:id="backButton" mnemonicParsing="false" text="Back &amp; Discard Changes" />
                      </children>
                   </VBox>
                </children>
