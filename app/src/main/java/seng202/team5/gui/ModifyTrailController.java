@@ -1,5 +1,6 @@
 package seng202.team5.gui;
 
+import com.google.gson.Gson;
 import com.sun.javafx.webkit.WebConsoleListener;
 import javafx.concurrent.Worker;
 import javafx.fxml.FXML;
@@ -160,7 +161,9 @@ public class ModifyTrailController extends Controller {
      */
     @FXML
     private void addLocation() {
-        javaScriptConnector.call("addMarker", trail.getLat(), trail.getLon());
+        Gson gson = new Gson();
+        String trailJson = gson.toJson(trail); // convert Trail object to JSON string
+        javaScriptConnector.call("addMarker", trail.getLat(), trail.getLon(), trailJson);
     }
 
     /**

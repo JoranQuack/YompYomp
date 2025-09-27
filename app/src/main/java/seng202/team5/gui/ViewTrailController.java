@@ -13,6 +13,8 @@ import javafx.scene.web.WebView;
 import netscape.javascript.JSObject;
 import seng202.team5.models.Trail;
 import seng202.team5.services.ImageService;
+import seng202.team5.services.SearchService;
+import seng202.team5.services.TrailService;
 
 import java.util.List;
 
@@ -23,6 +25,8 @@ public class ViewTrailController extends Controller {
 
     private final ImageService imageService;
     private Trail trail;
+    private TrailService trailService;
+    private SearchService searchService;
 
     private WebEngine webEngine;
     private JavaScriptBridge javaScriptBridge;
@@ -121,7 +125,9 @@ public class ViewTrailController extends Controller {
      */
     @FXML
     private void addLocation() {
-        javaScriptConnector.call("addMarker", trail.getLat(), trail.getLon());
+        Gson gson = new Gson();
+        String trailJson = gson.toJson(trail); // convert Trail object to JSON string
+        javaScriptConnector.call("addMarker", trail.getLat(), trail.getLon(), trailJson);
     }
 
     private void displayTrailsOnMap(List<Trail> trails) {
