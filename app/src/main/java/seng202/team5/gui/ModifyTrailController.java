@@ -280,11 +280,7 @@ public class ModifyTrailController extends Controller {
             webUrl = trail.getWebpageURL();
             latitude = trail.getLat();
             longitude = trail.getLon();
-            try {
-                userWeight = matchmakingService.scoreTrail(matchmakingService.categoriseTrail(trail));
-            } catch (MatchmakingFailedException e) {
-                userWeight = trail.getUserWeight();
-            }
+            userWeight = 0.5; //TODO this will be changed based on modify-trail-touchups
         } else {
             trailId = -1;
             region = regionComboBox.getValue();
@@ -292,11 +288,7 @@ public class ModifyTrailController extends Controller {
             webUrl = "";
             latitude =  Double.parseDouble(latitudeTextField.getText());
             longitude =  Double.parseDouble(longitudeTextField.getText());
-            try {
-                userWeight = matchmakingService.scoreTrail(matchmakingService.categoriseTrail(trail));
-            } catch (MatchmakingFailedException e) {
-                userWeight = 0.5;
-            }
+            userWeight = 0.5; //TODO this will be changed based on modify-trail-touchups
         }
         String trailName = trailNameTextField.getText();
         String translation = translationTextField.getText();
