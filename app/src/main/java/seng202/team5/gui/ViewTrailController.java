@@ -67,6 +67,8 @@ public class ViewTrailController extends Controller {
     private Button backButton;
     @FXML
     private CheckBox nearbyTrailsCheckbox;
+    @FXML
+    private TextField trailsRadiusTextField;
 
     /**
      * Initialises the view trail screen with data retrieved from database
@@ -84,15 +86,35 @@ public class ViewTrailController extends Controller {
         descriptionLabel.setText(trail.getDescription());
         backButton.setOnAction(e -> onBackButtonClicked());
         editInfoButton.setOnAction(e -> onEditInfoButtonClicked());
+
+        // Allow only digits in the text field
+        trailsRadiusTextField.setTextFormatter(new TextFormatter<>(change -> {
+            String newText = change.getControlNewText();
+            if (newText.matches("\\d*")) { // only digits allowed
+                return change;
+            }
+            return null; // reject the change
+        }));
+
         nearbyTrailsCheckbox.setOnAction(e -> {
             if (nearbyTrailsCheckbox.isSelected()) {
-                List<Trail> nearby = trailService.getNearbyTrails(trail, 20, searchService.getAllTrails());
+                trailsRadiusTextField.setText("20");
+                List<Trail> nearby = trailService.getNearbyTrails(trail, Integer.parseInt(trailsRadiusTextField.getText()), searchService.getAllTrails());
                 displayTrailsOnMap(nearby);
             } else {
                 // reset to just the current trail
                 addLocation();
             }
         });
+
+        trailsRadiusTextField.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (nearbyTrailsCheckbox.isSelected()) {
+                int radius = Integer.parseInt(newValue);
+                List<Trail> nearby = trailService.getNearbyTrails(trail, radius, searchService.getAllTrails());
+                displayTrailsOnMap(nearby);
+            }
+        });
+
         if (!trail.getTranslation().isEmpty()) {
             translationLabel.setText(trail.getTranslation());
             translationLabel.setVisible(true);
