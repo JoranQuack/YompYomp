@@ -15,7 +15,6 @@ import seng202.team5.exceptions.MatchmakingFailedException;
 import seng202.team5.models.Trail;
 import seng202.team5.services.SearchService;
 import seng202.team5.models.User;
-import seng202.team5.services.MatchmakingService;
 import seng202.team5.utils.StringManipulator;
 import seng202.team5.utils.TrailsProcessor;
 
@@ -32,7 +31,6 @@ public class ModifyTrailController extends Controller {
     private DatabaseService databaseService;
     private SqlBasedTrailRepo sqlBasedTrailRepo;
     private SearchService searchService;
-    private MatchmakingService matchmakingService;
 
     private WebEngine webEngine;
     private JavaScriptBridge javaScriptBridge;
@@ -53,7 +51,6 @@ public class ModifyTrailController extends Controller {
         this.databaseService = new DatabaseService();
         this.sqlBasedTrailRepo = new SqlBasedTrailRepo(databaseService);
         this.searchService = searchService;
-        this.matchmakingService = new MatchmakingService(databaseService);
     }
 
     @FXML
@@ -265,13 +262,8 @@ public class ModifyTrailController extends Controller {
         String thumbUrl;
         String webUrl;
         double userWeight;
-        Double latitude;
-        Double longitude;
-        try {
-            matchmakingService.setUserPreferences(user);
-        } catch (MatchmakingFailedException e) {
-            System.out.println("Failed to set user preferences");
-        }
+        double latitude;
+        double longitude;
         if (trail != null) {
             trailId = trail.getId();
             region = "";
@@ -279,7 +271,7 @@ public class ModifyTrailController extends Controller {
             webUrl = trail.getWebpageURL();
             latitude = trail.getLat();
             longitude = trail.getLon();
-            userWeight = 0.5; //TODO this will be changed based on modify-trail-touchups
+            userWeight = trail.getUserWeight();
         } else {
             trailId = -1;
             region = regionComboBox.getValue();
@@ -287,7 +279,7 @@ public class ModifyTrailController extends Controller {
             webUrl = "";
             latitude =  Double.parseDouble(latitudeTextField.getText());
             longitude =  Double.parseDouble(longitudeTextField.getText());
-            userWeight = 0.5; //TODO this will be changed based on modify-trail-touchups
+            userWeight = 0.5; //TODO implement calculation for new trail
         }
         String trailName = trailNameTextField.getText();
         String translation = translationTextField.getText();
