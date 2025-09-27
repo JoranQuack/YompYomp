@@ -58,6 +58,10 @@ public class SearchService {
         this.filters = new HashMap<>();
     }
 
+    public List<Trail> getAllTrails() {
+        return trails;
+    }
+
     /**
      * Calculates the total number of pages required to display the currently
      * filtered list of trails.
