@@ -80,11 +80,21 @@
         })
     }
 
+    /**
+     *Removes all markers currently stored in the markers array from the map
+     * After removal, the markers array is cleared
+     * This does not affect the activeMarker
+     */
     function clearMarkers() {
         markers.forEach(m => map.removeLayer(m));
         markers = [];
     }
 
+    /**
+     * Returns a colour string corresponding to the difficulty level of a trail
+     * @param difficulty the difficulty level of a trail
+     * @returns {string} a colour string representing the difficulty
+     */
     function getColorByDifficulty(difficulty) {
         switch (difficulty.toLowerCase()) {
             case "easiest": return "green";
