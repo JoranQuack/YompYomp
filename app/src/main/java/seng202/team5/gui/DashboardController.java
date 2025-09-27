@@ -90,7 +90,7 @@ public class DashboardController extends Controller {
 
     @FXML
     private void onAddTrailButtonClicked() {
-        super.getNavigator().launchScreen(new ModifyTrailController(super.getNavigator(), null, this), null);
+        super.getNavigator().launchScreen(new ModifyTrailController(super.getNavigator(), null, this, searchService), null);
     }
 
     @FXML

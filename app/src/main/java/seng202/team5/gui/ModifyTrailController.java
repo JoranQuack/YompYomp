@@ -13,6 +13,7 @@ import netscape.javascript.JSObject;
 import seng202.team5.data.DatabaseService;
 import seng202.team5.data.SqlBasedTrailRepo;
 import seng202.team5.models.Trail;
+import seng202.team5.services.SearchService;
 import seng202.team5.utils.StringManipulator;
 import seng202.team5.utils.TrailsProcessor;
 
@@ -28,6 +29,7 @@ public class ModifyTrailController extends Controller {
     private Controller lastController;
     private DatabaseService databaseService;
     private SqlBasedTrailRepo sqlBasedTrailRepo;
+    private SearchService searchService;
 
     private WebEngine webEngine;
     private JavaScriptBridge javaScriptBridge;
@@ -40,12 +42,13 @@ public class ModifyTrailController extends Controller {
      * @param navigator screen navigator
      * @param lastController controller of last screen user interacted with
      */
-    public ModifyTrailController(ScreenNavigator navigator, Trail trail, Controller lastController) {
+    public ModifyTrailController(ScreenNavigator navigator, Trail trail, Controller lastController, SearchService searchService) {
         super(navigator);
         this.trail = trail;
         this.lastController = lastController;
         this.databaseService = new DatabaseService();
         this.sqlBasedTrailRepo = new SqlBasedTrailRepo(databaseService);
+        this.searchService = searchService;
     }
 
     @FXML
@@ -200,7 +203,7 @@ public class ModifyTrailController extends Controller {
     private void onSaveButtonClicked() {
         if (userInputValidation()) {
             sqlBasedTrailRepo.upsert(getUpdatedTrail());
-            super.getNavigator().launchScreen(new ViewTrailController(super.getNavigator(), getUpdatedTrail()),
+            super.getNavigator().launchScreen(new ViewTrailController(super.getNavigator(), getUpdatedTrail(), searchService),
                     lastController.getNavigator().getLastController());
         } else {
             emptyFieldLabel.setText("Please make sure all required fields are filled!");
