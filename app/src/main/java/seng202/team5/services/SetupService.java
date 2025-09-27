@@ -34,8 +34,7 @@ public class SetupService {
     /**
      * Main constructor with database service
      *
-     * @param sqlBasedTrailRepo
-     * @param fileTrailRepo
+     * @param databaseService
      */
     public SetupService(DatabaseService databaseService) {
         this.databaseService = databaseService;

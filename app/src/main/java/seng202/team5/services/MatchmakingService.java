@@ -179,8 +179,7 @@ public class MatchmakingService {
 
     /**
      * Calculates a score for a trail given its categories it matches, based on the
-     * user's
-     * answers to the setup questions. This is where a percentage match is
+     * user's answers to the setup questions. This is where a percentage match is
      * calculated.
      *
      * @param trailCategories set of categories the trail matches

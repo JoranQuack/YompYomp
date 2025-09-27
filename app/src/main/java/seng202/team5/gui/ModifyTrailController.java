@@ -3,6 +3,7 @@ package seng202.team5.gui;
 import com.google.gson.Gson;
 import com.sun.javafx.webkit.WebConsoleListener;
 import javafx.concurrent.Worker;
+import javafx.css.Match;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
@@ -12,8 +13,11 @@ import javafx.scene.web.WebView;
 import netscape.javascript.JSObject;
 import seng202.team5.data.DatabaseService;
 import seng202.team5.data.SqlBasedTrailRepo;
+import seng202.team5.exceptions.MatchmakingFailedException;
 import seng202.team5.models.Trail;
 import seng202.team5.services.SearchService;
+import seng202.team5.models.User;
+import seng202.team5.services.MatchmakingService;
 import seng202.team5.utils.StringManipulator;
 import seng202.team5.utils.TrailsProcessor;
 
@@ -30,6 +34,7 @@ public class ModifyTrailController extends Controller {
     private DatabaseService databaseService;
     private SqlBasedTrailRepo sqlBasedTrailRepo;
     private SearchService searchService;
+    private MatchmakingService matchmakingService;
 
     private WebEngine webEngine;
     private JavaScriptBridge javaScriptBridge;
@@ -49,6 +54,7 @@ public class ModifyTrailController extends Controller {
         this.databaseService = new DatabaseService();
         this.sqlBasedTrailRepo = new SqlBasedTrailRepo(databaseService);
         this.searchService = searchService;
+        this.matchmakingService = new MatchmakingService(databaseService);
     }
 
     @FXML
@@ -254,6 +260,7 @@ public class ModifyTrailController extends Controller {
      * @return updatedTrail
      */
     private Trail getUpdatedTrail() {
+        User user = getUserService().getUser();
         int trailId;
         String region;
         String thumbUrl;
@@ -261,23 +268,35 @@ public class ModifyTrailController extends Controller {
         double userWeight;
         Double latitude;
         Double longitude;
+        try {
+            matchmakingService.setUserPreferences(user);
+        } catch (MatchmakingFailedException e) {
+            System.out.println("Failed to set user preferences");
+        }
         if (trail != null) {
             trailId = trail.getId();
             region = "";
             thumbUrl = trail.getThumbnailURL();
             webUrl = trail.getWebpageURL();
-            userWeight = trail.getUserWeight();
             latitude = trail.getLat();
             longitude = trail.getLon();
+            try {
+                userWeight = matchmakingService.scoreTrail(matchmakingService.categoriseTrail(trail));
+            } catch (MatchmakingFailedException e) {
+                userWeight = trail.getUserWeight();
+            }
         } else {
             trailId = -1;
             region = regionComboBox.getValue();
             thumbUrl = "";
             webUrl = "";
-            userWeight = 0.5;
             latitude =  Double.parseDouble(latitudeTextField.getText());
             longitude =  Double.parseDouble(longitudeTextField.getText());
-            // TODO: implement calculation for new trail
+            try {
+                userWeight = matchmakingService.scoreTrail(matchmakingService.categoriseTrail(trail));
+            } catch (MatchmakingFailedException e) {
+                userWeight = 0.5;
+            }
         }
         String trailName = trailNameTextField.getText();
         String translation = translationTextField.getText();
@@ -287,7 +306,8 @@ public class ModifyTrailController extends Controller {
         String trailDescription = trailDescriptionTextArea.getText();
         String cultureUrl = cultureUrlTextField.getText();
         List<Trail> updatedTrail = TrailsProcessor.processTrails(List.of(new Trail(trailId, trailName, translation,
-                region, difficulty, trailType, completionTime, trailDescription, thumbUrl, webUrl, cultureUrl, userWeight, latitude, longitude)));
+                region, difficulty, trailType, completionTime, trailDescription, thumbUrl, webUrl, cultureUrl, userWeight,
+                latitude, longitude)));
         return updatedTrail.getFirst();
     }
 
