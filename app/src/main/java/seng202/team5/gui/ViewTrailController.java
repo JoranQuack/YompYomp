@@ -96,14 +96,20 @@ public class ViewTrailController extends Controller {
             return null; // reject the change
         }));
 
+        // Initially disable the text field if checkbox is not selected
+        trailsRadiusTextField.setDisable(!nearbyTrailsCheckbox.isSelected());
+
         nearbyTrailsCheckbox.setOnAction(e -> {
-            if (nearbyTrailsCheckbox.isSelected()) {
+            boolean selected = nearbyTrailsCheckbox.isSelected();
+            trailsRadiusTextField.setDisable(!selected); // disable if unchecked
+            if (selected) {
                 trailsRadiusTextField.setText("20");
                 List<Trail> nearby = trailService.getNearbyTrails(trail, Integer.parseInt(trailsRadiusTextField.getText()), searchService.getAllTrails());
                 displayTrailsOnMap(nearby);
             } else {
                 // reset to just the current trail
                 addLocation();
+                trailsRadiusTextField.clear();
             }
         });
 
