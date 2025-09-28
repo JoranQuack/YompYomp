@@ -265,6 +265,8 @@ public class RegionFinder {
     private String cleanRegionName(String regionName) {
         if (regionName.equals("Area Outside Region")) {
             return "Other";
+        } else if (regionName.contains("ManawatÅ«-Whanganui")) {
+            return "Manawatū-Whanganui";
         } else {
             return regionName.replace(" Region", "").trim();
         }
