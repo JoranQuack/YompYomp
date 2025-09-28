@@ -157,7 +157,7 @@ public class SqlBasedTrailRepo implements ITrail {
      *
      * @param rs result set positioned at a row from trail
      * @return mapped Trail
-     * @throws java.sql.SQLException if column cannot be read
+     * @throws java.sql.SQLException if the column cannot be read
      */
     private Trail mapRowToTrail(java.sql.ResultSet rs) throws java.sql.SQLException {
         return new Trail(
@@ -187,7 +187,7 @@ public class SqlBasedTrailRepo implements ITrail {
      *
      * @param rs result set
      * @return integer of max id
-     * @throws java.sql.SQLException if column cannot be read
+     * @throws java.sql.SQLException if the column cannot be read
      */
     private int mapMaxId(java.sql.ResultSet rs) throws java.sql.SQLException {
         return rs.getInt("MAX(id)");
@@ -223,7 +223,9 @@ public class SqlBasedTrailRepo implements ITrail {
     }
 
     /**
-     * Returns a new value of trail id in database
+     * Returns a new value of trail id in the database
+     *
+     * @return new trail id
      */
     public int getNewTrailId() {
         String getIdQuery = "SELECT MAX(id) FROM trail";
