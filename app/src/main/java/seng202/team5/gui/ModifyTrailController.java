@@ -104,15 +104,12 @@ public class ModifyTrailController extends Controller {
      * Sets up all form fields and their initial values
      */
     private void setupFormFields() {
-        // Setup combo boxes
         difficultyComboBox.getItems().addAll(List.of("Easiest", "Easy", "Intermediate", "Advanced", "Expert"));
         trailTypeComboBox.getItems().addAll(List.of("One way", "Loop", "Return"));
 
-        // Setup labels
         emptyFieldLabel.setText("");
         invalidNumberLabel.setVisible(false);
 
-        // Prefill fields if editing existing trail
         if (trail != null) {
             initializeTextFields();
             updateLatLonFields(trail.getLat(), trail.getLon());
@@ -123,11 +120,9 @@ public class ModifyTrailController extends Controller {
      * Sets up event handlers for form controls
      */
     private void setupEventHandlers() {
-        // Text field listeners for coordinate updates
         latitudeTextField.textProperty().addListener((obs, oldVal, newVal) -> updateMarkerFromFields());
         longitudeTextField.textProperty().addListener((obs, oldVal, newVal) -> updateMarkerFromFields());
 
-        // Button actions
         saveButton.setOnAction(e -> onSaveButtonClicked());
         backButton.setOnAction(e -> onBackButtonClicked());
     }
@@ -140,11 +135,9 @@ public class ModifyTrailController extends Controller {
         webEngine = trailMapView.getEngine();
         webEngine.setJavaScriptEnabled(true);
 
-        // Setup console logging
         WebConsoleListener.setDefaultListener((view, message, lineNumber, sourceID) -> System.out
                 .printf("Map WebView console log line: %d, message: %s%n", lineNumber, message));
 
-        // Load the map and setup the initialization callback
         webEngine.getLoadWorker().stateProperty().addListener((ov, oldState, newState) -> {
             if (newState == Worker.State.SUCCEEDED) {
                 setupJavaScriptBridge();
@@ -169,16 +162,14 @@ public class ModifyTrailController extends Controller {
      */
     private void initializeMapView() {
         if (trail != null) {
-            // Editing existing trail - show current location and enable clicking for
-            // updates
+            // Editing existing trail
             javaScriptConnector.call("initMap", trail.getLat(), trail.getLon());
             addLocation();
         } else {
-            // Creating new trail - start with default location
+            // Creating new trail
             javaScriptConnector.call("initMap", -44.0, 171.0); // New Zealand default
         }
 
-        // Enable clicking for both new and existing trails
         javaScriptConnector.call("enableClick");
     }
 
@@ -247,7 +238,6 @@ public class ModifyTrailController extends Controller {
         longitudeTextField.setText(String.format("%.6f", lon));
         invalidNumberLabel.setVisible(false);
 
-        // Update region information
         try {
             String region = regionFinder.findRegionForPoint(lat, lon);
             regionLabel.setText(region != null ? region : "Unknown Region");
@@ -336,7 +326,6 @@ public class ModifyTrailController extends Controller {
         double latitude = Double.parseDouble(latitudeTextField.getText());
         double longitude = Double.parseDouble(longitudeTextField.getText());
 
-        // Set trail-specific properties
         int trailId;
         String region;
         String thumbUrl;
@@ -346,7 +335,7 @@ public class ModifyTrailController extends Controller {
         if (trail != null) {
             // Updating existing trail
             trailId = trail.getId();
-            region = ""; // Keep existing region handling
+            region = "";
             thumbUrl = trail.getThumbnailURL();
             webUrl = trail.getWebpageURL();
             userWeight = trail.getUserWeight();
@@ -364,14 +353,12 @@ public class ModifyTrailController extends Controller {
                 userWeight, latitude, longitude);
 
         // Calculate user weight
-        if (trail == null) {
-            try {
-                MatchmakingService matchmakingService = new MatchmakingService(App.getDatabaseService());
-                double calculatedWeight = matchmakingService.getUserWeightFromTrail(newTrail);
-                newTrail.setUserWeight(calculatedWeight);
-            } catch (Exception e) {
-                // Keep the default weight
-            }
+        try {
+            MatchmakingService matchmakingService = new MatchmakingService(App.getDatabaseService());
+            double calculatedWeight = matchmakingService.getUserWeightFromTrail(newTrail);
+            newTrail.setUserWeight(calculatedWeight);
+        } catch (Exception e) {
+            // Keep the default weight
         }
 
         List<Trail> updatedTrail = TrailsProcessor.processTrails(List.of(newTrail));
