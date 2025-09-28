@@ -157,11 +157,16 @@
     }
 
     /**
-     * Builds the popup content for a given trail
+     * Builds the popup content for a given trail. No link is shown for the marker that the user is viewing a trail for
      * @param trail the trail object
      * @returns {string} HTML string for the popup
      */
     function buildPopupContent(trail) {
+        const isActive =
+            activeMarker &&
+            activeMarker.getLatLng().lat === trail.lat &&
+            activeMarker.getLatLng().lng === trail.lon;
+
         return `
             <b>${trail.name}</b><br>
             Difficulty: ${trail.difficulty}<br>
@@ -169,9 +174,18 @@
                 ? `Completion Time: ${trail.completionInfo}<br>`
                 : ""}
             ${trail.description}
+            ${!isActive ? `<a href="#" onclick="openTrailInfo(${trail.id}); return false;">View details</a>` : ""}
         `;
-
     }
+
+    function openTrailInfo(trailId) {
+        if (javaScriptBridge && javaScriptBridge.openTrailInfo) {
+            javaScriptBridge.openTrailInfo(trailId);
+        } else {
+            console.log("Trail ID clicked:", trailId);
+        }
+    }
+
 </script>
 </body>
 </html>
