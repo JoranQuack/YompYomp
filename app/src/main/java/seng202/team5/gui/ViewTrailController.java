@@ -109,6 +109,7 @@ public class ViewTrailController extends Controller {
             } else {
                 // reset to just the current trail
                 addLocation();
+                removeTrailsFromMap();
                 trailsRadiusTextField.clear();
             }
         });
@@ -187,6 +188,12 @@ public class ViewTrailController extends Controller {
             Gson gson = new GsonBuilder().create();
             String trailsJson = gson.toJson(trails);
             javaScriptConnector.call("displayTrails", trailsJson);
+        }
+    }
+
+    private void removeTrailsFromMap() {
+        if (javaScriptConnector != null) {
+            javaScriptConnector.call("clearMarkers");
         }
     }
 
