@@ -9,7 +9,7 @@
 
 <HBox alignment="CENTER_LEFT" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="400.0" minWidth="600.0" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="seng202.team5.gui.ViewTrailController">
    <children>
-      <VBox prefHeight="400.0" prefWidth="218.0" spacing="10.0">
+      <VBox spacing="10.0">
          <children>
             <HBox prefHeight="20.0" prefWidth="200.0" spacing="10.0">
                <children>
@@ -60,7 +60,7 @@
                   </Label>
                </children>
             </StackPane>
-            <Label fx:id="descriptionLabel" alignment="TOP_LEFT" prefHeight="60.0" prefWidth="200.0" text="Label" wrapText="true">
+            <Label fx:id="descriptionLabel" alignment="TOP_LEFT" prefWidth="200.0" text="Label" wrapText="true">
                <font>
                   <Font size="11.0" />
                </font>
@@ -78,9 +78,17 @@
             <Insets left="10.0" right="10.0" />
          </padding>
       </VBox>
-      <VBox prefHeight="400.0" prefWidth="382.0" spacing="10.0">
+      <VBox spacing="10.0">
          <children>
-            <WebView fx:id="webView" prefHeight="196.0" prefWidth="362.0" />
+            <WebView fx:id="trailMapView" prefHeight="196.0" prefWidth="362.0" />
+            <HBox prefHeight="25.0" prefWidth="236.0">
+               <children>
+                  <CheckBox fx:id="nearbyTrailsCheckbox" mnemonicParsing="false" prefHeight="24.0" prefWidth="145.0" text="View nearby trails" wrapText="true" />
+                  <HBox prefHeight="26.0" prefWidth="22.0" />
+                  <TextField fx:id="trailsRadiusTextField" prefHeight="25.0" prefWidth="59.0" />
+                  <Label prefHeight="25.0" prefWidth="40.0" text="km" wrapText="true" />
+               </children>
+            </HBox>
             <HBox prefHeight="20.0" prefWidth="200.0">
                <VBox.margin>
                   <Insets />
@@ -89,33 +97,9 @@
                   <Label text="Weather forecast coming soon..." />
                </children>
             </HBox>
-            <Label disable="true" prefHeight="18.0" prefWidth="360.0" text="Relevant Huts" visible="false">
-               <font>
-                  <Font name="System Bold" size="15.0" />
-               </font>
-            </Label>
-            <HBox prefHeight="100.0" prefWidth="200.0" spacing="10.0" visible="false">
-               <children>
-                  <VBox prefHeight="200.0" prefWidth="100.0" spacing="5.0">
-                     <children>
-                        <ImageView fx:id="hutThumbnail1" fitHeight="80.0" fitWidth="130.0" pickOnBounds="true" preserveRatio="true" />
-                        <Label fx:id="hutName1" text="Hut" />
-                     </children>
-                  </VBox>
-                  <VBox prefHeight="200.0" prefWidth="100.0" spacing="5.0">
-                     <children>
-                        <ImageView fx:id="hutThumbnail2" fitHeight="80.0" fitWidth="130.0" pickOnBounds="true" preserveRatio="true" />
-                        <Label fx:id="hutName2" text="Hut" />
-                     </children>
-                     <HBox.margin>
-                        <Insets />
-                     </HBox.margin>
-                  </VBox>
-               </children>
-            </HBox>
          </children>
          <padding>
-            <Insets left="10.0" right="10.0" />
+            <Insets left="10.0" right="10.0" top="10.0" />
          </padding></VBox>
    </children>
 </HBox>
