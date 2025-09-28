@@ -92,6 +92,30 @@ CREATE TABLE
         PRIMARY KEY (filterType, optionValue)
     );
 
+-- Table: trip
+DROP TABLE IF EXISTS trip;
+
+CREATE TABLE
+    IF NOT EXISTS trip (
+        id INTEGER PRIMARY KEY,
+        userId INTEGER NOT NULL REFERENCES user (id),
+        trailId INTEGER NOT NULL REFERENCES trail (id),
+        startDate TEXT NOT NULL,
+        endDate TEXT, -- NULL if is a single day trip or if in progress.
+        completionInfo TEXT, -- raw duration time.
+        minDurationMinutes INTEGER,
+        maxDurationMinutes INTEGER,
+        durationType TEXT, -- e.g. "estimated", "recorded".
+        timeUnit TEXT, -- e.g. "days", "hours", "minutes".
+        isMultiDay BOOL,
+        hasVaraibleTime BOOL,
+        notes TEXT,
+        rating INTEGER CHECK(rating BETWEEN 1 AND 5),
+        weather TEXT,
+        personalDifficulty TEXT
+    );
+
+
 COMMIT TRANSACTION;
 
 PRAGMA foreign_keys = ON;
