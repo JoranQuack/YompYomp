@@ -102,7 +102,7 @@ CREATE TABLE
         trailId INTEGER NOT NULL REFERENCES trail (id),
         startDate TEXT NOT NULL,
         endDate TEXT, -- NULL if is a single day trip or if in progress.
-        completionInfo TEXT, -- raw duration time.
+        completionInfo TEXT,
         minDurationMinutes INTEGER,
         maxDurationMinutes INTEGER,
         durationType TEXT, -- e.g. "estimated", "recorded".

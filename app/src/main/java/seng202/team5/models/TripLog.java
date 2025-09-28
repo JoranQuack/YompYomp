@@ -9,7 +9,7 @@ public class TripLog {
     private int trailId;
     private Date startDate;
     private Date endDate;
-    private String completionInfo;
+    private String completionInfo; // Raw duration string
     private int minDurationMinutes;
     private int maxDurationMinutes;
     private String durationType;
