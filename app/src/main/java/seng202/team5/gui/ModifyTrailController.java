@@ -98,16 +98,21 @@ public class ModifyTrailController extends Controller {
             initializeTextFields();
             regionLabel.setVisible(false);
             regionComboBox.setVisible(false);
-            latitudeTextField.setVisible(false);
-            longitudeTextField.setVisible(false);
-            latitudeLabel.setVisible(false);
-            longitudeLabel.setVisible(false); // user can't change location of pre-existing trail
+            // Make lat/lon fields visible and populate them for existing trails
+            latitudeTextField.setText(String.valueOf(trail.getLat()));
+            longitudeTextField.setText(String.valueOf(trail.getLon()));
+            latitudeTextField.setVisible(true);
+            longitudeTextField.setVisible(true);
+            latitudeLabel.setVisible(true);
+            longitudeLabel.setVisible(true);
         } else {
             regionLabel.setVisible(true);
             regionComboBox.setVisible(true);
-            latitudeTextField.textProperty().addListener((obs, oldVal, newVal) -> updateMarkerFromFields());
-            longitudeTextField.textProperty().addListener((obs, oldVal, newVal) -> updateMarkerFromFields());
         }
+
+        // Add listeners for both new and existing trails
+        latitudeTextField.textProperty().addListener((obs, oldVal, newVal) -> updateMarkerFromFields());
+        longitudeTextField.textProperty().addListener((obs, oldVal, newVal) -> updateMarkerFromFields());
 
         RegionFinder regionFinder = new RegionFinder();
         List<String> regionList = regionFinder.getAllRegions().keySet().stream().toList();
@@ -149,12 +154,12 @@ public class ModifyTrailController extends Controller {
                         // need to use in java
                         javaScriptConnector = (JSObject) webEngine.executeScript("jsConnector");
                         // call the javascript function to initialise the map
+                        javaScriptConnector.call("enableClick");
                         if (trail != null) {
                             javaScriptConnector.call("initMap", trail.getLat(), trail.getLon());
                             addLocation();
                         } else {
                             javaScriptConnector.call("initMap", -44.0, 171.0); // arbitrary location for now
-                            javaScriptConnector.call("enableClick");
                         }
                     }
                 });
@@ -272,9 +277,10 @@ public class ModifyTrailController extends Controller {
             region = "";
             thumbUrl = trail.getThumbnailURL();
             webUrl = trail.getWebpageURL();
-            latitude = trail.getLat();
-            longitude = trail.getLon();
             userWeight = trail.getUserWeight();
+            // Use coordinates from text fields (which may have been updated)
+            latitude = Double.parseDouble(latitudeTextField.getText());
+            longitude = Double.parseDouble(longitudeTextField.getText());
         } else {
             trailId = -1;
             region = regionComboBox.getValue();
