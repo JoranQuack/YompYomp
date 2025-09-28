@@ -193,8 +193,8 @@ public class RegionFinder {
      */
     public String findRegionForPoint(double latitude, double longitude) {
         try {
-            // Create point (long/lat) - swapped to match the geometry
-            Point point = geometryFactory.createPoint(new Coordinate(longitude, latitude));
+            // Create point (lat, lon)
+            Point point = geometryFactory.createPoint(new Coordinate(latitude, longitude));
 
             // First: try contains() and intersects()
             for (Map.Entry<String, Geometry> entry : allRegions.entrySet()) {

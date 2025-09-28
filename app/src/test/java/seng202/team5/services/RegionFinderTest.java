@@ -32,7 +32,7 @@ public class RegionFinderTest {
     @Test
     public void testFindRegionForPoint() {
         // coordinates in Auckland
-        String region = regionFinder.findRegionForPoint(174.7444827976006, -36.880933915772516);
+        String region = regionFinder.findRegionForPoint(-36.880933915772516, 174.7444827976006);
         assertNotNull(region);
         assertEquals(region, "Auckland");
     }
@@ -47,7 +47,7 @@ public class RegionFinderTest {
     @Test
     public void testFindRegionForOceanCoordinates() {
         // coordinates in ocean off the coast of NZ
-        String region = regionFinder.findRegionForPoint(169.3195787026245, -42.3102611205709);
+        String region = regionFinder.findRegionForPoint(-42.3102611205709, 169.3195787026245);
         assertNotNull(region);
         assertEquals(region, "Other");
     }
@@ -62,7 +62,7 @@ public class RegionFinderTest {
     @Test
     public void testFindRegionForBorderCoordinates() {
         // coordinates on the border between Otago and Canterbury
-        String region = regionFinder.findRegionForPoint(171.10225477776783, -44.92984092565437);
+        String region = regionFinder.findRegionForPoint(-44.92984092565437, 171.10225477776783);
         assertNotNull(region);
         assertEquals(region, "Otago");
     }
@@ -71,7 +71,7 @@ public class RegionFinderTest {
     public void testFindRegionForBorderCoordinates2() {
         // coordinates on the border between Otago and Canterbury (this time on
         // Canterbury side)
-        String region = regionFinder.findRegionForPoint(171.11224219061646, -44.92683616374543);
+        String region = regionFinder.findRegionForPoint(-44.92683616374543, 171.11224219061646);
         assertNotNull(region);
         assertEquals(region, "Canterbury");
     }
@@ -79,8 +79,8 @@ public class RegionFinderTest {
     @Test
     public void testFindRegionForTrail() {
         Trail mockTrail = new Trail();
-        mockTrail.setLat(174.7444827976006);
-        mockTrail.setLon(-36.880933915772516);
+        mockTrail.setLat(-36.880933915772516);
+        mockTrail.setLon(174.7444827976006);
         String region = regionFinder.findRegionForTrail(mockTrail);
         assertNotNull(region);
         assertEquals(region, "Auckland");
