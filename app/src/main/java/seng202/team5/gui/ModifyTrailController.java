@@ -28,6 +28,7 @@ public class ModifyTrailController extends Controller {
     private Controller lastController;
     private SqlBasedTrailRepo sqlBasedTrailRepo;
     private SearchService searchService;
+    private RegionFinder regionFinder;
 
     private WebEngine webEngine;
     private JavaScriptBridge javaScriptBridge;
@@ -47,6 +48,7 @@ public class ModifyTrailController extends Controller {
         this.trail = trail;
         this.lastController = lastController;
         this.searchService = searchService;
+        this.regionFinder = new RegionFinder();
         this.sqlBasedTrailRepo = new SqlBasedTrailRepo(App.getDatabaseService());
     }
 
@@ -65,10 +67,6 @@ public class ModifyTrailController extends Controller {
     @FXML
     private TextField cultureUrlTextField;
     @FXML
-    private Label regionLabel;
-    @FXML
-    private ComboBox<String> regionComboBox;
-    @FXML
     private WebView trailMapView;
     @FXML
     private Label emptyFieldLabel;
@@ -85,6 +83,8 @@ public class ModifyTrailController extends Controller {
     @FXML
     private Label longitudeLabel;
     @FXML
+    private Label regionLabel;
+    @FXML
     private Label invalidNumberLabel;
 
     /**
@@ -96,27 +96,12 @@ public class ModifyTrailController extends Controller {
     private void initialize() {
         if (trail != null) {
             initializeTextFields();
-            regionLabel.setVisible(false);
-            regionComboBox.setVisible(false);
-            // Make lat/lon fields visible and populate them for existing trails
-            latitudeTextField.setText(String.valueOf(trail.getLat()));
-            longitudeTextField.setText(String.valueOf(trail.getLon()));
-            latitudeTextField.setVisible(true);
-            longitudeTextField.setVisible(true);
-            latitudeLabel.setVisible(true);
-            longitudeLabel.setVisible(true);
-        } else {
-            regionLabel.setVisible(true);
-            regionComboBox.setVisible(true);
+            updateLatLonFields(trail.getLat(), trail.getLon());
         }
 
         // Add listeners for both new and existing trails
         latitudeTextField.textProperty().addListener((obs, oldVal, newVal) -> updateMarkerFromFields());
         longitudeTextField.textProperty().addListener((obs, oldVal, newVal) -> updateMarkerFromFields());
-
-        RegionFinder regionFinder = new RegionFinder();
-        List<String> regionList = regionFinder.getAllRegions().keySet().stream().toList();
-        regionComboBox.getItems().addAll(regionList);
 
         difficultyComboBox.getItems().addAll(List.of("Easiest", "Easy", "Intermediate", "Advanced", "Expert"));
         trailTypeComboBox.getItems().addAll(List.of("One way", "Loop", "Return"));
@@ -205,6 +190,8 @@ public class ModifyTrailController extends Controller {
         latitudeTextField.setText(String.format("%f", lat));
         longitudeTextField.setText(String.format("%f", lon));
         invalidNumberLabel.setVisible(false); // hide error when valid coords come from map
+        String region = regionFinder.findRegionForPoint(lat, lon);
+        regionLabel.setText(region);
     }
 
     @FXML
@@ -283,7 +270,7 @@ public class ModifyTrailController extends Controller {
             longitude = Double.parseDouble(longitudeTextField.getText());
         } else {
             trailId = -1;
-            region = regionComboBox.getValue();
+            region = regionLabel.getText();
             thumbUrl = "";
             webUrl = "";
             latitude = Double.parseDouble(latitudeTextField.getText());
