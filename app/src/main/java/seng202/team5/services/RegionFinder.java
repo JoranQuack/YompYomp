@@ -201,54 +201,13 @@ public class RegionFinder {
                 String regionName = entry.getKey();
                 Geometry regionGeometry = entry.getValue();
 
-                if (regionGeometry != null) {
-                    // Contains
-                    boolean contains = regionGeometry.contains(point);
-                    if (contains) {
-                        return cleanRegionName(regionName);
-                    }
-
-                    // Intersects
-                    boolean intersects = regionGeometry.intersects(point);
-                    if (intersects) {
-                        return cleanRegionName(regionName);
-                    }
+                if (regionGeometry != null && regionGeometry.contains(point)) {
+                    return cleanRegionName(regionName);
                 }
-            }
-
-            // Second: use bounds check as fallback
-            String bestMatchRegion = null;
-            double smallestArea = Double.MAX_VALUE;
-
-            for (Map.Entry<String, Geometry> entry : allRegions.entrySet()) {
-                String regionName = entry.getKey();
-                Geometry regionGeometry = entry.getValue();
-
-                if (regionGeometry != null) {
-                    // The coordinate transformation swaps X and Y, so check accordingly
-                    var envelope = regionGeometry.getEnvelopeInternal();
-                    if (longitude >= envelope.getMinY() && longitude <= envelope.getMaxY() &&
-                            latitude >= envelope.getMinX() && latitude <= envelope.getMaxX()) {
-
-                        // Calculate approximate area of the region's bounding box
-                        double area = (envelope.getMaxX() - envelope.getMinX())
-                                * (envelope.getMaxY() - envelope.getMinY());
-
-                        if (area < smallestArea) {
-                            smallestArea = area;
-                            bestMatchRegion = regionName;
-                        }
-                    }
-                }
-            }
-
-            if (bestMatchRegion != null) {
-                return cleanRegionName(bestMatchRegion);
             }
 
             // Otherwise, return "Other"
             return "Other";
-
         } catch (Exception e) {
             System.err.println("Error checking point against regions: " + e.getMessage());
             e.printStackTrace();
@@ -270,5 +229,14 @@ public class RegionFinder {
         } else {
             return regionName.replace(" Region", "").trim();
         }
+    }
+
+    /**
+     * Returns all loaded regions.
+     *
+     * @return Map of region names to their geometries
+     */
+    public Map<String, Geometry> getAllRegions() {
+        return allRegions;
     }
 }
