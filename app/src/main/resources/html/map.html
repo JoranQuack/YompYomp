@@ -70,13 +70,13 @@
             // Move existing marker instead of adding new
             activeMarker.setLatLng([lat, lng]);
         } else {
-            // First time: create marker
+            // First time: create marker and zoom to it
             activeMarker = new L.Marker([lat, lng]).addTo(map);
+            map.setView([lat, lng], 13);
         }
         if (trail) {
                 activeMarker.bindPopup(buildPopupContent(trail));
         }
-        map.setView([lat, lng], 13); // zoom in on the marker
     }
 
     /**
