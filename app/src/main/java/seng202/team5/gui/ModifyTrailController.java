@@ -1,11 +1,10 @@
 package seng202.team5.gui;
 
+import com.google.gson.Gson;
 import com.sun.javafx.webkit.WebConsoleListener;
 import javafx.concurrent.Worker;
-import javafx.css.Match;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
-import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
@@ -14,8 +13,8 @@ import seng202.team5.data.DatabaseService;
 import seng202.team5.data.SqlBasedTrailRepo;
 import seng202.team5.exceptions.MatchmakingFailedException;
 import seng202.team5.models.Trail;
+import seng202.team5.services.SearchService;
 import seng202.team5.models.User;
-import seng202.team5.services.MatchmakingService;
 import seng202.team5.utils.StringManipulator;
 import seng202.team5.utils.TrailsProcessor;
 
@@ -31,26 +30,27 @@ public class ModifyTrailController extends Controller {
     private Controller lastController;
     private DatabaseService databaseService;
     private SqlBasedTrailRepo sqlBasedTrailRepo;
-    private MatchmakingService matchmakingService;
+    private SearchService searchService;
 
     private WebEngine webEngine;
     private JavaScriptBridge javaScriptBridge;
     private JSObject javaScriptConnector;
-//    private Geolocator geolocator;
 
     /**
      * Launches the screen with navigator
      *
      * @param navigator screen navigator
+     * @param trail the selected trail
      * @param lastController controller of last screen user interacted with
+     * @param searchService searchService
      */
-    public ModifyTrailController(ScreenNavigator navigator, Trail trail, Controller lastController) {
+    public ModifyTrailController(ScreenNavigator navigator, Trail trail, Controller lastController, SearchService searchService) {
         super(navigator);
         this.trail = trail;
         this.lastController = lastController;
         this.databaseService = new DatabaseService();
         this.sqlBasedTrailRepo = new SqlBasedTrailRepo(databaseService);
-        this.matchmakingService = new MatchmakingService(databaseService);
+        this.searchService = searchService;
     }
 
     @FXML
@@ -124,7 +124,7 @@ public class ModifyTrailController extends Controller {
         backButton.setOnAction(e -> onBackButtonClicked());
 
         // Map methods below
-        javaScriptBridge = new JavaScriptBridge(this);
+        javaScriptBridge = new JavaScriptBridge(this, searchService);
         initMap();
     }
 
@@ -166,7 +166,9 @@ public class ModifyTrailController extends Controller {
      */
     @FXML
     private void addLocation() {
-        javaScriptConnector.call("addMarker", trail.getLat(), trail.getLon());
+        Gson gson = new Gson();
+        String trailJson = gson.toJson(trail); // convert Trail object to JSON string
+        javaScriptConnector.call("addMarker", trail.getLat(), trail.getLon(), trailJson);
     }
 
     /**
@@ -202,10 +204,8 @@ public class ModifyTrailController extends Controller {
     @FXML
     private void onSaveButtonClicked() {
         if (userInputValidation()) {
-            Trail updatedTrail = getUpdatedTrail();
-            sqlBasedTrailRepo.upsert(updatedTrail);
-            System.out.println(updatedTrail.getDescription());
-            super.getNavigator().launchScreen(new ViewTrailController(super.getNavigator(), updatedTrail),
+            sqlBasedTrailRepo.upsert(getUpdatedTrail());
+            super.getNavigator().launchScreen(new ViewTrailController(super.getNavigator(), getUpdatedTrail(), searchService),
                     lastController.getNavigator().getLastController());
         } else {
             emptyFieldLabel.setText("Please make sure all required fields are filled!");
@@ -262,35 +262,22 @@ public class ModifyTrailController extends Controller {
         String thumbUrl;
         String webUrl;
         double userWeight;
-        Double latitude;
-        Double longitude;
-        try {
-            matchmakingService.setUserPreferences(user);
-        } catch (MatchmakingFailedException e) {
-            System.out.println("Failed to set user preferences");
-        }
+        double latitude;
+        double longitude;
         if (trail != null) {
             region = "";
             thumbUrl = trail.getThumbnailURL();
             webUrl = trail.getWebpageURL();
             latitude = trail.getLat();
             longitude = trail.getLon();
-            try {
-                userWeight = matchmakingService.scoreTrail(matchmakingService.categoriseTrail(trail));
-            } catch (MatchmakingFailedException e) {
-                userWeight = trail.getUserWeight();
-            }
+            userWeight = trail.getUserWeight();
         } else {
             region = regionComboBox.getValue();
             thumbUrl = "";
             webUrl = "";
             latitude =  Double.parseDouble(latitudeTextField.getText());
             longitude =  Double.parseDouble(longitudeTextField.getText());
-            try {
-                userWeight = matchmakingService.scoreTrail(matchmakingService.categoriseTrail(trail));
-            } catch (MatchmakingFailedException e) {
-                userWeight = 0.5;
-            }
+            userWeight = 0.5; //TODO implement calculation for new trail
         }
         int trailId = -1;
         String trailName = trailNameTextField.getText();

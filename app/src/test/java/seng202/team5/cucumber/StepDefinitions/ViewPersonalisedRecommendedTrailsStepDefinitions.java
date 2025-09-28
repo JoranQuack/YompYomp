@@ -51,26 +51,27 @@ public class ViewPersonalisedRecommendedTrailsStepDefinitions {
         when(mockKeywordRepo.getKeywords()).thenReturn(mockKeywords);
         // fake trails
         List<Trail> mockTrails = Arrays.asList(
-                new Trail(1, "Alpine Trail", "A beautiful alpine trail through the mountains", "Easy",
-                        "2 hours", "thumb1.jpg", "http://example.com/trail1", 0.0, 0.0),
-                new Trail(2, "Forest Trail", "A scenic forest trail with wildlife viewing", "Medium",
-                        "3 hours", "thumb2.jpg", "http://example.com/trail2", 0.0, 0.0),
-                new Trail(3, "Mountain Peak Trail", "Challenging trail to the mountain peak", "Hard",
-                        "5 hours", "thumb3.jpg", "http://example.com/trail3", 0.0, 0.0),
-                new Trail(4, "Coastal Walk", "Easy coastal walk with ocean views", "Easy",
-                        "1.5 hours", "thumb4.jpg", "http://example.com/trail4", 0.0, 0.0),
-                new Trail(5, "River Trail", "Trail following the river through the valley", "Medium",
-                        "2.5 hours", "thumb5.jpg", "http://example.com/trail5", 0.0, 0.0),
-                new Trail(6, "Lakeside Loop", "Loop trail around the serene lake", "Easy",
-                        "2 hours", "thumb6.jpg", "http://example.com/trail6", 0.0, 0.0),
-                new Trail(7, "Glacier Path", "Trail through icy glaciers, suitable for experienced hikers", "Hard",
-                        "6 hours", "thumb7.jpg", "http://example.com/trail7", 0.0, 0.0),
-                new Trail(8, "Bushland Circuit", "Circuit trail through native bush", "Medium",
-                        "3 hours", "thumb8.jpg", "http://example.com/trail8", 0.0, 0.0),
-                new Trail(9, "Volcanic Ridge Track", "Trail along volcanic ridges with dramatic views", "Hard",
-                        "4 hours", "thumb9.jpg", "http://example.com/trail9", 0.0, 0.0),
-                new Trail(10, "Wetlands Walk", "Easy walk through wetlands, great for birdwatching", "Easy",
-                        "1.5 hours", "thumb10.jpg", "http://example.com/trail10", 0.0, 0.0));
+                new Trail(1, "Alpine Trail", "Easy", "A beautiful alpine trail through the mountains",
+                        "2 hours", "thumb1.jpg", "http://example.com/trail1", -43.5321, 172.6362),
+                new Trail(2, "Forest Trail", "Medium", "A scenic forest trail with wildlife viewing",
+                        "3 hours", "thumb2.jpg", "http://example.com/trail2", -43.5380, 172.6410),
+                new Trail(3, "Mountain Peak Trail", "Hard", "Challenging trail to the mountain peak",
+                        "5 hours", "thumb3.jpg", "http://example.com/trail3", -43.5450, 172.6500),
+                new Trail(4, "Coastal Walk", "Easy", "Easy coastal walk with ocean views",
+                        "1.5 hours", "thumb4.jpg", "http://example.com/trail4", -43.5250, 172.6200),
+                new Trail(5, "River Trail", "Medium", "Trail following the river through the valley",
+                        "2.5 hours", "thumb5.jpg", "http://example.com/trail5", -43.5300, 172.6450),
+                new Trail(6, "Lakeside Loop", "Easy", "Loop trail around the serene lake",
+                        "2 hours", "thumb6.jpg", "http://example.com/trail6", -43.5405, 172.6350),
+                new Trail(7, "Glacier Path", "Hard", "Trail through icy glaciers, suitable for experienced hikers",
+                        "6 hours", "thumb7.jpg", "http://example.com/trail7", -43.5500, 172.6550),
+                new Trail(8, "Bushland Circuit", "Medium", "Circuit trail through native bush",
+                        "3 hours", "thumb8.jpg", "http://example.com/trail8", -43.5270, 172.6280),
+                new Trail(9, "Volcanic Ridge Track", "Hard", "Trail along volcanic ridges with dramatic views",
+                        "4 hours", "thumb9.jpg", "http://example.com/trail9", -43.5480, 172.6480),
+                new Trail(10, "Wetlands Walk", "Easy", "Easy walk through wetlands, great for birdwatching",
+                        "1.5 hours", "thumb10.jpg", "http://example.com/trail10", -43.5260, 172.6220)
+        );
         when(mockTrailRepo.getAllTrails()).thenReturn(mockTrails);
         searchService = new SearchService(mockTrailRepo);
         matchmakingService = new MatchmakingService(mockKeywordRepo, mockTrailRepo);

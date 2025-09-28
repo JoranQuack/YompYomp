@@ -59,6 +59,14 @@ public class SearchService {
     }
 
     /**
+     * Returns all the trails
+     * @return all trails from dataset
+     */
+    public List<Trail> getAllTrails() {
+        return trails;
+    }
+
+    /**
      * Calculates the total number of pages required to display the currently
      * filtered list of trails.
      */
@@ -89,6 +97,15 @@ public class SearchService {
                 .skip(startIndex)
                 .limit(maxResults)
                 .collect(Collectors.toList());
+    }
+
+    /**
+     * returns a trail based on its id
+     * @param id the id for the specified trail
+     * @return the trail specified by the given id
+     */
+    public Trail getTrailById(int id) {
+        return filteredTrails.stream().filter(t -> t.getId() == id).findFirst().orElse(null);
     }
 
     /**
