@@ -16,6 +16,12 @@ public class TripLogController extends Controller {
     private SqlBasedTrailRepo trailRepo;
     private SqlBasedTripRepo tripRepo;
 
+    /**
+     * Launches the screen with the navigator
+     *
+     * @param navigator screen navigator
+     * @param lastController controller of the last screen the user interacted with
+     */
     public TripLogController(ScreenNavigator navigator, TripLog trip, Controller lastController) {
         super(navigator);
         this.trip = trip;
