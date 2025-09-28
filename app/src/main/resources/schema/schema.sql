@@ -1,5 +1,5 @@
 -- Remember to increment the schema version here when making changes!
--- Schema version: 2.0 Remember to increment the schema version here when making changes!
+-- Schema version: 2.1 Remember to increment the schema version here when making changes!
 -- Schema version: 1.1
 PRAGMA foreign_keys = off;
 

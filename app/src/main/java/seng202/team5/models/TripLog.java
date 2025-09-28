@@ -5,56 +5,79 @@ import java.util.Date;
 public class TripLog {
     //Some basic variables
     private int id;
-    private User user;
-    private Trail trail;
-    private Date dateCompleted;
-    private int actualDuration; // hours
-    private String weatherExperienced;
-    private String personalDifficulty;
-    private int rating;
-    private boolean isMultiDayTrip;
-    private String tripId; // for identifying trails that are a part of the same trip
+    private int userId;
+    private int trailId;
+    private Date startDate;
+    private Date endDate;
+    private String completionInfo;
+    private int minDurationMinutes;
+    private int maxDurationMinutes;
+    private String durationType;
+    private String timeUnit;
+    private boolean isMultiDay;
+    private boolean hasVariableTime;
     private String notes;
+    private int rating;
+    private String weather;
+    private String personalDifficulty;
 
 
 
     //Constructor for base variables
-    public TripLog(int id, User user, Trail trail, Date dateCompleted, int actualDuration, String weatherExperienced,
-                   String personalDifficulty, int rating, boolean isMultiDayTrip, String tripId, String notes) {
+    public TripLog(int id, int userId, int trailId, Date startDate, Date endDate, String completionInfo,
+                   int minDurationMinutes, int maxDurationMinutes, String durationType, String timeUnit,
+                   boolean isMultiDay, boolean hasVariableTime, String notes, int rating, String weather,
+                   String personalDifficulty) {
         this.id = id;
-        this.user = user;
-        this.trail = trail;
-        this.dateCompleted = dateCompleted;
-        this.actualDuration = actualDuration;
-        this.weatherExperienced = weatherExperienced;
-        this.personalDifficulty = personalDifficulty;
-        this.rating = rating;
-        this.isMultiDayTrip = isMultiDayTrip;
-        this.tripId = tripId;
+        this.userId = userId;
+        this.trailId = trailId;
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.completionInfo = completionInfo;
+        this.minDurationMinutes = minDurationMinutes;
+        this.maxDurationMinutes = maxDurationMinutes;
+        this.durationType = durationType;
+        this.timeUnit = timeUnit;
+        this.isMultiDay = isMultiDay;
+        this.hasVariableTime = hasVariableTime;
         this.notes = notes;
+        this.rating = rating;
+        this.weather = weather;
+        this.personalDifficulty = personalDifficulty;
     }
 
     //Getters
     public int getId() { return id; }
-    public User getUser() { return user; }
-    public Trail getTrail() { return trail; }
-    public Date getDateCompleted() { return dateCompleted; }
-    public int getActualDuration() { return actualDuration; }
-    public String getWeatherExperienced() { return weatherExperienced; }
-    public String getPersonalDifficulty() { return personalDifficulty; }
-    public int getRating() { return rating; }
-    public boolean isMultiDayTrip() { return isMultiDayTrip; }
-    public String getTripId() { return tripId; }
+    public int getUserId() { return userId; }
+    public int getTrailId() { return trailId; }
+    public Date getStartDate() { return startDate; }
+    public Date getEndDate() { return endDate; }
+    public String getCompletionInfo() { return completionInfo; }
+    public int getMinDurationMinutes() { return minDurationMinutes; }
+    public int getMaxDurationMinutes() { return maxDurationMinutes; }
+    public String getDurationType() { return durationType; }
+    public String getTimeUnit() { return timeUnit; }
+    public boolean isMultiDay() { return isMultiDay; }
+    public boolean isHasVariableTime() { return hasVariableTime; }
     public String getNotes() { return notes; }
+    public int getRating() { return rating; }
+    public String getWeather() { return weather; }
+    public String getPersonalDifficulty() { return personalDifficulty; }
+
     //Setters
-    public void setUser(User user) { this.user = user; }
-    public void setTrail(Trail trail) { this.trail = trail; }
-    public void setDateCompleted(Date dateVisited) { this.dateCompleted = dateCompleted; }
-    public void setActualDuration(int actualDuration) { this.actualDuration = actualDuration; }
-    public void setWeatherExperienced(String weatherExperienced) { this.weatherExperienced = weatherExperienced; }
-    public void setPersonalDifficulty(String personalDifficulty) { this.personalDifficulty = personalDifficulty; }
-    public void setRating(int rating) { this.rating = rating; }
-    public void setMultiDayTrip(boolean multiDayTrip) { this.isMultiDayTrip = multiDayTrip; }
-    public void setTripId(String tripId) { this.tripId = tripId; }
+    public void setUserId(int userId) { this.userId = userId; }
+    public void setTrail(int trailId) { this.trailId = trailId; }
+    public void setStartDate(Date startDate) { this.startDate = startDate; }
+    public void setEndDate(Date endDate) { this.endDate = endDate; }
+    public void setCompletionInfo(String completionInfo) { this.completionInfo = completionInfo; }
+    public void setMinDurationMinutes(int minDurationMinutes) { this.minDurationMinutes = minDurationMinutes; }
+    public void setMaxDurationMinutes(int maxDurationMinutes) { this.maxDurationMinutes = maxDurationMinutes; }
+    public void setDurationType(String durationType) { this.durationType = durationType; }
+    public void setTimeUnit(String timeUnit) { this.timeUnit = timeUnit; }
+    public void setIsMultiDay(boolean isMultiDay) { this.isMultiDay = isMultiDay; }
+    public void setHasVariableTime(boolean hasVariableTime) { this.hasVariableTime = hasVariableTime; }
     public void setNotes(String notes) { this.notes = notes; }
+    public void setRating(int rating) { this.rating = rating; }
+    public void setWeather(String weather) { this.weather = weather; }
+    public void setPersonalDifficulty(String difficulty) { this.personalDifficulty = difficulty; }
 }
