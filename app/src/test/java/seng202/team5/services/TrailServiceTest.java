@@ -16,7 +16,7 @@ public class TrailServiceTest {
     private Trail currentTrail;
 
     @BeforeEach
-    public void setup() {
+    void setup() {
         trailService = new TrailService();
 
         mockTrails = new ArrayList<>(Arrays.asList(
@@ -33,7 +33,7 @@ public class TrailServiceTest {
 
     @Test
     @DisplayName("No trails should be within 1km radius")
-    public void testNoNearbyTrailsWhenRadiusTooSmall() {
+    void testNoNearbyTrailsWhenRadiusTooSmall() {
         List<Trail> results = trailService.getNearbyTrails(currentTrail, 1, mockTrails);
         for  (Trail trail : results) {
             System.out.println(trail.getName());
@@ -44,7 +44,7 @@ public class TrailServiceTest {
 
     @Test
     @DisplayName("Only one trail should be within 10km radius")
-    public void testNearbyTrailFoundWithinRadius() {
+    void testNearbyTrailFoundWithinRadius() {
         List<Trail> results = trailService.getNearbyTrails(currentTrail, 10, mockTrails);
         assertEquals(1, results.size());
         assertEquals("Forest Trail", results.get(0).getName());
@@ -52,7 +52,7 @@ public class TrailServiceTest {
 
     @Test
     @DisplayName("Faraway trails should be excluded at 100km radius")
-    public void testFarTrailExcluded() {
+    void testFarTrailExcluded() {
         List<Trail> results = trailService.getNearbyTrails(currentTrail, 100, mockTrails);
         assertEquals(1, results.size());
         assertEquals("Forest Trail", results.get(0).getName());
@@ -60,7 +60,7 @@ public class TrailServiceTest {
 
     @Test
     @DisplayName("All trails should be included when distance radius is large enough")
-    public void allTrailsIncludedWithLargeDistance() {
+    void allTrailsIncludedWithLargeDistance() {
         List<Trail> results = trailService.getNearbyTrails(currentTrail, 1000, mockTrails);
         assertEquals(2, results.size());
         assertEquals("Forest Trail", results.get(0).getName());
@@ -69,7 +69,7 @@ public class TrailServiceTest {
 
     @Test
     @DisplayName("Current trail should not appear in the results")
-    public void testExcludesCurrentTrailItself() {
+    void testExcludesCurrentTrailItself() {
         List<Trail> results = trailService.getNearbyTrails(currentTrail, 10, mockTrails);
         assertEquals(1, results.size());
         assertEquals("Forest Trail", results.get(0).getName());
