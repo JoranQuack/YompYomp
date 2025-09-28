@@ -81,8 +81,6 @@ public class TrailCardComponent extends VBox {
         Image trailImage = imageService.loadTrailImage(trail.getThumbnailURL());
         thumbnail.setImage(trailImage);
 
-        regionLabel.setVisible(false); // Hide region label for now
-
         if (!trail.getDifficulty().contains("unknown")) {
             difficultyLabel.setText(StringManipulator.capitaliseFirstLetter(trail.getDifficulty()));
         } else {
@@ -99,6 +97,12 @@ public class TrailCardComponent extends VBox {
             typeLabel.setText(StringManipulator.capitaliseFirstLetter(trail.getCompletionType()));
         } else {
             typeLabel.setVisible(false);
+        }
+
+        if (trail.getRegion() != null) {
+            regionLabel.setText(trail.getRegion());
+        } else {
+            regionLabel.setVisible(false);
         }
 
         if (isUnmatched) {

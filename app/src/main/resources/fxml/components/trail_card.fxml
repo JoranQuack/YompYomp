@@ -5,7 +5,7 @@
 <?import javafx.scene.control.ProgressBar?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
-<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.FlowPane?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 
@@ -21,24 +21,17 @@
       <image>
          <Image url="@../../images/Default%20Trail%20Image.png" />
       </image></ImageView>
-   <HBox alignment="CENTER_LEFT" spacing="10.0">
-      <children>
-      
-          <!-- Title -->
-          <Label fx:id="title" style="-fx-font-size: 16px; -fx-font-weight: bold;" text="Trail Name" />
-         <Label fx:id="regionLabel" text="Region" />
-      </children>
-   </HBox>
-   <HBox spacing="10.0">
+
+                      <!-- Title -->
+    <Label fx:id="title" style="-fx-font-size: 16px; -fx-font-weight: bold;" text="Trail Name" />
+   <Label fx:id="regionLabel" text="Region" />
+   <FlowPane hgap="5.0" vgap="5.0">
       <children>
          <Label fx:id="difficultyLabel" text="Difficulty" />
          <Label fx:id="typeLabel" text="Type" />
+         <Label fx:id="durationLabel" text="Duration" />
       </children>
-      <padding>
-         <Insets bottom="5.0" right="10.0" top="5.0" />
-      </padding>
-   </HBox>
-   <Label fx:id="durationLabel" text="Duration" />
+   </FlowPane>
 
     <StackPane>
         <ProgressBar fx:id="matchBar" maxWidth="Infinity" progress="0.0" />
