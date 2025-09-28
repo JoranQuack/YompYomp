@@ -50,7 +50,7 @@ public class RegionFinder {
     }
 
     public RegionFinder() {
-        this("/regional_datasets", "NZ_Regions_2025.shp");
+        this("/datasets/regional/", "regional-council-2025.shp");
     }
 
     /**
