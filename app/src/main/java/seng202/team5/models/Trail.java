@@ -51,6 +51,8 @@ public class Trail {
      * @param webpageURL
      * @param cultureUrl
      * @param userWeight
+     * @param lat
+     * @param lon
      */
     public Trail(int id, String name, String translation, String region, String difficulty, String description,
             String completionInfo, int minCompletionTimeMinutes, int maxCompletionTimeMinutes,
@@ -90,6 +92,8 @@ public class Trail {
      * @param completionInfo
      * @param thumbnailURL
      * @param webpageURL
+     * @param lat
+     * @param lon
      */
     public Trail(int id, String name, String difficulty, String description, String completionInfo,
             String thumbnailURL, String webpageURL, double lat, double lon) {
@@ -106,6 +110,20 @@ public class Trail {
     /**
      * Constructor for Trail class for user input data
      * Calls SqlBasedTrailRepo to get new trail id
+     * @param id
+     * @param name
+     * @param translation
+     * @param region
+     * @param difficulty
+     * @param completionType
+     * @param completionInfo
+     * @param description
+     * @param thumbUrl
+     * @param webUrl
+     * @param cultureUrl
+     * @param userWeight
+     * @param lat
+     * @param lon
      */
     public Trail(int id, String name, String translation, String region, String difficulty, String completionType,
             String completionInfo, String description, String thumbUrl, String webUrl, String cultureUrl,

@@ -336,7 +336,7 @@ public class TrailsController extends Controller {
 
     @FXML
     private void onTrailCardClicked(Trail trail) {
-        super.getNavigator().launchScreen(new ViewTrailController(super.getNavigator(), trail), this);
+        super.getNavigator().launchScreen(new ViewTrailController(super.getNavigator(), trail, searchService), this);
     }
 
     /**
