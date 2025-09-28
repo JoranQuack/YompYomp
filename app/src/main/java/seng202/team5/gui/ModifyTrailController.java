@@ -9,16 +9,13 @@ import javafx.scene.paint.Color;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
 import netscape.javascript.JSObject;
-import seng202.team5.data.DatabaseService;
 import seng202.team5.data.SqlBasedTrailRepo;
-import seng202.team5.exceptions.MatchmakingFailedException;
 import seng202.team5.models.Trail;
+import seng202.team5.services.RegionFinder;
 import seng202.team5.services.SearchService;
-import seng202.team5.models.User;
 import seng202.team5.utils.StringManipulator;
 import seng202.team5.utils.TrailsProcessor;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -28,7 +25,6 @@ public class ModifyTrailController extends Controller {
 
     private Trail trail;
     private Controller lastController;
-    private DatabaseService databaseService;
     private SqlBasedTrailRepo sqlBasedTrailRepo;
     private SearchService searchService;
 
@@ -39,17 +35,16 @@ public class ModifyTrailController extends Controller {
     /**
      * Launches the screen with navigator
      *
-     * @param navigator screen navigator
-     * @param trail the selected trail
+     * @param navigator      screen navigator
+     * @param trail          the selected trail
      * @param lastController controller of last screen user interacted with
-     * @param searchService searchService
+     * @param searchService  searchService
      */
-    public ModifyTrailController(ScreenNavigator navigator, Trail trail, Controller lastController, SearchService searchService) {
+    public ModifyTrailController(ScreenNavigator navigator, Trail trail, Controller lastController,
+            SearchService searchService) {
         super(navigator);
         this.trail = trail;
         this.lastController = lastController;
-        this.databaseService = new DatabaseService();
-        this.sqlBasedTrailRepo = new SqlBasedTrailRepo(databaseService);
         this.searchService = searchService;
     }
 
@@ -111,12 +106,12 @@ public class ModifyTrailController extends Controller {
             latitudeTextField.textProperty().addListener((obs, oldVal, newVal) -> updateMarkerFromFields());
             longitudeTextField.textProperty().addListener((obs, oldVal, newVal) -> updateMarkerFromFields());
         }
-        List<String> regionList = new ArrayList<>(List.of("Northland", "Auckland",
-                "Waikato", "Bay of Plenty", "Gisborne", "Hawke's Bay", "Taranaki",
-                "Manawatu-Whanganui", "Tasman", "Wellington", "Nelson", "Marlborough", "West Coast",
-                "Canterbury", "Otago", "Southland"));
+
+        RegionFinder regionFinder = new RegionFinder();
+        List<String> regionList = regionFinder.getAllRegions().keySet().stream().toList();
         regionComboBox.getItems().addAll(regionList);
-        difficultyComboBox.getItems().addAll(List.of("Easy", "Intermediate", "Advanced"));
+
+        difficultyComboBox.getItems().addAll(List.of("Easiest", "Easy", "Intermediate", "Advanced", "Expert"));
         trailTypeComboBox.getItems().addAll(List.of("One way", "Loop", "Return"));
         emptyFieldLabel.setText("");
         invalidNumberLabel.setVisible(false);
@@ -129,16 +124,17 @@ public class ModifyTrailController extends Controller {
     }
 
     /**
-     * Initialises the WebView loading in the appropriate html and initialising important communicator
+     * Initialises the WebView loading in the appropriate html and initialising
+     * important communicator
      * objects between Java and Javascript
      */
     private void initMap() {
         webEngine = trailMapView.getEngine();
         webEngine.setJavaScriptEnabled(true);
         webEngine.load(Controller.class.getResource("/html/map.html").toExternalForm());
-        //Forwards console.log() output from any javascript to info log
-        WebConsoleListener.setDefaultListener((view, message, lineNumber, sourceID) ->
-                System.out.printf(String.format("Map WebView console log line: %d, message : %s", lineNumber, message)));
+        // Forwards console.log() output from any javascript to info log
+        WebConsoleListener.setDefaultListener((view, message, lineNumber, sourceID) -> System.out
+                .printf(String.format("Map WebView console log line: %d, message : %s", lineNumber, message)));
 
         webEngine.getLoadWorker().stateProperty().addListener(
                 (ov, oldState, newState) -> {
@@ -147,7 +143,8 @@ public class ModifyTrailController extends Controller {
                         // set our bridge object
                         JSObject window = (JSObject) webEngine.executeScript("window");
                         window.setMember("javaScriptBridge", javaScriptBridge);
-                        // get a reference to the js object that has a reference to the js methods we need to use in java
+                        // get a reference to the js object that has a reference to the js methods we
+                        // need to use in java
                         javaScriptConnector = (JSObject) webEngine.executeScript("jsConnector");
                         // call the javascript function to initialise the map
                         if (trail != null) {
@@ -191,7 +188,9 @@ public class ModifyTrailController extends Controller {
     }
 
     /**
-     * updates the latitude and longitude fields when the user interacts with the map
+     * updates the latitude and longitude fields when the user interacts with the
+     * map
+     *
      * @param lat latitude value from the map
      * @param lon longitude value from the map
      */
@@ -205,7 +204,8 @@ public class ModifyTrailController extends Controller {
     private void onSaveButtonClicked() {
         if (userInputValidation()) {
             sqlBasedTrailRepo.upsert(getUpdatedTrail());
-            super.getNavigator().launchScreen(new ViewTrailController(super.getNavigator(), getUpdatedTrail(), searchService),
+            super.getNavigator().launchScreen(
+                    new ViewTrailController(super.getNavigator(), getUpdatedTrail(), searchService),
                     lastController.getNavigator().getLastController());
         } else {
             emptyFieldLabel.setText("Please make sure all required fields are filled!");
@@ -235,6 +235,7 @@ public class ModifyTrailController extends Controller {
 
     /**
      * Validates user input
+     *
      * @return whether inputs are valid
      */
     private boolean userInputValidation() {
@@ -244,8 +245,8 @@ public class ModifyTrailController extends Controller {
             }
         }
         if (trailNameTextField.getText().isEmpty() || difficultyComboBox.getValue() == null ||
-            trailTypeComboBox.getValue() == null || completionTimeTextField.getText().isEmpty() ||
-            trailDescriptionTextArea.getText().isEmpty()) {
+                trailTypeComboBox.getValue() == null || completionTimeTextField.getText().isEmpty() ||
+                trailDescriptionTextArea.getText().isEmpty()) {
             return false;
         }
         return true;
@@ -253,10 +254,10 @@ public class ModifyTrailController extends Controller {
 
     /**
      * Returns Trail object of trail to be updated/added to database
+     *
      * @return updatedTrail
      */
     private Trail getUpdatedTrail() {
-        User user = getUserService().getUser();
         int trailId;
         String region;
         String thumbUrl;
@@ -277,9 +278,9 @@ public class ModifyTrailController extends Controller {
             region = regionComboBox.getValue();
             thumbUrl = "";
             webUrl = "";
-            latitude =  Double.parseDouble(latitudeTextField.getText());
-            longitude =  Double.parseDouble(longitudeTextField.getText());
-            userWeight = 0.5; //TODO implement calculation for new trail
+            latitude = Double.parseDouble(latitudeTextField.getText());
+            longitude = Double.parseDouble(longitudeTextField.getText());
+            userWeight = 0.5; // TODO implement calculation for new trail
         }
         String trailName = trailNameTextField.getText();
         String translation = translationTextField.getText();
@@ -289,7 +290,8 @@ public class ModifyTrailController extends Controller {
         String trailDescription = trailDescriptionTextArea.getText();
         String cultureUrl = cultureUrlTextField.getText();
         List<Trail> updatedTrail = TrailsProcessor.processTrails(List.of(new Trail(trailId, trailName, translation,
-                region, difficulty, trailType, completionTime, trailDescription, thumbUrl, webUrl, cultureUrl, userWeight,
+                region, difficulty, trailType, completionTime, trailDescription, thumbUrl, webUrl, cultureUrl,
+                userWeight,
                 latitude, longitude)));
         return updatedTrail.getFirst();
     }
