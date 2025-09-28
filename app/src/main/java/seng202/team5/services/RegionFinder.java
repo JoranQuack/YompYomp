@@ -49,6 +49,10 @@ public class RegionFinder {
         }
     }
 
+    public RegionFinder() {
+        this("/regional_datasets", "NZ_Regions_2025.shp");
+    }
+
     /**
      * Loads the shp file from the resources directory.
      *
