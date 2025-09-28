@@ -216,6 +216,15 @@ public class MatchmakingService {
     }
 
     /**
+     * Gets weight of one trail based on the categories and user preferences.
+     *
+     * @throws MatchmakingFailedException
+     */
+    public double getUserWeightFromTrail(Trail trail) throws MatchmakingFailedException {
+        return scoreTrail(categoriseTrail(trail));
+    }
+
+    /**
      * Assigns weights to each trail based on the categories and user preferences.
      * Updates the trail models attributes, categories, and userWeight.
      */
