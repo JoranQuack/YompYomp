@@ -9,6 +9,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
 import netscape.javascript.JSObject;
+import seng202.team5.App;
 import seng202.team5.data.SqlBasedTrailRepo;
 import seng202.team5.models.Trail;
 import seng202.team5.services.RegionFinder;
@@ -46,6 +47,7 @@ public class ModifyTrailController extends Controller {
         this.trail = trail;
         this.lastController = lastController;
         this.searchService = searchService;
+        this.sqlBasedTrailRepo = new SqlBasedTrailRepo(App.getDatabaseService());
     }
 
     @FXML
@@ -195,8 +197,8 @@ public class ModifyTrailController extends Controller {
      * @param lon longitude value from the map
      */
     public void updateLatLonFields(double lat, double lon) {
-        latitudeTextField.setText(String.format("%.2f", lat));
-        longitudeTextField.setText(String.format("%.2f", lon));
+        latitudeTextField.setText(String.format("%f", lat));
+        longitudeTextField.setText(String.format("%f", lon));
         invalidNumberLabel.setVisible(false); // hide error when valid coords come from map
     }
 
