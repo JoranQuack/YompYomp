@@ -83,10 +83,10 @@
             <WebView fx:id="trailMapView" prefHeight="196.0" prefWidth="362.0" />
             <HBox prefHeight="25.0" prefWidth="236.0">
                <children>
-                  <CheckBox fx:id="nearbyTrailsCheckbox" mnemonicParsing="false" prefHeight="24.0" prefWidth="116.0" text="View nearby trails" />
-                  <HBox prefHeight="25.0" prefWidth="30.0" />
+                  <CheckBox fx:id="nearbyTrailsCheckbox" mnemonicParsing="false" prefHeight="24.0" prefWidth="145.0" text="View nearby trails" wrapText="true" />
+                  <HBox prefHeight="26.0" prefWidth="22.0" />
                   <TextField fx:id="trailsRadiusTextField" prefHeight="25.0" prefWidth="59.0" />
-                  <Label prefHeight="25.0" prefWidth="17.0" text="km" />
+                  <Label prefHeight="25.0" prefWidth="40.0" text="km" wrapText="true" />
                </children>
             </HBox>
             <HBox prefHeight="20.0" prefWidth="200.0">
