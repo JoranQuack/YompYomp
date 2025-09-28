@@ -125,7 +125,8 @@ public class SqlBasedTrailRepo implements ITrail {
     }
 
     /**
-     * Inserts or updates a trail (true UPSERT). If a row with the same id exists, its
+     * Inserts or updates a trail (true UPSERT). If a row with the same id exists,
+     * its
      * fields are updated; otherwise a new row is inserted.
      *
      * @param trail trail that needs to be upserted
@@ -148,7 +149,8 @@ public class SqlBasedTrailRepo implements ITrail {
     }
 
     /**
-     * Inserts or updates all supplied trails (true UPSERT). If a trail with the same id exists,
+     * Inserts or updates all supplied trails (true UPSERT). If a trail with the
+     * same id exists,
      * its fields are updated; otherwise a new trail is inserted.
      *
      * @param trails List of trails to upsert
