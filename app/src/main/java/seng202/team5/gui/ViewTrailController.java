@@ -12,6 +12,8 @@ import netscape.javascript.JSObject;
 import seng202.team5.models.Trail;
 import seng202.team5.services.ImageService;
 
+import java.util.Objects;
+
 /**
  * Controller for the view trail screen
  */
@@ -79,8 +81,6 @@ public class ViewTrailController extends Controller {
         } else {
             translationLabel.setVisible(false);
         }
-        // TODO: add icon for map
-
         initMap();
     }
 
@@ -94,7 +94,7 @@ public class ViewTrailController extends Controller {
         webEngine.load(Controller.class.getResource("/html/map.html").toExternalForm());
         //Forwards console.log() output from any javascript to info log
         WebConsoleListener.setDefaultListener((view, message, lineNumber, sourceID) ->
-        System.out.printf(String.format("Map WebView console log line: %d, message : %s", lineNumber, message)));
+                System.out.printf(String.format("Map WebView console log line: %d, message : %s", lineNumber, message)));
 
         webEngine.getLoadWorker().stateProperty().addListener(
                 (ov, oldState, newState) -> {
@@ -122,7 +122,13 @@ public class ViewTrailController extends Controller {
 
     @FXML
     private void onBackButtonClicked() {
-        Controller lastController = super.getNavigator().getLastController();
+        String lastScreenName = super.getNavigator().getLastController().getTitle();
+        Controller lastController;
+        if (Objects.equals(lastScreenName, "Dashboard")) {
+            lastController = new DashboardController(super.getNavigator());
+        } else {
+            lastController = new TrailsController(super.getNavigator());
+        }
         super.getNavigator().launchScreen(lastController, null);
     }
 

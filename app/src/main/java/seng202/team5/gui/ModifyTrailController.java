@@ -202,8 +202,10 @@ public class ModifyTrailController extends Controller {
     @FXML
     private void onSaveButtonClicked() {
         if (userInputValidation()) {
-            sqlBasedTrailRepo.upsert(getUpdatedTrail());
-            super.getNavigator().launchScreen(new ViewTrailController(super.getNavigator(), getUpdatedTrail()),
+            Trail updatedTrail = getUpdatedTrail();
+            sqlBasedTrailRepo.upsert(updatedTrail);
+            System.out.println(updatedTrail.getDescription());
+            super.getNavigator().launchScreen(new ViewTrailController(super.getNavigator(), updatedTrail),
                     lastController.getNavigator().getLastController());
         } else {
             emptyFieldLabel.setText("Please make sure all required fields are filled!");
@@ -254,8 +256,8 @@ public class ModifyTrailController extends Controller {
      * @return updatedTrail
      */
     private Trail getUpdatedTrail() {
+        System.out.println("getting updated trail");
         User user = getUserService().getUser();
-        int trailId;
         String region;
         String thumbUrl;
         String webUrl;
@@ -268,7 +270,6 @@ public class ModifyTrailController extends Controller {
             System.out.println("Failed to set user preferences");
         }
         if (trail != null) {
-            trailId = trail.getId();
             region = "";
             thumbUrl = trail.getThumbnailURL();
             webUrl = trail.getWebpageURL();
@@ -280,7 +281,6 @@ public class ModifyTrailController extends Controller {
                 userWeight = trail.getUserWeight();
             }
         } else {
-            trailId = -1;
             region = regionComboBox.getValue();
             thumbUrl = "";
             webUrl = "";
@@ -292,6 +292,7 @@ public class ModifyTrailController extends Controller {
                 userWeight = 0.5;
             }
         }
+        int trailId = -1;
         String trailName = trailNameTextField.getText();
         String translation = translationTextField.getText();
         String difficulty = difficultyComboBox.getValue();
