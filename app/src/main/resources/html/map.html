@@ -178,6 +178,10 @@
         `;
     }
 
+    /**
+     * Attempts to open the ViewTrail page for a trail with the given id
+     * @param trailId the id for the trail whose page should be opened
+     */
     function openTrailInfo(trailId) {
         if (javaScriptBridge && javaScriptBridge.openTrailInfo) {
             javaScriptBridge.openTrailInfo(trailId);

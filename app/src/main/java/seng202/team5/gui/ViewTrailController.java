@@ -190,6 +190,11 @@ public class ViewTrailController extends Controller {
         }
     }
 
+    /**
+     * opens a page for a given trail
+     *
+     * @param trail the trail whose page will be opened
+     */
     public void openTrailInfo(Trail trail) {
         Controller lastController = super.getNavigator().getLastController();
         super.getNavigator().launchScreen(new ViewTrailController(super.getNavigator(), trail, searchService), lastController); // pass dashboard as last controller (or this??)

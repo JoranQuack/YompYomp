@@ -124,7 +124,7 @@ public class ModifyTrailController extends Controller {
         backButton.setOnAction(e -> onBackButtonClicked());
 
         // Map methods below
-        javaScriptBridge = new JavaScriptBridge(this);
+        javaScriptBridge = new JavaScriptBridge(this, searchService);
         initMap();
     }
 

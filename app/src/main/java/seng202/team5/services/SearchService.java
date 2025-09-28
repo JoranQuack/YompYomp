@@ -100,6 +100,15 @@ public class SearchService {
     }
 
     /**
+     * returns a trail based on its id
+     * @param id the id for the specified trail
+     * @return the trail specified by the given id
+     */
+    public Trail getTrailById(int id) {
+        return filteredTrails.stream().filter(t -> t.getId() == id).findFirst().orElse(null);
+    }
+
+    /**
      * Updates trails based on current filters and sort settings.
      */
     public void updateTrails() {
