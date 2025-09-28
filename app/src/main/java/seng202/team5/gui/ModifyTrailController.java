@@ -24,10 +24,10 @@ public class ModifyTrailController extends Controller {
     private SqlBasedTrailRepo sqlBasedTrailRepo;
 
     /**
-     * Launches the screen with navigator
+     * Launches the screen with the navigator
      *
      * @param navigator screen navigator
-     * @param lastController controller of last screen user interacted with
+     * @param lastController controller of the last screen the user interacted with
      */
     public ModifyTrailController(ScreenNavigator navigator, Trail trail, Controller lastController) {
         super(navigator);
