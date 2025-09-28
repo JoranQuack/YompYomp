@@ -8,6 +8,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.VBox;
 import seng202.team5.models.Trail;
 import seng202.team5.services.ImageService;
@@ -26,11 +27,13 @@ public class TrailCardComponent extends VBox {
     @FXML
     private Label matchLabel;
     @FXML
+    private Label regionLabel;
+    @FXML
+    private FlowPane attributesFlowPane;
+    @FXML
     private Label difficultyLabel;
     @FXML
     private Label durationLabel;
-    @FXML
-    private Label regionLabel;
     @FXML
     private Label typeLabel;
 
@@ -84,19 +87,19 @@ public class TrailCardComponent extends VBox {
         if (!trail.getDifficulty().contains("unknown")) {
             difficultyLabel.setText(StringManipulator.capitaliseFirstLetter(trail.getDifficulty()));
         } else {
-            difficultyLabel.setVisible(false);
+            attributesFlowPane.getChildren().remove(difficultyLabel);
         }
 
         if (trail.getMinCompletionTimeMinutes() != 0) {
             durationLabel.setText(formatCompletionTime(trail));
         } else {
-            durationLabel.setVisible(false);
+            attributesFlowPane.getChildren().remove(durationLabel);
         }
 
         if (!trail.getCompletionType().contains("unknown")) {
             typeLabel.setText(StringManipulator.capitaliseFirstLetter(trail.getCompletionType()));
         } else {
-            typeLabel.setVisible(false);
+            attributesFlowPane.getChildren().remove(typeLabel);
         }
 
         if (trail.getRegion() != null) {
@@ -117,9 +120,8 @@ public class TrailCardComponent extends VBox {
      * Resets component visibility states for proper reuse.
      */
     private void resetComponentVisibility() {
-        difficultyLabel.setVisible(true);
-        durationLabel.setVisible(true);
-        typeLabel.setVisible(true);
+        attributesFlowPane.getChildren().clear();
+        attributesFlowPane.getChildren().addAll(difficultyLabel, durationLabel, typeLabel);
         matchBar.setVisible(true);
         matchLabel.setVisible(true);
     }
