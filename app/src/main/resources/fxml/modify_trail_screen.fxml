@@ -70,13 +70,13 @@
                   <VBox alignment="TOP_CENTER">
                      <children>
                         <Label fx:id="latitudeLabel" text="Latitude" />
-                        <TextField fx:id="latitudeTextField" />
+                        <TextField fx:id="latitudeTextField" onKeyTyped="#onCoordsChanged" />
                      </children>
                   </VBox>
                   <VBox alignment="TOP_CENTER">
                      <children>
                         <Label fx:id="longitudeLabel" text="Longitude" />
-                        <TextField fx:id="longitudeTextField" />
+                        <TextField fx:id="longitudeTextField" onKeyTyped="#onCoordsChanged" />
                      </children>
                   </VBox>
                   <VBox>

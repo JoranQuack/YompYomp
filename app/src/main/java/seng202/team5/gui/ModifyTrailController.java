@@ -194,6 +194,17 @@ public class ModifyTrailController extends Controller {
         regionLabel.setText(region);
     }
 
+    /**
+     * Updates region based on lat/lon fields when user enters
+     */
+    @FXML
+    private void onCoordsChanged() {
+        double lat = Double.parseDouble(latitudeTextField.getText());
+        double lon = Double.parseDouble(longitudeTextField.getText());
+        String region = regionFinder.findRegionForPoint(lat, lon);
+        regionLabel.setText(region);
+    }
+
     @FXML
     private void onSaveButtonClicked() {
         if (userInputValidation()) {
