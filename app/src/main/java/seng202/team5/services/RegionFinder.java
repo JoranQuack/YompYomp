@@ -24,6 +24,8 @@ import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.referencing.operation.MathTransform;
 import org.opengis.referencing.operation.TransformException;
 
+import seng202.team5.models.Trail;
+
 /**
  * Service class for loading regional shapefile data, and then doing stuff with
  * points using it
@@ -166,6 +168,20 @@ public class RegionFinder {
 
         Object nameValue = feature.getAttribute(nameAttribute);
         return nameValue != null ? nameValue.toString().trim() : null;
+    }
+
+    /**
+     * Finds the region for a given trail based on its coordinates.
+     *
+     * @param trail The trail to find the region for
+     * @return The name of the region, or "Other" if not found
+     */
+    public String findRegionForTrail(Trail trail) {
+        if (trail == null) {
+            return "Other";
+        }
+
+        return findRegionForPoint(trail.getLat(), trail.getLon());
     }
 
     /**
