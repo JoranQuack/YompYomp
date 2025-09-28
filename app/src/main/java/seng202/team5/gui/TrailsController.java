@@ -227,7 +227,7 @@ public class TrailsController extends Controller {
      */
     private void setupRegionCheckComboBox() {
         RegionFinder regionFinder = new RegionFinder();
-        List<String> regionList = regionFinder.getAllRegions().keySet().stream().toList();
+        List<String> regionList = regionFinder.getRegionNames();
 
         regionCheckComboBox.getItems().addAll(regionList);
         regionCheckComboBox.setTitle("Regions");

@@ -47,7 +47,7 @@ public class ProfileSetupGeneralController extends Controller {
         User user = super.getUserService().getUser();
 
         RegionFinder regionFinder = new RegionFinder();
-        List<String> regionList = regionFinder.getAllRegions().keySet().stream().toList();
+        List<String> regionList = regionFinder.getRegionNames();
         regionCheckComboBox.getItems().addAll(regionList);
 
         if (user != null) {
