@@ -145,7 +145,7 @@ public class SqlBasedTrailRepo implements ITrail {
     /**
      * Counts all the rows in the trail table
      *
-     * @return
+     * @return number of trails as an integer
      */
     @Override
     public int countTrails() {
