@@ -115,7 +115,12 @@ public class ViewTrailController extends Controller {
 
         trailsRadiusTextField.textProperty().addListener((observable, oldValue, newValue) -> {
             if (nearbyTrailsCheckbox.isSelected()) {
-                int radius = Integer.parseInt(newValue);
+                int radius;
+                if (newValue == null || newValue.trim().isEmpty()) {
+                    radius = 0; // when no value has been input
+                } else {
+                    radius = Integer.parseInt(newValue);
+                }
                 List<Trail> nearby = trailService.getNearbyTrails(trail, radius, searchService.getAllTrails());
                 displayTrailsOnMap(nearby);
             }
