@@ -249,8 +249,10 @@ public class TrailsController extends Controller {
         if (super.getUserService().isGuest()) {
             sortChoiceBox.getItems().remove("Match");
             sortChoiceBox.setValue("Name");
+            searchService.setSortBy("name");
         } else {
             sortChoiceBox.setValue("Match");
+            searchService.setSortBy("match");
         }
 
         sortChoiceBox.getSelectionModel().selectedItemProperty().addListener(
