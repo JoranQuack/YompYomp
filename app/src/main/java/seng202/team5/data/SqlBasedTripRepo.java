@@ -4,11 +4,8 @@ import seng202.team5.exceptions.MatchmakingFailedException;
 import seng202.team5.models.TripLog;
 
 import java.sql.Date;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.List;
-import java.util.Optional;
+import java.sql.*;
+import java.util.*;
 
 public class SqlBasedTripRepo implements ITrip {
 

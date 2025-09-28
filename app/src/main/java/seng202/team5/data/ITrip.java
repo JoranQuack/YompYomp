@@ -2,8 +2,7 @@ package seng202.team5.data;
 
 import seng202.team5.models.TripLog;
 
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 /**
  * Interface for accessing the trip data
