@@ -154,13 +154,13 @@ public class ModifyTrailController extends Controller {
                         // need to use in java
                         javaScriptConnector = (JSObject) webEngine.executeScript("jsConnector");
                         // call the javascript function to initialise the map
-                        javaScriptConnector.call("enableClick");
                         if (trail != null) {
                             javaScriptConnector.call("initMap", trail.getLat(), trail.getLon());
                             addLocation();
                         } else {
                             javaScriptConnector.call("initMap", -44.0, 171.0); // arbitrary location for now
                         }
+                        javaScriptConnector.call("enableClick");
                     }
                 });
     }
