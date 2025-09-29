@@ -129,6 +129,7 @@ public class ViewTrailController extends Controller {
                 // reset to just the current trail
                 addLocation();
                 removeTrailsFromMap();
+                removeClustersFromMap(); //NEW
                 trailsRadiusTextField.clear();
             }
         });
@@ -208,9 +209,18 @@ public class ViewTrailController extends Controller {
         }
     }
 
+    /**
+     * removes the markers on the map
+     */
     private void removeTrailsFromMap() {
         if (javaScriptConnector != null) {
             javaScriptConnector.call("clearMarkers");
+        }
+    }
+
+    private void removeClustersFromMap() {
+        if (javaScriptConnector != null) {
+            javaScriptConnector.call("clearMarkerClusters");
         }
     }
 

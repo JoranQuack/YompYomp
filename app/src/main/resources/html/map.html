@@ -3,6 +3,8 @@
 <head>
     <title>Leaflet & OSM Map</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.2.0/dist/leaflet.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.Default.css" />
     <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.css" />
     <meta name="viewport" content="initial-scale=1.0">
     <meta charset="utf-8">
@@ -21,11 +23,13 @@
 <div id="map"></div>
 <script src="https://unpkg.com/leaflet@1.2.0/dist/leaflet.js"></script>
 <script src="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.js"></script>
+<script src="https://unpkg.com/leaflet.markercluster/dist/leaflet.markercluster.js"></script>
 <script>
     let map;
     var javaScriptBridge;
     let activeMarker = null; // for single trail (when adding/editing/viewing trail)
-    let markers = []; // for multiple trails (when browsing)
+    let colourMarkers = []; // for multiple trails (when browsing)
+    var markers = new L.MarkerClusterGroup();
 
     /**
      * This object can be returned to our java code, where we can call the functions we define inside it
@@ -95,8 +99,14 @@
      * This does not affect the activeMarker
      */
     function clearMarkers() {
-        markers.forEach(m => map.removeLayer(m));
-        markers = [];
+        //markers.removeLayer();
+        colourMarkers.forEach(m => map.removeLayer(m));
+        colourMarkers = [];
+        //markers.removeLayer();
+    }
+
+    function clearMarkerClusters() {
+        markers.removeLayer();
     }
 
     /**
@@ -134,19 +144,21 @@
             }
             const color = getColorByDifficulty(trail.difficulty);
 
-            const marker = L.circleMarker([trail.lat, trail.lon], {
+
+            const colourMarker = L.circleMarker([trail.lat, trail.lon], {
                 radius: 8,
                 fillColor: color,
                 color: "#000",
                 weight: 1,
                 opacity: 1,
                 fillOpacity: 0.8
-            }).addTo(map);
+            });
 
             const popupContent = buildPopupContent(trail);
-            marker.bindPopup(popupContent);
+            colourMarker.bindPopup(popupContent);
 
-            markers.push(marker);
+            //colourMarkers.push(colourMarker);
+            markers.addLayer(colourMarker);
         });
 
         // Auto-zoom to fit all markers
@@ -154,6 +166,8 @@
             const group = L.featureGroup(markers);
             map.fitBounds(group.getBounds());
         }
+
+       map.addLayer(markers);
     }
 
     /**
