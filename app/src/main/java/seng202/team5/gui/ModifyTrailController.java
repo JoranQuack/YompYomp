@@ -80,10 +80,6 @@ public class ModifyTrailController extends Controller {
     @FXML
     private TextField longitudeTextField;
     @FXML
-    private Label latitudeLabel;
-    @FXML
-    private Label longitudeLabel;
-    @FXML
     private Label regionLabel;
     @FXML
     private Label invalidNumberLabel;
@@ -301,9 +297,7 @@ public class ModifyTrailController extends Controller {
                 return false; // user must choose a location by entering coordinates or selecting them on map
             }
         }
-        if (trailNameTextField.getText().isEmpty() || difficultyComboBox.getValue() == null ||
-                trailTypeComboBox.getValue() == null || completionTimeTextField.getText().isEmpty() ||
-                trailDescriptionTextArea.getText().isEmpty()) {
+        if (trailNameTextField.getText().isEmpty() || trailDescriptionTextArea.getText().isEmpty()) {
             return false;
         }
         return true;
