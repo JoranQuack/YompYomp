@@ -280,8 +280,8 @@ public class ModifyTrailController extends Controller {
         int trailId = -1;
         String trailName = trailNameTextField.getText();
         String translation = translationTextField.getText();
-        String difficulty = difficultyComboBox.getValue();
-        String trailType = trailTypeComboBox.getValue();
+        String difficulty = difficultyComboBox.getValue().toLowerCase();
+        String trailType = trailTypeComboBox.getValue().toLowerCase();
         String completionTime = completionTimeTextField.getText();
         String trailDescription = trailDescriptionTextArea.getText();
         String cultureUrl = cultureUrlTextField.getText();
