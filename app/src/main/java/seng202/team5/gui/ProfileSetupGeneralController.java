@@ -2,12 +2,19 @@ package seng202.team5.gui;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.StackPane;
+
 import org.controlsfx.control.CheckComboBox;
+
+import seng202.team5.gui.util.BackgroundImageUtil;
 import seng202.team5.models.User;
 import seng202.team5.services.UserService;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Stack;
 
 /**
  * Controller class of the general profile setup screen
@@ -37,12 +44,18 @@ public class ProfileSetupGeneralController extends Controller {
     private CheckBox familyFriendlyCheckBox;
     @FXML
     private CheckBox accessibleCheckBox;
+    @FXML
+    private StackPane rootPane;
+    @FXML
+    private ImageView bgImage;
 
     /**
      * Initializes the first profile setup screen
      */
     @FXML
     private void initialize() {
+        BackgroundImageUtil.setupCoverBehavior(bgImage, rootPane);
+
         super.getUserService().setGuest(false);
         User user = super.getUserService().getUser();
 
