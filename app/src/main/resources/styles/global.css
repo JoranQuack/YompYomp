@@ -24,10 +24,16 @@ Button {
     -fx-font-size: 14px;
     -fx-text-fill: #04140B;
     -fx-background-color: #D5E6D4;
+    -fx-background-radius: 10;
 }
 
 Button:hover {
     -fx-background-color: #8FAF8E;
+}
+
+.active {
+    -fx-background-color: #447055;
+    -fx-text-fill: #FDFFFB;
 }
 
 .root-pane {

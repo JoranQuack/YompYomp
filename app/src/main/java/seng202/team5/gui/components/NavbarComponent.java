@@ -63,7 +63,7 @@ public class NavbarComponent extends HBox {
      * @param pageIndex The index of the page button to highlight.
      */
     public void setPage(int pageIndex) {
-        navButtons.forEach(button -> button.setStyle(""));
-        navButtons.get(pageIndex).setStyle("-fx-background-color: #0078D4; -fx-text-fill: white;");
+        navButtons.forEach(button -> button.getStyleClass().remove("active"));
+        navButtons.get(pageIndex).getStyleClass().add("active");
     }
 }
