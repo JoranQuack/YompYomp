@@ -8,9 +8,11 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.HBox;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
 import netscape.javascript.JSObject;
+import seng202.team5.gui.components.TrailCardComponent;
 import seng202.team5.models.Trail;
 import seng202.team5.services.ImageService;
 import seng202.team5.services.SearchService;
@@ -47,13 +49,7 @@ public class ViewTrailController extends Controller {
     }
 
     @FXML
-    private Label trailNameLabel;
-    @FXML
     private Label translationLabel;
-    @FXML
-    private Label matchLabel;
-    @FXML
-    private ProgressBar matchBar;
     @FXML
     private Label descriptionLabel;
     @FXML
@@ -61,13 +57,13 @@ public class ViewTrailController extends Controller {
     @FXML
     private WebView trailMapView;
     @FXML
-    private ImageView trailThumbnail;
-    @FXML
     private Button backButton;
     @FXML
     private CheckBox nearbyTrailsCheckbox;
     @FXML
     private TextField trailsRadiusTextField;
+    @FXML
+    private HBox trailCardHBox;
 
     /**
      * Initialises the view trail screen with data retrieved from database
@@ -75,13 +71,9 @@ public class ViewTrailController extends Controller {
     @FXML
     private void initialize() {
         trailService = new TrailService();
-        trailNameLabel.setText(trail.getName());
-        Image trailImage = imageService.loadTrailImage(trail.getThumbnailURL());
-        trailThumbnail.setImage(trailImage);
-        double weight = trail.getUserWeight();
-        matchBar.setProgress(weight);
-        int matchPercent = (int) Math.round(weight * 100);
-        matchLabel.setText(matchPercent + "% match");
+
+        initTrailCard();
+
         descriptionLabel.setText(trail.getDescription());
         backButton.setOnAction(e -> onBackButtonClicked());
         editInfoButton.setOnAction(e -> onEditInfoButtonClicked());
@@ -139,6 +131,15 @@ public class ViewTrailController extends Controller {
     }
 
     /**
+     * Initialises the trail card at the top of the screen
+     */
+    private void initTrailCard() {
+        TrailCardComponent trailCard = new TrailCardComponent(super.getUserService().isGuest());
+        trailCard.setData(trail);
+        trailCardHBox.getChildren().add(trailCard);
+    }
+
+    /**
      * Initialises the WebView loading in the appropriate html and initialising
      * important communicator
      * objects between Java and Javascript
@@ -158,7 +159,8 @@ public class ViewTrailController extends Controller {
                         // set our bridge object
                         JSObject window = (JSObject) webEngine.executeScript("window");
                         window.setMember("javaScriptBridge", javaScriptBridge);
-                        // get a reference to the js object that has a reference to the js methods we need to use in java
+                        // get a reference to the js object that has a reference to the js methods we
+                        // need to use in java
                         javaScriptConnector = (JSObject) webEngine.executeScript("jsConnector");
                         // call the javascript function to initialise the map
                         javaScriptConnector.call("initMap", trail.getLat(), trail.getLon());
@@ -204,7 +206,8 @@ public class ViewTrailController extends Controller {
      */
     public void openTrailInfo(Trail trail) {
         Controller lastController = super.getNavigator().getLastController();
-        super.getNavigator().launchScreen(new ViewTrailController(super.getNavigator(), trail, searchService), lastController); // pass dashboard as last controller (or this??)
+        super.getNavigator().launchScreen(new ViewTrailController(super.getNavigator(), trail, searchService),
+                lastController); // pass dashboard as last controller (or this??)
     }
 
     @FXML
