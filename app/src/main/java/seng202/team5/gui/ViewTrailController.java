@@ -9,8 +9,10 @@ import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Background;
+import javafx.scene.layout.Priority;
 import javafx.scene.paint.Paint;
 import javafx.scene.web.WebEngine;
+import javafx.scene.layout.HBox;
 import javafx.scene.web.WebView;
 import netscape.javascript.JSObject;
 import seng202.team5.data.SqlBasedTrailRepo;
@@ -65,7 +67,7 @@ public class ViewTrailController extends Controller {
     @FXML
     private Button editInfoButton;
     @FXML
-    private WebView trailMapView;
+    private HBox mapContainer;
     @FXML
     private ImageView trailThumbnail;
     @FXML
@@ -85,6 +87,8 @@ public class ViewTrailController extends Controller {
     @FXML
     private Label expertColourLabel;
 
+    private WebView trailMapWebView;
+
     /**
      * Initialises the view trail screen with data retrieved from database
      */
@@ -93,7 +97,8 @@ public class ViewTrailController extends Controller {
         setupFormFields();
         setupEventHandlers();
         setupLegend();
-        initMap();
+
+        javafx.application.Platform.runLater(this::initMap);
     }
 
     /**
@@ -204,7 +209,15 @@ public class ViewTrailController extends Controller {
      */
     private void initMap() {
         javaScriptBridge = new JavaScriptBridge(this, sqlBasedTrailRepo);
-        webEngine = trailMapView.getEngine();
+        if (trailMapWebView == null) {
+            trailMapWebView = new WebView();
+            trailMapWebView.setPrefHeight(-1);
+            trailMapWebView.setPrefWidth(-1);
+            HBox.setHgrow(trailMapWebView, Priority.ALWAYS);
+            mapContainer.getChildren().add(trailMapWebView);
+        }
+
+        webEngine = trailMapWebView.getEngine();
         webEngine.setJavaScriptEnabled(true);
 
         WebConsoleListener.setDefaultListener((view, message, lineNumber, sourceID) ->
