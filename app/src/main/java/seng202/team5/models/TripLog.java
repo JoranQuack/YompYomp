@@ -12,8 +12,8 @@ public class TripLog {
     private String completionInfo; // Raw duration string
     private int minDurationMinutes;
     private int maxDurationMinutes;
-    private String durationType;
-    private String timeUnit;
+    private String durationType; // e.g. "estimated", "recorded".
+    private String timeUnit; // e.g. "days", "hours", "minutes".
     private boolean isMultiDay;
     private boolean hasVariableTime;
     private String notes;
