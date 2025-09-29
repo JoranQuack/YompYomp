@@ -20,6 +20,9 @@ public class FXAppEntry extends Application {
      */
     @Override
     public void start(Stage primaryStage) {
+        // font smoothing
+        System.setProperty("prism.lcdtext", "false");
+
         loadCustomFonts();
 
         Image icon = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/YompYompIcon.png")));
