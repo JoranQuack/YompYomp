@@ -1,3 +1,33 @@
-.view-all-button:hover {
+Label {
+    -fx-font-family: "Quicksand";
+    -fx-font-size: 14px;
+}
+
+.title {
+    -fx-font-family: "Quicksand Bold";
+    -fx-font-size: 18px;
+}
+
+.light-text {
+    -fx-font-family: "Quicksand Light";
+}
+
+.regular-text {
+    -fx-font-family: "Quicksand";
+}
+
+.medium-text {
+    -fx-font-family: "Quicksand Medium";
+}
+
+.semibold-text {
+    -fx-font-family: "Quicksand SemiBold";
+}
+
+.bold-text {
+    -fx-font-family: "Quicksand Bold";
+}
+
+.button {
     -fx-cursor: hand;
 }
