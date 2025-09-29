@@ -10,7 +10,7 @@ public class Weather {
         this.temperature = temperature;
         this.tempMax = tempMax;
         this.tempMin = tempMin;
-        this.location = description;
+        this.description = description;
     }
 
     public double getTemperature() {
@@ -33,6 +33,6 @@ public class Weather {
     public String toString() {
         return String.format("Current: %.1f°C, Min: %.1f°C, Max: %.1f°C, %s",
                 temperature, tempMin, tempMax, description);
+    }
 }
-
 
