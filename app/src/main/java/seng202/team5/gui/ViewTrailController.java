@@ -100,16 +100,40 @@ public class ViewTrailController extends Controller {
      * Sets up all form fields and their initial values
      */
     private void setupFormFields() {
+        setupTrailData();
+        setupMatchInfo();
+        setupTrailRadiusFields();
+    }
+
+    /**
+     * Sets up data related to the trail
+     */
+    private void setupTrailData() {
         trailService = new TrailService();
         trailNameLabel.setText(trail.getName());
         regionLabel.setText(trail.getRegion());
         Image trailImage = imageService.loadTrailImage(trail.getThumbnailURL());
         trailThumbnail.setImage(trailImage);
+        descriptionLabel.setText(trail.getDescription());
+        if (!trail.getTranslation().isEmpty()) {
+            translationLabel.setText(trail.getTranslation());
+            translationLabel.setVisible(true);
+        } else {
+            translationLabel.setVisible(false);
+        }
+    }
+
+    /**
+     * Sets up data related to the matchmaking calculations
+     */
+    private void setupMatchInfo() {
         double weight = trail.getUserWeight();
         matchBar.setProgress(weight);
         int matchPercent = (int) Math.round(weight * 100);
         matchLabel.setText(matchPercent + "% match");
-        descriptionLabel.setText(trail.getDescription());
+    }
+
+    private void setupTrailRadiusFields() {
         // Allow only digits in the text field
         trailsRadiusTextField.setTextFormatter(new TextFormatter<>(change -> {
             String newText = change.getControlNewText();
@@ -121,12 +145,6 @@ public class ViewTrailController extends Controller {
 
         // Initially disable the text field if checkbox is not selected
         trailsRadiusTextField.setDisable(!nearbyTrailsCheckbox.isSelected());
-        if (!trail.getTranslation().isEmpty()) {
-            translationLabel.setText(trail.getTranslation());
-            translationLabel.setVisible(true);
-        } else {
-            translationLabel.setVisible(false);
-        }
     }
 
     /**
@@ -141,9 +159,7 @@ public class ViewTrailController extends Controller {
             trailsRadiusTextField.setDisable(!selected); // disable if unchecked
             if (selected) {
                 trailsRadiusTextField.setText("20");
-                List<Trail> nearby = trailService.getNearbyTrails(trail,
-                        Integer.parseInt(trailsRadiusTextField.getText()), sqlBasedTrailRepo.getAllTrails());
-                displayTrailsOnMap(nearby);
+                updateNearbyTrails(Integer.parseInt(trailsRadiusTextField.getText()));
             } else {
                 // reset to just the current trail
                 addLocation();
@@ -160,8 +176,7 @@ public class ViewTrailController extends Controller {
                 } else {
                     radius = Integer.parseInt(newValue);
                 }
-                List<Trail> nearby = trailService.getNearbyTrails(trail, radius, sqlBasedTrailRepo.getAllTrails()); //REFACTOR THIS KINDA SMELLY
-                displayTrailsOnMap(nearby);
+                updateNearbyTrails(radius);
             }
         });
     }
@@ -175,6 +190,11 @@ public class ViewTrailController extends Controller {
         intermediateColourLabel.setBackground(Background.fill(Paint.valueOf("ffff00")));
         advancedColourLabel.setBackground(Background.fill(Paint.valueOf("ffa500")));
         expertColourLabel.setBackground(Background.fill(Paint.valueOf("ff0000")));
+    }
+
+    private void updateNearbyTrails(int radius) {
+        List<Trail> nearby = trailService.getNearbyTrails(trail, radius, sqlBasedTrailRepo.getAllTrails());
+        displayTrailsOnMap(nearby);
     }
 
     /**
