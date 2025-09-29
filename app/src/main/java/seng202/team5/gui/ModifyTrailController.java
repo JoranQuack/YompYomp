@@ -37,9 +37,9 @@ public class ModifyTrailController extends Controller {
     /**
      * Launches the screen with navigator
      *
-     * @param navigator      screen navigator
-     * @param trail          the selected trail
-     * @param searchService  searchService
+     * @param navigator     screen navigator
+     * @param trail         the selected trail
+     * @param searchService searchService
      */
     public ModifyTrailController(ScreenNavigator navigator, Trail trail,
             SearchService searchService) {
@@ -257,9 +257,11 @@ public class ModifyTrailController extends Controller {
     @FXML
     private void onSaveButtonClicked() {
         if (userInputValidation()) {
-            sqlBasedTrailRepo.upsert(getUpdatedTrail());
+            Trail updatedTrail = getUpdatedTrail();
+            sqlBasedTrailRepo.upsert(updatedTrail);
             super.getNavigator().launchScreen(
-                    new ViewTrailController(super.getNavigator(), getUpdatedTrail(), searchService), getNavigator().getLastController());
+                    new ViewTrailController(super.getNavigator(), updatedTrail, searchService),
+                    getNavigator().getLastController());
         } else {
             emptyFieldLabel.setText("Please make sure all required fields are filled!");
             emptyFieldLabel.setTextFill(Color.RED);
@@ -337,7 +339,7 @@ public class ModifyTrailController extends Controller {
             userWeight = trail.getUserWeight();
         } else {
             // Creating new trail - temp values that will be recalculated
-            trailId = -1;
+            trailId = sqlBasedTrailRepo.getNewTrailId();
             region = regionLabel.getText();
             thumbUrl = "";
             webUrl = "";
