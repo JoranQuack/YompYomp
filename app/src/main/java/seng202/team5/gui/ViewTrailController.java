@@ -90,6 +90,16 @@ public class ViewTrailController extends Controller {
      */
     @FXML
     private void initialize() {
+        setupFormFields();
+        setupEventHandlers();
+        setupLegend();
+        initMap();
+    }
+
+    /**
+     * Sets up all form fields and their initial values
+     */
+    private void setupFormFields() {
         trailService = new TrailService();
         trailNameLabel.setText(trail.getName());
         regionLabel.setText(trail.getRegion());
@@ -100,14 +110,6 @@ public class ViewTrailController extends Controller {
         int matchPercent = (int) Math.round(weight * 100);
         matchLabel.setText(matchPercent + "% match");
         descriptionLabel.setText(trail.getDescription());
-        backButton.setOnAction(e -> onBackButtonClicked());
-        editInfoButton.setOnAction(e -> onEditInfoButtonClicked());
-        easiestColourLabel.setBackground(Background.fill(Paint.valueOf("008000")));
-        easyColourLabel.setBackground(Background.fill(Paint.valueOf("8de45f")));
-        intermediateColourLabel.setBackground(Background.fill(Paint.valueOf("ffff00")));
-        advancedColourLabel.setBackground(Background.fill(Paint.valueOf("ffa500")));
-        expertColourLabel.setBackground(Background.fill(Paint.valueOf("ff0000")));
-
         // Allow only digits in the text field
         trailsRadiusTextField.setTextFormatter(new TextFormatter<>(change -> {
             String newText = change.getControlNewText();
@@ -119,6 +121,20 @@ public class ViewTrailController extends Controller {
 
         // Initially disable the text field if checkbox is not selected
         trailsRadiusTextField.setDisable(!nearbyTrailsCheckbox.isSelected());
+        if (!trail.getTranslation().isEmpty()) {
+            translationLabel.setText(trail.getTranslation());
+            translationLabel.setVisible(true);
+        } else {
+            translationLabel.setVisible(false);
+        }
+    }
+
+    /**
+     * Sets up event handlers for form controls
+     */
+    private void setupEventHandlers() {
+        backButton.setOnAction(e -> onBackButtonClicked());
+        editInfoButton.setOnAction(e -> onEditInfoButtonClicked());
 
         nearbyTrailsCheckbox.setOnAction(e -> {
             boolean selected = nearbyTrailsCheckbox.isSelected();
@@ -132,7 +148,6 @@ public class ViewTrailController extends Controller {
                 // reset to just the current trail
                 addLocation();
                 removeTrailsFromMap();
-                removeClustersFromMap(); //NEW
                 trailsRadiusTextField.clear();
             }
         });
@@ -149,14 +164,17 @@ public class ViewTrailController extends Controller {
                 displayTrailsOnMap(nearby);
             }
         });
+    }
 
-        if (!trail.getTranslation().isEmpty()) {
-            translationLabel.setText(trail.getTranslation());
-            translationLabel.setVisible(true);
-        } else {
-            translationLabel.setVisible(false);
-        }
-        initMap();
+    /**
+     * Sets up the legend for the map marker colours
+     */
+    private void setupLegend() {
+        easiestColourLabel.setBackground(Background.fill(Paint.valueOf("008000")));
+        easyColourLabel.setBackground(Background.fill(Paint.valueOf("8de45f")));
+        intermediateColourLabel.setBackground(Background.fill(Paint.valueOf("ffff00")));
+        advancedColourLabel.setBackground(Background.fill(Paint.valueOf("ffa500")));
+        expertColourLabel.setBackground(Background.fill(Paint.valueOf("ff0000")));
     }
 
     /**
@@ -168,27 +186,34 @@ public class ViewTrailController extends Controller {
         javaScriptBridge = new JavaScriptBridge(this, searchService);
         webEngine = trailMapView.getEngine();
         webEngine.setJavaScriptEnabled(true);
-        webEngine.load(Controller.class.getResource("/html/map.html").toExternalForm());
-        //Forwards console.log() output from any javascript to info log
+
         WebConsoleListener.setDefaultListener((view, message, lineNumber, sourceID) ->
                 System.out.printf(String.format("Map WebView console log line: %d, message : %s", lineNumber, message)));
 
         webEngine.getLoadWorker().stateProperty().addListener(
                 (ov, oldState, newState) -> {
-                    // if javascript loads successfully
                     if (newState == Worker.State.SUCCEEDED) {
-                        // set our bridge object
-                        JSObject window = (JSObject) webEngine.executeScript("window");
-                        window.setMember("javaScriptBridge", javaScriptBridge);
-                        // get a reference to the js object that has a reference to the js methods we
-                        // need to use in java
-                        javaScriptConnector = (JSObject) webEngine.executeScript("jsConnector");
-                        // call the javascript function to initialise the map
-                        javaScriptConnector.call("initMap", trail.getLat(), trail.getLon());
-
-                        addLocation();
+                        setupJavaScriptBridge();
+                        initializeMapView();
                     }
                 });
+
+        webEngine.load(Controller.class.getResource("/html/map.html").toExternalForm());
+
+    }
+
+    /**
+     * Sets up the JavaScript bridge for communication between Java and JavaScript
+     */
+    private void setupJavaScriptBridge() {
+        JSObject window = (JSObject) webEngine.executeScript("window");
+        window.setMember("javaScriptBridge", javaScriptBridge);
+        javaScriptConnector = (JSObject) webEngine.executeScript("jsConnector");
+    }
+
+    private void initializeMapView() {
+        javaScriptConnector.call("initMap", trail.getLat(), trail.getLon());
+        addLocation();
     }
 
     /**
@@ -220,12 +245,6 @@ public class ViewTrailController extends Controller {
     private void removeTrailsFromMap() {
         if (javaScriptConnector != null) {
             javaScriptConnector.call("clearMarkers");
-        }
-    }
-
-    private void removeClustersFromMap() {
-        if (javaScriptConnector != null) {
-            javaScriptConnector.call("clearMarkerClusters");
         }
     }
 
