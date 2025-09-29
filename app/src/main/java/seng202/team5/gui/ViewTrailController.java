@@ -6,26 +6,21 @@ import com.sun.javafx.webkit.WebConsoleListener;
 import javafx.concurrent.Worker;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
+import javafx.scene.layout.HBox;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
 import netscape.javascript.JSObject;
+import seng202.team5.gui.components.TrailCardComponent;
 import seng202.team5.models.Trail;
-import seng202.team5.services.ImageService;
 import seng202.team5.services.SearchService;
 import seng202.team5.services.TrailService;
 
 import java.util.List;
 
-import java.util.Objects;
-
 /**
  * Controller for the view trail screen
  */
 public class ViewTrailController extends Controller {
-
-    private final ImageService imageService;
     private Trail trail;
     private TrailService trailService;
     private SearchService searchService;
@@ -43,21 +38,12 @@ public class ViewTrailController extends Controller {
      */
     public ViewTrailController(ScreenNavigator navigator, Trail trail, SearchService searchService) {
         super(navigator);
-        this.imageService = new ImageService();
         this.trail = trail;
         this.searchService = searchService;
     }
 
     @FXML
-    private Label trailNameLabel;
-    @FXML
     private Label translationLabel;
-    @FXML
-    private Label regionLabel;
-    @FXML
-    private Label matchLabel;
-    @FXML
-    private ProgressBar matchBar;
     @FXML
     private Label descriptionLabel;
     @FXML
@@ -65,13 +51,13 @@ public class ViewTrailController extends Controller {
     @FXML
     private WebView trailMapView;
     @FXML
-    private ImageView trailThumbnail;
-    @FXML
     private Button backButton;
     @FXML
     private CheckBox nearbyTrailsCheckbox;
     @FXML
     private TextField trailsRadiusTextField;
+    @FXML
+    private HBox trailCardHBox;
 
     /**
      * Initialises the view trail screen with data retrieved from database
@@ -79,14 +65,9 @@ public class ViewTrailController extends Controller {
     @FXML
     private void initialize() {
         trailService = new TrailService();
-        trailNameLabel.setText(trail.getName());
-        regionLabel.setText(trail.getRegion());
-        Image trailImage = imageService.loadTrailImage(trail.getThumbnailURL());
-        trailThumbnail.setImage(trailImage);
-        double weight = trail.getUserWeight();
-        matchBar.setProgress(weight);
-        int matchPercent = (int) Math.round(weight * 100);
-        matchLabel.setText(matchPercent + "% match");
+
+        initTrailCard();
+
         descriptionLabel.setText(trail.getDescription());
         backButton.setOnAction(e -> onBackButtonClicked());
         editInfoButton.setOnAction(e -> onEditInfoButtonClicked());
@@ -138,7 +119,18 @@ public class ViewTrailController extends Controller {
         } else {
             translationLabel.setVisible(false);
         }
+
+        javaScriptBridge = new JavaScriptBridge(this, searchService);
         initMap();
+    }
+
+    /**
+     * Initialises the trail card at the top of the screen
+     */
+    private void initTrailCard() {
+        TrailCardComponent trailCard = new TrailCardComponent(super.getUserService().isGuest());
+        trailCard.setData(trail);
+        trailCardHBox.getChildren().add(trailCard);
     }
 
     /**
@@ -150,9 +142,9 @@ public class ViewTrailController extends Controller {
         webEngine = trailMapView.getEngine();
         webEngine.setJavaScriptEnabled(true);
         webEngine.load(Controller.class.getResource("/html/map.html").toExternalForm());
-        //Forwards console.log() output from any javascript to info log
-        WebConsoleListener.setDefaultListener((view, message, lineNumber, sourceID) ->
-                System.out.printf(String.format("Map WebView console log line: %d, message : %s", lineNumber, message)));
+        // Forwards console.log() output from any javascript to info log
+        WebConsoleListener.setDefaultListener((view, message, lineNumber, sourceID) -> System.out
+                .printf(String.format("Map WebView console log line: %d, message : %s", lineNumber, message)));
 
         webEngine.getLoadWorker().stateProperty().addListener(
                 (ov, oldState, newState) -> {
@@ -214,13 +206,7 @@ public class ViewTrailController extends Controller {
 
     @FXML
     private void onBackButtonClicked() {
-        String lastScreenName = super.getNavigator().getLastController().getTitle();
-        Controller lastController;
-        if (Objects.equals(lastScreenName, "Dashboard")) {
-            lastController = new DashboardController(super.getNavigator());
-        } else {
-            lastController = new TrailsController(super.getNavigator());
-        }
+        Controller lastController = super.getNavigator().getLastController();
         super.getNavigator().launchScreen(lastController, null);
     }
 
