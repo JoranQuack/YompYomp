@@ -13,9 +13,9 @@ import javafx.scene.paint.Paint;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
 import netscape.javascript.JSObject;
+import seng202.team5.data.SqlBasedTrailRepo;
 import seng202.team5.models.Trail;
 import seng202.team5.services.ImageService;
-import seng202.team5.services.SearchService;
 import seng202.team5.services.TrailService;
 
 import java.util.List;
@@ -30,7 +30,7 @@ public class ViewTrailController extends Controller {
     private final ImageService imageService;
     private Trail trail;
     private TrailService trailService;
-    private SearchService searchService;
+    private SqlBasedTrailRepo sqlBasedTrailRepo;
 
     private WebEngine webEngine;
     private JavaScriptBridge javaScriptBridge;
@@ -41,13 +41,13 @@ public class ViewTrailController extends Controller {
      *
      * @param navigator     screen navigator
      * @param trail         trail object to be displayed on screen
-     * @param searchService searchService
+     * @param sqlBasedTrailRepo sqlBasedTrailRepo
      */
-    public ViewTrailController(ScreenNavigator navigator, Trail trail, SearchService searchService) {
+    public ViewTrailController(ScreenNavigator navigator, Trail trail, SqlBasedTrailRepo sqlBasedTrailRepo) {
         super(navigator);
         this.imageService = new ImageService();
         this.trail = trail;
-        this.searchService = searchService;
+        this.sqlBasedTrailRepo = sqlBasedTrailRepo;
     }
 
     @FXML
@@ -142,7 +142,7 @@ public class ViewTrailController extends Controller {
             if (selected) {
                 trailsRadiusTextField.setText("20");
                 List<Trail> nearby = trailService.getNearbyTrails(trail,
-                        Integer.parseInt(trailsRadiusTextField.getText()), searchService.getAllTrails());
+                        Integer.parseInt(trailsRadiusTextField.getText()), sqlBasedTrailRepo.getAllTrails());
                 displayTrailsOnMap(nearby);
             } else {
                 // reset to just the current trail
@@ -160,7 +160,7 @@ public class ViewTrailController extends Controller {
                 } else {
                     radius = Integer.parseInt(newValue);
                 }
-                List<Trail> nearby = trailService.getNearbyTrails(trail, radius, searchService.getAllTrails());
+                List<Trail> nearby = trailService.getNearbyTrails(trail, radius, sqlBasedTrailRepo.getAllTrails()); //REFACTOR THIS KINDA SMELLY
                 displayTrailsOnMap(nearby);
             }
         });
@@ -183,7 +183,7 @@ public class ViewTrailController extends Controller {
      * objects between Java and Javascript
      */
     private void initMap() {
-        javaScriptBridge = new JavaScriptBridge(this, searchService);
+        javaScriptBridge = new JavaScriptBridge(this, sqlBasedTrailRepo);
         webEngine = trailMapView.getEngine();
         webEngine.setJavaScriptEnabled(true);
 
@@ -255,7 +255,7 @@ public class ViewTrailController extends Controller {
      */
     public void openTrailInfo(Trail trail) {
         Controller lastController = super.getNavigator().getLastController();
-        super.getNavigator().launchScreen(new ViewTrailController(super.getNavigator(), trail, searchService),
+        super.getNavigator().launchScreen(new ViewTrailController(super.getNavigator(), trail, sqlBasedTrailRepo),
                 lastController); // pass dashboard as last controller (or this??)
     }
 
@@ -274,7 +274,7 @@ public class ViewTrailController extends Controller {
     @FXML
     private void onEditInfoButtonClicked() {
         super.getNavigator().launchScreen(new ModifyTrailController(super.getNavigator(), trail,
-                this, searchService), null);
+                this, sqlBasedTrailRepo), null);
     }
 
     @Override

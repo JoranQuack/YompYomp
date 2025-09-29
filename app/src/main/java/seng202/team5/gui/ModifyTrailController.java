@@ -14,7 +14,6 @@ import seng202.team5.data.SqlBasedTrailRepo;
 import seng202.team5.models.Trail;
 import seng202.team5.services.MatchmakingService;
 import seng202.team5.services.RegionFinder;
-import seng202.team5.services.SearchService;
 import seng202.team5.utils.StringManipulator;
 import seng202.team5.utils.TrailsProcessor;
 
@@ -28,7 +27,6 @@ public class ModifyTrailController extends Controller {
     private Trail trail;
     private Controller lastController;
     private SqlBasedTrailRepo sqlBasedTrailRepo;
-    private SearchService searchService;
     private RegionFinder regionFinder;
 
     private WebEngine webEngine;
@@ -41,16 +39,15 @@ public class ModifyTrailController extends Controller {
      * @param navigator      screen navigator
      * @param trail          the selected trail
      * @param lastController controller of last screen user interacted with
-     * @param searchService  searchService
+     * @param sqlBasedTrailRepo the sqlBasedTrailRepo
      */
     public ModifyTrailController(ScreenNavigator navigator, Trail trail, Controller lastController,
-            SearchService searchService) {
+            SqlBasedTrailRepo sqlBasedTrailRepo) {
         super(navigator);
         this.trail = trail;
         this.lastController = lastController;
-        this.searchService = searchService;
         this.regionFinder = new RegionFinder();
-        this.sqlBasedTrailRepo = new SqlBasedTrailRepo(App.getDatabaseService());
+        this.sqlBasedTrailRepo = sqlBasedTrailRepo;
     }
 
     @FXML
@@ -79,10 +76,6 @@ public class ModifyTrailController extends Controller {
     private TextField latitudeTextField;
     @FXML
     private TextField longitudeTextField;
-    @FXML
-    private Label latitudeLabel;
-    @FXML
-    private Label longitudeLabel;
     @FXML
     private Label regionLabel;
     @FXML
@@ -131,7 +124,7 @@ public class ModifyTrailController extends Controller {
      * Initialises the WebView and sets up the map with proper initialization flow
      */
     private void initMap() {
-        javaScriptBridge = new JavaScriptBridge(this, searchService);
+        javaScriptBridge = new JavaScriptBridge(this, sqlBasedTrailRepo);
         webEngine = trailMapView.getEngine();
         webEngine.setJavaScriptEnabled(true);
 
@@ -262,7 +255,7 @@ public class ModifyTrailController extends Controller {
         if (userInputValidation()) {
             sqlBasedTrailRepo.upsert(getUpdatedTrail());
             super.getNavigator().launchScreen(
-                    new ViewTrailController(super.getNavigator(), getUpdatedTrail(), searchService),
+                    new ViewTrailController(super.getNavigator(), getUpdatedTrail(), sqlBasedTrailRepo),
                     lastController.getNavigator().getLastController());
         } else {
             emptyFieldLabel.setText("Please make sure all required fields are filled!");

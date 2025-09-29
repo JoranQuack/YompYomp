@@ -17,6 +17,7 @@ import javafx.concurrent.Task;
 import javafx.application.Platform;
 import org.controlsfx.control.CheckComboBox;
 import seng202.team5.App;
+import seng202.team5.data.SqlBasedTrailRepo;
 import seng202.team5.gui.components.NavbarComponent;
 import seng202.team5.gui.components.TrailCardComponent;
 import seng202.team5.models.Trail;
@@ -32,6 +33,7 @@ import seng202.team5.services.SearchService;
 public class TrailsController extends Controller {
 
     private SearchService searchService;
+    private SqlBasedTrailRepo sqlBasedTrailRepo;
     private String searchText;
     private final List<TrailCardComponent> trailCardPool = new ArrayList<>();
 
@@ -80,9 +82,10 @@ public class TrailsController extends Controller {
      * @param navigator  Screen navigator
      * @param searchText Initial search text
      */
-    public TrailsController(ScreenNavigator navigator, String searchText) {
+    public TrailsController(ScreenNavigator navigator, String searchText, SqlBasedTrailRepo sqlBasedTrailRepo) {
         super(navigator);
         this.searchText = searchText;
+        this.sqlBasedTrailRepo = sqlBasedTrailRepo;
     }
 
     /**
@@ -380,7 +383,7 @@ public class TrailsController extends Controller {
 
     @FXML
     private void onTrailCardClicked(Trail trail) {
-        super.getNavigator().launchScreen(new ViewTrailController(super.getNavigator(), trail, searchService), this);
+        super.getNavigator().launchScreen(new ViewTrailController(super.getNavigator(), trail, sqlBasedTrailRepo), this);
     }
 
     /**

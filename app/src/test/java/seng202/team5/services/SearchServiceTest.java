@@ -147,11 +147,4 @@ public class SearchServiceTest {
         Trail trail = searchService.getTrailById(999);
         assertNull(trail);
     }
-
-    @Test
-    @DisplayName("Should return all the trails")
-    void testGetAllTrails() {
-        List<Trail> trails = searchService.getAllTrails();
-        assertEquals(mockTrails.size(), trails.size());
-    }
 }

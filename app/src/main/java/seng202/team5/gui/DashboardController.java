@@ -21,6 +21,7 @@ import seng202.team5.services.SearchService;
 public class DashboardController extends Controller {
     /** Service for searching and filtering trails */
     private SearchService searchService;
+    private SqlBasedTrailRepo repo;
 
     @FXML
     private VBox navbarContainer;
@@ -77,7 +78,7 @@ public class DashboardController extends Controller {
             initializeSearchService();
         }
 
-        SqlBasedTrailRepo repo = new SqlBasedTrailRepo(new DatabaseService());
+        repo = new SqlBasedTrailRepo(new DatabaseService());
         List<Trail> trails = repo.getRecommendedTrails();
         initializeRecommendedTrails(trails);
         addTrailButton.setOnAction(e -> onAddTrailButtonClicked());
@@ -90,12 +91,12 @@ public class DashboardController extends Controller {
 
     @FXML
     private void onAddTrailButtonClicked() {
-        super.getNavigator().launchScreen(new ModifyTrailController(super.getNavigator(), null, this, searchService), null);
+        super.getNavigator().launchScreen(new ModifyTrailController(super.getNavigator(), null, this, repo), null);
     }
 
     @FXML
     private void onSearchButtonClicked() {
-        super.getNavigator().launchScreen(new TrailsController(super.getNavigator(), searchBarTextField.getText()), null);
+        super.getNavigator().launchScreen(new TrailsController(super.getNavigator(), searchBarTextField.getText(), repo), null);
     }
 
     /**
@@ -120,7 +121,7 @@ public class DashboardController extends Controller {
 
     @FXML
     private void onTrailCardClicked(Trail trail) {
-        super.getNavigator().launchScreen(new ViewTrailController(super.getNavigator(), trail, searchService), this);
+        super.getNavigator().launchScreen(new ViewTrailController(super.getNavigator(), trail, repo), this);
     }
 
     @Override
