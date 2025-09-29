@@ -2,68 +2,91 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ChoiceBox?>
 <?import javafx.scene.control.DatePicker?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Slider?>
+<?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.TextField?>
-<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
 
-<HBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/null" xmlns:fx="http://javafx.com/fxml/1">
+<HBox alignment="CENTER_RIGHT" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/null" xmlns:fx="http://javafx.com/fxml/1">
    <children>
-      <VBox prefHeight="550.0" prefWidth="305.0" spacing="10.0">
+      <VBox prefHeight="400.0" prefWidth="150.0">
          <children>
-            <Label prefHeight="36.0" prefWidth="184.0" text="Log your trip">
-               <font>
-                  <Font name="System Bold" size="15.0" />
-               </font>
-            </Label>
-            <Label text="Trip name" />
-            <TextField />
-            <HBox prefHeight="100.0" prefWidth="200.0" spacing="10.0">
-               <children>
-                  <VBox prefHeight="100.0" prefWidth="144.0">
-                     <children>
-                        <Label text="Start date" />
-                        <DatePicker />
-                     </children>
-                  </VBox>
-                  <VBox prefHeight="100.0" prefWidth="156.0">
-                     <children>
-                        <Label text="End date (optional)" />
-                        <DatePicker />
-                     </children>
-                  </VBox>
-               </children>
-            </HBox>
+            <Button mnemonicParsing="false" text="Back" />
          </children>
-         <padding>
-            <Insets left="20.0" right="20.0" top="10.0" />
-         </padding>
+         <HBox.margin>
+            <Insets left="10.0" right="10.0" top="10.0" />
+         </HBox.margin>
       </VBox>
-      <VBox prefHeight="400.0" prefWidth="290.0" spacing="10.0">
+      <ScrollPane hbarPolicy="NEVER">
+         <content>
+            <VBox alignment="CENTER_LEFT" prefHeight="550.0" prefWidth="268.0" spacing="10.0">
+               <children>
+                  <Label prefHeight="36.0" prefWidth="184.0" text="Log trail">
+                     <font>
+                        <Font name="System Bold" size="15.0" />
+                     </font>
+                  </Label>
+                  <Label text="&lt;Trail name&gt;" />
+                  <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0" spacing="10.0">
+                     <children>
+                        <VBox alignment="CENTER_LEFT" prefHeight="147.0" prefWidth="228.0" spacing="10.0">
+                           <children>
+                              <Label alignment="CENTER" text="Start date" />
+                              <DatePicker />
+                              <HBox spacing="10.0">
+                                 <children>
+                                    <VBox prefHeight="42.0" prefWidth="113.0">
+                                       <children>
+                                          <Label text="Duration" />
+                                          <TextField prefHeight="25.0" prefWidth="102.0" />
+                                       </children>
+                                    </VBox>
+                                    <VBox prefHeight="200.0" prefWidth="100.0">
+                                       <children>
+                                          <Label text="Time unit" />
+                                          <ChoiceBox prefHeight="25.0" prefWidth="167.0" />
+                                       </children>
+                                    </VBox>
+                                 </children>
+                              </HBox>
+                           </children>
+                        </VBox>
+                     </children>
+                  </HBox>
+                  <Label text="Rate each trail" />
+                  <Slider majorTickUnit="1.0" max="5.0" min="1.0" minorTickCount="0" showTickLabels="true" showTickMarks="true" snapToTicks="true" />
+                  <Label text="Perceived difficulty" />
+                  <ChoiceBox prefWidth="150.0" />
+                  <Label text="Notes" />
+                  <TextArea />
+               </children>
+               <padding>
+                  <Insets left="20.0" right="20.0" top="10.0" />
+               </padding>
+            </VBox>
+         </content>
+      </ScrollPane>
+      <HBox alignment="BOTTOM_RIGHT" prefHeight="400.0" prefWidth="179.0">
          <children>
-            <ImageView fitHeight="210.0" fitWidth="293.0" pickOnBounds="true" preserveRatio="true" />
-            <Label prefHeight="66.0" prefWidth="294.0" text="The above image view could be the map and used for selecting the trail(s) in the trip?" wrapText="true" />
-            <HBox alignment="BOTTOM_RIGHT" maxWidth="1.7976931348623157E308" prefHeight="65.0" prefWidth="175.0" spacing="10.0">
+            <VBox alignment="BOTTOM_RIGHT" prefHeight="400.0" prefWidth="176.0">
                <children>
-                  <VBox alignment="BOTTOM_RIGHT" spacing="10.0">
-                     <children>
-                        <Button fx:id="saveButton" mnemonicParsing="false" text="Save" />
-                        <Button fx:id="backButton" mnemonicParsing="false" text="Back &amp; Don't save" />
-                     </children>
-                  </VBox>
+                  <Button mnemonicParsing="false" text="Done" />
                </children>
-               <VBox.margin>
-                  <Insets left="20.0" right="20.0" />
-               </VBox.margin>
-            </HBox>
+               <HBox.margin>
+                  <Insets />
+               </HBox.margin>
+               <padding>
+                  <Insets bottom="10.0" left="10.0" right="10.0" />
+               </padding>
+            </VBox>
          </children>
-         <padding>
-            <Insets top="20.0" />
-         </padding>
-      </VBox>
+      </HBox>
    </children>
 </HBox>
