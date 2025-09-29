@@ -4,9 +4,9 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import org.controlsfx.control.CheckComboBox;
 import seng202.team5.models.User;
+import seng202.team5.services.RegionFinder;
 import seng202.team5.services.UserService;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -46,11 +46,8 @@ public class ProfileSetupGeneralController extends Controller {
         super.getUserService().setGuest(false);
         User user = super.getUserService().getUser();
 
-        // TODO: use regions based on trail data in DB
-        List<String> regionList = new ArrayList<>(List.of("Northland", "Auckland",
-                "Waikato", "Bay of Plenty", "Gisborne", "Hawke's Bay", "Taranaki",
-                "Manawatu-Whanganui", "Tasman", "Wellington", "Nelson", "Marlborough", "West Coast",
-                "Canterbury", "Otago", "Southland"));
+        RegionFinder regionFinder = new RegionFinder();
+        List<String> regionList = regionFinder.getRegionNames();
         regionCheckComboBox.getItems().addAll(regionList);
 
         if (user != null) {
