@@ -8,6 +8,8 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.util.ArrayDeque;
+import java.util.Deque;
 
 /**
  * Class that handles navigation between various {@link Controller}s. This
@@ -20,8 +22,8 @@ public class ScreenNavigator {
 
     private final Stage stage;
     private final BorderPane rootPane;
-    private Controller lastController;
-
+    private final Deque<Controller> history = new ArrayDeque<>();
+    private boolean isBack = false;
     /**
      * Constructor for ScreenNavigator
      *
@@ -30,7 +32,6 @@ public class ScreenNavigator {
     public ScreenNavigator(Stage stage) {
         this.stage = stage;
         this.rootPane = new BorderPane();
-        this.lastController = null;
         Scene scene = new Scene(rootPane, 1200, 800);
         stage.setScene(scene);
 
@@ -62,12 +63,9 @@ public class ScreenNavigator {
      *
      * @param controller The JavaFX screen controller for the screen to be launched
      */
-    public void launchScreen(Controller controller, Controller lastController) {
-        System.out.println("Launching screen " + lastController + " --> " + controller);
+    public void launchScreen(Controller controller) {
+
         try {
-            if (lastController != null) {
-                this.lastController = lastController;
-            }
             FXMLLoader setupLoader = new FXMLLoader(getClass().getResource(controller.getFxmlFile()));
             setupLoader.setControllerFactory(param -> controller);
             Parent setupParent = setupLoader.load();
@@ -87,12 +85,28 @@ public class ScreenNavigator {
             }
 
             stage.setTitle(controller.getTitle());
+
+            if (!isBack) {
+                history.push(controller);
+            }
+            else {
+                isBack = false;
+            }
         } catch (IOException e) {
             controller.onLoadFailed(e);
         }
     }
 
-    public Controller getLastController() {
-        return lastController;
+    public void goBack() {
+        isBack = true;
+        if (!history.isEmpty()) {
+            history.pop();
+        }
+
+        if (!history.isEmpty()) {
+            Controller previous = history.peek();
+            System.out.println(previous.getTitle());
+            launchScreen(previous);
+        }
     }
 }
