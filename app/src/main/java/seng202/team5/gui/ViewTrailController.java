@@ -8,6 +8,8 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.Background;
+import javafx.scene.paint.Paint;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
 import netscape.javascript.JSObject;
@@ -70,6 +72,16 @@ public class ViewTrailController extends Controller {
     private CheckBox nearbyTrailsCheckbox;
     @FXML
     private TextField trailsRadiusTextField;
+    @FXML
+    private Label easiestColourLabel;
+    @FXML
+    private Label easyColourLabel;
+    @FXML
+    private Label intermediateColourLabel;
+    @FXML
+    private Label advancedColourLabel;
+    @FXML
+    private Label expertColourLabel;
 
     /**
      * Initialises the view trail screen with data retrieved from database
@@ -87,6 +99,11 @@ public class ViewTrailController extends Controller {
         descriptionLabel.setText(trail.getDescription());
         backButton.setOnAction(e -> onBackButtonClicked());
         editInfoButton.setOnAction(e -> onEditInfoButtonClicked());
+        easiestColourLabel.setBackground(Background.fill(Paint.valueOf("008000")));
+        easyColourLabel.setBackground(Background.fill(Paint.valueOf("8de45f")));
+        intermediateColourLabel.setBackground(Background.fill(Paint.valueOf("ffff00")));
+        advancedColourLabel.setBackground(Background.fill(Paint.valueOf("ffa500")));
+        expertColourLabel.setBackground(Background.fill(Paint.valueOf("ff0000")));
 
         // Allow only digits in the text field
         trailsRadiusTextField.setTextFormatter(new TextFormatter<>(change -> {
