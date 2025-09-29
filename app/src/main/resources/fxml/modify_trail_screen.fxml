@@ -69,20 +69,18 @@
                <children>
                   <VBox alignment="TOP_CENTER">
                      <children>
-                        <Label fx:id="latitudeLabel" text="Latitude" />
+                        <Label fx:id="latitudeLabel" text="Latitude (required)" />
                         <TextField fx:id="latitudeTextField" onKeyTyped="#onCoordsChanged" />
                      </children>
                   </VBox>
                   <VBox alignment="TOP_CENTER">
                      <children>
-                        <Label fx:id="longitudeLabel" text="Longitude" />
+                        <Label fx:id="longitudeLabel" text="Longitude (required)" />
                         <TextField fx:id="longitudeTextField" onKeyTyped="#onCoordsChanged" />
                      </children>
                   </VBox>
                   <VBox>
                      <children>
-                        <Label fx:id="longitudeLabel" text="Longitude (required)" />
-                        <TextField fx:id="longitudeTextField" />
                         <Label text="Region:" />
                         <Label fx:id="regionLabel" />
                      </children>
