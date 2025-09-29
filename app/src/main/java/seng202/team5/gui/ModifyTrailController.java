@@ -80,10 +80,6 @@ public class ModifyTrailController extends Controller {
     @FXML
     private TextField longitudeTextField;
     @FXML
-    private Label latitudeLabel;
-    @FXML
-    private Label longitudeLabel;
-    @FXML
     private Label regionLabel;
     @FXML
     private Label invalidNumberLabel;
