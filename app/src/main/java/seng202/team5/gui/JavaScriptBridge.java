@@ -50,7 +50,7 @@ public class JavaScriptBridge {
     }
 
     /**
-     *Opens the trail page for the trail with the specified id
+     * Opens the trail page for the trail with the specified id
      *
      * @param trailId the unique identifier of the trail whose info page should be opened
      */

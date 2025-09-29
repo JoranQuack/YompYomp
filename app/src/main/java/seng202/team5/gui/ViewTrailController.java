@@ -165,6 +165,7 @@ public class ViewTrailController extends Controller {
      * objects between Java and Javascript
      */
     private void initMap() {
+        javaScriptBridge = new JavaScriptBridge(this, searchService);
         webEngine = trailMapView.getEngine();
         webEngine.setJavaScriptEnabled(true);
         webEngine.load(Controller.class.getResource("/html/map.html").toExternalForm());
