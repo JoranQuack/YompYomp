@@ -13,62 +13,73 @@
  */
 
 Label {
-    -fx-font-family: "Quicksand Medium";
-    -fx-font-size: 14px;
-    -fx-text-fill: #04140B;
+  -fx-font-family: "Quicksand Medium";
+  -fx-font-size: 14px;
+  -fx-text-fill: #04140b;
 }
 
 Button {
-    -fx-font-family: "Quicksand SemiBold";
-    -fx-cursor: hand;
-    -fx-font-size: 14px;
-    -fx-text-fill: #04140B;
-    -fx-background-color: #D5E6D4;
-    -fx-background-radius: 10;
+  -fx-font-family: "Quicksand SemiBold";
+  -fx-cursor: hand;
+  -fx-font-size: 14px;
+  -fx-text-fill: #04140b;
+  -fx-background-color: #d5e6d4;
+  -fx-background-radius: 10;
 }
 
 Button:hover {
-    -fx-background-color: #8FAF8E;
+  -fx-background-color: #8faf8e;
 }
 
-.active {
-    -fx-background-color: #447055;
-    -fx-text-fill: #FDFFFB;
+.button-active {
+  -fx-background-color: #447055;
+  -fx-text-fill: #fdfffb;
+}
+
+TextField {
+  -fx-font-family: "Quicksand";
+  -fx-font-size: 14px;
+  -fx-text-fill: #04140b;
+  -fx-prompt-text-fill: #7b7b7b;
+  -fx-background-color: #eef1ed;
+  -fx-background-radius: 10;
+  -fx-border-color: transparent;
+  -fx-padding: 10 15 10 15;
 }
 
 .root-pane {
-    -fx-background-color: #FDFFFB;
+  -fx-background-color: #fdfffb;
 }
 
 .root-pane-dark {
-    -fx-background-color: #000000;
+  -fx-background-color: #000000;
 }
 
 .title {
-    -fx-font-family: "Quicksand Bold";
-    -fx-font-size: 26px;
+  -fx-font-family: "Quicksand Bold";
+  -fx-font-size: 26px;
 }
 
 .text-light {
-    -fx-text-fill: #FDFFFB;
+  -fx-text-fill: #fdfffb;
 }
 
 .light-text {
-    -fx-font-family: "Quicksand Light";
+  -fx-font-family: "Quicksand Light";
 }
 
 .regular-text {
-    -fx-font-family: "Quicksand";
+  -fx-font-family: "Quicksand";
 }
 
 .medium-text {
-    -fx-font-family: "Quicksand Medium";
+  -fx-font-family: "Quicksand Medium";
 }
 
 .semibold-text {
-    -fx-font-family: "Quicksand SemiBold";
+  -fx-font-family: "Quicksand SemiBold";
 }
 
 .bold-text {
-    -fx-font-family: "Quicksand Bold";
+  -fx-font-family: "Quicksand Bold";
 }

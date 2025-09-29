@@ -3,7 +3,6 @@ package seng202.team5.gui;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.Background;
 import javafx.scene.layout.StackPane;
 
 import org.controlsfx.control.CheckComboBox;
@@ -14,7 +13,6 @@ import seng202.team5.services.UserService;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Stack;
 
 /**
  * Controller class of the general profile setup screen
@@ -54,6 +52,7 @@ public class ProfileSetupGeneralController extends Controller {
      */
     @FXML
     private void initialize() {
+        System.out.println();
         BackgroundImageUtil.setupCoverBehavior(bgImage, rootPane);
 
         super.getUserService().setGuest(false);

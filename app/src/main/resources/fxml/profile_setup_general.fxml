@@ -19,17 +19,25 @@
             <Image url="@../images/quiz_background.png" />
          </image>
       </ImageView>
-      <VBox alignment="CENTER" spacing="10.0">
+      <VBox alignment="CENTER" spacing="20.0">
          <children>
             <ImageView fitHeight="100.0" fitWidth="100.0" pickOnBounds="true" preserveRatio="true">
                <image>
                   <Image url="@../images/user_icon.png" />
                </image>
             </ImageView>
-            <Label fx:id="usernameLabel" styleClass="text-light" text="Username" />
-            <TextField fx:id="usernameTextField" maxWidth="-Infinity" prefWidth="200.0" promptText="YompYomp User" VBox.vgrow="NEVER" />
-            <Label fx:id="regionLabel" styleClass="text-light" text="Choose your region" />
-            <CheckComboBox fx:id="regionCheckComboBox" prefWidth="200.0" />
+            <VBox alignment="TOP_CENTER" spacing="5.0">
+               <children>
+                  <Label fx:id="usernameLabel" styleClass="text-light" text="Username" />
+                  <TextField fx:id="usernameTextField" maxWidth="-Infinity" prefWidth="200.0" promptText="YompYomp User" />
+               </children>
+            </VBox>
+            <VBox alignment="TOP_CENTER" spacing="5.0">
+               <children>
+                  <Label fx:id="regionLabel" styleClass="text-light" text="Choose your region" />
+                  <CheckComboBox fx:id="regionCheckComboBox" prefWidth="200.0" />
+               </children>
+            </VBox>
             <Label styleClass="text-light" text="Your tramp preferences" />
             <HBox alignment="CENTER" spacing="10.0">
                <children>
