@@ -260,8 +260,7 @@ public class ModifyTrailController extends Controller {
             Trail updatedTrail = getUpdatedTrail();
             sqlBasedTrailRepo.upsert(updatedTrail);
             super.getNavigator().launchScreen(
-                    new ViewTrailController(super.getNavigator(), updatedTrail, searchService),
-                    false);
+                    new ViewTrailController(super.getNavigator(), updatedTrail, searchService));
         } else {
             emptyFieldLabel.setText("Please make sure all required fields are filled!");
             emptyFieldLabel.setTextFill(Color.RED);

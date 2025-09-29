@@ -53,7 +53,7 @@ public class WelcomeController extends Controller {
     private void onSetUpProfileButtonClicked() {
         super.getUserService().clearUser();
         super.getNavigator()
-                .launchScreen(new ProfileSetupGeneralController(super.getNavigator()), false);
+                .launchScreen(new ProfileSetupGeneralController(super.getNavigator()));
     }
 
     /**
@@ -64,7 +64,7 @@ public class WelcomeController extends Controller {
         if (super.getUserService().getUser() == null) {
             super.getUserService().setGuest(true);
         }
-        super.getNavigator().launchScreen(new LoadingController(super.getNavigator(), true), false);
+        super.getNavigator().launchScreen(new LoadingController(super.getNavigator(), true));
     }
 
     @Override
