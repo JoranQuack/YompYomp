@@ -62,6 +62,7 @@ public class ScreenNavigator {
      * @param controller The JavaFX screen controller for the screen to be launched
      */
     public void launchScreen(Controller controller, Controller lastController) {
+        System.out.println("Launching screen " + lastController + " --> " + controller);
         try {
             if (lastController != null) {
                 this.lastController = lastController;

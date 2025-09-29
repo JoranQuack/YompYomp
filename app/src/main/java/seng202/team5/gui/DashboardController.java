@@ -85,17 +85,17 @@ public class DashboardController extends Controller {
 
     @FXML
     private void onViewAllClicked() {
-        super.getNavigator().launchScreen(new TrailsController(super.getNavigator()), null);
+        super.getNavigator().launchScreen(new TrailsController(super.getNavigator()), this);
     }
 
     @FXML
     private void onAddTrailButtonClicked() {
-        super.getNavigator().launchScreen(new ModifyTrailController(super.getNavigator(), null, this, searchService), null);
+        super.getNavigator().launchScreen(new ModifyTrailController(super.getNavigator(), null, searchService), this);
     }
 
     @FXML
     private void onSearchButtonClicked() {
-        super.getNavigator().launchScreen(new TrailsController(super.getNavigator(), searchBarTextField.getText()), null);
+        super.getNavigator().launchScreen(new TrailsController(super.getNavigator(), searchBarTextField.getText()), this);
     }
 
     /**

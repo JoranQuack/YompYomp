@@ -215,13 +215,13 @@ public class ViewTrailController extends Controller {
     @FXML
     private void onBackButtonClicked() {
         Controller lastController = super.getNavigator().getLastController();
-        super.getNavigator().launchScreen(lastController, null);
+        super.getNavigator().launchScreen(lastController, this);
     }
 
     @FXML
     private void onEditInfoButtonClicked() {
         super.getNavigator().launchScreen(new ModifyTrailController(super.getNavigator(), trail,
-                this, searchService), null);
+                searchService), this);
     }
 
     @Override

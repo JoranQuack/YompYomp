@@ -26,7 +26,6 @@ import java.util.List;
 public class ModifyTrailController extends Controller {
 
     private Trail trail;
-    private Controller lastController;
     private SqlBasedTrailRepo sqlBasedTrailRepo;
     private SearchService searchService;
     private RegionFinder regionFinder;
@@ -40,14 +39,12 @@ public class ModifyTrailController extends Controller {
      *
      * @param navigator      screen navigator
      * @param trail          the selected trail
-     * @param lastController controller of last screen user interacted with
      * @param searchService  searchService
      */
-    public ModifyTrailController(ScreenNavigator navigator, Trail trail, Controller lastController,
+    public ModifyTrailController(ScreenNavigator navigator, Trail trail,
             SearchService searchService) {
         super(navigator);
         this.trail = trail;
-        this.lastController = lastController;
         this.searchService = searchService;
         this.regionFinder = new RegionFinder();
         this.sqlBasedTrailRepo = new SqlBasedTrailRepo(App.getDatabaseService());
@@ -262,8 +259,7 @@ public class ModifyTrailController extends Controller {
         if (userInputValidation()) {
             sqlBasedTrailRepo.upsert(getUpdatedTrail());
             super.getNavigator().launchScreen(
-                    new ViewTrailController(super.getNavigator(), getUpdatedTrail(), searchService),
-                    lastController.getNavigator().getLastController());
+                    new ViewTrailController(super.getNavigator(), getUpdatedTrail(), searchService), getNavigator().getLastController());
         } else {
             emptyFieldLabel.setText("Please make sure all required fields are filled!");
             emptyFieldLabel.setTextFill(Color.RED);
@@ -272,7 +268,7 @@ public class ModifyTrailController extends Controller {
 
     @FXML
     private void onBackButtonClicked() {
-        super.getNavigator().launchScreen(lastController, lastController.getNavigator().getLastController());
+        super.getNavigator().launchScreen(getNavigator().getLastController(), this);
     }
 
     /**
