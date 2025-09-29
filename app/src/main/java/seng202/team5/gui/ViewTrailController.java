@@ -207,21 +207,18 @@ public class ViewTrailController extends Controller {
      * @param trail the trail whose page will be opened
      */
     public void openTrailInfo(Trail trail) {
-        Controller lastController = super.getNavigator().getLastController();
-        super.getNavigator().launchScreen(new ViewTrailController(super.getNavigator(), trail, searchService),
-                lastController); // pass dashboard as last controller (or this??)
+        super.getNavigator().launchScreen(new ViewTrailController(super.getNavigator(), trail, searchService), false); // pass dashboard as last controller (or this??)
     }
 
     @FXML
     private void onBackButtonClicked() {
-        Controller lastController = super.getNavigator().getLastController();
-        super.getNavigator().launchScreen(lastController, this);
+        super.getNavigator().goBack();
     }
 
     @FXML
     private void onEditInfoButtonClicked() {
         super.getNavigator().launchScreen(new ModifyTrailController(super.getNavigator(), trail,
-                searchService), this);
+                searchService), false);
     }
 
     @Override

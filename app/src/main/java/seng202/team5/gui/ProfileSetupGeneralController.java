@@ -78,7 +78,7 @@ public class ProfileSetupGeneralController extends Controller {
         boolean isNameValid = setUserPreferences();
 
         if (isNameValid) {
-            super.getNavigator().launchScreen(new ProfileQuizController(super.getNavigator(), 1), null);
+            super.getNavigator().launchScreen(new ProfileQuizController(super.getNavigator(), 1), false);
         }
     }
 

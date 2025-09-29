@@ -142,11 +142,11 @@ public class ProfileQuizController extends Controller {
         incrementQuizId();
         if (quizId < 10) {
             super.getNavigator()
-                    .launchScreen(new ProfileQuizController(super.getNavigator(), quizId), null);
+                    .launchScreen(new ProfileQuizController(super.getNavigator(), quizId), false);
         } else {
             // Mark profile as complete and save final state
             super.getUserService().markProfileComplete();
-            super.getNavigator().launchScreen(new LoadingController(super.getNavigator(), false), null);
+            super.getNavigator().launchScreen(new LoadingController(super.getNavigator(), false), false);
         }
     }
 

@@ -261,7 +261,7 @@ public class ModifyTrailController extends Controller {
             sqlBasedTrailRepo.upsert(updatedTrail);
             super.getNavigator().launchScreen(
                     new ViewTrailController(super.getNavigator(), updatedTrail, searchService),
-                    getNavigator().getLastController());
+                    false);
         } else {
             emptyFieldLabel.setText("Please make sure all required fields are filled!");
             emptyFieldLabel.setTextFill(Color.RED);
@@ -270,7 +270,7 @@ public class ModifyTrailController extends Controller {
 
     @FXML
     private void onBackButtonClicked() {
-        super.getNavigator().launchScreen(getNavigator().getLastController(), this);
+        super.getNavigator().goBack();
     }
 
     /**
