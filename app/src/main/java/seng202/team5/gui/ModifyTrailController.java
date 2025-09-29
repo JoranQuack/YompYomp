@@ -9,16 +9,15 @@ import javafx.scene.paint.Color;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
 import netscape.javascript.JSObject;
-import seng202.team5.data.DatabaseService;
+import seng202.team5.App;
 import seng202.team5.data.SqlBasedTrailRepo;
-import seng202.team5.exceptions.MatchmakingFailedException;
 import seng202.team5.models.Trail;
+import seng202.team5.services.MatchmakingService;
+import seng202.team5.services.RegionFinder;
 import seng202.team5.services.SearchService;
-import seng202.team5.models.User;
 import seng202.team5.utils.StringManipulator;
 import seng202.team5.utils.TrailsProcessor;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -28,9 +27,9 @@ public class ModifyTrailController extends Controller {
 
     private Trail trail;
     private Controller lastController;
-    private DatabaseService databaseService;
     private SqlBasedTrailRepo sqlBasedTrailRepo;
     private SearchService searchService;
+    private RegionFinder regionFinder;
 
     private WebEngine webEngine;
     private JavaScriptBridge javaScriptBridge;
@@ -39,18 +38,19 @@ public class ModifyTrailController extends Controller {
     /**
      * Launches the screen with navigator
      *
-     * @param navigator screen navigator
-     * @param trail the selected trail
+     * @param navigator      screen navigator
+     * @param trail          the selected trail
      * @param lastController controller of last screen user interacted with
-     * @param searchService searchService
+     * @param searchService  searchService
      */
-    public ModifyTrailController(ScreenNavigator navigator, Trail trail, Controller lastController, SearchService searchService) {
+    public ModifyTrailController(ScreenNavigator navigator, Trail trail, Controller lastController,
+            SearchService searchService) {
         super(navigator);
         this.trail = trail;
         this.lastController = lastController;
-        this.databaseService = new DatabaseService();
-        this.sqlBasedTrailRepo = new SqlBasedTrailRepo(databaseService);
         this.searchService = searchService;
+        this.regionFinder = new RegionFinder();
+        this.sqlBasedTrailRepo = new SqlBasedTrailRepo(App.getDatabaseService());
     }
 
     @FXML
@@ -68,10 +68,6 @@ public class ModifyTrailController extends Controller {
     @FXML
     private TextField cultureUrlTextField;
     @FXML
-    private Label regionLabel;
-    @FXML
-    private ComboBox<String> regionComboBox;
-    @FXML
     private WebView trailMapView;
     @FXML
     private Label emptyFieldLabel;
@@ -88,6 +84,8 @@ public class ModifyTrailController extends Controller {
     @FXML
     private Label longitudeLabel;
     @FXML
+    private Label regionLabel;
+    @FXML
     private Label invalidNumberLabel;
 
     /**
@@ -97,68 +95,82 @@ public class ModifyTrailController extends Controller {
      */
     @FXML
     private void initialize() {
-        if (trail != null) {
-            initializeTextFields();
-            regionLabel.setVisible(false);
-            regionComboBox.setVisible(false);
-            latitudeTextField.setVisible(false);
-            longitudeTextField.setVisible(false);
-            latitudeLabel.setVisible(false);
-            longitudeLabel.setVisible(false); // user can't change location of pre-existing trail
-        } else {
-            regionLabel.setVisible(true);
-            regionComboBox.setVisible(true);
-            latitudeTextField.textProperty().addListener((obs, oldVal, newVal) -> updateMarkerFromFields());
-            longitudeTextField.textProperty().addListener((obs, oldVal, newVal) -> updateMarkerFromFields());
-        }
-        List<String> regionList = new ArrayList<>(List.of("Northland", "Auckland",
-                "Waikato", "Bay of Plenty", "Gisborne", "Hawke's Bay", "Taranaki",
-                "Manawatu-Whanganui", "Tasman", "Wellington", "Nelson", "Marlborough", "West Coast",
-                "Canterbury", "Otago", "Southland"));
-        regionComboBox.getItems().addAll(regionList);
-        difficultyComboBox.getItems().addAll(List.of("Easy", "Intermediate", "Advanced"));
-        trailTypeComboBox.getItems().addAll(List.of("One way", "Loop", "Return"));
-        emptyFieldLabel.setText("");
-        invalidNumberLabel.setVisible(false);
-        saveButton.setOnAction(e -> onSaveButtonClicked());
-        backButton.setOnAction(e -> onBackButtonClicked());
-
-        // Map methods below
-        javaScriptBridge = new JavaScriptBridge(this, searchService);
+        setupFormFields();
+        setupEventHandlers();
         initMap();
     }
 
     /**
-     * Initialises the WebView loading in the appropriate html and initialising important communicator
-     * objects between Java and Javascript
+     * Sets up all form fields and their initial values
+     */
+    private void setupFormFields() {
+        difficultyComboBox.getItems().addAll(List.of("Easiest", "Easy", "Intermediate", "Advanced", "Expert"));
+        trailTypeComboBox.getItems().addAll(List.of("One way", "Loop", "Return"));
+
+        emptyFieldLabel.setText("");
+        invalidNumberLabel.setVisible(false);
+
+        if (trail != null) {
+            initializeTextFields();
+            updateLatLonFields(trail.getLat(), trail.getLon());
+        }
+    }
+
+    /**
+     * Sets up event handlers for form controls
+     */
+    private void setupEventHandlers() {
+        latitudeTextField.textProperty().addListener((obs, oldVal, newVal) -> updateMarkerFromFields());
+        longitudeTextField.textProperty().addListener((obs, oldVal, newVal) -> updateMarkerFromFields());
+
+        saveButton.setOnAction(e -> onSaveButtonClicked());
+        backButton.setOnAction(e -> onBackButtonClicked());
+    }
+
+    /**
+     * Initialises the WebView and sets up the map with proper initialization flow
      */
     private void initMap() {
+        javaScriptBridge = new JavaScriptBridge(this, searchService);
         webEngine = trailMapView.getEngine();
         webEngine.setJavaScriptEnabled(true);
-        webEngine.load(Controller.class.getResource("/html/map.html").toExternalForm());
-        //Forwards console.log() output from any javascript to info log
-        WebConsoleListener.setDefaultListener((view, message, lineNumber, sourceID) ->
-                System.out.printf(String.format("Map WebView console log line: %d, message : %s", lineNumber, message)));
 
-        webEngine.getLoadWorker().stateProperty().addListener(
-                (ov, oldState, newState) -> {
-                    // if javascript loads successfully
-                    if (newState == Worker.State.SUCCEEDED) {
-                        // set our bridge object
-                        JSObject window = (JSObject) webEngine.executeScript("window");
-                        window.setMember("javaScriptBridge", javaScriptBridge);
-                        // get a reference to the js object that has a reference to the js methods we need to use in java
-                        javaScriptConnector = (JSObject) webEngine.executeScript("jsConnector");
-                        // call the javascript function to initialise the map
-                        if (trail != null) {
-                            javaScriptConnector.call("initMap", trail.getLat(), trail.getLon());
-                            addLocation();
-                        } else {
-                            javaScriptConnector.call("initMap", -44.0, 171.0); // arbitrary location for now
-                            javaScriptConnector.call("enableClick");
-                        }
-                    }
-                });
+        WebConsoleListener.setDefaultListener((view, message, lineNumber, sourceID) -> System.out
+                .printf("Map WebView console log line: %d, message: %s%n", lineNumber, message));
+
+        webEngine.getLoadWorker().stateProperty().addListener((ov, oldState, newState) -> {
+            if (newState == Worker.State.SUCCEEDED) {
+                setupJavaScriptBridge();
+                initializeMapView();
+            }
+        });
+
+        webEngine.load(Controller.class.getResource("/html/map.html").toExternalForm());
+    }
+
+    /**
+     * Sets up the JavaScript bridge for communication between Java and JavaScript
+     */
+    private void setupJavaScriptBridge() {
+        JSObject window = (JSObject) webEngine.executeScript("window");
+        window.setMember("javaScriptBridge", javaScriptBridge);
+        javaScriptConnector = (JSObject) webEngine.executeScript("jsConnector");
+    }
+
+    /**
+     * Initializes the map view with appropriate coordinates and enables interaction
+     */
+    private void initializeMapView() {
+        if (trail != null) {
+            // Editing existing trail
+            javaScriptConnector.call("initMap", trail.getLat(), trail.getLon());
+            addLocation();
+        } else {
+            // Creating new trail
+            javaScriptConnector.call("initMap", -44.0, 171.0); // New Zealand default
+        }
+
+        javaScriptConnector.call("enableClick");
     }
 
     /**
@@ -172,40 +184,85 @@ public class ModifyTrailController extends Controller {
     }
 
     /**
-     * Updates the position of the location marker when user enters
-     * longitude and latitude values for a new trail
+     * Updates the map marker position when user enters coordinates in text fields
      */
     private void updateMarkerFromFields() {
+        if (javaScriptConnector == null) {
+            return; // Map not ready yet
+        }
+
         try {
-            double lat = Double.parseDouble(latitudeTextField.getText());
-            double lon = Double.parseDouble(longitudeTextField.getText());
-            if (javaScriptConnector != null) {
-                javaScriptConnector.call("addMarker", lat, lon);
+            String latText = latitudeTextField.getText().trim();
+            String lonText = longitudeTextField.getText().trim();
+
+            if (latText.isEmpty() || lonText.isEmpty()) {
+                return; // Don't update if fields are empty
             }
+
+            double lat = Double.parseDouble(latText);
+            double lon = Double.parseDouble(lonText);
+
+            // Validate coordinate ranges
+            if (lat < -90 || lat > 90 || lon < -180 || lon > 180) {
+                showCoordinateError("Coordinates out of valid range (Lat: -90 to 90, Lon: -180 to 180)");
+                return;
+            }
+
+            javaScriptConnector.call("addMarker", lat, lon);
             invalidNumberLabel.setVisible(false);
+
         } catch (NumberFormatException e) {
-            invalidNumberLabel.setText("Please enter a valid digit for latitude and longitude");
-            invalidNumberLabel.setTextFill(Color.RED);
-            invalidNumberLabel.setVisible(true); // only show on invalid input
+            showCoordinateError("Please enter valid numbers for latitude and longitude");
         }
     }
 
     /**
-     * updates the latitude and longitude fields when the user interacts with the map
+     * Shows coordinate validation error message
+     */
+    private void showCoordinateError(String message) {
+        invalidNumberLabel.setText(message);
+        invalidNumberLabel.setTextFill(Color.RED);
+        invalidNumberLabel.setVisible(true);
+    }
+
+    /**
+     * Updates the latitude and longitude fields when the user interacts with the
+     * map
+     * Also updates the region information
+     *
      * @param lat latitude value from the map
      * @param lon longitude value from the map
      */
     public void updateLatLonFields(double lat, double lon) {
-        latitudeTextField.setText(String.format("%.2f", lat));
-        longitudeTextField.setText(String.format("%.2f", lon));
-        invalidNumberLabel.setVisible(false); // hide error when valid coords come from map
+        latitudeTextField.setText(String.format("%.6f", lat));
+        longitudeTextField.setText(String.format("%.6f", lon));
+        invalidNumberLabel.setVisible(false);
+
+        try {
+            String region = regionFinder.findRegionForPoint(lat, lon);
+            regionLabel.setText(region != null ? region : "Unknown Region");
+        } catch (Exception e) {
+            regionLabel.setText("Region lookup failed");
+        }
+    }
+
+    /**
+     * Updates region based on lat/lon fields when user enters
+     */
+    @FXML
+    private void onCoordsChanged() {
+        double lat = Double.parseDouble(latitudeTextField.getText());
+        double lon = Double.parseDouble(longitudeTextField.getText());
+        String region = regionFinder.findRegionForPoint(lat, lon);
+        regionLabel.setText(region);
     }
 
     @FXML
     private void onSaveButtonClicked() {
         if (userInputValidation()) {
             sqlBasedTrailRepo.upsert(getUpdatedTrail());
-            super.getNavigator().launchScreen(new ViewTrailController(super.getNavigator(), getUpdatedTrail(), searchService),
+            super.getNavigator().launchScreen(
+                    new ViewTrailController(super.getNavigator(), getUpdatedTrail(), searchService),
                     lastController.getNavigator().getLastController());
         } else {
             emptyFieldLabel.setText("Please make sure all required fields are filled!");
@@ -235,6 +292,7 @@ public class ModifyTrailController extends Controller {
 
     /**
      * Validates user input
+     *
      * @return whether inputs are valid
      */
     private boolean userInputValidation() {
@@ -251,43 +309,57 @@ public class ModifyTrailController extends Controller {
 
     /**
      * Returns Trail object of trail to be updated/added to database
+     *
      * @return updatedTrail
      */
     private Trail getUpdatedTrail() {
-        System.out.println("getting updated trail");
-        User user = getUserService().getUser();
+        // Get form values
+        String trailName = trailNameTextField.getText();
+        String translation = translationTextField.getText();
+        String difficulty = difficultyComboBox.getValue();
+        String trailType = trailTypeComboBox.getValue();
+        String completionTime = completionTimeTextField.getText();
+        String trailDescription = trailDescriptionTextArea.getText();
+        String cultureUrl = cultureUrlTextField.getText();
+        double latitude = Double.parseDouble(latitudeTextField.getText());
+        double longitude = Double.parseDouble(longitudeTextField.getText());
+
+        int trailId;
         String region;
         String thumbUrl;
         String webUrl;
         double userWeight;
-        double latitude;
-        double longitude;
+
         if (trail != null) {
+            // Updating existing trail
+            trailId = trail.getId();
             region = "";
             thumbUrl = trail.getThumbnailURL();
             webUrl = trail.getWebpageURL();
-            latitude = trail.getLat();
-            longitude = trail.getLon();
             userWeight = trail.getUserWeight();
         } else {
-            region = regionComboBox.getValue();
+            // Creating new trail - temp values that will be recalculated
+            trailId = -1;
+            region = regionLabel.getText();
             thumbUrl = "";
             webUrl = "";
-            latitude =  Double.parseDouble(latitudeTextField.getText());
-            longitude =  Double.parseDouble(longitudeTextField.getText());
-            userWeight = 0.5; //TODO implement calculation for new trail
+            userWeight = 0.5;
         }
-        int trailId = -1;
-        String trailName = trailNameTextField.getText();
-        String translation = translationTextField.getText();
-        String difficulty = difficultyComboBox.getValue().toLowerCase();
-        String trailType = trailTypeComboBox.getValue().toLowerCase();
-        String completionTime = completionTimeTextField.getText();
-        String trailDescription = trailDescriptionTextArea.getText();
-        String cultureUrl = cultureUrlTextField.getText();
-        List<Trail> updatedTrail = TrailsProcessor.processTrails(List.of(new Trail(trailId, trailName, translation,
-                region, difficulty, trailType, completionTime, trailDescription, thumbUrl, webUrl, cultureUrl, userWeight,
-                latitude, longitude)));
+
+        Trail newTrail = new Trail(trailId, trailName, translation, region, difficulty, trailType,
+                completionTime, trailDescription, thumbUrl, webUrl, cultureUrl,
+                userWeight, latitude, longitude);
+
+        // Calculate user weight
+        try {
+            MatchmakingService matchmakingService = new MatchmakingService(App.getDatabaseService());
+            double calculatedWeight = matchmakingService.getUserWeightFromTrail(newTrail);
+            newTrail.setUserWeight(calculatedWeight);
+        } catch (Exception e) {
+            // Keep the default weight
+        }
+
+        List<Trail> updatedTrail = TrailsProcessor.processTrails(List.of(newTrail));
         return updatedTrail.getFirst();
     }
 

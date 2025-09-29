@@ -19,7 +19,6 @@ public class FileBasedTrailRepo implements ITrail {
     // List containing all the trails from the CSV
     private final List<Trail> trails = new ArrayList<>();
 
-
     /**
      * Constructor - Loads trails from the DOC CSV file path
      *
