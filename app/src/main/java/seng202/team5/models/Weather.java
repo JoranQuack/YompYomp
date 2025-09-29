@@ -1,27 +1,16 @@
 package seng202.team5.models;
 
 public class Weather {
-    private double latitude;
-    private double longitude;
     private double temperature;
     private double tempMax;
     private double tempMin;
-    private String location;
+    private String description;
 
     public Weather(double latitude, double longitude, double temperature, double tempMax, double tempMin, String location) {
-        this.latitude = latitude;
-        this.longitude = longitude;
         this.temperature = temperature;
         this.tempMax = tempMax;
         this.tempMin = tempMin;
-        this.location = location;
-    }
-
-    public double getLatitude() {
-        return latitude;
-    }
-    public double getLongitude() {
-        return longitude;
+        this.location = description;
     }
 
     public double getTemperature() {
@@ -36,9 +25,14 @@ public class Weather {
         return tempMin;
     }
 
-    public String getLocation() {
-        return location;
+    public String getDescription() {
+        return description;
     }
+
+    @Override
+    public String toString() {
+        return String.format("Current: %.1f°C, Min: %.1f°C, Max: %.1f°C, %s",
+                temperature, tempMin, tempMax, description);
 }
 
 
