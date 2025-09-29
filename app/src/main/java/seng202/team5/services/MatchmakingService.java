@@ -179,8 +179,7 @@ public class MatchmakingService {
 
     /**
      * Calculates a score for a trail given its categories it matches, based on the
-     * user's
-     * answers to the setup questions. This is where a percentage match is
+     * user's answers to the setup questions. This is where a percentage match is
      * calculated.
      *
      * @param trailCategories set of categories the trail matches
@@ -214,6 +213,15 @@ public class MatchmakingService {
         // blend of strength and coverage: STRENGTH_WEIGHT = 0.8 for 80% strength 20%
         // coverage, see MatchmakingServiceTest for an example
         return STRENGTH_WEIGHT * strength + (1 - STRENGTH_WEIGHT) * coverage;
+    }
+
+    /**
+     * Gets weight of one trail based on the categories and user preferences.
+     *
+     * @throws MatchmakingFailedException
+     */
+    public double getUserWeightFromTrail(Trail trail) throws MatchmakingFailedException {
+        return scoreTrail(categoriseTrail(trail));
     }
 
     /**

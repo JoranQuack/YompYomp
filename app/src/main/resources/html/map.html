@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Leaflet & OSM Map</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.2.0/dist/leaflet.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.css" />
+    <meta name="viewport" content="initial-scale=1.0">
+    <meta charset="utf-8">
+    <style>
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+        #map {
+            height: 100%;
+        }
+    </style>
+</head>
+<body>
+<div id="map"></div>
+<script src="https://unpkg.com/leaflet@1.2.0/dist/leaflet.js"></script>
+<script src="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.js"></script>
+<script>
+    let map;
+    var javaScriptBridge;
+    let activeMarker = null; // for single trail (when adding/editing/viewing trail)
+    let markers = []; // for multiple trails (when browsing)
+
+    /**
+     * This object can be returned to our java code, where we can call the functions we define inside it
+     */
+    let jsConnector = {
+        addMarker: addMarker,
+        initMap: initMap,
+        enableClick: enableClick,
+        clearMarkers: clearMarkers,
+        displayTrails: displayTrails
+    };
+
+    /**
+     * creates and initialises the map
+     * @param lat the latitude that the map will be centered on when initialised
+     * @param lng the longitude that the map will be centered on when initialised
+     */
+    function initMap(lat, lng) {
+        var mapOptions = {
+            center: [lat, lng],
+            zoom: 10
+        }
+        map = new L.map('map', mapOptions);
+        new L.TileLayer('https://tile.csse.canterbury.ac.nz/hot/{z}/{x}/{y}.png', { // UCs tilemap server
+            attribution: '© OpenStreetMap contributors<br>Served by University of Canterbury'
+        }).addTo(map)
+    }
+
+    /**
+     * Adds a marker to the map and stores it in the markers array for later use (e.g. removal)
+     * @param lat latitude to place marker at
+     * @param lng longitude to place marker at
+     * @param trailJson the trail that the marker will be displayed for
+     */
+    function addMarker(lat, lng, trailJson) {
+        let trail = null;
+        if (trailJson) {
+            trail = JSON.parse(trailJson);
+        }
+
+        if (activeMarker) {
+            // Move existing marker instead of adding new
+            activeMarker.setLatLng([lat, lng]);
+        } else {
+            // First time: create marker and zoom to it
+            activeMarker = new L.Marker([lat, lng]).addTo(map);
+            map.setView([lat, lng], 13);
+        }
+        if (trail) {
+                activeMarker.bindPopup(buildPopupContent(trail));
+        }
+    }
+
+    /**
+     * defines on click event that calls java code
+     */
+    function enableClick() {
+        map.on("click", (map_event) => {
+            var latlng = map.mouseEventToLatLng(map_event.originalEvent)
+            javaScriptBridge.addMarkerFromClick(`{"lat": ${latlng.lat}, "lng": ${latlng.lng}}`)
+        })
+    }
+
+    /**
+     *Removes all markers currently stored in the markers array from the map
+     * After removal, the markers array is cleared
+     * This does not affect the activeMarker
+     */
+    function clearMarkers() {
+        markers.forEach(m => map.removeLayer(m));
+        markers = [];
+    }
+
+    /**
+     * Returns a colour string corresponding to the difficulty level of a trail
+     * @param difficulty the difficulty level of a trail
+     * @returns {string} a colour string representing the difficulty
+     */
+    function getColorByDifficulty(difficulty) {
+        switch (difficulty.toLowerCase()) {
+            case "easiest": return "green";
+            case "easy": return "green";
+            case "intermediate": return "yellow";
+            case "advanced": return "red";
+            case "expert": return "red";
+            default: return "gray";
+        }
+    }
+
+    /**
+     * Displays a list of trails on the map as coloured circle markers.
+     * Each trail is represented by a circle marker whose colour is determined by
+     * the trail's difficulty. The currently active marker is not modified
+     * @param trailsJson a JSON string representing an array of trail objects
+     */
+    function displayTrails(trailsJson) {
+        clearMarkers();
+        const trails = JSON.parse(trailsJson);
+
+        trails.forEach(trail => {
+            // skip the active marker so it shows as a pin
+            if (activeMarker &&
+                activeMarker.getLatLng().lat === trail.lat &&
+                activeMarker.getLatLng().lng === trail.lon) {
+                return;
+            }
+            const color = getColorByDifficulty(trail.difficulty);
+
+            const marker = L.circleMarker([trail.lat, trail.lon], {
+                radius: 8,
+                fillColor: color,
+                color: "#000",
+                weight: 1,
+                opacity: 1,
+                fillOpacity: 0.8
+            }).addTo(map);
+
+            const popupContent = buildPopupContent(trail);
+            marker.bindPopup(popupContent);
+
+            markers.push(marker);
+        });
+
+        // Auto-zoom to fit all markers
+        if (markers.length > 0) {
+            const group = L.featureGroup(markers);
+            map.fitBounds(group.getBounds());
+        }
+    }
+
+    /**
+     * Builds the popup content for a given trail. No link is shown for the marker that the user is viewing a trail for
+     * @param trail the trail object
+     * @returns {string} HTML string for the popup
+     */
+    function buildPopupContent(trail) {
+        const isActive =
+            activeMarker &&
+            activeMarker.getLatLng().lat === trail.lat &&
+            activeMarker.getLatLng().lng === trail.lon;
+
+        return `
+            <b>${trail.name}</b><br>
+            Difficulty: ${trail.difficulty}<br>
+            ${trail.completionInfo && trail.completionInfo.trim() !== ""
+                ? `Completion Time: ${trail.completionInfo}<br>`
+                : ""}
+            ${trail.description}
+            ${!isActive ? `<a href="#" onclick="openTrailInfo(${trail.id}); return false;">View details</a>` : ""}
+        `;
+    }
+
+    /**
+     * Attempts to open the ViewTrail page for a trail with the given id
+     * @param trailId the id for the trail whose page should be opened
+     */
+    function openTrailInfo(trailId) {
+        if (javaScriptBridge && javaScriptBridge.openTrailInfo) {
+            javaScriptBridge.openTrailInfo(trailId);
+        } else {
+            console.log("Trail ID clicked:", trailId);
+        }
+    }
+
+</script>
+</body>
+</html>

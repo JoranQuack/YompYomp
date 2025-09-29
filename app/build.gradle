@@ -16,6 +16,8 @@ plugins {
 repositories {
     // Use Maven Central for resolving dependencies.
     mavenCentral()
+    maven { url "https://repo.osgeo.org/repository/release/" }
+    maven { url "https://repo1.maven.org/maven2" }
 }
 
 dependencies {
@@ -66,6 +68,41 @@ dependencies {
 
     // https://mvnrepository.com/artifact/org.assertj/assertj-core
     testImplementation 'org.assertj:assertj-core:3.23.1'
+
+    // GeoTools - Updated dependencies with proper exclusions
+    implementation ('org.geotools:gt-main:29.1') {
+        exclude group: 'javax.media', module: 'jai_core'
+        exclude group: 'javax.media', module: 'jai_codec'
+        exclude group: 'javax.media', module: 'jai_imageio'
+    }
+    implementation ('org.geotools:gt-shapefile:29.1') {
+        exclude group: 'javax.media', module: 'jai_core'
+        exclude group: 'javax.media', module: 'jai_codec'
+        exclude group: 'javax.media', module: 'jai_imageio'
+    }
+    implementation ('org.geotools:gt-referencing:29.1') {
+        exclude group: 'javax.media', module: 'jai_core'
+        exclude group: 'javax.media', module: 'jai_codec'
+        exclude group: 'javax.media', module: 'jai_imageio'
+    }
+    implementation ('org.geotools:gt-epsg-hsql:29.1') {
+        exclude group: 'javax.media', module: 'jai_core'
+        exclude group: 'javax.media', module: 'jai_codec'
+        exclude group: 'javax.media', module: 'jai_imageio'
+    }
+    implementation ('org.geotools:gt-cql:29.1') {
+        exclude group: 'javax.media', module: 'jai_core'
+        exclude group: 'javax.media', module: 'jai_codec'
+        exclude group: 'javax.media', module: 'jai_imageio'
+    }
+
+    // https://mvnrepository.com/artifact/com.googlecode.json-simple/json-simple
+    implementation 'com.googlecode.json-simple:json-simple:1.1.1'
+
+    // this dependency is used for converting Trail objects into JSON for the map
+    implementation 'com.google.code.gson:gson:2.10.1'
+
+
 }
 
 // Apply a specific Java toolchain to ease working on different environments.
@@ -99,6 +136,11 @@ jar {
     from {
         configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
     }
+}
+
+run {
+    // Add the internal JavaFX API to the module path
+    jvmArgs = ['--module-path', classpath.asPath, '--add-exports', 'javafx.web/com.sun.javafx.webkit=ALL-UNNAMED']
 }
 
 jacoco {

@@ -6,10 +6,10 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.TextField?>
-<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
+<?import javafx.scene.web.WebView?>
 
 <HBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="550.0" prefWidth="800.0" spacing="10.0" xmlns="http://javafx.com/javafx/21.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="seng202.team5.gui.ModifyTrailController">
    <children>
@@ -57,8 +57,6 @@
             <TextArea fx:id="trailDescriptionTextArea" prefHeight="66.0" prefWidth="261.0" wrapText="true" />
             <Label text="Cultural URL" />
             <TextField fx:id="cultureUrlTextField" />
-            <Label fx:id="regionLabel" text="Region" />
-            <ComboBox fx:id="regionComboBox" maxWidth="1.7976931348623157E308" />
          </children>
          <padding>
             <Insets left="20.0" right="20.0" top="10.0" />
@@ -66,25 +64,63 @@
       </VBox>
       <VBox alignment="TOP_CENTER" prefHeight="550.0" prefWidth="493.0" spacing="10.0">
          <children>
-            <ImageView fx:id="mapImage" fitHeight="257.0" fitWidth="446.0" pickOnBounds="true" preserveRatio="true" />
-            <HBox alignment="BOTTOM_RIGHT" prefHeight="225.0">
+            <WebView fx:id="trailMapView" prefHeight="266.0" prefWidth="489.0" />
+            <HBox alignment="CENTER_LEFT" spacing="20.0">
                <children>
-                  <VBox alignment="BOTTOM_RIGHT" maxWidth="1.7976931348623157E308" spacing="10.0">
+                  <VBox alignment="TOP_CENTER">
                      <children>
-                        <Label fx:id="emptyFieldLabel" text="Label" />
-                        <Button fx:id="saveButton" mnemonicParsing="false" text="Save" />
-                        <Button fx:id="backButton" mnemonicParsing="false" text="Back &amp; Don't save" />
+                        <Label fx:id="latitudeLabel" text="Latitude" />
+                        <TextField fx:id="latitudeTextField" onKeyTyped="#onCoordsChanged" />
+                     </children>
+                  </VBox>
+                  <VBox alignment="TOP_CENTER">
+                     <children>
+                        <Label fx:id="longitudeLabel" text="Longitude" />
+                        <TextField fx:id="longitudeTextField" onKeyTyped="#onCoordsChanged" />
+                     </children>
+                  </VBox>
+                  <VBox>
+                     <children>
+                        <Label text="Region:" />
+                        <Label fx:id="regionLabel" />
                      </children>
                   </VBox>
                </children>
                <VBox.margin>
-                  <Insets left="20.0" right="20.0" />
+                  <Insets />
                </VBox.margin>
+               <padding>
+                  <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+               </padding>
+            </HBox>
+            <HBox alignment="TOP_RIGHT" prefHeight="100.0" prefWidth="200.0">
+               <children>
+                  <HBox minWidth="312.0">
+                     <children>
+                        <VBox spacing="10.0">
+                           <children>
+                              <Label fx:id="invalidNumberLabel" text="Label" />
+                              <Label fx:id="emptyFieldLabel" text="Label" />
+                           </children>
+                        </VBox>
+                     </children>
+                  </HBox>
+                  <VBox alignment="BOTTOM_CENTER" />
+                  <VBox alignment="BOTTOM_RIGHT" maxWidth="1.7976931348623157E308" spacing="10.0">
+                     <children>
+                        <Button fx:id="saveButton" mnemonicParsing="false" text="Save" />
+                        <Button fx:id="backButton" mnemonicParsing="false" text="Back &amp; Discard Changes" />
+                     </children>
+                  </VBox>
+               </children>
             </HBox>
          </children>
          <padding>
             <Insets top="20.0" />
          </padding>
+         <HBox.margin>
+            <Insets right="10.0" />
+         </HBox.margin>
       </VBox>
    </children>
 </HBox>
