@@ -26,7 +26,6 @@ import java.util.List;
 public class ModifyTrailController extends Controller {
 
     private Trail trail;
-    private Controller lastController;
     private SqlBasedTrailRepo sqlBasedTrailRepo;
     private SearchService searchService;
     private RegionFinder regionFinder;
@@ -38,16 +37,14 @@ public class ModifyTrailController extends Controller {
     /**
      * Launches the screen with navigator
      *
-     * @param navigator      screen navigator
-     * @param trail          the selected trail
-     * @param lastController controller of last screen user interacted with
-     * @param searchService  searchService
+     * @param navigator     screen navigator
+     * @param trail         the selected trail
+     * @param searchService searchService
      */
-    public ModifyTrailController(ScreenNavigator navigator, Trail trail, Controller lastController,
+    public ModifyTrailController(ScreenNavigator navigator, Trail trail,
             SearchService searchService) {
         super(navigator);
         this.trail = trail;
-        this.lastController = lastController;
         this.searchService = searchService;
         this.regionFinder = new RegionFinder();
         this.sqlBasedTrailRepo = new SqlBasedTrailRepo(App.getDatabaseService());
@@ -256,10 +253,10 @@ public class ModifyTrailController extends Controller {
     @FXML
     private void onSaveButtonClicked() {
         if (userInputValidation()) {
-            sqlBasedTrailRepo.upsert(getUpdatedTrail());
+            Trail updatedTrail = getUpdatedTrail();
+            sqlBasedTrailRepo.upsert(updatedTrail);
             super.getNavigator().launchScreen(
-                    new ViewTrailController(super.getNavigator(), getUpdatedTrail(), searchService),
-                    lastController.getNavigator().getLastController());
+                    new ViewTrailController(super.getNavigator(), updatedTrail, searchService));
         } else {
             emptyFieldLabel.setText("Please make sure all required fields are filled!");
             emptyFieldLabel.setTextFill(Color.RED);
@@ -268,7 +265,7 @@ public class ModifyTrailController extends Controller {
 
     @FXML
     private void onBackButtonClicked() {
-        super.getNavigator().launchScreen(lastController, lastController.getNavigator().getLastController());
+        super.getNavigator().goBack();
     }
 
     /**
@@ -335,7 +332,7 @@ public class ModifyTrailController extends Controller {
             userWeight = trail.getUserWeight();
         } else {
             // Creating new trail - temp values that will be recalculated
-            trailId = -1;
+            trailId = sqlBasedTrailRepo.getNewTrailId();
             region = regionLabel.getText();
             thumbUrl = "";
             webUrl = "";
@@ -367,5 +364,15 @@ public class ModifyTrailController extends Controller {
     @Override
     protected String getTitle() {
         return "Modify Trail Screen";
+    }
+
+    @Override
+    protected boolean shouldShowNavbar() {
+        return true;
+    }
+
+    @Override
+    protected int getNavbarPageIndex() {
+        return 1; // Trails section
     }
 }

@@ -78,7 +78,7 @@ public class ProfileSetupGeneralController extends Controller {
         boolean isNameValid = setUserPreferences();
 
         if (isNameValid) {
-            super.getNavigator().launchScreen(new ProfileQuizController(super.getNavigator(), 1), null);
+            super.getNavigator().launchScreen(new ProfileQuizController(super.getNavigator(), 1));
         }
     }
 
@@ -120,5 +120,15 @@ public class ProfileSetupGeneralController extends Controller {
     @Override
     protected String getTitle() {
         return "Profile Setup Screen";
+    }
+
+    @Override
+    protected boolean shouldShowNavbar() {
+        return false;
+    }
+
+    @Override
+    protected int getNavbarPageIndex() {
+        return -1; // No navbar
     }
 }
