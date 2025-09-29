@@ -99,14 +99,7 @@
      * This does not affect the activeMarker
      */
     function clearMarkers() {
-        //markers.removeLayer();
-        colourMarkers.forEach(m => map.removeLayer(m));
-        colourMarkers = [];
-        //markers.removeLayer();
-    }
-
-    function clearMarkerClusters() {
-        markers.removeLayer();
+        markers.clearLayers();
     }
 
     /**
@@ -132,7 +125,8 @@
      * @param trailsJson a JSON string representing an array of trail objects
      */
     function displayTrails(trailsJson) {
-        clearMarkers();
+        markers.clearLayers(); // clear the cluster group before adding new markers
+
         const trails = JSON.parse(trailsJson);
 
         trails.forEach(trail => {
@@ -157,17 +151,15 @@
             const popupContent = buildPopupContent(trail);
             colourMarker.bindPopup(popupContent);
 
-            //colourMarkers.push(colourMarker);
             markers.addLayer(colourMarker);
         });
 
-        // Auto-zoom to fit all markers
-        if (markers.length > 0) {
-            const group = L.featureGroup(markers);
-            map.fitBounds(group.getBounds());
-        }
+        map.addLayer(markers);
 
-       map.addLayer(markers);
+        // Auto-zoom to fit all markers
+        if (markers.getLayers().length > 0) {
+            map.fitBounds(markers.getBounds());
+        }
     }
 
     /**
