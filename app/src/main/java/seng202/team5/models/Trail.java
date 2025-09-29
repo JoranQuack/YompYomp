@@ -55,9 +55,9 @@ public class Trail {
      * @param lon
      */
     public Trail(int id, String name, String translation, String region, String difficulty, String description,
-                 String completionInfo, int minCompletionTimeMinutes, int maxCompletionTimeMinutes,
-                 String completionType, String timeUnit, boolean isMultiDay, boolean hasVariableTime,
-                 String thumbnailURL, String webpageURL, String cultureUrl, double userWeight, double lat, double lon) {
+            String completionInfo, int minCompletionTimeMinutes, int maxCompletionTimeMinutes,
+            String completionType, String timeUnit, boolean isMultiDay, boolean hasVariableTime,
+            String thumbnailURL, String webpageURL, String cultureUrl, double userWeight, double lat, double lon) {
         this.id = id;
         this.name = name;
         this.translation = translation;
@@ -80,7 +80,7 @@ public class Trail {
     }
 
     /**
-     * Constructor for Trail class using just dataset values.
+     * Constructor for Trail class using just dataset values (for testing)
      * Sets userWeight to default value of 0.0
      * Sets the completionTime to default value of 0
      * Sets enhanced time fields to default values
@@ -97,8 +97,14 @@ public class Trail {
      */
     public Trail(int id, String name, String difficulty, String description, String completionInfo,
             String thumbnailURL, String webpageURL, double lat, double lon) {
-        this(id, name, "", "", difficulty, description, completionInfo, 0, 0,"unknown", "unknown",
+        this(id, name, "", "", difficulty, description, completionInfo, 0, 0, "unknown", "unknown",
                 false, false, thumbnailURL, webpageURL, "", 0.0, lat, lon);
+    }
+
+    /**
+     * Empty constructor for Trail class (for testing)
+     */
+    public Trail() {
     }
 
     /**
@@ -120,8 +126,8 @@ public class Trail {
      * @param lon
      */
     public Trail(int id, String name, String translation, String region, String difficulty, String completionType,
-                 String completionInfo, String description, String thumbUrl, String webUrl, String cultureUrl,
-                 double userWeight, double lat, double lon) {
+            String completionInfo, String description, String thumbUrl, String webUrl, String cultureUrl,
+            double userWeight, double lat, double lon) {
         SqlBasedTrailRepo sqlBasedTrailRepo = new SqlBasedTrailRepo(new DatabaseService());
         if (id == -1) {
             this.id = sqlBasedTrailRepo.getNewTrailId();

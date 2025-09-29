@@ -55,6 +55,8 @@ public class ViewTrailController extends Controller {
     @FXML
     private Label translationLabel;
     @FXML
+    private Label regionLabel;
+    @FXML
     private Label matchLabel;
     @FXML
     private ProgressBar matchBar;
@@ -90,6 +92,7 @@ public class ViewTrailController extends Controller {
     private void initialize() {
         trailService = new TrailService();
         trailNameLabel.setText(trail.getName());
+        regionLabel.setText(trail.getRegion());
         Image trailImage = imageService.loadTrailImage(trail.getThumbnailURL());
         trailThumbnail.setImage(trailImage);
         double weight = trail.getUserWeight();
@@ -176,7 +179,8 @@ public class ViewTrailController extends Controller {
                         // set our bridge object
                         JSObject window = (JSObject) webEngine.executeScript("window");
                         window.setMember("javaScriptBridge", javaScriptBridge);
-                        // get a reference to the js object that has a reference to the js methods we need to use in java
+                        // get a reference to the js object that has a reference to the js methods we
+                        // need to use in java
                         javaScriptConnector = (JSObject) webEngine.executeScript("jsConnector");
                         // call the javascript function to initialise the map
                         javaScriptConnector.call("initMap", trail.getLat(), trail.getLon());
@@ -231,7 +235,8 @@ public class ViewTrailController extends Controller {
      */
     public void openTrailInfo(Trail trail) {
         Controller lastController = super.getNavigator().getLastController();
-        super.getNavigator().launchScreen(new ViewTrailController(super.getNavigator(), trail, searchService), lastController); // pass dashboard as last controller (or this??)
+        super.getNavigator().launchScreen(new ViewTrailController(super.getNavigator(), trail, searchService),
+                lastController); // pass dashboard as last controller (or this??)
     }
 
     @FXML

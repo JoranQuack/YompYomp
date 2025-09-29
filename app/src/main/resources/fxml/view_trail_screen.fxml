@@ -48,6 +48,7 @@
                               <Font size="11.0" />
                            </font>
                         </Label>
+                        <Label fx:id="regionLabel" text="Region" />
                      </children>
                   </VBox>
                </children>
