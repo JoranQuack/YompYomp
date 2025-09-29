@@ -1,11 +1,50 @@
+/*
+ * Color Palette:
+ *
+ * Light: #FDFFFB
+ * OffWhite: #EEF1ED
+ * Pinky: #E9D8ED
+ * Bluey: #D8E5FD
+ * GreenLight: #D5E6D4
+ * Green: #8FAF8E
+ * GreenDark: #447055
+ * Dark: #04140B
+ * OffBlack: #7B7B7B
+ */
+
 Label {
-    -fx-font-family: "Quicksand";
+    -fx-font-family: "Quicksand Medium";
     -fx-font-size: 14px;
+    -fx-text-fill: #04140B;
+}
+
+Button {
+    -fx-font-family: "Quicksand SemiBold";
+    -fx-cursor: hand;
+    -fx-font-size: 14px;
+    -fx-text-fill: #04140B;
+    -fx-background-color: #D5E6D4;
+}
+
+Button:hover {
+    -fx-background-color: #8FAF8E;
+}
+
+.root-pane {
+    -fx-background-color: #FDFFFB;
+}
+
+.root-pane-dark {
+    -fx-background-color: #000000;
 }
 
 .title {
     -fx-font-family: "Quicksand Bold";
-    -fx-font-size: 18px;
+    -fx-font-size: 26px;
+}
+
+.text-light {
+    -fx-text-fill: #FDFFFB;
 }
 
 .light-text {
@@ -26,8 +65,4 @@ Label {
 
 .bold-text {
     -fx-font-family: "Quicksand Bold";
-}
-
-.button {
-    -fx-cursor: hand;
 }
