@@ -6,7 +6,7 @@ public class Weather {
     private double tempMin;
     private String description;
 
-    public Weather(double latitude, double longitude, double temperature, String location) {
+    public Weather(double temperature, double tempMax, double tempMin, String description) {
         this.temperature = temperature;
         this.tempMax = tempMax;
         this.tempMin = tempMin;
