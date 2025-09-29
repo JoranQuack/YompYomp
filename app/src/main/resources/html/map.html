@@ -28,7 +28,6 @@
     let map;
     var javaScriptBridge;
     let activeMarker = null; // for single trail (when adding/editing/viewing trail)
-    let colourMarkers = []; // for multiple trails (when browsing)
     var markers = new L.MarkerClusterGroup();
 
     /**
@@ -39,7 +38,10 @@
         initMap: initMap,
         enableClick: enableClick,
         clearMarkers: clearMarkers,
-        displayTrails: displayTrails
+        getColorByDifficulty: getColorByDifficulty,
+        displayTrails: displayTrails,
+        buildPopupContent: buildPopupContent,
+        openTrailInfo: openTrailInfo
     };
 
     /**
@@ -94,8 +96,8 @@
     }
 
     /**
-     *Removes all markers currently stored in the markers array from the map
-     * After removal, the markers array is cleared
+     *Removes all markers currently stored in the MarkerClusterGroup markers
+     * from the map.
      * This does not affect the activeMarker
      */
     function clearMarkers() {
@@ -156,9 +158,12 @@
 
         map.addLayer(markers);
 
+        let bounds = null;
         // Auto-zoom to fit all markers
         if (markers.getLayers().length > 0) {
-            map.fitBounds(markers.getBounds());
+            bounds = markers.getBounds();
+            bounds.extend(activeMarker.getLatLng());
+            map.fitBounds(bounds);
         }
     }
 
