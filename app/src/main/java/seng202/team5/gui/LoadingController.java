@@ -111,6 +111,16 @@ public class LoadingController extends Controller {
         return "Getting the app ready...";
     }
 
+    @Override
+    protected boolean shouldShowNavbar() {
+        return false;
+    }
+
+    @Override
+    protected int getNavbarPageIndex() {
+        return -1; // No navbar
+    }
+
     /**
      * Handles cleanup and user notification when the matchmaking thread fails
      */

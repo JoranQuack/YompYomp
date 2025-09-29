@@ -4,6 +4,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -70,7 +71,21 @@ public class ScreenNavigator {
             FXMLLoader setupLoader = new FXMLLoader(getClass().getResource(controller.getFxmlFile()));
             setupLoader.setControllerFactory(param -> controller);
             Parent setupParent = setupLoader.load();
-            rootPane.setCenter(setupParent);
+
+            // Handle navbar rendering
+            if (controller.shouldShowNavbar()) {
+                // Create a wrapper VBox with navbar at top and content below
+                VBox wrapperPane = new VBox();
+                wrapperPane.setSpacing(0);
+                wrapperPane.getChildren().add(controller.getNavbarController());
+                wrapperPane.getChildren().add(setupParent);
+                controller.getNavbarController().setPage(controller.getNavbarPageIndex());
+
+                rootPane.setCenter(wrapperPane);
+            } else {
+                rootPane.setCenter(setupParent);
+            }
+
             stage.setTitle(controller.getTitle());
         } catch (IOException e) {
             controller.onLoadFailed(e);

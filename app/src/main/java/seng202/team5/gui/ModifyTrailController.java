@@ -372,4 +372,14 @@ public class ModifyTrailController extends Controller {
     protected String getTitle() {
         return "Modify Trail Screen";
     }
+
+    @Override
+    protected boolean shouldShowNavbar() {
+        return true;
+    }
+
+    @Override
+    protected int getNavbarPageIndex() {
+        return 1; // Trails section
+    }
 }

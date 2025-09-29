@@ -234,6 +234,16 @@ public class ViewTrailController extends Controller {
         return "View Trail Screen";
     }
 
+    @Override
+    protected boolean shouldShowNavbar() {
+        return true;
+    }
+
+    @Override
+    protected int getNavbarPageIndex() {
+        return 1; // Trails section
+    }
+
     /**
      * Handles the case where the View Trail Screen fails to load
      * by displaying an alert to the user

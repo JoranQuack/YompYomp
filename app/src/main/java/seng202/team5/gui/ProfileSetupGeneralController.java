@@ -121,4 +121,14 @@ public class ProfileSetupGeneralController extends Controller {
     protected String getTitle() {
         return "Profile Setup Screen";
     }
+
+    @Override
+    protected boolean shouldShowNavbar() {
+        return false;
+    }
+
+    @Override
+    protected int getNavbarPageIndex() {
+        return -1; // No navbar
+    }
 }

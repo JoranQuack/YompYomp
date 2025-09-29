@@ -208,4 +208,14 @@ public class ProfileQuizController extends Controller {
     protected String getTitle() {
         return "Profile Quiz Screen";
     }
+
+    @Override
+    protected boolean shouldShowNavbar() {
+        return false;
+    }
+
+    @Override
+    protected int getNavbarPageIndex() {
+        return -1; // No navbar
+    }
 }

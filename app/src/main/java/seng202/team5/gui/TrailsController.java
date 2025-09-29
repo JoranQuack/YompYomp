@@ -17,7 +17,6 @@ import javafx.concurrent.Task;
 import javafx.application.Platform;
 import org.controlsfx.control.CheckComboBox;
 import seng202.team5.App;
-import seng202.team5.gui.components.NavbarComponent;
 import seng202.team5.gui.components.TrailCardComponent;
 import seng202.team5.models.Trail;
 import seng202.team5.models.User;
@@ -38,8 +37,6 @@ public class TrailsController extends Controller {
     private boolean isUpdating = false;
 
     // FXML components
-    @FXML
-    private VBox navbarContainer;
     @FXML
     private Button searchButton;
     @FXML
@@ -92,7 +89,6 @@ public class TrailsController extends Controller {
     private void initialize() {
         isUpdating = true;
 
-        setupNavbar();
         initializeSearchService();
         if (searchService == null) {
             handleInitializationFailure();
@@ -159,15 +155,6 @@ public class TrailsController extends Controller {
         Thread loadThread = new Thread(loadTask);
         loadThread.setDaemon(true);
         loadThread.start();
-    }
-
-    /**
-     * Sets up the navigation bar at the top of the screen.
-     */
-    private void setupNavbar() {
-        NavbarComponent navbar = super.getNavbarController();
-        navbar.setPage(1);
-        navbarContainer.getChildren().add(navbar);
     }
 
     /**
@@ -527,5 +514,15 @@ public class TrailsController extends Controller {
     @Override
     protected String getTitle() {
         return "Trails Screen";
+    }
+
+    @Override
+    protected boolean shouldShowNavbar() {
+        return true;
+    }
+
+    @Override
+    protected int getNavbarPageIndex() {
+        return 1; // Trails is the second tab
     }
 }
