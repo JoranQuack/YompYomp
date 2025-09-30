@@ -6,11 +6,10 @@
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.FlowPane?>
-<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 
-<fx:root prefWidth="230.0" spacing="8" type="javafx.scene.layout.VBox" xmlns="http://javafx.com/javafx/21.0.2" xmlns:fx="http://javafx.com/fxml/1">
+<fx:root prefWidth="230.0" spacing="8" type="javafx.scene.layout.VBox" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1">
 
     <!-- VBox padding -->
     <padding>
@@ -26,28 +25,21 @@
       <children>
       
                                   <!-- Title -->
-          <Label fx:id="title" style="-fx-font-size: 16px; -fx-font-weight: bold;" text="Trail Name" />
-         <HBox alignment="TOP_RIGHT" prefHeight="25.0" prefWidth="127.0">
+          <Label fx:id="title" prefHeight="20.0" prefWidth="173.0" style="-fx-font-size: 16px; -fx-font-weight: bold;" text="Trail Name" />
+         <StackPane alignment="TOP_RIGHT">
             <children>
-               <StackPane alignment="TOP_RIGHT">
-                  <children>
-                     <ImageView fx:id="bookmark" fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
-                        <image>
-                           <Image url="@../../images/bookmark.png" />
-                        </image>
-                     </ImageView>
-                     <ImageView fx:id="bookmarkFill" fitHeight="29.0" fitWidth="21.0" pickOnBounds="true" preserveRatio="true">
-                        <image>
-                           <Image url="@../../images/bookmark_filled.png" />
-                        </image>
-                     </ImageView>
-                  </children>
-               </StackPane>
+               <ImageView fx:id="bookmark" fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                  <image>
+                     <Image url="@../../images/bookmark.png" />
+                  </image>
+               </ImageView>
+               <ImageView fx:id="bookmarkFill" fitHeight="29.0" fitWidth="21.0" pickOnBounds="true" preserveRatio="true">
+                  <image>
+                     <Image url="@../../images/bookmark_filled.png" />
+                  </image>
+               </ImageView>
             </children>
-            <padding>
-               <Insets top="3.0" />
-            </padding>
-         </HBox>
+         </StackPane>
       </children>
    </FlowPane>
    <Label fx:id="regionLabel" text="Region" />

@@ -92,7 +92,7 @@ public class TrailCardComponent extends VBox {
     public void setData(Trail trail, TrailLog log) {
         //these are being set to not visible as they havent been implemented
         //TODO get rid of and implement the bookmarks to be shown
-        bookmark.setVisible(false);
+        bookmark.setVisible(true);
         bookmarkFill.setVisible(false);
 
         resetComponentVisibility();
