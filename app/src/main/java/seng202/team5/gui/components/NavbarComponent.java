@@ -7,10 +7,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Button;
 import javafx.scene.layout.HBox;
-import seng202.team5.gui.ProfileSetupGeneralController;
-import seng202.team5.gui.ScreenNavigator;
-import seng202.team5.gui.DashboardController;
-import seng202.team5.gui.TrailsController;
+import seng202.team5.gui.*;
 import seng202.team5.services.UserService;
 
 public class NavbarComponent extends HBox {
@@ -22,6 +19,8 @@ public class NavbarComponent extends HBox {
     private Button homeButton;
     @FXML
     private Button trailsButton;
+    @FXML
+    private Button profileButton;
     // @FXML
     // private Button loggedButton;
     // @FXML
@@ -50,9 +49,10 @@ public class NavbarComponent extends HBox {
         }
 
         // navButtons = List.of(homeButton, trailsButton, loggedButton, toDoButton);
-        navButtons = List.of(homeButton, trailsButton);
+        navButtons = List.of(homeButton, trailsButton, profileButton);
         homeButton.setOnAction(e -> navigator.launchScreen(new DashboardController(navigator), null));
         trailsButton.setOnAction(e -> navigator.launchScreen(new TrailsController(navigator), null));
+        profileButton.setOnAction(e -> navigator.launchScreen(new AccountController(navigator), null));
         redoQuizButton.setOnAction(e -> navigator.launchScreen(new ProfileSetupGeneralController(navigator), null));
         // Implement actions for the remaining buttons when we're ready to rock
     }

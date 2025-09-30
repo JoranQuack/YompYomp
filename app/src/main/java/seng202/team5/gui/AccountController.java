@@ -1,6 +1,13 @@
 package seng202.team5.gui;
 
+import javafx.fxml.FXML;
+import javafx.scene.layout.VBox;
+import seng202.team5.gui.components.NavbarComponent;
+
 public class AccountController extends Controller {
+
+    @FXML
+    private VBox navBarContainer;
 
     /**
      * Default constructor required by JavaFX FXML loading.
@@ -16,6 +23,12 @@ public class AccountController extends Controller {
      */
     public AccountController(ScreenNavigator navigator) {
         super(navigator);
+    }
+
+    @FXML
+    private void initialize() {
+        NavbarComponent navbar = super.getNavbarController();
+        navbar.setPage();
     }
 
     @Override
