@@ -6,6 +6,7 @@
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.FlowPane?>
+<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 
@@ -21,9 +22,34 @@
       <image>
          <Image url="@../../images/Default%20Trail%20Image.png" />
       </image></ImageView>
-
-                      <!-- Title -->
-    <Label fx:id="title" style="-fx-font-size: 16px; -fx-font-weight: bold;" text="Trail Name" />
+   <FlowPane fx:id="attributesFlowPane11" hgap="5.0" vgap="5.0">
+      <children>
+      
+                                  <!-- Title -->
+          <Label fx:id="title" style="-fx-font-size: 16px; -fx-font-weight: bold;" text="Trail Name" />
+         <HBox alignment="TOP_RIGHT" prefHeight="25.0" prefWidth="127.0">
+            <children>
+               <StackPane alignment="TOP_RIGHT">
+                  <children>
+                     <ImageView fx:id="bookmark" fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                        <image>
+                           <Image url="@../../images/bookmark.png" />
+                        </image>
+                     </ImageView>
+                     <ImageView fx:id="bookmarkFill" fitHeight="29.0" fitWidth="21.0" pickOnBounds="true" preserveRatio="true">
+                        <image>
+                           <Image url="@../../images/bookmark_filled.png" />
+                        </image>
+                     </ImageView>
+                  </children>
+               </StackPane>
+            </children>
+            <padding>
+               <Insets top="3.0" />
+            </padding>
+         </HBox>
+      </children>
+   </FlowPane>
    <Label fx:id="regionLabel" text="Region" />
    <FlowPane fx:id="attributesFlowPane" hgap="5.0" vgap="5.0">
       <children>
@@ -36,6 +62,16 @@
     <StackPane>
         <ProgressBar fx:id="matchBar" maxWidth="Infinity" progress="0.0" />
         <Label fx:id="matchLabel" style="-fx-font-size: 12px; -fx-text-fill: black; -fx-font-weight: bold;" text="0% Match" />
+      <FlowPane fx:id="attributesFlowPane1" hgap="5.0" vgap="5.0">
+         <children>
+            <ImageView fx:id="starIcon" fitHeight="68.0" fitWidth="23.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../../images/star_icon.png" />
+               </image>
+            </ImageView>
+            <Label fx:id="starLabel" style="-fx-font-size: 12px; -fx-text-fill: black; -fx-font-weight: bold;" text="0 Stars" />
+         </children>
+      </FlowPane>
     </StackPane>
 
 </fx:root>

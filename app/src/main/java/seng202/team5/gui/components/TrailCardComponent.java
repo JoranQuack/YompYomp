@@ -11,6 +11,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.VBox;
 import seng202.team5.models.Trail;
+import seng202.team5.models.TrailLog;
 import seng202.team5.services.ImageService;
 import seng202.team5.utils.CompletionTimeParser;
 import seng202.team5.utils.StringManipulator;
@@ -36,17 +37,28 @@ public class TrailCardComponent extends VBox {
     private Label durationLabel;
     @FXML
     private Label typeLabel;
+    @FXML
+    private ImageView starIcon;
+    @FXML
+    private Label starLabel;
+    @FXML
+    private ImageView bookmark;
+    @FXML
+    private ImageView bookmarkFill;
+
 
     private final ImageService imageService;
 
     private boolean isUnmatched;
+    private boolean logMode;
 
-    public TrailCardComponent(boolean isUnmatched) {
+    public TrailCardComponent(boolean isUnmatched, boolean logMode) {
         this.isUnmatched = isUnmatched;
         this.imageService = new ImageService();
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/components/trail_card.fxml"));
         fxmlLoader.setRoot(this);
         fxmlLoader.setController(this); // FXML elements
+
         try {
             fxmlLoader.load();
         } catch (IOException e) {
@@ -72,11 +84,17 @@ public class TrailCardComponent extends VBox {
     }
 
     /**
-     * Sets the trail data for this card component.
+     * Sets the trail or log data for this card component.
      *
      * @param trail The trail object to display
+     * @param log The log object to display
      */
-    public void setData(Trail trail) {
+    public void setData(Trail trail, TrailLog log) {
+        //these are being set to not visible as they havent been implemented
+        //TODO get rid of and implement the bookmarks to be shown
+        bookmark.setVisible(false);
+        bookmarkFill.setVisible(false);
+
         resetComponentVisibility();
 
         title.setText(trail.getName());
@@ -84,35 +102,51 @@ public class TrailCardComponent extends VBox {
         Image trailImage = imageService.loadTrailImage(trail.getThumbnailURL());
         thumbnail.setImage(trailImage);
 
-        if (!trail.getDifficulty().contains("unknown")) {
-            difficultyLabel.setText(StringManipulator.capitaliseFirstLetter(trail.getDifficulty()));
-        } else {
-            attributesFlowPane.getChildren().remove(difficultyLabel);
-        }
-
-        if (trail.getMinCompletionTimeMinutes() != 0) {
-            durationLabel.setText(formatCompletionTime(trail));
-        } else {
-            attributesFlowPane.getChildren().remove(durationLabel);
-        }
-
-        if (!trail.getCompletionType().contains("unknown")) {
-            typeLabel.setText(StringManipulator.capitaliseFirstLetter(trail.getCompletionType()));
-        } else {
-            attributesFlowPane.getChildren().remove(typeLabel);
-        }
-
         if (trail.getRegion() != null) {
             regionLabel.setText(trail.getRegion());
         } else {
             regionLabel.setVisible(false);
         }
 
-        if (isUnmatched) {
+        if (!logMode) {
+            starLabel.setVisible(false);
+            starIcon.setVisible(false);
+            if (!trail.getDifficulty().contains("unknown")) {
+                difficultyLabel.setText(StringManipulator.capitaliseFirstLetter(trail.getDifficulty()));
+            } else {
+                attributesFlowPane.getChildren().remove(difficultyLabel);
+            }
+
+            if (trail.getMinCompletionTimeMinutes() != 0) {
+                durationLabel.setText(formatCompletionTime(trail));
+            } else {
+                attributesFlowPane.getChildren().remove(durationLabel);
+            }
+
+            if (!trail.getCompletionType().contains("unknown")) {
+                typeLabel.setText(StringManipulator.capitaliseFirstLetter(trail.getCompletionType()));
+            } else {
+                attributesFlowPane.getChildren().remove(typeLabel);
+            }
+
+            if (isUnmatched) {
+                matchBar.setVisible(false);
+                matchLabel.setVisible(false);
+            } else {
+                updateMatchBar(trail);
+            }
+        }
+        else {
             matchBar.setVisible(false);
             matchLabel.setVisible(false);
-        } else {
-            updateMatchBar(trail);
+            typeLabel.setVisible(false);
+            starLabel.setVisible(true);
+            starIcon.setVisible(true);
+            starLabel.setText(String.valueOf(log.getRating()));
+
+            difficultyLabel.setText(StringManipulator.capitaliseFirstLetter(log.getPersonalDifficulty()));
+            //TODO implement the label for the duration when the model is updated
+            //durationLabel.setText(StringManipulator.capitaliseFirstLetter())
         }
     }
 

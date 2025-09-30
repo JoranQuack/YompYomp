@@ -98,8 +98,8 @@ public class DashboardController extends Controller {
         trailsContainer.getChildren().clear();
 
         for (Trail trail : trails) {
-            TrailCardComponent trailCard = new TrailCardComponent(super.getUserService().isGuest());
-            trailCard.setData(trail);
+            TrailCardComponent trailCard = new TrailCardComponent(super.getUserService().isGuest(), false);
+            trailCard.setData(trail, null);
 
             // Add some spacing between cards
             VBox.setMargin(trailCard, new Insets(10));

@@ -128,8 +128,8 @@ public class ViewTrailController extends Controller {
      * Initialises the trail card at the top of the screen
      */
     private void initTrailCard() {
-        TrailCardComponent trailCard = new TrailCardComponent(super.getUserService().isGuest());
-        trailCard.setData(trail);
+        TrailCardComponent trailCard = new TrailCardComponent(super.getUserService().isGuest(), false);
+        trailCard.setData(trail, null);
         trailCardHBox.getChildren().add(trailCard);
     }
 
