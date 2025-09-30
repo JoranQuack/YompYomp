@@ -107,26 +107,45 @@ CheckComboBox > .combo-box .list-cell:hover {
   -fx-background-color: #d5e6d4;
 }
 
-.slider {
+Slider {
   -fx-padding: 5px;
 }
 
-.slider .track {
+Slider .track {
   -fx-background-radius: 10;
   -fx-border-radius: 10;
   -fx-padding: 1px;
   -fx-border-color: transparent;
 }
 
-.slider .thumb {
+Slider .thumb {
   -fx-background-color: #8faf8e;
   -fx-background-radius: 10;
   -fx-cursor: hand;
 }
 
-.slider .thumb:hover,
-.slider .thumb:pressed {
+Slider .thumb:hover,
+Slider .thumb:pressed {
   -fx-background-color: #d5e6d4;
+}
+
+ProgressBar {
+  -fx-accent: #447055; /* Color of the filled portion */
+  -fx-control-inner-background: #8faf8e; /* Color of the track */
+  -fx-background-radius: 20;
+  -fx-padding: 0;
+}
+
+ProgressBar .bar {
+  -fx-background-radius: 20;
+  -fx-border-color: transparent; /* Removes the border around the filled part of the bar */
+  -fx-background-insets: 0;
+}
+
+ProgressBar .track {
+  -fx-background-radius: 20;
+  -fx-border-color: transparent;
+  -fx-background-insets: 0;
 }
 
 /* SCROLL BAR STUFF */
