@@ -46,6 +46,7 @@ TextField {
   -fx-prompt-text-fill: #7b7b7b;
   -fx-background-color: #eef1ed;
   -fx-background-radius: 10;
+  -fx-border-radius: 10;
   -fx-border-color: transparent;
   -fx-padding: 10 15 10 15;
 }
