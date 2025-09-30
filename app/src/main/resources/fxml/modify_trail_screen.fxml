@@ -52,7 +52,6 @@
             <TextArea fx:id="trailDescriptionTextArea" maxHeight="100.0" wrapText="true" VBox.vgrow="ALWAYS" />
             <Label text="Cultural URL" />
             <TextField fx:id="cultureUrlTextField" />
-            <Label fx:id="regionLabel" text="Region" />
          </children>
          <padding>
             <Insets bottom="20.0" left="20.0" top="20.0" />
@@ -63,6 +62,11 @@
             <WebView fx:id="trailMapView" prefHeight="-1.0" prefWidth="-1.0" VBox.vgrow="ALWAYS" />
             <HBox alignment="CENTER" spacing="20.0">
                <children>
+                  <VBox prefHeight="0.0" prefWidth="100.0">
+                     <children>
+                        <VBox prefHeight="200.0" prefWidth="100.0" />
+                        <Label fx:id="regionLabel" alignment="CENTER" text="Region" />
+                     </children></VBox>
                   <VBox alignment="TOP_CENTER">
                      <children>
                         <Label fx:id="latitudeLabel" text="Latitude (Required)" />
