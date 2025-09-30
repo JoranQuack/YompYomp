@@ -299,33 +299,6 @@ public class LogBookController extends Controller {
         isUpdating = false;
     }
 
-    /**
-     * Difficulty sorting logic
-     *
-     * @param options List of difficulty options
-     */
-    private void sortDifficultyOptions(List<String> options) {
-        List<String> difficultyOrder = SearchService.getDifficultyOrder();
-        options.sort((a, b) -> {
-            if (a.equals("All difficulties"))
-                return -1;
-            if (b.equals("All difficulties"))
-                return 1;
-
-            int indexA = difficultyOrder.indexOf(a.toLowerCase());
-            int indexB = difficultyOrder.indexOf(b.toLowerCase());
-
-            if (indexA != -1 && indexB != -1) {
-                return Integer.compare(indexA, indexB);
-            }
-            if (indexA != -1)
-                return -1;
-            if (indexB != -1)
-                return 1;
-            return a.compareToIgnoreCase(b);
-        });
-    }
-
     @Override
     protected String getFxmlFile() {
         return "/fxml/logbook.fxml";
@@ -334,5 +307,15 @@ public class LogBookController extends Controller {
     @Override
     protected String getTitle() {
         return "Logbook Screen";
+    }
+
+    @Override
+    protected boolean shouldShowNavbar(){
+        return true;
+    }
+
+    @Override
+    protected int getNavbarPageIndex() {
+        return -1;
     }
 }
