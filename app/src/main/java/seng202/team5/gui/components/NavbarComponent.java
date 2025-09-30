@@ -7,10 +7,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Button;
 import javafx.scene.layout.HBox;
-import seng202.team5.gui.ProfileSetupGeneralController;
-import seng202.team5.gui.ScreenNavigator;
-import seng202.team5.gui.DashboardController;
-import seng202.team5.gui.TrailsController;
+import seng202.team5.gui.*;
 import seng202.team5.services.UserService;
 
 public class NavbarComponent extends HBox {
@@ -28,6 +25,8 @@ public class NavbarComponent extends HBox {
     // private Button toDoButton;
     @FXML
     private Button redoQuizButton;
+    @FXML
+    private Button logbookButton;
 
     /**
      * Initialise the NavbarController and put the buttons into the list to easily
@@ -55,6 +54,7 @@ public class NavbarComponent extends HBox {
         trailsButton.setOnAction(e -> navigator.launchScreen(new TrailsController(navigator), null));
         redoQuizButton.setOnAction(e -> navigator.launchScreen(new ProfileSetupGeneralController(navigator), null));
         // Implement actions for the remaining buttons when we're ready to rock
+        logbookButton.setOnAction(e -> navigator.launchScreen(new LogBookController(navigator), null));
     }
 
     /**
