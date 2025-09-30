@@ -82,7 +82,6 @@
                         <Label text="Expert" />
                      </children>
                   </HBox>
-                  <Label text="km" wrapText="true" />
                </children>
             </HBox>
             <HBox>
