@@ -52,8 +52,8 @@ public class ViewTrailController extends Controller {
     private Label descriptionLabel;
     @FXML
     private Button editInfoButton;
-    @FXML
-    private HBox mapContainer;
+//    @FXML
+//    private HBox mapContainer; //bring back later
     @FXML
     private Button backButton;
     @FXML
@@ -72,7 +72,7 @@ public class ViewTrailController extends Controller {
     private Label advancedColourLabel;
     @FXML
     private Label expertColourLabel;
-
+    @FXML
     private WebView trailMapWebView;
 
     /**
@@ -167,14 +167,6 @@ public class ViewTrailController extends Controller {
      * objects between Java and Javascript
      */
     private void initMap() {
-        javaScriptBridge = new JavaScriptBridge(this, sqlBasedTrailRepo);
-        mapContainer.getChildren().clear();
-        trailMapWebView = new WebView();
-        trailMapWebView.setPrefHeight(-1);
-        trailMapWebView.setPrefWidth(-1);
-        HBox.setHgrow(trailMapWebView, Priority.ALWAYS);
-        mapContainer.getChildren().add(trailMapWebView);
-
         webEngine = trailMapWebView.getEngine();
         webEngine.setJavaScriptEnabled(true);
         webEngine.load(Controller.class.getResource("/html/map.html").toExternalForm());
@@ -278,9 +270,9 @@ public class ViewTrailController extends Controller {
      *
      * @param e the exception that occurred while loading the trail screen
      */
-    @Override
-    public void onLoadFailed(Exception e) {
-        showAlert(Alert.AlertType.ERROR, "Trail Card Failed To Load",
-                "Loading selected trail failed, please close the application and try again.");
-    }
+//    @Override
+//    public void onLoadFailed(Exception e) {
+//        showAlert(Alert.AlertType.ERROR, "Trail Card Failed To Load",
+//                "Loading selected trail failed, please close the application and try again.");
+//    }
 }

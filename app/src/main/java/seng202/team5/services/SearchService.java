@@ -102,6 +102,10 @@ public class SearchService {
         return filteredTrails.stream().filter(t -> t.getId() == id).findFirst().orElse(null);
     }
 
+    public List<Trail> getAllTrails() {
+        return trails;
+    }
+
     /**
      * Updates trails based on current filters and sort settings.
      */

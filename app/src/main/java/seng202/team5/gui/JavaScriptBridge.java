@@ -4,6 +4,7 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import seng202.team5.data.SqlBasedTrailRepo;
 import seng202.team5.models.Trail;
+import seng202.team5.services.SearchService;
 
 /**
  * A bridge that handles communication between the JavaScript code
@@ -12,7 +13,7 @@ import seng202.team5.models.Trail;
 public class JavaScriptBridge {
 
     private final Controller controller;
-    private final SqlBasedTrailRepo sqlBasedTrailRepo;
+    private final SearchService searchService;
 
     /**
      * Creates a new JavaScriptBridge that will update the given controller
@@ -20,12 +21,12 @@ public class JavaScriptBridge {
      *
      * @param controller         the controller responsible for handling updates
      *                           to latitude/longitude fields when a marker is added
-     * @param sqlBasedTrailRepo the sqlBasedTrailRepo containing methods to
-     *                          get all trails stored in the database
+//     * @param sqlBasedTrailRepo the sqlBasedTrailRepo containing methods to
+//     *                          get all trails stored in the database
      */
-    public JavaScriptBridge(Controller controller, SqlBasedTrailRepo sqlBasedTrailRepo) {
+    public JavaScriptBridge(Controller controller, SearchService searchService) {
         this.controller = controller;
-        this.sqlBasedTrailRepo = sqlBasedTrailRepo;
+        this.searchService = searchService;
     }
 
     /**
@@ -57,7 +58,8 @@ public class JavaScriptBridge {
      */
     public void openTrailInfo(int trailId){
         if (controller instanceof ViewTrailController viewTrailController) {
-            Trail trail = sqlBasedTrailRepo.findById(trailId).get();
+            Trail trail = searchService.getTrailById(trailId);
+            //Trail trail = sqlBasedTrailRepo.findById(trailId).get(); change to this version later
             if (trail != null) {
                 viewTrailController.openTrailInfo(trail);
             }
