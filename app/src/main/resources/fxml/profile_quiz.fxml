@@ -22,7 +22,7 @@
             <Image url="@../images/quiz_background.png" />
          </image>
       </ImageView>
-      <VBox alignment="CENTER_LEFT" maxWidth="-Infinity" prefWidth="300.0" spacing="20.0" StackPane.alignment="CENTER">
+      <VBox alignment="CENTER_LEFT" maxWidth="-Infinity" prefWidth="300.0" spacing="30.0" StackPane.alignment="CENTER">
          <children>
             <Region VBox.vgrow="ALWAYS" />
             <VBox alignment="CENTER">
@@ -119,7 +119,7 @@
             </ProgressBar>
          </children>
          <padding>
-            <Insets bottom="20.0" top="60.0" />
+            <Insets bottom="20.0" top="70.0" />
          </padding>
       </VBox>
    </children>

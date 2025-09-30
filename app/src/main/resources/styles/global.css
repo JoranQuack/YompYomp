@@ -107,6 +107,28 @@ CheckComboBox > .combo-box .list-cell:hover {
   -fx-background-color: #d5e6d4;
 }
 
+.slider {
+  -fx-padding: 5px;
+}
+
+.slider .track {
+  -fx-background-radius: 10;
+  -fx-border-radius: 10;
+  -fx-padding: 1px;
+  -fx-border-color: transparent;
+}
+
+.slider .thumb {
+  -fx-background-color: #8faf8e;
+  -fx-background-radius: 10;
+  -fx-cursor: hand;
+}
+
+.slider .thumb:hover,
+.slider .thumb:pressed {
+  -fx-background-color: #d5e6d4;
+}
+
 /* SCROLL BAR STUFF */
 .scroll-bar {
   -fx-background-color: #eef1ed;
