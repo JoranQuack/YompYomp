@@ -52,7 +52,6 @@
     function initMap(lat, lng) {
         var mapOptions = {
             center: [lat, lng],
-            zoom: 10
         }
         map = new L.map('map', mapOptions);
         new L.TileLayer('https://tile.csse.canterbury.ac.nz/hot/{z}/{x}/{y}.png', { // UCs tilemap server
