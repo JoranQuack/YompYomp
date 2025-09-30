@@ -15,10 +15,12 @@ import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.VBox;
 import javafx.concurrent.Task;
 import javafx.application.Platform;
+import org.controlsfx.control.CheckComboBox;
 import seng202.team5.App;
-import seng202.team5.gui.components.NavbarComponent;
 import seng202.team5.gui.components.TrailCardComponent;
 import seng202.team5.models.Trail;
+import seng202.team5.models.User;
+import seng202.team5.services.RegionFinder;
 import seng202.team5.services.SearchService;
 
 /**
@@ -36,8 +38,6 @@ public class TrailsController extends Controller {
 
     // FXML components
     @FXML
-    private VBox navbarContainer;
-    @FXML
     private Button searchButton;
     @FXML
     private TextField searchBarTextField;
@@ -45,6 +45,8 @@ public class TrailsController extends Controller {
     private FlowPane trailsContainer;
     @FXML
     private Label resultsLabel;
+    @FXML
+    private CheckComboBox<String> regionCheckComboBox;
     @FXML
     private ChoiceBox<String> pageChoiceBox;
     @FXML
@@ -87,7 +89,6 @@ public class TrailsController extends Controller {
     private void initialize() {
         isUpdating = true;
 
-        setupNavbar();
         initializeSearchService();
         if (searchService == null) {
             handleInitializationFailure();
@@ -157,15 +158,6 @@ public class TrailsController extends Controller {
     }
 
     /**
-     * Sets up the navigation bar at the top of the screen.
-     */
-    private void setupNavbar() {
-        NavbarComponent navbar = super.getNavbarController();
-        navbar.setPage(1);
-        navbarContainer.getChildren().add(navbar);
-    }
-
-    /**
      * Initializes the search service.
      */
     private void initializeSearchService() {
@@ -189,6 +181,7 @@ public class TrailsController extends Controller {
      * Filter, sort, and pagination controls.
      */
     private void setupUIComponents() {
+        setupRegionCheckComboBox();
         setupFilterChoiceBoxes();
         setupSortChoiceBox();
         setupToggleButton();
@@ -213,6 +206,41 @@ public class TrailsController extends Controller {
         setupChoiceBox(timeUnitChoiceBox, "timeUnit");
         setupChoiceBox(difficultyChoiceBox, "difficulty");
         setupChoiceBox(multiDayChoiceBox, "multiDay");
+    }
+
+    /**
+     * Sets up the region CheckComboBox with available regions.
+     * Preselects user's preferred regions if not guest
+     */
+    private void setupRegionCheckComboBox() {
+        RegionFinder regionFinder = new RegionFinder();
+        List<String> regionList = regionFinder.getRegionNames();
+
+        regionCheckComboBox.getItems().addAll(regionList);
+        regionCheckComboBox.setTitle("Regions");
+
+        // preselection
+        if (!super.getUserService().isGuest()) {
+            User user = super.getUserService().getUser();
+            if (user != null && user.getRegion() != null && !user.getRegion().isEmpty()) {
+                for (String region : user.getRegion()) {
+                    regionCheckComboBox.getCheckModel().check(region);
+                }
+            } else {
+                // Default to all regions selected if user has no preferences
+                regionCheckComboBox.getCheckModel().checkAll();
+            }
+        } else {
+            // Guest user
+            regionCheckComboBox.getCheckModel().checkAll();
+        }
+
+        regionCheckComboBox.getCheckModel().getCheckedItems().addListener(
+                (javafx.collections.ListChangeListener.Change<? extends String> change) -> {
+                    if (!isUpdating) {
+                        onFilterChanged();
+                    }
+                });
     }
 
     /**
@@ -249,8 +277,10 @@ public class TrailsController extends Controller {
         if (super.getUserService().isGuest()) {
             sortChoiceBox.getItems().remove("Match");
             sortChoiceBox.setValue("Name");
+            searchService.setSortBy("name");
         } else {
             sortChoiceBox.setValue("Match");
+            searchService.setSortBy("match");
         }
 
         sortChoiceBox.getSelectionModel().selectedItemProperty().addListener(
@@ -293,6 +323,7 @@ public class TrailsController extends Controller {
      * display.
      */
     private void onFilterChanged() {
+        searchService.updateFilter("regions", String.join(",", regionCheckComboBox.getCheckModel().getCheckedItems()));
         searchService.updateFilter("completionType", completionTypeChoiceBox.getValue());
         searchService.updateFilter("timeUnit", timeUnitChoiceBox.getValue());
         searchService.updateFilter("difficulty", difficultyChoiceBox.getValue());
@@ -336,7 +367,7 @@ public class TrailsController extends Controller {
 
     @FXML
     private void onTrailCardClicked(Trail trail) {
-        super.getNavigator().launchScreen(new ViewTrailController(super.getNavigator(), trail, searchService), this);
+        super.getNavigator().launchScreen(new ViewTrailController(super.getNavigator(), trail, searchService));
     }
 
     /**
@@ -483,5 +514,15 @@ public class TrailsController extends Controller {
     @Override
     protected String getTitle() {
         return "Trails Screen";
+    }
+
+    @Override
+    protected boolean shouldShowNavbar() {
+        return true;
+    }
+
+    @Override
+    protected int getNavbarPageIndex() {
+        return 1; // Trails is the second tab
     }
 }

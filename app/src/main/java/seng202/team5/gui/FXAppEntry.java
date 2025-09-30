@@ -32,7 +32,7 @@ public class FXAppEntry extends Application {
 
         ScreenNavigator navigator = new ScreenNavigator(primaryStage);
         WelcomeController welcome = new WelcomeController(navigator);
-        navigator.launchScreen(welcome, null);
+        navigator.launchScreen(welcome);
     }
 
     /**

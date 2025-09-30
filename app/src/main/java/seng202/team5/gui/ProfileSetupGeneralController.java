@@ -9,9 +9,9 @@ import org.controlsfx.control.CheckComboBox;
 
 import seng202.team5.gui.util.BackgroundImageUtil;
 import seng202.team5.models.User;
+import seng202.team5.services.RegionFinder;
 import seng202.team5.services.UserService;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -58,11 +58,8 @@ public class ProfileSetupGeneralController extends Controller {
         super.getUserService().setGuest(false);
         User user = super.getUserService().getUser();
 
-        // TODO: use regions based on trail data in DB
-        List<String> regionList = new ArrayList<>(List.of("Northland", "Auckland",
-                "Waikato", "Bay of Plenty", "Gisborne", "Hawke's Bay", "Taranaki",
-                "Manawatu-Whanganui", "Tasman", "Wellington", "Nelson", "Marlborough", "West Coast",
-                "Canterbury", "Otago", "Southland"));
+        RegionFinder regionFinder = new RegionFinder();
+        List<String> regionList = regionFinder.getRegionNames();
         regionCheckComboBox.getItems().addAll(regionList);
 
         if (user != null) {
@@ -93,7 +90,7 @@ public class ProfileSetupGeneralController extends Controller {
         boolean isNameValid = setUserPreferences();
 
         if (isNameValid) {
-            super.getNavigator().launchScreen(new ProfileQuizController(super.getNavigator(), 1), null);
+            super.getNavigator().launchScreen(new ProfileQuizController(super.getNavigator(), 1));
         }
     }
 
@@ -135,5 +132,15 @@ public class ProfileSetupGeneralController extends Controller {
     @Override
     protected String getTitle() {
         return "Profile Setup Screen";
+    }
+
+    @Override
+    protected boolean shouldShowNavbar() {
+        return false;
+    }
+
+    @Override
+    protected int getNavbarPageIndex() {
+        return -1; // No navbar
     }
 }

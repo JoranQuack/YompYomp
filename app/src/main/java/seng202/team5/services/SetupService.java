@@ -136,13 +136,13 @@ public class SetupService {
     }
 
     /**
-     * Upserts into DB to keep up to date
+     * Syncs the database from the trail file if trail doesn't exist
      */
     public void syncDbFromTrailFile() {
         try {
             List<Trail> source = fileTrailRepo.getAllTrails();
             List<Trail> trails = TrailsProcessor.processTrails(source);
-            sqlTrailRepo.upsertAll(trails);
+            sqlTrailRepo.insertOrIgnoreAll(trails);
             System.out.println("Sync trails complete, " + sqlTrailRepo.countTrails() + " trails.");
         } catch (Exception e) {
             System.err.println("Error syncing database from trail file: " + e.getMessage());

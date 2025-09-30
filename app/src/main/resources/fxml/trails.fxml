@@ -10,14 +10,15 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.VBox?>
+<?import org.controlsfx.control.CheckComboBox?>
 
 <VBox minHeight="300.0" minWidth="500.0" xmlns="http://javafx.com/javafx/21.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="seng202.team5.gui.TrailsController">
    <children>
-      <VBox fx:id="navbarContainer" />
       <!-- Search section -->
       <HBox alignment="CENTER_LEFT" spacing="10.0">
          <children>
             <TextField fx:id="searchBarTextField" maxWidth="1.7976931348623157E308" onKeyTyped="#onSearchButtonClicked" promptText="Search trails..." HBox.hgrow="ALWAYS" />
+            <CheckComboBox fx:id="regionCheckComboBox" prefWidth="120.0" />
             <ChoiceBox fx:id="completionTypeChoiceBox" />
             <ChoiceBox fx:id="timeUnitChoiceBox" />
             <ChoiceBox fx:id="difficultyChoiceBox" />

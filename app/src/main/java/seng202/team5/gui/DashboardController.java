@@ -10,7 +10,6 @@ import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.VBox;
 import seng202.team5.data.DatabaseService;
 import seng202.team5.data.SqlBasedTrailRepo;
-import seng202.team5.gui.components.NavbarComponent;
 import seng202.team5.gui.components.TrailCardComponent;
 import seng202.team5.models.Trail;
 import seng202.team5.services.SearchService;
@@ -21,9 +20,6 @@ import seng202.team5.services.SearchService;
 public class DashboardController extends Controller {
     /** Service for searching and filtering trails */
     private SearchService searchService;
-
-    @FXML
-    private VBox navbarContainer;
 
     @FXML
     private FlowPane trailsContainer;
@@ -67,11 +63,6 @@ public class DashboardController extends Controller {
      */
     @FXML
     private void initialize() {
-        // Initialize the navbar
-        NavbarComponent navbar = super.getNavbarController();
-        navbar.setPage(0);
-        navbarContainer.getChildren().add(navbar);
-
         // Initialize search service if not already done
         if (searchService == null) {
             initializeSearchService();
@@ -85,17 +76,17 @@ public class DashboardController extends Controller {
 
     @FXML
     private void onViewAllClicked() {
-        super.getNavigator().launchScreen(new TrailsController(super.getNavigator()), null);
+        super.getNavigator().launchScreen(new TrailsController(super.getNavigator()));
     }
 
     @FXML
     private void onAddTrailButtonClicked() {
-        super.getNavigator().launchScreen(new ModifyTrailController(super.getNavigator(), null, this, searchService), null);
+        super.getNavigator().launchScreen(new ModifyTrailController(super.getNavigator(), null, searchService));
     }
 
     @FXML
     private void onSearchButtonClicked() {
-        super.getNavigator().launchScreen(new TrailsController(super.getNavigator(), searchBarTextField.getText()), null);
+        super.getNavigator().launchScreen(new TrailsController(super.getNavigator(), searchBarTextField.getText()));
     }
 
     /**
@@ -120,7 +111,7 @@ public class DashboardController extends Controller {
 
     @FXML
     private void onTrailCardClicked(Trail trail) {
-        super.getNavigator().launchScreen(new ViewTrailController(super.getNavigator(), trail, searchService), this);
+        super.getNavigator().launchScreen(new ViewTrailController(super.getNavigator(), trail, searchService));
     }
 
     @Override
@@ -131,5 +122,15 @@ public class DashboardController extends Controller {
     @Override
     protected String getTitle() {
         return "Dashboard";
+    }
+
+    @Override
+    protected boolean shouldShowNavbar() {
+        return true;
+    }
+
+    @Override
+    protected int getNavbarPageIndex() {
+        return 0; // Dashboard is the first tab
     }
 }

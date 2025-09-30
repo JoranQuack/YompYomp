@@ -6,15 +6,12 @@ import com.sun.javafx.webkit.WebConsoleListener;
 import javafx.concurrent.Worker;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
 import netscape.javascript.JSObject;
 import seng202.team5.gui.components.TrailCardComponent;
 import seng202.team5.models.Trail;
-import seng202.team5.services.ImageService;
 import seng202.team5.services.SearchService;
 import seng202.team5.services.TrailService;
 
@@ -24,8 +21,6 @@ import java.util.List;
  * Controller for the view trail screen
  */
 public class ViewTrailController extends Controller {
-
-    private final ImageService imageService;
     private Trail trail;
     private TrailService trailService;
     private SearchService searchService;
@@ -43,7 +38,6 @@ public class ViewTrailController extends Controller {
      */
     public ViewTrailController(ScreenNavigator navigator, Trail trail, SearchService searchService) {
         super(navigator);
-        this.imageService = new ImageService();
         this.trail = trail;
         this.searchService = searchService;
     }
@@ -205,21 +199,24 @@ public class ViewTrailController extends Controller {
      * @param trail the trail whose page will be opened
      */
     public void openTrailInfo(Trail trail) {
-        Controller lastController = super.getNavigator().getLastController();
-        super.getNavigator().launchScreen(new ViewTrailController(super.getNavigator(), trail, searchService),
-                lastController); // pass dashboard as last controller (or this??)
+        super.getNavigator().launchScreen(new ViewTrailController(super.getNavigator(), trail, searchService)); // pass
+                                                                                                                // dashboard
+                                                                                                                // as
+                                                                                                                // last
+                                                                                                                // controller
+                                                                                                                // (or
+                                                                                                                // this??)
     }
 
     @FXML
     private void onBackButtonClicked() {
-        Controller lastController = super.getNavigator().getLastController();
-        super.getNavigator().launchScreen(lastController, null);
+        super.getNavigator().goBack();
     }
 
     @FXML
     private void onEditInfoButtonClicked() {
         super.getNavigator().launchScreen(new ModifyTrailController(super.getNavigator(), trail,
-                this, searchService), null);
+                searchService));
     }
 
     @Override
@@ -230,6 +227,16 @@ public class ViewTrailController extends Controller {
     @Override
     protected String getTitle() {
         return "View Trail Screen";
+    }
+
+    @Override
+    protected boolean shouldShowNavbar() {
+        return true;
+    }
+
+    @Override
+    protected int getNavbarPageIndex() {
+        return 1; // Trails section
     }
 
     /**
