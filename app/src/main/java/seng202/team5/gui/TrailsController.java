@@ -17,6 +17,7 @@ import javafx.concurrent.Task;
 import javafx.application.Platform;
 import org.controlsfx.control.CheckComboBox;
 import seng202.team5.App;
+import seng202.team5.data.SqlBasedTrailRepo;
 import seng202.team5.gui.components.TrailCardComponent;
 import seng202.team5.models.Trail;
 import seng202.team5.models.User;
@@ -31,6 +32,7 @@ import seng202.team5.services.SearchService;
 public class TrailsController extends Controller {
 
     private SearchService searchService;
+    private SqlBasedTrailRepo sqlBasedTrailRepo;
     private String searchText;
     private final List<TrailCardComponent> trailCardPool = new ArrayList<>();
 
@@ -63,12 +65,14 @@ public class TrailsController extends Controller {
     private ToggleButton ascDescToggleButton;
 
     /**
-     * Creates controller with navigator.
+     * Creates a controller with navigator.
      *
      * @param navigator Screen navigator
+     * @param sqlBasedTrailRepo the trail repo
      */
-    public TrailsController(ScreenNavigator navigator) {
+    public TrailsController(ScreenNavigator navigator, SqlBasedTrailRepo sqlBasedTrailRepo) {
         super(navigator);
+        this.sqlBasedTrailRepo = sqlBasedTrailRepo;
     }
 
     /**
@@ -76,10 +80,12 @@ public class TrailsController extends Controller {
      *
      * @param navigator  Screen navigator
      * @param searchText Initial search text
+     * @param sqlBasedTrailRepo The trail repo
      */
-    public TrailsController(ScreenNavigator navigator, String searchText) {
+    public TrailsController(ScreenNavigator navigator, String searchText, SqlBasedTrailRepo sqlBasedTrailRepo) {
         super(navigator);
         this.searchText = searchText;
+        this.sqlBasedTrailRepo = sqlBasedTrailRepo;
     }
 
     /**
@@ -367,7 +373,7 @@ public class TrailsController extends Controller {
 
     @FXML
     private void onTrailCardClicked(Trail trail) {
-        super.getNavigator().launchScreen(new ViewTrailController(super.getNavigator(), trail, searchService));
+        super.getNavigator().launchScreen(new ViewTrailController(super.getNavigator(), trail, sqlBasedTrailRepo));
     }
 
     /**

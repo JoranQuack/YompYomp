@@ -20,6 +20,7 @@ import seng202.team5.services.SearchService;
 public class DashboardController extends Controller {
     /** Service for searching and filtering trails */
     private SearchService searchService;
+    private SqlBasedTrailRepo repo;
 
     @FXML
     private FlowPane trailsContainer;
@@ -54,7 +55,8 @@ public class DashboardController extends Controller {
      * Initializes the search service.
      */
     private void initializeSearchService() {
-        this.searchService = new SearchService(new SqlBasedTrailRepo(new DatabaseService()));
+        this.repo = new SqlBasedTrailRepo(new DatabaseService());
+        this.searchService = new SearchService(repo);
         searchService.setMaxResults(8);
     }
 
@@ -68,7 +70,6 @@ public class DashboardController extends Controller {
             initializeSearchService();
         }
 
-        SqlBasedTrailRepo repo = new SqlBasedTrailRepo(new DatabaseService());
         List<Trail> trails = repo.getRecommendedTrails();
         initializeRecommendedTrails(trails);
         addTrailButton.setOnAction(e -> onAddTrailButtonClicked());
@@ -76,17 +77,17 @@ public class DashboardController extends Controller {
 
     @FXML
     private void onViewAllClicked() {
-        super.getNavigator().launchScreen(new TrailsController(super.getNavigator()));
+        super.getNavigator().launchScreen(new TrailsController(super.getNavigator(), repo));
     }
 
     @FXML
     private void onAddTrailButtonClicked() {
-        super.getNavigator().launchScreen(new ModifyTrailController(super.getNavigator(), null, searchService));
+        super.getNavigator().launchScreen(new ModifyTrailController(super.getNavigator(), null, repo));
     }
 
     @FXML
     private void onSearchButtonClicked() {
-        super.getNavigator().launchScreen(new TrailsController(super.getNavigator(), searchBarTextField.getText()));
+        super.getNavigator().launchScreen(new TrailsController(super.getNavigator(), searchBarTextField.getText(), repo));
     }
 
     /**
@@ -111,7 +112,7 @@ public class DashboardController extends Controller {
 
     @FXML
     private void onTrailCardClicked(Trail trail) {
-        super.getNavigator().launchScreen(new ViewTrailController(super.getNavigator(), trail, searchService));
+        super.getNavigator().launchScreen(new ViewTrailController(super.getNavigator(), trail, repo));
     }
 
     @Override
