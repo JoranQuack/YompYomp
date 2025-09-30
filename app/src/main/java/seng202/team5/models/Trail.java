@@ -9,7 +9,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class Trail {
-    // base variables from DOC dataset (some may be irrelevant)
+
     private int id;
     private String name;
     private String translation;

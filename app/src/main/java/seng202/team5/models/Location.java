@@ -1,13 +1,20 @@
 package seng202.team5.models;
 
 public class Location {
-    //base variables
+
     private double latitude;
     private double longitude;
     private String region;
     private double altitude;
 
-    //Constructor for base variables
+    /**
+     * Constructor for Location class
+     *
+     * @param latitude
+     * @param longitude
+     * @param region
+     * @param altitude
+     */
     public Location(double latitude, double longitude, String region, double altitude) {
         this.latitude = latitude;
         this.longitude = longitude;

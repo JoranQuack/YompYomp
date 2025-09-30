@@ -54,7 +54,7 @@ public class LogBookController extends Controller {
     }
 
     /**
-     * Initializes the trails view with default data.
+     * Initialises the trails view with default data.
      */
     @FXML
     private void initialize() {
