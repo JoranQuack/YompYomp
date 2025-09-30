@@ -100,22 +100,18 @@ public class ProfileSetupGeneralController extends Controller {
      * @return true if name is valid, false otherwise
      */
     private boolean setUserPreferences() {
-        String name = usernameTextField.getText().trim();
+        String name = usernameTextField.getText();
 
-        if (!super.getUserService().isValidName(name)) {
+        if (name == null || name.trim().isEmpty() || !super.getUserService().isValidName(name.trim())) {
             usernameTextField.setStyle("-fx-border-color: red; -fx-border-width: 2px;");
             usernameLabel.setText("Invalid name. Please try again.");
             return false;
-        } else {
-            usernameTextField.setStyle("");
-            usernameLabel.setText("Username");
         }
+        usernameTextField.setStyle("");
+        usernameLabel.setText("Username");
 
-        if (usernameTextField.getText().isEmpty()) {
-            user.setName("YompYomp User");
-        } else {
-            user.setName(usernameTextField.getText());
-        }
+        user.setName(name.trim());
+
         user.setRegion(regionCheckComboBox.getCheckModel().getCheckedItems());
         user.setIsFamilyFriendly(familyFriendlyCheckBox.isSelected());
         user.setIsAccessible(accessibleCheckBox.isSelected());
