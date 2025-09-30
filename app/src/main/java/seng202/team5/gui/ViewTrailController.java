@@ -209,20 +209,12 @@ public class ViewTrailController extends Controller {
      */
     private void initMap() {
         javaScriptBridge = new JavaScriptBridge(this, sqlBasedTrailRepo);
-            mapContainer.getChildren().clear();
-            trailMapWebView = new WebView();
-            trailMapWebView.setPrefHeight(-1);
-            trailMapWebView.setPrefWidth(-1);
-            HBox.setHgrow(trailMapWebView, Priority.ALWAYS);
-            mapContainer.getChildren().add(trailMapWebView);
-//        } else {
-//            mapContainer.getChildren().clear();
-//            trailMapWebView = new WebView();
-//            trailMapWebView.setPrefHeight(-1);
-//            trailMapWebView.setPrefWidth(-1);
-//            HBox.setHgrow(trailMapWebView, Priority.ALWAYS);
-//            mapContainer.getChildren().add(trailMapWebView);
-//        }
+        mapContainer.getChildren().clear();
+        trailMapWebView = new WebView();
+        trailMapWebView.setPrefHeight(-1);
+        trailMapWebView.setPrefWidth(-1);
+        HBox.setHgrow(trailMapWebView, Priority.ALWAYS);
+        mapContainer.getChildren().add(trailMapWebView);
 
         webEngine = trailMapWebView.getEngine();
         webEngine.setJavaScriptEnabled(true);
