@@ -6,8 +6,7 @@ import com.sun.javafx.webkit.WebConsoleListener;
 import javafx.concurrent.Worker;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.Priority;
 import javafx.scene.paint.Paint;
@@ -15,24 +14,20 @@ import javafx.scene.web.WebEngine;
 import javafx.scene.layout.HBox;
 import javafx.scene.web.WebView;
 import netscape.javascript.JSObject;
-import seng202.team5.data.SqlBasedTrailRepo;
+import seng202.team5.gui.components.TrailCardComponent;
 import seng202.team5.models.Trail;
-import seng202.team5.services.ImageService;
+import seng202.team5.services.SearchService;
 import seng202.team5.services.TrailService;
 
 import java.util.List;
-
-import java.util.Objects;
 
 /**
  * Controller for the view trail screen
  */
 public class ViewTrailController extends Controller {
-
-    private final ImageService imageService;
     private Trail trail;
     private TrailService trailService;
-    private SqlBasedTrailRepo sqlBasedTrailRepo;
+    private SearchService searchService;
 
     private WebEngine webEngine;
     private JavaScriptBridge javaScriptBridge;
@@ -43,25 +38,16 @@ public class ViewTrailController extends Controller {
      *
      * @param navigator     screen navigator
      * @param trail         trail object to be displayed on screen
-     * @param sqlBasedTrailRepo sqlBasedTrailRepo
+     * @param searchService searchService
      */
-    public ViewTrailController(ScreenNavigator navigator, Trail trail, SqlBasedTrailRepo sqlBasedTrailRepo) {
+    public ViewTrailController(ScreenNavigator navigator, Trail trail, SearchService searchService) {
         super(navigator);
-        this.imageService = new ImageService();
         this.trail = trail;
-        this.sqlBasedTrailRepo = sqlBasedTrailRepo;
+        this.searchService = searchService;
     }
 
     @FXML
-    private Label trailNameLabel;
-    @FXML
     private Label translationLabel;
-    @FXML
-    private Label regionLabel;
-    @FXML
-    private Label matchLabel;
-    @FXML
-    private ProgressBar matchBar;
     @FXML
     private Label descriptionLabel;
     @FXML
@@ -69,13 +55,13 @@ public class ViewTrailController extends Controller {
     @FXML
     private HBox mapContainer;
     @FXML
-    private ImageView trailThumbnail;
-    @FXML
     private Button backButton;
     @FXML
     private CheckBox nearbyTrailsCheckbox;
     @FXML
     private TextField trailsRadiusTextField;
+    @FXML
+    private HBox trailCardHBox;
     @FXML
     private Label easiestColourLabel;
     @FXML
@@ -94,51 +80,14 @@ public class ViewTrailController extends Controller {
      */
     @FXML
     private void initialize() {
-        setupFormFields();
-        setupEventHandlers();
-        setupLegend();
-
-        javafx.application.Platform.runLater(this::initMap);
-    }
-
-    /**
-     * Sets up all form fields and their initial values
-     */
-    private void setupFormFields() {
-        setupTrailData();
-        setupMatchInfo();
-        setupTrailRadiusFields();
-    }
-
-    /**
-     * Sets up data related to the trail
-     */
-    private void setupTrailData() {
         trailService = new TrailService();
-        trailNameLabel.setText(trail.getName());
-        regionLabel.setText(trail.getRegion());
-        Image trailImage = imageService.loadTrailImage(trail.getThumbnailURL());
-        trailThumbnail.setImage(trailImage);
+
+        initTrailCard();
+
         descriptionLabel.setText(trail.getDescription());
-        if (!trail.getTranslation().isEmpty()) {
-            translationLabel.setText(trail.getTranslation());
-            translationLabel.setVisible(true);
-        } else {
-            translationLabel.setVisible(false);
-        }
-    }
+        backButton.setOnAction(e -> onBackButtonClicked());
+        editInfoButton.setOnAction(e -> onEditInfoButtonClicked());
 
-    /**
-     * Sets up data related to the matchmaking calculations
-     */
-    private void setupMatchInfo() {
-        double weight = trail.getUserWeight();
-        matchBar.setProgress(weight);
-        int matchPercent = (int) Math.round(weight * 100);
-        matchLabel.setText(matchPercent + "% match");
-    }
-
-    private void setupTrailRadiusFields() {
         // Allow only digits in the text field
         trailsRadiusTextField.setTextFormatter(new TextFormatter<>(change -> {
             String newText = change.getControlNewText();
@@ -150,21 +99,15 @@ public class ViewTrailController extends Controller {
 
         // Initially disable the text field if checkbox is not selected
         trailsRadiusTextField.setDisable(!nearbyTrailsCheckbox.isSelected());
-    }
-
-    /**
-     * Sets up event handlers for form controls
-     */
-    private void setupEventHandlers() {
-        backButton.setOnAction(e -> onBackButtonClicked());
-        editInfoButton.setOnAction(e -> onEditInfoButtonClicked());
 
         nearbyTrailsCheckbox.setOnAction(e -> {
             boolean selected = nearbyTrailsCheckbox.isSelected();
             trailsRadiusTextField.setDisable(!selected); // disable if unchecked
             if (selected) {
                 trailsRadiusTextField.setText("20");
-                updateNearbyTrails(Integer.parseInt(trailsRadiusTextField.getText()));
+                List<Trail> nearby = trailService.getNearbyTrails(trail,
+                        Integer.parseInt(trailsRadiusTextField.getText()), searchService.getAllTrails());
+                displayTrailsOnMap(nearby);
             } else {
                 // reset to just the current trail
                 addLocation();
@@ -181,9 +124,20 @@ public class ViewTrailController extends Controller {
                 } else {
                     radius = Integer.parseInt(newValue);
                 }
-                updateNearbyTrails(radius);
+                List<Trail> nearby = trailService.getNearbyTrails(trail, radius, searchService.getAllTrails());
+                displayTrailsOnMap(nearby);
             }
         });
+
+        if (!trail.getTranslation().isEmpty()) {
+            translationLabel.setText(trail.getTranslation());
+            translationLabel.setVisible(true);
+        } else {
+            translationLabel.setVisible(false);
+        }
+
+        javaScriptBridge = new JavaScriptBridge(this, searchService);
+        initMap();
     }
 
     /**
@@ -197,9 +151,14 @@ public class ViewTrailController extends Controller {
         expertColourLabel.setBackground(Background.fill(Paint.valueOf("ff0000")));
     }
 
-    private void updateNearbyTrails(int radius) {
-        List<Trail> nearby = trailService.getNearbyTrails(trail, radius, sqlBasedTrailRepo.getAllTrails());
-        displayTrailsOnMap(nearby);
+
+    /**
+     * Initialises the trail card at the top of the screen
+     */
+    private void initTrailCard() {
+        TrailCardComponent trailCard = new TrailCardComponent(super.getUserService().isGuest());
+        trailCard.setData(trail);
+        trailCardHBox.getChildren().add(trailCard);
     }
 
     /**
@@ -218,34 +177,27 @@ public class ViewTrailController extends Controller {
 
         webEngine = trailMapWebView.getEngine();
         webEngine.setJavaScriptEnabled(true);
-
-        WebConsoleListener.setDefaultListener((view, message, lineNumber, sourceID) ->
-                System.out.printf(String.format("Map WebView console log line: %d, message : %s", lineNumber, message)));
+        webEngine.load(Controller.class.getResource("/html/map.html").toExternalForm());
+        // Forwards console.log() output from any javascript to info log
+        WebConsoleListener.setDefaultListener((view, message, lineNumber, sourceID) -> System.out
+                .printf(String.format("Map WebView console log line: %d, message : %s", lineNumber, message)));
 
         webEngine.getLoadWorker().stateProperty().addListener(
                 (ov, oldState, newState) -> {
+                    // if javascript loads successfully
                     if (newState == Worker.State.SUCCEEDED) {
-                        setupJavaScriptBridge();
-                        initializeMapView();
+                        // set our bridge object
+                        JSObject window = (JSObject) webEngine.executeScript("window");
+                        window.setMember("javaScriptBridge", javaScriptBridge);
+                        // get a reference to the js object that has a reference to the js methods we
+                        // need to use in java
+                        javaScriptConnector = (JSObject) webEngine.executeScript("jsConnector");
+                        // call the javascript function to initialise the map
+                        javaScriptConnector.call("initMap", trail.getLat(), trail.getLon());
+
+                        addLocation();
                     }
                 });
-
-        webEngine.load(Controller.class.getResource("/html/map.html").toExternalForm());
-
-    }
-
-    /**
-     * Sets up the JavaScript bridge for communication between Java and JavaScript
-     */
-    private void setupJavaScriptBridge() {
-        JSObject window = (JSObject) webEngine.executeScript("window");
-        window.setMember("javaScriptBridge", javaScriptBridge);
-        javaScriptConnector = (JSObject) webEngine.executeScript("jsConnector");
-    }
-
-    private void initializeMapView() {
-        javaScriptConnector.call("initMap", trail.getLat(), trail.getLon());
-        addLocation();
     }
 
     /**
@@ -286,27 +238,18 @@ public class ViewTrailController extends Controller {
      * @param trail the trail whose page will be opened
      */
     public void openTrailInfo(Trail trail) {
-        Controller lastController = super.getNavigator().getLastController();
-        super.getNavigator().launchScreen(new ViewTrailController(super.getNavigator(), trail, sqlBasedTrailRepo),
-                lastController); // pass dashboard as last controller (or this??)
+        super.getNavigator().launchScreen(new ViewTrailController(super.getNavigator(), trail, searchService)); // pass dashboard as last controller (or this??)
     }
 
     @FXML
     private void onBackButtonClicked() {
-        String lastScreenName = super.getNavigator().getLastController().getTitle();
-        Controller lastController;
-        if (Objects.equals(lastScreenName, "Dashboard")) {
-            lastController = new DashboardController(super.getNavigator());
-        } else {
-            lastController = new TrailsController(super.getNavigator());
-        }
-        super.getNavigator().launchScreen(lastController, null);
+        super.getNavigator().goBack();
     }
 
     @FXML
     private void onEditInfoButtonClicked() {
         super.getNavigator().launchScreen(new ModifyTrailController(super.getNavigator(), trail,
-                this, sqlBasedTrailRepo), null);
+                searchService));
     }
 
     @Override
@@ -317,6 +260,16 @@ public class ViewTrailController extends Controller {
     @Override
     protected String getTitle() {
         return "View Trail Screen";
+    }
+
+    @Override
+    protected boolean shouldShowNavbar() {
+        return true;
+    }
+
+    @Override
+    protected int getNavbarPageIndex() {
+        return 1; // Trails section
     }
 
     /**

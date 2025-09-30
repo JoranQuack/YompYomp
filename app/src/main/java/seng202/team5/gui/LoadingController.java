@@ -83,7 +83,7 @@ public class LoadingController extends Controller {
 
             @Override
             protected void succeeded() {
-                navigator.launchScreen(new DashboardController(navigator), null);
+                navigator.launchScreen(new DashboardController(navigator));
             }
 
             @Override
@@ -91,7 +91,7 @@ public class LoadingController extends Controller {
                 Throwable exception = getException();
                 System.err.println("Matchmaking failed: " + exception.getMessage());
                 exception.printStackTrace();
-                navigator.launchScreen(new DashboardController(navigator), null);
+                navigator.launchScreen(new DashboardController(navigator));
                 exitThread();
             }
         };
@@ -111,6 +111,16 @@ public class LoadingController extends Controller {
         return "Getting the app ready...";
     }
 
+    @Override
+    protected boolean shouldShowNavbar() {
+        return false;
+    }
+
+    @Override
+    protected int getNavbarPageIndex() {
+        return -1; // No navbar
+    }
+
     /**
      * Handles cleanup and user notification when the matchmaking thread fails
      */
@@ -118,7 +128,7 @@ public class LoadingController extends Controller {
         Thread.currentThread().interrupt();
         showAlert(AlertType.ERROR, "Matchmaking Failed",
                 "Matchmaking failed, please close the application and try again.");
-        super.getNavigator().launchScreen(new DashboardController(super.getNavigator()), null);
+        super.getNavigator().launchScreen(new DashboardController(super.getNavigator()));
     }
 
 }

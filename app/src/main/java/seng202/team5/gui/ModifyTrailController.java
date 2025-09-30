@@ -14,6 +14,7 @@ import seng202.team5.data.SqlBasedTrailRepo;
 import seng202.team5.models.Trail;
 import seng202.team5.services.MatchmakingService;
 import seng202.team5.services.RegionFinder;
+import seng202.team5.services.SearchService;
 import seng202.team5.utils.StringManipulator;
 import seng202.team5.utils.TrailsProcessor;
 
@@ -25,8 +26,8 @@ import java.util.List;
 public class ModifyTrailController extends Controller {
 
     private Trail trail;
-    private Controller lastController;
     private SqlBasedTrailRepo sqlBasedTrailRepo;
+    private SearchService searchService;
     private RegionFinder regionFinder;
 
     private WebEngine webEngine;
@@ -36,18 +37,17 @@ public class ModifyTrailController extends Controller {
     /**
      * Launches the screen with navigator
      *
-     * @param navigator      screen navigator
-     * @param trail          the selected trail
-     * @param lastController controller of last screen user interacted with
-     * @param sqlBasedTrailRepo the sqlBasedTrailRepo
+     * @param navigator     screen navigator
+     * @param trail         the selected trail
+     * @param searchService searchService
      */
-    public ModifyTrailController(ScreenNavigator navigator, Trail trail, Controller lastController,
-            SqlBasedTrailRepo sqlBasedTrailRepo) {
+    public ModifyTrailController(ScreenNavigator navigator, Trail trail,
+            SearchService searchService) {
         super(navigator);
         this.trail = trail;
-        this.lastController = lastController;
+        this.searchService = searchService;
         this.regionFinder = new RegionFinder();
-        this.sqlBasedTrailRepo = sqlBasedTrailRepo;
+        this.sqlBasedTrailRepo = new SqlBasedTrailRepo(App.getDatabaseService());
     }
 
     @FXML
@@ -124,7 +124,7 @@ public class ModifyTrailController extends Controller {
      * Initialises the WebView and sets up the map with proper initialization flow
      */
     private void initMap() {
-        javaScriptBridge = new JavaScriptBridge(this, sqlBasedTrailRepo);
+        javaScriptBridge = new JavaScriptBridge(this, searchService);
         webEngine = trailMapView.getEngine();
         webEngine.setJavaScriptEnabled(true);
 
@@ -253,10 +253,10 @@ public class ModifyTrailController extends Controller {
     @FXML
     private void onSaveButtonClicked() {
         if (userInputValidation()) {
-            sqlBasedTrailRepo.upsert(getUpdatedTrail());
+            Trail updatedTrail = getUpdatedTrail();
+            sqlBasedTrailRepo.upsert(updatedTrail);
             super.getNavigator().launchScreen(
-                    new ViewTrailController(super.getNavigator(), getUpdatedTrail(), sqlBasedTrailRepo),
-                    lastController.getNavigator().getLastController());
+                    new ViewTrailController(super.getNavigator(), updatedTrail, searchService));
         } else {
             emptyFieldLabel.setText("Please make sure all required fields are filled!");
             emptyFieldLabel.setTextFill(Color.RED);
@@ -265,7 +265,7 @@ public class ModifyTrailController extends Controller {
 
     @FXML
     private void onBackButtonClicked() {
-        super.getNavigator().launchScreen(lastController, lastController.getNavigator().getLastController());
+        super.getNavigator().goBack();
     }
 
     /**
@@ -332,7 +332,7 @@ public class ModifyTrailController extends Controller {
             userWeight = trail.getUserWeight();
         } else {
             // Creating new trail - temp values that will be recalculated
-            trailId = -1;
+            trailId = sqlBasedTrailRepo.getNewTrailId();
             region = regionLabel.getText();
             thumbUrl = "";
             webUrl = "";
@@ -364,5 +364,15 @@ public class ModifyTrailController extends Controller {
     @Override
     protected String getTitle() {
         return "Modify Trail Screen";
+    }
+
+    @Override
+    protected boolean shouldShowNavbar() {
+        return true;
+    }
+
+    @Override
+    protected int getNavbarPageIndex() {
+        return 1; // Trails section
     }
 }

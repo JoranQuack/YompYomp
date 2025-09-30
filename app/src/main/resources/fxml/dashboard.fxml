@@ -14,7 +14,6 @@
 
 <VBox alignment="CENTER" minHeight="300.0" minWidth="400.0" stylesheets="@../styles/global.css" xmlns="http://javafx.com/javafx/21.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="seng202.team5.gui.DashboardController">
    <children>
-      <VBox fx:id="navbarContainer" />
       <HBox alignment="CENTER_LEFT" spacing="10.0">
          <children>
             <TextField fx:id="searchBarTextField" maxWidth="1.7976931348623157E308" promptText="Search trails..." HBox.hgrow="ALWAYS" />

@@ -17,8 +17,6 @@ import javafx.concurrent.Task;
 import javafx.application.Platform;
 import org.controlsfx.control.CheckComboBox;
 import seng202.team5.App;
-import seng202.team5.data.SqlBasedTrailRepo;
-import seng202.team5.gui.components.NavbarComponent;
 import seng202.team5.gui.components.TrailCardComponent;
 import seng202.team5.models.Trail;
 import seng202.team5.models.User;
@@ -33,15 +31,12 @@ import seng202.team5.services.SearchService;
 public class TrailsController extends Controller {
 
     private SearchService searchService;
-    private SqlBasedTrailRepo sqlBasedTrailRepo;
     private String searchText;
     private final List<TrailCardComponent> trailCardPool = new ArrayList<>();
 
     private boolean isUpdating = false;
 
     // FXML components
-    @FXML
-    private VBox navbarContainer;
     @FXML
     private Button searchButton;
     @FXML
@@ -82,10 +77,9 @@ public class TrailsController extends Controller {
      * @param navigator  Screen navigator
      * @param searchText Initial search text
      */
-    public TrailsController(ScreenNavigator navigator, String searchText, SqlBasedTrailRepo sqlBasedTrailRepo) {
+    public TrailsController(ScreenNavigator navigator, String searchText) {
         super(navigator);
         this.searchText = searchText;
-        this.sqlBasedTrailRepo = sqlBasedTrailRepo;
     }
 
     /**
@@ -95,7 +89,6 @@ public class TrailsController extends Controller {
     private void initialize() {
         isUpdating = true;
 
-        setupNavbar();
         initializeSearchService();
         if (searchService == null) {
             handleInitializationFailure();
@@ -162,15 +155,6 @@ public class TrailsController extends Controller {
         Thread loadThread = new Thread(loadTask);
         loadThread.setDaemon(true);
         loadThread.start();
-    }
-
-    /**
-     * Sets up the navigation bar at the top of the screen.
-     */
-    private void setupNavbar() {
-        NavbarComponent navbar = super.getNavbarController();
-        navbar.setPage(1);
-        navbarContainer.getChildren().add(navbar);
     }
 
     /**
@@ -383,7 +367,7 @@ public class TrailsController extends Controller {
 
     @FXML
     private void onTrailCardClicked(Trail trail) {
-        super.getNavigator().launchScreen(new ViewTrailController(super.getNavigator(), trail, sqlBasedTrailRepo), this);
+        super.getNavigator().launchScreen(new ViewTrailController(super.getNavigator(), trail, searchService));
     }
 
     /**
@@ -530,5 +514,15 @@ public class TrailsController extends Controller {
     @Override
     protected String getTitle() {
         return "Trails Screen";
+    }
+
+    @Override
+    protected boolean shouldShowNavbar() {
+        return true;
+    }
+
+    @Override
+    protected int getNavbarPageIndex() {
+        return 1; // Trails is the second tab
     }
 }
