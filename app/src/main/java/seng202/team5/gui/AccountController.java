@@ -7,6 +7,8 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import seng202.team5.gui.components.NavbarComponent;
+import seng202.team5.models.Question;
+import seng202.team5.models.User;
 
 public class AccountController extends Controller {
 
@@ -61,6 +63,8 @@ public class AccountController extends Controller {
     @FXML
     private HBox legendLabelContainer5;
 
+    User user;
+
     /**
      * Default constructor required by JavaFX FXML loading.
      */
@@ -75,6 +79,7 @@ public class AccountController extends Controller {
      */
     public AccountController(ScreenNavigator navigator) {
         super(navigator);
+        this.user = getUserService().getUser();
     }
 
     @FXML
@@ -83,6 +88,41 @@ public class AccountController extends Controller {
         NavbarComponent navbar = super.getNavbarController();
         navbar.setPage(2);
         navBarContainer.getChildren().add(navbar);
+
+        welcomeLabel.setText("Kia Ora " + user.getName() + "!");
+        setPreferenceLabels();
+    }
+
+    @FXML
+    private void setPreferenceLabels() {
+        familyFriendlyLabel.setText(user.isFamilyFriendly() ? "Yes" : "No");
+        accessibleLabel.setText(user.isAccessible() ? "Yes" : "No");
+        experienceLabel.setText(getPreferenceLabel(user.getExperienceLevel(), Question.ONE.sliderLabels));
+        gradientLabel.setText(getPreferenceLabel(user.getGradientPreference(), Question.TWO.sliderLabels));
+        bushLabel.setText(getPreferenceLabel(user.getBushPreference(), Question.THREE.sliderLabels));
+        reserveLabel.setText(getPreferenceLabel(user.getReservePreference(), Question.FOUR.sliderLabels));
+        lakeRiverLabel.setText(getPreferenceLabel(user.getLakeRiverPreference(), Question.FIVE.sliderLabels));
+        coastLabel.setText(getPreferenceLabel(user.getCoastPreference(), Question.SIX.sliderLabels));
+        mountainLabel.setText(getPreferenceLabel(user.getMountainPreference(), Question.SEVEN.sliderLabels));
+        wildlifeLabel.setText(getPreferenceLabel(user.getWildlifePreference(), Question.EIGHT.sliderLabels));
+        historicLabel.setText(getPreferenceLabel(user.getHistoricPreference(), Question.NINE.sliderLabels));
+        waterfallLabel.setText(getPreferenceLabel(user.getWaterfallPreference(), Question.TEN.sliderLabels));
+    }
+
+    /**
+     * Returns string label to be set for each user preference
+     * @param preference
+     * @param sliderLabels
+     * @return string to be set for user preference label
+     */
+    private String getPreferenceLabel(int preference, String[] sliderLabels) {
+        if (preference == 1) {
+            return sliderLabels[0];
+        } else if (preference == 5) {
+            return sliderLabels[2];
+        } else {
+            return sliderLabels[1];
+        }
     }
 
     @Override

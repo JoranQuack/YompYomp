@@ -15,7 +15,7 @@
       <VBox fx:id="navbarContainer" />
       <VBox alignment="TOP_CENTER">
          <children>
-            <Label fx:id="welcomeLabel" text="Welcome">
+            <Label fx:id="welcomeLabel" text="Kia Ora">
                <font>
                   <Font name="System Bold" size="14.0" />
                </font>
@@ -71,12 +71,42 @@
                                     <Font name="System Bold" size="13.0" />
                                  </font>
                               </Label>
-                              <Label fx:id="familyFriendlyLabel" text="Family Friendly: " />
-                              <Label fx:id="accessibleLabel" text="Accessible:" />
-                              <Label fx:id="experienceLabel" text="Experience Level:" />
-                              <Label fx:id="gradientLabel" text="Gradient:" />
-                              <Label fx:id="bushLabel" text="Bush/Forest:" />
-                              <Label fx:id="reserveLabel" text="Reserves:" />
+                              <HBox spacing="5.0">
+                                 <children>
+                                    <Label text="Family Friendly: " />
+                                    <Label fx:id="familyFriendlyLabel" />
+                                 </children>
+                              </HBox>
+                              <HBox spacing="5.0">
+                                 <children>
+                                    <Label text="Accessible:" />
+                                    <Label fx:id="accessibleLabel" />
+                                 </children>
+                              </HBox>
+                              <HBox spacing="5.0">
+                                 <children>
+                                    <Label text="Experience Level:" />
+                                    <Label fx:id="experienceLabel" />
+                                 </children>
+                              </HBox>
+                              <HBox spacing="5.0">
+                                 <children>
+                                    <Label text="Gradient:" />
+                                    <Label fx:id="gradientLabel" />
+                                 </children>
+                              </HBox>
+                              <HBox spacing="5.0">
+                                 <children>
+                                    <Label text="Bush/Forest:" />
+                                    <Label fx:id="bushLabel" />
+                                 </children>
+                              </HBox>
+                              <HBox spacing="5.0">
+                                 <children>
+                                    <Label text="Reserves:" />
+                                    <Label fx:id="reserveLabel" />
+                                 </children>
+                              </HBox>
                            </children>
                         </VBox>
                         <VBox alignment="CENTER_LEFT" spacing="5.0">
@@ -86,12 +116,42 @@
                                     <Font name="System Bold" size="13.0" />
                                  </font>
                               </Label>
-                              <Label fx:id="lakeRiverLabel" text="Lakes/Rivers:" />
-                              <Label fx:id="coastLabel" text="Coast:" />
-                              <Label fx:id="mountainLabel" text="Mountain:" />
-                              <Label fx:id="wildlifeLabel" text="Birdlife/Wildlife:" />
-                              <Label fx:id="historicLabel" text="Historic Features:" />
-                              <Label fx:id="waterfallLabel" text="Waterfalls:" />
+                              <HBox spacing="5.0">
+                                 <children>
+                                    <Label fx:id="lakeRiverLabel1" text="Lakes/Rivers:" />
+                                    <Label fx:id="lakeRiverLabel" />
+                                 </children>
+                              </HBox>
+                              <HBox spacing="5.0">
+                                 <children>
+                                    <Label text="Coast:" />
+                                    <Label fx:id="coastLabel" />
+                                 </children>
+                              </HBox>
+                              <HBox spacing="5.0">
+                                 <children>
+                                    <Label text="Mountain:" />
+                                    <Label fx:id="mountainLabel" />
+                                 </children>
+                              </HBox>
+                              <HBox spacing="5.0">
+                                 <children>
+                                    <Label text="Birdlife/Wildlife:" />
+                                    <Label fx:id="wildlifeLabel" />
+                                 </children>
+                              </HBox>
+                              <HBox spacing="5.0">
+                                 <children>
+                                    <Label text="Historic Features:" />
+                                    <Label fx:id="historicLabel" />
+                                 </children>
+                              </HBox>
+                              <HBox spacing="5.0">
+                                 <children>
+                                    <Label text="Waterfalls:" />
+                                    <Label fx:id="waterfallLabel" />
+                                 </children>
+                              </HBox>
                            </children>
                         </VBox>
                      </children>
