@@ -195,30 +195,40 @@ public class ViewTrailController extends Controller {
      * objects between Java and Javascript
      */
     private void initMap() {
+        javaScriptBridge = new JavaScriptBridge(this, searchService);
         webEngine = trailMapWebView.getEngine();
         webEngine.setJavaScriptEnabled(true);
-        webEngine.load(Controller.class.getResource("/html/map.html").toExternalForm());
-        // Forwards console.log() output from any javascript to info log
-        WebConsoleListener.setDefaultListener((view, message, lineNumber, sourceID) -> System.out
-                .printf(String.format("Map WebView console log line: %d, message : %s", lineNumber, message)));
+
+        WebConsoleListener.setDefaultListener((view, message, lineNumber, sourceID) ->
+                System.out.printf(String.format("Map WebView console log line: %d, message : %s", lineNumber, message)));
 
         webEngine.getLoadWorker().stateProperty().addListener(
                 (ov, oldState, newState) -> {
-                    // if javascript loads successfully
                     if (newState == Worker.State.SUCCEEDED) {
-                        // set our bridge object
-                        JSObject window = (JSObject) webEngine.executeScript("window");
-                        window.setMember("javaScriptBridge", javaScriptBridge);
-                        // get a reference to the js object that has a reference to the js methods we
-                        // need to use in java
-                        javaScriptConnector = (JSObject) webEngine.executeScript("jsConnector");
-                        // call the javascript function to initialise the map
-                        javaScriptConnector.call("initMap", trail.getLat(), trail.getLon());
-
-                        addLocation();
+                        setupJavaScriptBridge();
+                        initializeMapView();
                     }
                 });
+
+        webEngine.load(Controller.class.getResource("/html/map.html").toExternalForm());
+
     }
+
+    /**
+     * Sets up the JavaScript bridge for communication between Java and JavaScript
+     */
+    private void setupJavaScriptBridge() {
+        JSObject window = (JSObject) webEngine.executeScript("window");
+        window.setMember("javaScriptBridge", javaScriptBridge);
+        javaScriptConnector = (JSObject) webEngine.executeScript("jsConnector");
+    }
+
+    private void initializeMapView() {
+        javaScriptConnector.call("initMap", trail.getLat(), trail.getLon());
+        addLocation();
+    }
+
+
 
     /**
      * adds a location marker for the coordinates of the selected trail
