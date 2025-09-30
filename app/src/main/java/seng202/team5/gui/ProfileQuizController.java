@@ -16,6 +16,7 @@ public class ProfileQuizController extends Controller {
 
     // To keep track of which question the user is on
     private int quizId;
+    private User user;
 
     /**
      * Constructs the controller with navigator
@@ -23,9 +24,10 @@ public class ProfileQuizController extends Controller {
      * @param navigator screen navigator
      * @param quizId    quiz question id
      */
-    public ProfileQuizController(ScreenNavigator navigator, int quizId) {
+    public ProfileQuizController(ScreenNavigator navigator, int quizId, User user) {
         super(navigator);
         this.quizId = quizId;
+        this.user = user;
     }
 
     @FXML
@@ -150,11 +152,9 @@ public class ProfileQuizController extends Controller {
         incrementQuizId();
         if (quizId < 10) {
             super.getNavigator()
-                    .launchScreen(new ProfileQuizController(super.getNavigator(), quizId));
+                    .launchScreen(new ProfileQuizController(super.getNavigator(), quizId, user));
         } else {
-            // Mark profile as complete and save final state
-            super.getUserService().markProfileComplete();
-            super.getNavigator().launchScreen(new LoadingController(super.getNavigator(), false));
+            super.getNavigator().launchScreen(new LoadingController(super.getNavigator(), user));
         }
     }
 
@@ -181,7 +181,6 @@ public class ProfileQuizController extends Controller {
      * Gets values from sliders and sets attributes of User object
      */
     private void setUserPreferences() {
-        User user = super.getUserService().getUser();
         switch (quizId) {
             case 1:
                 user.setExperienceLevel((int) slider1.getValue());
@@ -204,7 +203,6 @@ public class ProfileQuizController extends Controller {
                 user.setWaterfallPreference((int) slider2.getValue());
                 break;
         }
-        super.getUserService().setUser(user);
     }
 
     @Override

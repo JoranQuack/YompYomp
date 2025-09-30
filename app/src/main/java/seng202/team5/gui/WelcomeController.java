@@ -63,7 +63,6 @@ public class WelcomeController extends Controller {
      */
     @FXML
     private void onSetUpProfileButtonClicked() {
-        super.getUserService().clearUser();
         super.getNavigator()
                 .launchScreen(new ProfileSetupGeneralController(super.getNavigator()));
     }
@@ -73,10 +72,7 @@ public class WelcomeController extends Controller {
      */
     @FXML
     private void onSkipButtonClicked() {
-        if (super.getUserService().getUser() == null) {
-            super.getUserService().setGuest(true);
-        }
-        super.getNavigator().launchScreen(new LoadingController(super.getNavigator(), true));
+        super.getNavigator().launchScreen(new LoadingController(super.getNavigator(), null));
     }
 
     @Override

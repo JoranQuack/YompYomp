@@ -4,6 +4,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
@@ -24,6 +25,7 @@ public class ScreenNavigator {
     private final BorderPane rootPane;
     private final Deque<Controller> history = new ArrayDeque<>();
     private boolean isBack = false;
+
     /**
      * Constructor for ScreenNavigator
      *
@@ -79,6 +81,8 @@ public class ScreenNavigator {
                 wrapperPane.getChildren().add(setupParent);
                 controller.getNavbarController().setPage(controller.getNavbarPageIndex());
 
+                VBox.setVgrow(setupParent, Priority.ALWAYS);
+
                 rootPane.setCenter(wrapperPane);
             } else {
                 rootPane.setCenter(setupParent);
@@ -88,8 +92,7 @@ public class ScreenNavigator {
 
             if (!isBack) {
                 history.push(controller);
-            }
-            else {
+            } else {
                 isBack = false;
             }
         } catch (IOException e) {

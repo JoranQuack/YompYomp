@@ -95,12 +95,13 @@ public class UserService {
     }
 
     /**
-     * Save user to database after each preference update to ensure persistence.
+     * Save user to database
      *
      * @param user the user to save
      */
-    public void saveUserImmediately(User user) {
+    public void saveUser(User user) {
         if (user != null && !isGuest) {
+            user.setProfileComplete(true);
             saveUserToDatabase(user);
         }
     }
@@ -144,12 +145,6 @@ public class UserService {
      * @return true if user is a guest, false otherwise
      */
     public boolean isGuest() {
-        if (!isGuest) {
-            User existingUser = loadUserFromDatabase();
-            if (existingUser == null) {
-                isGuest = true;
-            }
-        }
         return isGuest;
     }
 
