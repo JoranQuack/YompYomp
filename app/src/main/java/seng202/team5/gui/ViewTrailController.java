@@ -80,17 +80,36 @@ public class ViewTrailController extends Controller {
      */
     @FXML
     private void initialize() {
-//        setupFormFields();
-//        setupEventHandlers();
+        setupFormFields();
+        setupEventHandlers();
         setupLegend();
+
+
+
+
+
+
+        javaScriptBridge = new JavaScriptBridge(this, searchService);
+        initMap();
+    }
+
+    /**
+     * Sets up all form fields and their initial values
+     */
+    private void setupFormFields() {
         trailService = new TrailService();
-
         initTrailCard();
-
         descriptionLabel.setText(trail.getDescription());
-        backButton.setOnAction(e -> onBackButtonClicked());
-        editInfoButton.setOnAction(e -> onEditInfoButtonClicked());
+        if (!trail.getTranslation().isEmpty()) {
+            translationLabel.setText(trail.getTranslation());
+            translationLabel.setVisible(true);
+        } else {
+            translationLabel.setVisible(false);
+        }
+        setupTrailRadiusFields();
+    }
 
+    private void setupTrailRadiusFields() {
         // Allow only digits in the text field
         trailsRadiusTextField.setTextFormatter(new TextFormatter<>(change -> {
             String newText = change.getControlNewText();
@@ -102,15 +121,21 @@ public class ViewTrailController extends Controller {
 
         // Initially disable the text field if checkbox is not selected
         trailsRadiusTextField.setDisable(!nearbyTrailsCheckbox.isSelected());
+    }
+
+    /**
+     * Sets up event handlers for form controls
+     */
+    private void setupEventHandlers() {
+        backButton.setOnAction(e -> onBackButtonClicked());
+        editInfoButton.setOnAction(e -> onEditInfoButtonClicked());
 
         nearbyTrailsCheckbox.setOnAction(e -> {
             boolean selected = nearbyTrailsCheckbox.isSelected();
             trailsRadiusTextField.setDisable(!selected); // disable if unchecked
             if (selected) {
                 trailsRadiusTextField.setText("20");
-                List<Trail> nearby = trailService.getNearbyTrails(trail,
-                        Integer.parseInt(trailsRadiusTextField.getText()), searchService.getAllTrails());
-                displayTrailsOnMap(nearby);
+                updateNearbyTrails(Integer.parseInt(trailsRadiusTextField.getText()));
             } else {
                 // reset to just the current trail
                 addLocation();
@@ -127,21 +152,12 @@ public class ViewTrailController extends Controller {
                 } else {
                     radius = Integer.parseInt(newValue);
                 }
-                List<Trail> nearby = trailService.getNearbyTrails(trail, radius, searchService.getAllTrails());
-                displayTrailsOnMap(nearby);
+                updateNearbyTrails(radius);
             }
         });
-
-        if (!trail.getTranslation().isEmpty()) {
-            translationLabel.setText(trail.getTranslation());
-            translationLabel.setVisible(true);
-        } else {
-            translationLabel.setVisible(false);
-        }
-
-        javaScriptBridge = new JavaScriptBridge(this, searchService);
-        initMap();
     }
+
+
 
     /**
      * Sets up the legend for the map marker colours
@@ -162,6 +178,15 @@ public class ViewTrailController extends Controller {
         TrailCardComponent trailCard = new TrailCardComponent(super.getUserService().isGuest());
         trailCard.setData(trail);
         trailCardHBox.getChildren().add(trailCard);
+    }
+
+    /**
+     * Calls the function to display nearby trails on the map within a given radius
+     * @param radius the radius in km of nearby trails to be viewed
+     */
+    private void updateNearbyTrails(int radius) {
+        List<Trail> nearby = trailService.getNearbyTrails(trail, radius, searchService.getAllTrails());
+        displayTrailsOnMap(nearby);
     }
 
     /**
