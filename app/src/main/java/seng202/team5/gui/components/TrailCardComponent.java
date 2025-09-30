@@ -144,7 +144,7 @@ public class TrailCardComponent extends VBox {
             starIcon.setVisible(true);
             starLabel.setText(String.valueOf(log.getRating()));
 
-            difficultyLabel.setText(StringManipulator.capitaliseFirstLetter(log.getPersonalDifficulty()));
+            difficultyLabel.setText(StringManipulator.capitaliseFirstLetter(log.getPerceivedDifficulty()));
             //TODO implement the label for the duration when the model is updated
             //durationLabel.setText(StringManipulator.capitaliseFirstLetter())
         }
