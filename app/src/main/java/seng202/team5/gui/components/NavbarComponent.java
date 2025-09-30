@@ -7,6 +7,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Button;
 import javafx.scene.layout.HBox;
+import seng202.team5.data.SqlBasedTrailRepo;
 import seng202.team5.gui.ProfileSetupGeneralController;
 import seng202.team5.gui.ScreenNavigator;
 import seng202.team5.gui.DashboardController;
@@ -32,8 +33,11 @@ public class NavbarComponent extends HBox {
     /**
      * Initialise the NavbarController and put the buttons into the list to easily
      * switch between them.
+     * @param navigator the screen navigator
+     * @param userService the userService
+     * @param sqlBasedTrailRepo the trail repo
      */
-    public NavbarComponent(ScreenNavigator navigator, UserService userService) {
+    public NavbarComponent(ScreenNavigator navigator, UserService userService, SqlBasedTrailRepo sqlBasedTrailRepo) {
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/components/navbar.fxml"));
         fxmlLoader.setRoot(this);
         fxmlLoader.setController(this);
@@ -52,9 +56,8 @@ public class NavbarComponent extends HBox {
         // navButtons = List.of(homeButton, trailsButton, loggedButton, toDoButton);
         navButtons = List.of(homeButton, trailsButton);
         homeButton.setOnAction(e -> navigator.launchScreen(new DashboardController(navigator)));
-        trailsButton.setOnAction(e -> navigator.launchScreen(new TrailsController(navigator)));
+        trailsButton.setOnAction(e -> navigator.launchScreen(new TrailsController(navigator, sqlBasedTrailRepo)));
         redoQuizButton.setOnAction(e -> navigator.launchScreen(new ProfileSetupGeneralController(navigator)));
-        // Implement actions for the remaining buttons when we're ready to rock
     }
 
     /**

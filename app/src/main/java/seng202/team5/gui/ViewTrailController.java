@@ -8,13 +8,15 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Background;
+import javafx.scene.layout.Priority;
 import javafx.scene.paint.Paint;
 import javafx.scene.web.WebEngine;
+import javafx.scene.layout.HBox;
 import javafx.scene.web.WebView;
 import netscape.javascript.JSObject;
+import seng202.team5.data.SqlBasedTrailRepo;
 import seng202.team5.gui.components.TrailCardComponent;
 import seng202.team5.models.Trail;
-import seng202.team5.services.SearchService;
 import seng202.team5.services.TrailService;
 
 import java.util.List;
@@ -25,7 +27,7 @@ import java.util.List;
 public class ViewTrailController extends Controller {
     private Trail trail;
     private TrailService trailService;
-    private SearchService searchService;
+    private SqlBasedTrailRepo sqlBasedTrailRepo;
 
     private WebEngine webEngine;
     private JavaScriptBridge javaScriptBridge;
@@ -36,12 +38,12 @@ public class ViewTrailController extends Controller {
      *
      * @param navigator     screen navigator
      * @param trail         trail object to be displayed on screen
-     * @param searchService searchService
+     * @param sqlBasedTrailRepo sqlBasedTrailRepo
      */
-    public ViewTrailController(ScreenNavigator navigator, Trail trail, SearchService searchService) {
+    public ViewTrailController(ScreenNavigator navigator, Trail trail, SqlBasedTrailRepo sqlBasedTrailRepo) {
         super(navigator);
         this.trail = trail;
-        this.searchService = searchService;
+        this.sqlBasedTrailRepo = sqlBasedTrailRepo;
     }
 
     @FXML
@@ -80,9 +82,7 @@ public class ViewTrailController extends Controller {
     private void initialize() {
         setupFormFields();
         setupEventHandlers();
-        setupLegend();
-
-        javaScriptBridge = new JavaScriptBridge(this, searchService);
+        setupLegend();javaScriptBridge = new JavaScriptBridge(this, sqlBasedTrailRepo);
         initMap();
     }
 
@@ -172,11 +172,11 @@ public class ViewTrailController extends Controller {
 
     /**
      * Calls the function to display nearby trails on the map within a given radius
-     * 
+     *
      * @param radius the radius in km of nearby trails to be viewed
      */
     private void updateNearbyTrails(int radius) {
-        List<Trail> nearby = trailService.getNearbyTrails(trail, radius, searchService.getAllTrails());
+        List<Trail> nearby = trailService.getNearbyTrails(trail, radius, sqlBasedTrailRepo.getAllTrails());
         displayTrailsOnMap(nearby);
     }
 
@@ -186,7 +186,7 @@ public class ViewTrailController extends Controller {
      * objects between Java and Javascript
      */
     private void initMap() {
-        javaScriptBridge = new JavaScriptBridge(this, searchService);
+        javaScriptBridge = new JavaScriptBridge(this, sqlBasedTrailRepo);
         webEngine = trailMapWebView.getEngine();
         webEngine.setJavaScriptEnabled(true);
 
@@ -257,13 +257,7 @@ public class ViewTrailController extends Controller {
      * @param trail the trail whose page will be opened
      */
     public void openTrailInfo(Trail trail) {
-        super.getNavigator().launchScreen(new ViewTrailController(super.getNavigator(), trail, searchService)); // pass
-                                                                                                                // dashboard
-                                                                                                                // as
-                                                                                                                // last
-                                                                                                                // controller
-                                                                                                                // (or
-                                                                                                                // this??)
+        super.getNavigator().launchScreen(new ViewTrailController(super.getNavigator(), trail, sqlBasedTrailRepo));
     }
 
     @FXML
@@ -274,7 +268,7 @@ public class ViewTrailController extends Controller {
     @FXML
     private void onEditInfoButtonClicked() {
         super.getNavigator().launchScreen(new ModifyTrailController(super.getNavigator(), trail,
-                searchService));
+                sqlBasedTrailRepo));
     }
 
     @Override
@@ -303,10 +297,10 @@ public class ViewTrailController extends Controller {
      *
      * @param e the exception that occurred while loading the trail screen
      */
-    // @Override
-    // public void onLoadFailed(Exception e) {
-    // showAlert(Alert.AlertType.ERROR, "Trail Card Failed To Load",
-    // "Loading selected trail failed, please close the application and try
-    // again.");
-    // }
+     @Override
+     public void onLoadFailed(Exception e) {
+     showAlert(Alert.AlertType.ERROR, "Trail Card Failed To Load",
+             "Loading selected trail failed, please close the application and try " +
+                     "again.");
+     }
 }
