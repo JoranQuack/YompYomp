@@ -3,8 +3,11 @@ package seng202.team5.gui;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import seng202.team5.data.DatabaseService;
+import seng202.team5.data.SqlBasedTrailLogRepo;
 import seng202.team5.data.SqlBasedTrailRepo;
 import seng202.team5.models.TrailLog;
+
+import java.util.List;
 
 /**
  * Controller for the trip log screen
@@ -14,6 +17,7 @@ public class LogTrailController extends Controller {
     private TrailLog trailLog;
     private DatabaseService databaseService;
     private SqlBasedTrailRepo trailRepo;
+    private SqlBasedTrailLogRepo trailLogRepo;
 
     /**
      * Launches the screen with the navigator
@@ -39,6 +43,8 @@ public class LogTrailController extends Controller {
     @FXML
     private ChoiceBox<String> timeUnitSelector;
     @FXML
+    private ChoiceBox<String> trailTypeSelector;
+    @FXML
     private Slider rateSlider;
     @FXML
     private ChoiceBox<String> perceivedDifficultySelector;
@@ -47,13 +53,21 @@ public class LogTrailController extends Controller {
     @FXML
     private Button doneButton;
 
-
     /**
      * Initialises the screen with components for the user to input data
      */
     @FXML
     private void initialize() {
-        setupForm
+        setupFormFields();
+    }
+
+    /**
+     * Sets up the form fields with the data from the trailLog
+     */
+    private void setupFormFields() {
+        timeUnitSelector.getItems().addAll(List.of("Minutes", "Hours", "Days"));
+        trailTypeSelector.getItems().addAll(List.of("One way", "Loop", "Return"));
+        perceivedDifficultySelector.getItems().addAll(List.of("Easiest", "Easy", "Intermediate", "Advanced", "Expert"));
     }
 
     @FXML
@@ -71,5 +85,13 @@ public class LogTrailController extends Controller {
         return "Trip Log Screen";
     }
 
+    @Override
+    protected boolean shouldShowNavbar() {
+        return false;
+    }
 
+    @Override
+    protected int getNavbarPageIndex() {
+        return 1; // Trails section
+    }
 }

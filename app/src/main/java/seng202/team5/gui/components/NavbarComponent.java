@@ -54,7 +54,7 @@ public class NavbarComponent extends HBox {
         trailsButton.setOnAction(e -> navigator.launchScreen(new TrailsController(navigator)));
         redoQuizButton.setOnAction(e -> navigator.launchScreen(new ProfileSetupGeneralController(navigator)));
         // Implement actions for the remaining buttons when we're ready to rock
-        logbookButton.setOnAction(e -> navigator.launchScreen(new LogBookController(navigator), null));
+        logbookButton.setOnAction(e -> navigator.launchScreen(new LogBookController(navigator)));
     }
 
     /**
