@@ -8,10 +8,8 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Background;
-import javafx.scene.layout.Priority;
 import javafx.scene.paint.Paint;
 import javafx.scene.web.WebEngine;
-import javafx.scene.layout.HBox;
 import javafx.scene.web.WebView;
 import netscape.javascript.JSObject;
 import seng202.team5.gui.components.TrailCardComponent;
@@ -52,8 +50,8 @@ public class ViewTrailController extends Controller {
     private Label descriptionLabel;
     @FXML
     private Button editInfoButton;
-//    @FXML
-//    private HBox mapContainer; //bring back later
+    // @FXML
+    // private HBox mapContainer; //bring back later
     @FXML
     private Button backButton;
     @FXML
@@ -83,11 +81,6 @@ public class ViewTrailController extends Controller {
         setupFormFields();
         setupEventHandlers();
         setupLegend();
-
-
-
-
-
 
         javaScriptBridge = new JavaScriptBridge(this, searchService);
         initMap();
@@ -157,8 +150,6 @@ public class ViewTrailController extends Controller {
         });
     }
 
-
-
     /**
      * Sets up the legend for the map marker colours
      */
@@ -169,7 +160,6 @@ public class ViewTrailController extends Controller {
         advancedColourLabel.setBackground(Background.fill(Paint.valueOf("ffa500")));
         expertColourLabel.setBackground(Background.fill(Paint.valueOf("ff0000")));
     }
-
 
     /**
      * Initialises the trail card at the top of the screen
@@ -182,6 +172,7 @@ public class ViewTrailController extends Controller {
 
     /**
      * Calls the function to display nearby trails on the map within a given radius
+     *
      * @param radius the radius in km of nearby trails to be viewed
      */
     private void updateNearbyTrails(int radius) {
@@ -199,8 +190,8 @@ public class ViewTrailController extends Controller {
         webEngine = trailMapWebView.getEngine();
         webEngine.setJavaScriptEnabled(true);
 
-        WebConsoleListener.setDefaultListener((view, message, lineNumber, sourceID) ->
-                System.out.printf(String.format("Map WebView console log line: %d, message : %s", lineNumber, message)));
+        WebConsoleListener.setDefaultListener((view, message, lineNumber, sourceID) -> System.out
+                .printf(String.format("Map WebView console log line: %d, message : %s", lineNumber, message)));
 
         webEngine.getLoadWorker().stateProperty().addListener(
                 (ov, oldState, newState) -> {
@@ -227,8 +218,6 @@ public class ViewTrailController extends Controller {
         javaScriptConnector.call("initMap", trail.getLat(), trail.getLon());
         addLocation();
     }
-
-
 
     /**
      * adds a location marker for the coordinates of the selected trail
@@ -268,7 +257,13 @@ public class ViewTrailController extends Controller {
      * @param trail the trail whose page will be opened
      */
     public void openTrailInfo(Trail trail) {
-        super.getNavigator().launchScreen(new ViewTrailController(super.getNavigator(), trail, searchService)); // pass dashboard as last controller (or this??)
+        super.getNavigator().launchScreen(new ViewTrailController(super.getNavigator(), trail, searchService)); // pass
+                                                                                                                // dashboard
+                                                                                                                // as
+                                                                                                                // last
+                                                                                                                // controller
+                                                                                                                // (or
+                                                                                                                // this??)
     }
 
     @FXML
@@ -308,9 +303,10 @@ public class ViewTrailController extends Controller {
      *
      * @param e the exception that occurred while loading the trail screen
      */
-//    @Override
-//    public void onLoadFailed(Exception e) {
-//        showAlert(Alert.AlertType.ERROR, "Trail Card Failed To Load",
-//                "Loading selected trail failed, please close the application and try again.");
-//    }
+    // @Override
+    // public void onLoadFailed(Exception e) {
+    // showAlert(Alert.AlertType.ERROR, "Trail Card Failed To Load",
+    // "Loading selected trail failed, please close the application and try
+    // again.");
+    // }
 }
