@@ -113,7 +113,8 @@ public class ViewTrailController extends Controller {
         }));
 
         // Initially disable the text field if checkbox is not selected
-        trailsRadiusTextField.setDisable(!nearbyTrailsCheckbox.isSelected());
+        nearbyTrailsCheckbox.setSelected(true);
+        trailsRadiusTextField.setText("20");
     }
 
     /**
@@ -123,29 +124,25 @@ public class ViewTrailController extends Controller {
         backButton.setOnAction(e -> onBackButtonClicked());
         editInfoButton.setOnAction(e -> onEditInfoButtonClicked());
 
-        nearbyTrailsCheckbox.setOnAction(e -> {
-            boolean selected = nearbyTrailsCheckbox.isSelected();
-            trailsRadiusTextField.setDisable(!selected); // disable if unchecked
-            if (selected) {
-                trailsRadiusTextField.setText("20");
-                updateNearbyTrails(Integer.parseInt(trailsRadiusTextField.getText()));
-            } else {
-                // reset to just the current trail
-                addLocation();
-                removeTrailsFromMap();
-                trailsRadiusTextField.clear();
+        nearbyTrailsCheckbox.setOnAction(e -> refreshNearbyTrails());
+        trailsRadiusTextField.textProperty().addListener((obs, oldVal, newVal) -> {
+            if (nearbyTrailsCheckbox.isSelected()) {
+                refreshNearbyTrails();
             }
         });
 
-        trailsRadiusTextField.textProperty().addListener((observable, oldValue, newValue) -> {
+        // Checkbox toggled
+        nearbyTrailsCheckbox.setOnAction(e -> {
             if (nearbyTrailsCheckbox.isSelected()) {
-                int radius;
-                if (newValue == null || newValue.trim().isEmpty()) {
-                    radius = 0; // when no value has been input
-                } else {
-                    radius = Integer.parseInt(newValue);
-                }
-                updateNearbyTrails(radius);
+                trailsRadiusTextField.setText("20"); // reset to 20 on reselect
+            }
+            refreshNearbyTrails();
+        });
+
+        // Text field value changed
+        trailsRadiusTextField.textProperty().addListener((obs, oldVal, newVal) -> {
+            if (nearbyTrailsCheckbox.isSelected()) {
+                refreshNearbyTrails();
             }
         });
     }
@@ -202,7 +199,6 @@ public class ViewTrailController extends Controller {
                 });
 
         webEngine.load(Controller.class.getResource("/html/map.html").toExternalForm());
-
     }
 
     /**
@@ -217,6 +213,7 @@ public class ViewTrailController extends Controller {
     private void initializeMapView() {
         javaScriptConnector.call("initMap", trail.getLat(), trail.getLon());
         addLocation();
+        refreshNearbyTrails();
     }
 
     /**
@@ -239,6 +236,28 @@ public class ViewTrailController extends Controller {
             Gson gson = new GsonBuilder().create();
             String trailsJson = gson.toJson(trails);
             javaScriptConnector.call("displayTrails", trailsJson);
+        }
+    }
+
+    /**
+     * Handles showing/hiding nearby trails depending on checbox state and radius.
+     */
+    private void refreshNearbyTrails() {
+        if (nearbyTrailsCheckbox.isSelected()) {
+            int radius;
+            String text = trailsRadiusTextField.getText();
+            if (text == null || text.trim().isEmpty()) {
+                radius = 0;
+            } else {
+                radius = Integer.parseInt(text);
+            }
+            trailsRadiusTextField.setDisable(false);
+            updateNearbyTrails(radius);
+        } else {
+            addLocation();
+            removeTrailsFromMap();
+            trailsRadiusTextField.clear();
+            trailsRadiusTextField.setDisable(true);
         }
     }
 
