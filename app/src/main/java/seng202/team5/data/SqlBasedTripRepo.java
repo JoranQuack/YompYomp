@@ -176,6 +176,6 @@ public class SqlBasedTripRepo implements ITrip {
         stmt.setString(13, trip.getNotes());
         stmt.setInt(14, trip.getRating());
         stmt.setString(15, trip.getWeather());
-        stmt.setString(16, trip.getPersonalDifficulty());
+        stmt.setString(16, trip.getPerceivedDifficulty());
     }
 }
