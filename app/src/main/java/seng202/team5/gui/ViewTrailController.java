@@ -52,8 +52,8 @@ public class ViewTrailController extends Controller {
     private Label descriptionLabel;
     @FXML
     private Button editInfoButton;
-    // @FXML
-    // private HBox mapContainer; //bring back later
+    @FXML
+    private HBox mapContainer;
     @FXML
     private Button backButton;
     @FXML
@@ -72,7 +72,6 @@ public class ViewTrailController extends Controller {
     private Label advancedColourLabel;
     @FXML
     private Label expertColourLabel;
-    @FXML
     private WebView trailMapWebView;
 
     /**
@@ -83,7 +82,7 @@ public class ViewTrailController extends Controller {
         setupFormFields();
         setupEventHandlers();
         setupLegend();javaScriptBridge = new JavaScriptBridge(this, sqlBasedTrailRepo);
-        initMap();
+        javafx.application.Platform.runLater(this::initMap);
     }
 
     /**
@@ -184,7 +183,16 @@ public class ViewTrailController extends Controller {
      */
     private void initMap() {
         javaScriptBridge = new JavaScriptBridge(this, sqlBasedTrailRepo);
+        mapContainer.getChildren().clear();
+        trailMapWebView = new WebView();
+        trailMapWebView.setPrefHeight(-1);
+        trailMapWebView.setPrefWidth(-1);
+        HBox.setHgrow(trailMapWebView, Priority.ALWAYS);
+        mapContainer.getChildren().add(trailMapWebView);
+
         webEngine = trailMapWebView.getEngine();
+
+
         webEngine.setJavaScriptEnabled(true);
 
         WebConsoleListener.setDefaultListener((view, message, lineNumber, sourceID) -> System.out
