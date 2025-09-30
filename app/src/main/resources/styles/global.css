@@ -33,7 +33,7 @@ Button:hover {
   -fx-background-color: #8faf8e;
 }
 
-.button-active {
+Button.active {
   -fx-background-color: #447055;
   -fx-text-fill: #fdfffb;
 }
@@ -129,6 +129,7 @@ Slider .thumb:pressed {
   -fx-background-color: #d5e6d4;
 }
 
+/* PROGRESS STUFF */
 ProgressBar {
   -fx-accent: #447055; /* Color of the filled portion */
   -fx-control-inner-background: #8faf8e; /* Color of the track */
@@ -146,6 +147,10 @@ ProgressBar .track {
   -fx-background-radius: 20;
   -fx-border-color: transparent;
   -fx-background-insets: 0;
+}
+
+ProgressIndicator {
+  -fx-progress-color: #e9d8ed; /* Changes the color of the moving part */
 }
 
 /* SCROLL BAR STUFF */
