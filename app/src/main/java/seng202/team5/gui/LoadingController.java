@@ -80,6 +80,7 @@ public class LoadingController extends Controller {
                 }
 
                 // Save the user to the database
+                userService.clearUser();
                 userService.saveUser(user);
 
                 // Create MatchmakingService AFTER database setup is complete

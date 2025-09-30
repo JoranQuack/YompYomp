@@ -51,7 +51,6 @@ public class WelcomeController extends Controller {
      */
     @FXML
     private void onSetUpProfileButtonClicked() {
-        super.getUserService().clearUser();
         super.getNavigator()
                 .launchScreen(new ProfileSetupGeneralController(super.getNavigator()));
     }
