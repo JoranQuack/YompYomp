@@ -15,7 +15,7 @@ public class TrailLog {
     private String notes;
 
     /**
-     * Constructor for a trail log.
+     * Constructor for a trail log
      *
      * @param id
      * @param trailId

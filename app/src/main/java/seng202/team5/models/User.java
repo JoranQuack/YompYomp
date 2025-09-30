@@ -3,7 +3,7 @@ package seng202.team5.models;
 import java.util.List;
 
 public class User {
-    // Some basic variables
+
     private int id;
     private String name;
     private List<String> regions;
