@@ -128,6 +128,7 @@ Slider {
 
 Slider .track {
   -fx-background-radius: 10;
+  -fx-background-color: #eef1ed;
   -fx-border-radius: 10;
   -fx-padding: 1px;
   -fx-border-color: transparent;
