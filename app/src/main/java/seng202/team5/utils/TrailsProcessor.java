@@ -23,11 +23,9 @@ public class TrailsProcessor {
                     CompletionTimeParser.CompletionTimeResult result = CompletionTimeParser
                             .parseCompletionTime(completionInfo);
 
-                    // Only use type returned by parser if current type of trail is unknown or the 2
-                    // don't match so choose parser
-                    if (Objects.equals(trail.getCompletionType(), "unknown") ||
-                            (!Objects.equals(trail.getCompletionType(), result.getCompletionType())) &&
-                                    !Objects.equals(result.getCompletionType(), "unknown")) {
+                    // Only use type returned by parser if current type of trail is unknown
+                    // Prioritise entry from drop down over parser
+                    if (Objects.equals(trail.getCompletionType(), "unknown")) {
                         trail.setCompletionType(result.getCompletionType());
                     }
                     // Update trail with parsed time information
