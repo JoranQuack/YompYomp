@@ -12,12 +12,14 @@
  * OffBlack: #7B7B7B
  */
 
+/* TEXT STUFF */
 Label {
   -fx-font-family: "Quicksand Medium";
   -fx-font-size: 14px;
   -fx-text-fill: #04140b;
 }
 
+/* BUTTON STUFF */
 Button {
   -fx-font-family: "Quicksand SemiBold";
   -fx-cursor: hand;
@@ -36,6 +38,7 @@ Button:hover {
   -fx-text-fill: #fdfffb;
 }
 
+/* INPUT STUFF */
 TextField {
   -fx-font-family: "Quicksand";
   -fx-font-size: 14px;
@@ -62,7 +65,6 @@ CheckComboBox:hover {
   -fx-background-color: #d5e6d4;
 }
 
-/* Style the internal components using JavaFX-specific selectors */
 CheckComboBox > .combo-box {
   -fx-background-color: transparent;
   -fx-border-color: transparent;
@@ -99,6 +101,7 @@ CheckComboBox > .combo-box .check-box:selected .box {
   -fx-background-color: #8faf8e;
 }
 
+/* SCROLL BAR STUFF */
 .scroll-bar {
   -fx-background-color: #eef1ed;
   -fx-background-radius: 10;
@@ -115,6 +118,7 @@ CheckComboBox > .combo-box .check-box:selected .box {
   -fx-background-color: #d5e6d4;
 }
 
+/* GENERAL CLASSES */
 .root-pane {
   -fx-background-color: #fdfffb;
 }
