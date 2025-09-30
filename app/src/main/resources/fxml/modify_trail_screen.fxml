@@ -40,7 +40,7 @@
                   </VBox>
                   <VBox spacing="10.0" HBox.hgrow="ALWAYS">
                      <children>
-                        <Label text="Trail type" />
+                        <Label text="Trail type (Required)" />
                         <ComboBox fx:id="trailTypeComboBox" VBox.vgrow="ALWAYS" />
                      </children>
                   </VBox>

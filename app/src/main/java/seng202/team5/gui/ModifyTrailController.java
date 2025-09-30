@@ -294,10 +294,7 @@ public class ModifyTrailController extends Controller {
                 return false; // user must choose a location by entering coordinates or selecting them on map
             }
         }
-        if (trailNameTextField.getText().isEmpty() || trailDescriptionTextArea.getText().isEmpty()) {
-            return false;
-        }
-        return true;
+        return !trailNameTextField.getText().isEmpty() && !trailDescriptionTextArea.getText().isEmpty() && trailTypeComboBox.getValue() != null;
     }
 
     /**
