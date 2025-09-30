@@ -253,8 +253,10 @@ public class ModifyTrailController extends Controller {
     @FXML
     private void onSaveButtonClicked() {
         if (userInputValidation()) {
-            sqlBasedTrailRepo.upsert(getUpdatedTrail());
-            super.getNavigator().launchScreen(lastController, lastController.getNavigator().getLastController());
+            Trail updatedTrail = getUpdatedTrail();
+            sqlBasedTrailRepo.upsert(updatedTrail);
+            super.getNavigator().launchScreen(
+                    new ViewTrailController(super.getNavigator(), updatedTrail, searchService));
         } else {
             emptyFieldLabel.setText("Please make sure all required fields are filled!");
             emptyFieldLabel.setTextFill(Color.RED);
@@ -263,7 +265,7 @@ public class ModifyTrailController extends Controller {
 
     @FXML
     private void onBackButtonClicked() {
-        super.getNavigator().launchScreen(lastController, lastController.getNavigator().getLastController());
+        super.getNavigator().goBack();
     }
 
     /**
