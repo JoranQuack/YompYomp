@@ -8,10 +8,12 @@ import javafx.scene.control.ProgressIndicator;
 import seng202.team5.App;
 import seng202.team5.models.User;
 import seng202.team5.services.MatchmakingService;
+import seng202.team5.services.UserService;
 
 public class LoadingController extends Controller {
 
     private boolean isMatchmakingComplete = false;
+    private boolean isSkip = false;
 
     @FXML
     private ProgressIndicator progressIndicator;
@@ -24,9 +26,10 @@ public class LoadingController extends Controller {
      *
      * @param navigator screen navigator
      */
-    public LoadingController(ScreenNavigator navigator, boolean isMatchmakingComplete) {
+    public LoadingController(ScreenNavigator navigator, boolean isMatchmakingComplete, boolean isSkip) {
         super(navigator);
         this.isMatchmakingComplete = isMatchmakingComplete;
+        this.isSkip = isSkip;
 
         // Use Platform.runLater to execute
         javafx.application.Platform.runLater(this::startMatchmaking);
@@ -55,6 +58,7 @@ public class LoadingController extends Controller {
         progressIndicator.setProgress(-1.0);
 
         final ScreenNavigator navigator = super.getNavigator();
+        final UserService userService = super.getUserService();
 
         // Create a background task for the matchmaking process
         Task<Void> matchmakingTask = new Task<Void>() {
@@ -62,6 +66,15 @@ public class LoadingController extends Controller {
             protected Void call() throws Exception {
                 // Wait for database setup before we can matchmake
                 App.getSetupService().waitForDatabaseSetup();
+
+                // If skipping, set user as guest if no user exists
+                if (isSkip) {
+                    if (userService.getUser() == null) {
+                        userService.setGuest(true);
+                    }
+                } else {
+                    userService.markProfileComplete();
+                }
 
                 if (isMatchmakingComplete) {
                     return null;
