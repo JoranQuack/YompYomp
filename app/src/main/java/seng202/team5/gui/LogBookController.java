@@ -197,8 +197,7 @@ public class LogBookController extends Controller {
 
     @FXML
     private void onTrailCardClicked(Trail trail) {
-        //TODO when merged to main the null in the launch will have to be removed
-        super.getNavigator().launchScreen(new ViewTrailController(super.getNavigator(), trail), null);
+        super.getNavigator().launchScreen(new ViewTrailController(super.getNavigator(), trail, searchService));
     }
 
     /**
