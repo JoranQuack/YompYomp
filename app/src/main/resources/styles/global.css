@@ -55,6 +55,11 @@ CheckComboBox {
   -fx-background-radius: 10;
   -fx-border-color: transparent;
   -fx-padding: 0;
+  -fx-cursor: hand;
+}
+
+CheckComboBox:hover {
+  -fx-background-color: #d5e6d4;
 }
 
 /* Style the internal components using JavaFX-specific selectors */
@@ -62,13 +67,19 @@ CheckComboBox > .combo-box {
   -fx-background-color: transparent;
   -fx-border-color: transparent;
   -fx-background-radius: 10;
-  -fx-padding: 5 10 5 10;
+  -fx-padding: 5;
+}
+
+CheckComboBox .list-view {
+  -fx-background-radius: 10;
 }
 
 CheckComboBox > .combo-box .list-cell {
   -fx-background-color: transparent;
-  -fx-background-radius: 0 10 10 0;
+  -fx-background-radius: 10;
   -fx-border-color: transparent;
+  -fx-cursor: hand;
+  -fx-text-fill: #04140b;
 }
 
 CheckComboBox > .combo-box .list-cell:hover {
@@ -76,22 +87,32 @@ CheckComboBox > .combo-box .list-cell:hover {
 }
 
 CheckComboBox > .combo-box .check-box {
-  /* Styles for the CheckBoxes within the dropdown */
   -fx-padding: 5px;
 }
 
 CheckComboBox > .combo-box .check-box .box {
-  /* Styles for the actual check box graphic */
-  -fx-background-color: white;
-  -fx-border-color: gray;
+  -fx-background-color: #eef1ed;
+  -fx-border-color: #7b7b7b;
 }
 
 CheckComboBox > .combo-box .check-box:selected .box {
-  -fx-background-color: green;
+  -fx-background-color: #8faf8e;
 }
 
-CheckComboBox > .arrow-button > .arrow {
-  -fx-background-color: #04140b;
+.scroll-bar {
+  -fx-background-color: #eef1ed;
+  -fx-background-radius: 10;
+}
+
+.scroll-bar .thumb {
+  -fx-background-color: #8faf8e;
+  -fx-background-radius: 10;
+  -fx-cursor: hand;
+}
+
+.scroll-bar .thumb:hover,
+.scroll-bar .thumb:pressed {
+  -fx-background-color: #d5e6d4;
 }
 
 .root-pane {
