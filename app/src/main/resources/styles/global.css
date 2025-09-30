@@ -47,6 +47,53 @@ TextField {
   -fx-padding: 10 15 10 15;
 }
 
+CheckComboBox {
+  -fx-font-family: "Quicksand";
+  -fx-font-size: 14px;
+  -fx-text-fill: #04140b;
+  -fx-background-color: #eef1ed;
+  -fx-background-radius: 10;
+  -fx-border-color: transparent;
+  -fx-padding: 0;
+}
+
+/* Style the internal components using JavaFX-specific selectors */
+CheckComboBox > .combo-box {
+  -fx-background-color: transparent;
+  -fx-border-color: transparent;
+  -fx-background-radius: 10;
+  -fx-padding: 5 10 5 10;
+}
+
+CheckComboBox > .combo-box .list-cell {
+  -fx-background-color: transparent;
+  -fx-background-radius: 0 10 10 0;
+  -fx-border-color: transparent;
+}
+
+CheckComboBox > .combo-box .list-cell:hover {
+  -fx-background-color: #d5e6d4;
+}
+
+CheckComboBox > .combo-box .check-box {
+  /* Styles for the CheckBoxes within the dropdown */
+  -fx-padding: 5px;
+}
+
+CheckComboBox > .combo-box .check-box .box {
+  /* Styles for the actual check box graphic */
+  -fx-background-color: white;
+  -fx-border-color: gray;
+}
+
+CheckComboBox > .combo-box .check-box:selected .box {
+  -fx-background-color: green;
+}
+
+CheckComboBox > .arrow-button > .arrow {
+  -fx-background-color: #04140b;
+}
+
 .root-pane {
   -fx-background-color: #fdfffb;
 }
