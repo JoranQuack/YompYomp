@@ -80,6 +80,9 @@ public class ViewTrailController extends Controller {
      */
     @FXML
     private void initialize() {
+//        setupFormFields();
+//        setupEventHandlers();
+        setupLegend();
         trailService = new TrailService();
 
         initTrailCard();
