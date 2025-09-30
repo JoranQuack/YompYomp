@@ -27,8 +27,10 @@ public class AccountController extends Controller {
 
     @FXML
     private void initialize() {
+        // Initialize the navbar
         NavbarComponent navbar = super.getNavbarController();
         navbar.setPage(2);
+        navBarContainer.getChildren().add(navbar);
     }
 
     @Override
