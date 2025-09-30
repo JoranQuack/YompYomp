@@ -142,22 +142,7 @@ CheckComboBox > .combo-box .list-cell:hover {
   -fx-text-fill: #fdfffb;
 }
 
-.light-text {
-  -fx-font-family: "Quicksand Light";
-}
-
-.regular-text {
-  -fx-font-family: "Quicksand";
-}
-
-.medium-text {
-  -fx-font-family: "Quicksand Medium";
-}
-
-.semibold-text {
-  -fx-font-family: "Quicksand SemiBold";
-}
-
-.bold-text {
-  -fx-font-family: "Quicksand Bold";
+.small-text {
+  -fx-font-size: 12px;
+  -fx-font-family: "Quicksand Regular";
 }
