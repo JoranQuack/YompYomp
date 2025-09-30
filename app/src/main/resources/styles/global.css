@@ -88,17 +88,22 @@ CheckComboBox > .combo-box .list-cell:hover {
   -fx-background-color: #d5e6d4;
 }
 
-CheckComboBox > .combo-box .check-box {
-  -fx-padding: 5px;
+.check-box {
+  -fx-font-family: "Quicksand";
+  -fx-font-size: 14px;
+  -fx-text-fill: #04140b;
+  -fx-cursor: hand;
 }
 
-CheckComboBox > .combo-box .check-box .box {
+.check-box .box {
   -fx-background-color: #eef1ed;
-  -fx-border-color: #7b7b7b;
+  -fx-padding: 5px;
+  -fx-border-radius: 6;
+  -fx-background-radius: 6;
 }
 
-CheckComboBox > .combo-box .check-box:selected .box {
-  -fx-background-color: #8faf8e;
+.check-box:selected .box {
+  -fx-background-color: #d5e6d4;
 }
 
 /* SCROLL BAR STUFF */

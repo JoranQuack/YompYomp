@@ -11,7 +11,6 @@
 <?import javafx.scene.layout.VBox?>
 <?import org.controlsfx.control.CheckComboBox?>
 
-
 <StackPane fx:id="rootPane" minHeight="350.0" minWidth="500.0" styleClass="root-pane-dark" stylesheets="@../styles/global.css" xmlns="http://javafx.com/javafx/21.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="seng202.team5.gui.ProfileSetupGeneralController">
    <children>
       <ImageView fx:id="bgImage" fitHeight="369.0" fitWidth="499.0" pickOnBounds="true" preserveRatio="true">
@@ -21,7 +20,7 @@
       </ImageView>
       <VBox alignment="CENTER" spacing="20.0">
          <children>
-            <ImageView fitHeight="100.0" fitWidth="100.0" pickOnBounds="true" preserveRatio="true">
+            <ImageView fitHeight="80.0" fitWidth="80.0" pickOnBounds="true" preserveRatio="true">
                <image>
                   <Image url="@../images/user_icon.png" />
                </image>
