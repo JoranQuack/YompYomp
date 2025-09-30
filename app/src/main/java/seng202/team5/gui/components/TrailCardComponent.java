@@ -87,7 +87,7 @@ public class TrailCardComponent extends VBox {
 
         Image trailImage = imageService.loadTrailImage(trail.getThumbnailURL());
         thumbnail.setImage(trailImage);
-        BackgroundImageUtil.setupFillBehavior(thumbnail, thumbnailContainer);
+        BackgroundImageUtil.setupFillBehaviorWithRoundedCorners(thumbnail, thumbnailContainer, 10);
 
         if (!trail.getDifficulty().contains("unknown")) {
             difficultyLabel.setText(StringManipulator.capitaliseFirstLetter(trail.getDifficulty()));

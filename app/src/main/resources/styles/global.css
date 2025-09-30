@@ -12,6 +12,10 @@
  * OffBlack: #7B7B7B
  */
 
+* {
+  -fx-background-color: transparent;
+}
+
 /* TEXT STUFF */
 Label {
   -fx-font-family: "Quicksand Medium";
@@ -141,12 +145,14 @@ ProgressBar .bar {
   -fx-background-radius: 20;
   -fx-border-color: transparent; /* Removes the border around the filled part of the bar */
   -fx-background-insets: 0;
+  -fx-background-color: #447055;
 }
 
 ProgressBar .track {
   -fx-background-radius: 20;
   -fx-border-color: transparent;
   -fx-background-insets: 0;
+  -fx-background-color: #8faf8e;
 }
 
 ProgressIndicator {
@@ -184,6 +190,11 @@ ProgressIndicator {
   -fx-font-size: 26px;
 }
 
+.heading {
+  -fx-font-family: "Quicksand SemiBold";
+  -fx-font-size: 16px;
+}
+
 .text-light {
   -fx-text-fill: #fdfffb;
 }
@@ -191,4 +202,36 @@ ProgressIndicator {
 .small-text {
   -fx-font-size: 12px;
   -fx-font-family: "Quicksand Regular";
+}
+
+.pill {
+  -fx-background-radius: 20;
+  -fx-padding: 5 10 5 10;
+  -fx-font-size: 12px;
+}
+
+.bg-pinky {
+  -fx-background-color: #e9d8ed;
+}
+
+.bg-bluey {
+  -fx-background-color: #d8e5fd;
+}
+
+.bg-greeny {
+  -fx-background-color: #d5e6d4;
+}
+
+.round-top {
+  -fx-background-radius: 10 10 0 0;
+}
+
+.trail-card {
+  -fx-background-color: #eef1ed;
+  -fx-background-radius: 10;
+  -fx-cursor: hand;
+}
+
+.trail-card:hover {
+  -fx-opacity: 0.7;
 }
