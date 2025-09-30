@@ -59,6 +59,15 @@ public class SearchService {
     }
 
     /**
+     * Returns all the trails
+     *
+     * @return all trails from dataset
+     */
+    public List<Trail> getAllTrails() {
+        return trails;
+    }
+
+    /**
      * Calculates the total number of pages required to display the currently
      * filtered list of trails.
      */
@@ -89,6 +98,16 @@ public class SearchService {
                 .skip(startIndex)
                 .limit(maxResults)
                 .collect(Collectors.toList());
+    }
+
+    /**
+     * returns a trail based on its id
+     *
+     * @param id the id for the specified trail
+     * @return the trail specified by the given id
+     */
+    public Trail getTrailById(int id) {
+        return filteredTrails.stream().filter(t -> t.getId() == id).findFirst().orElse(null);
     }
 
     /**
@@ -137,6 +156,30 @@ public class SearchService {
                 return false;
             if (multiDay.equals("Day walk") && isMultiDay)
                 return false;
+        }
+
+        String regions = filters.get("regions");
+        if (regions != null && !regions.isEmpty()) {
+            List<String> selectedRegions = List.of(regions.split(","));
+            String trailRegion = trail.getRegion();
+            if (trailRegion != null && !trailRegion.isEmpty()) {
+                boolean regionMatch = false;
+                for (String selectedRegion : selectedRegions) {
+                    if (selectedRegion.trim().equalsIgnoreCase(trailRegion)) {
+                        regionMatch = true;
+                        break;
+                    }
+                }
+                if (!regionMatch) {
+                    return false;
+                }
+            } else {
+                boolean otherSelected = selectedRegions.stream()
+                        .anyMatch(region -> region.trim().equalsIgnoreCase("Other"));
+                if (!otherSelected) {
+                    return false;
+                }
+            }
         }
 
         return true;

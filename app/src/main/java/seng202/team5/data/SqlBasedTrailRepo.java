@@ -21,12 +21,39 @@ public class SqlBasedTrailRepo implements ITrail {
 
     private static final String SELECT_BY_ID = SELECT_ALL + " WHERE id = ?";
 
-    private static final String UPSERT_SQL = """
+    private static final String INSERT_OR_IGNORE_SQL = """
             INSERT OR IGNORE INTO trail (
                 id, name, translation, region, difficulty, description, completionInfo, minCompletionTimeMinutes,
                 maxCompletionTimeMinutes, completionType, timeUnit, isMultiDay, hasVariableTime,
                 thumbUrl, webUrl, cultureUrl, userWeight, lat, lon
             ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
+            """;
+
+    private static final String UPSERT_SQL = """
+            INSERT INTO trail (
+                id, name, translation, region, difficulty, description, completionInfo, minCompletionTimeMinutes,
+                maxCompletionTimeMinutes, completionType, timeUnit, isMultiDay, hasVariableTime,
+                thumbUrl, webUrl, cultureUrl, userWeight, lat, lon
+            ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
+            ON CONFLICT(id) DO UPDATE SET
+                name = excluded.name,
+                translation = excluded.translation,
+                region = excluded.region,
+                difficulty = excluded.difficulty,
+                description = excluded.description,
+                completionInfo = excluded.completionInfo,
+                minCompletionTimeMinutes = excluded.minCompletionTimeMinutes,
+                maxCompletionTimeMinutes = excluded.maxCompletionTimeMinutes,
+                completionType = excluded.completionType,
+                timeUnit = excluded.timeUnit,
+                isMultiDay = excluded.isMultiDay,
+                hasVariableTime = excluded.hasVariableTime,
+                thumbUrl = excluded.thumbUrl,
+                webUrl = excluded.webUrl,
+                cultureUrl = excluded.cultureUrl,
+                userWeight = excluded.userWeight,
+                lat = excluded.lat,
+                lon = excluded.lon
             """;
 
     private static final String DELETE_SQL = "DELETE FROM trail WHERE id = ?";
@@ -88,20 +115,45 @@ public class SqlBasedTrailRepo implements ITrail {
     }
 
     /**
-     * Inserts or updates a trail (UPSERT). If a row with the same id exists, its
-     * fields are updated
-     * ;otherwise a new row is inserted
+     * Inserts a trail only if it doesn't already exist in the database.
+     * If a row with the same id exists, it is ignored (no update occurs).
      *
-     * @param trail trail that needs to be updated
+     * @param trail trail that needs to be inserted if not exists
+     */
+    public void insertOrIgnore(Trail trail) {
+        queryHelper.executeUpdate(INSERT_OR_IGNORE_SQL, stmt -> setTrailParameters(stmt, trail));
+    }
+
+    /**
+     * Inserts or updates a trail (true UPSERT). If a row with the same id exists,
+     * its
+     * fields are updated; otherwise a new row is inserted.
+     *
+     * @param trail trail that needs to be upserted
      */
     public void upsert(Trail trail) {
         queryHelper.executeUpdate(UPSERT_SQL, stmt -> setTrailParameters(stmt, trail));
     }
 
     /**
-     * Inserts or updates all supplied trails. Loops and calls upsert method.
+     * Inserts all supplied trails only if they don't already exist in the database.
+     * Existing trails are ignored (no update occurs).
      *
-     * @param trails List of trails to insert into database
+     * @param trails List of trails to insert if not exists
+     */
+    public void insertOrIgnoreAll(List<Trail> trails) throws MatchmakingFailedException {
+        if (trails.isEmpty())
+            throw new MatchmakingFailedException("Trails is empty.");
+
+        queryHelper.executeBatch(INSERT_OR_IGNORE_SQL, trails, this::setTrailParameters);
+    }
+
+    /**
+     * Inserts or updates all supplied trails (true UPSERT). If a trail with the
+     * same id exists,
+     * its fields are updated; otherwise a new trail is inserted.
+     *
+     * @param trails List of trails to upsert
      */
     public void upsertAll(List<Trail> trails) throws MatchmakingFailedException {
         if (trails.isEmpty())

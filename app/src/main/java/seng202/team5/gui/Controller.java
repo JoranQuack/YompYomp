@@ -120,4 +120,19 @@ public abstract class Controller {
         return navbarController;
     }
 
+    /**
+     * Determines whether this screen should show the navbar.
+     *
+     * @return true if the navbar should be shown
+     */
+    protected abstract boolean shouldShowNavbar();
+
+    /**
+     * Gets the page index for the navbar highlighting.
+     *
+     * @return the index of the navbar button to highlight (0 for Dashboard, 1 for
+     *         Trails, and -1 for none)
+     */
+    protected abstract int getNavbarPageIndex();
+
 }

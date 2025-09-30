@@ -165,11 +165,11 @@ public class ProfileQuizController extends Controller {
         incrementQuizId();
         if (quizId < 10) {
             super.getNavigator()
-                    .launchScreen(new ProfileQuizController(super.getNavigator(), quizId), null);
+                    .launchScreen(new ProfileQuizController(super.getNavigator(), quizId));
         } else {
             // Mark the user's profile as complete and save the final state
             super.getUserService().markProfileComplete();
-            super.getNavigator().launchScreen(new LoadingController(super.getNavigator(), false), null);
+            super.getNavigator().launchScreen(new LoadingController(super.getNavigator(), false));
         }
     }
 
@@ -230,5 +230,15 @@ public class ProfileQuizController extends Controller {
     @Override
     protected String getTitle() {
         return "Profile Quiz Screen";
+    }
+
+    @Override
+    protected boolean shouldShowNavbar() {
+        return false;
+    }
+
+    @Override
+    protected int getNavbarPageIndex() {
+        return -1; // No navbar
     }
 }

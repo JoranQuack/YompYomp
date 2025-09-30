@@ -19,7 +19,6 @@ public class FileBasedTrailRepo implements ITrail {
     // List containing all the trails from the CSV
     private final List<Trail> trails = new ArrayList<>();
 
-
     /**
      * Constructor - Loads trails from the DOC CSV file path
      *
@@ -73,8 +72,8 @@ public class FileBasedTrailRepo implements ITrail {
                 String completionInfo = values[4];
                 String thumbnailURL = values[6];
                 String webpageURL = values[7];
-                double lat = Double.parseDouble(values[9]);
-                double lon = Double.parseDouble(values[10]);
+                double lat = Double.parseDouble(values[10]); // latitude given by x
+                double lon = Double.parseDouble(values[9]); // longitude given by y
 
                 // create the new trail object
                 Trail newTrail = new Trail(id, name, difficulty, description, completionInfo,
