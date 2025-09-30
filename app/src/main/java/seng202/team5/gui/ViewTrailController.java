@@ -172,7 +172,7 @@ public class ViewTrailController extends Controller {
 
     /**
      * Calls the function to display nearby trails on the map within a given radius
-     *
+     * 
      * @param radius the radius in km of nearby trails to be viewed
      */
     private void updateNearbyTrails(int radius) {

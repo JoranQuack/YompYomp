@@ -2,13 +2,13 @@ package seng202.team5.gui;
 
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
-import seng202.team5.data.SqlBasedTrailRepo;
 import seng202.team5.models.Trail;
 import seng202.team5.services.SearchService;
 
 /**
  * A bridge that handles communication between the JavaScript code
- * running inside the WebView (map.html) and the JavaFX {@link ModifyTrailController}
+ * running inside the WebView (map.html) and the JavaFX
+ * {@link ModifyTrailController}
  */
 public class JavaScriptBridge {
 
@@ -19,10 +19,11 @@ public class JavaScriptBridge {
      * Creates a new JavaScriptBridge that will update the given controller
      * when the user interacts with the map
      *
-     * @param controller         the controller responsible for handling updates
-     *                           to latitude/longitude fields when a marker is added
-//     * @param sqlBasedTrailRepo the sqlBasedTrailRepo containing methods to
-//     *                          get all trails stored in the database
+     * @param controller the controller responsible for handling updates
+     *                   to latitude/longitude fields when a marker is added
+     *                   // * @param sqlBasedTrailRepo the sqlBasedTrailRepo
+     *                   containing methods to
+     *                   // * get all trails stored in the database
      */
     public JavaScriptBridge(Controller controller, SearchService searchService) {
         this.controller = controller;
@@ -35,9 +36,10 @@ public class JavaScriptBridge {
      * extracts the numeric values and forwards them to the controller's
      *
      * {@link ModifyTrailController#updateLatLonFields(double, double)} method
+     * 
      * @param latlng a JSON string containing latitude and longitude
      */
-    public void addMarkerFromClick(String latlng){
+    public void addMarkerFromClick(String latlng) {
         if (controller instanceof ModifyTrailController modifyTrailController) {
             JSONParser parser = new JSONParser();
             try {
@@ -54,12 +56,14 @@ public class JavaScriptBridge {
     /**
      * Opens the trail page for the trail with the specified id
      *
-     * @param trailId the unique identifier of the trail whose info page should be opened
+     * @param trailId the unique identifier of the trail whose info page should be
+     *                opened
      */
-    public void openTrailInfo(int trailId){
+    public void openTrailInfo(int trailId) {
         if (controller instanceof ViewTrailController viewTrailController) {
             Trail trail = searchService.getTrailById(trailId);
-            //Trail trail = sqlBasedTrailRepo.findById(trailId).get(); change to this version later
+            // Trail trail = sqlBasedTrailRepo.findById(trailId).get(); change to this
+            // version later
             if (trail != null) {
                 viewTrailController.openTrailInfo(trail);
             }
