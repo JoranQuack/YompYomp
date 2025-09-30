@@ -79,6 +79,7 @@ CheckComboBox > .combo-box {
 
 CheckComboBox .list-view {
   -fx-background-radius: 10;
+  -fx-background-color: #fdfffb;
 }
 
 CheckComboBox > .combo-box .list-cell {
@@ -91,6 +92,11 @@ CheckComboBox > .combo-box .list-cell {
 
 CheckComboBox > .combo-box .list-cell:hover {
   -fx-background-color: #d5e6d4;
+}
+
+.arrow {
+  -fx-background-color: #447055;
+  -fx-background-radius: 10;
 }
 
 .check-box {
@@ -109,6 +115,11 @@ CheckComboBox > .combo-box .list-cell:hover {
 
 .check-box:selected .box {
   -fx-background-color: #d5e6d4;
+}
+
+.check-box:selected .mark {
+  -fx-background-color: #447055;
+  -fx-background-radius: 6;
 }
 
 Slider {
