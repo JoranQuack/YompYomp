@@ -5,7 +5,6 @@ import javafx.scene.control.*;
 import org.controlsfx.control.CheckComboBox;
 import seng202.team5.models.User;
 import seng202.team5.services.RegionFinder;
-import seng202.team5.services.UserService;
 
 import java.util.List;
 
@@ -13,6 +12,7 @@ import java.util.List;
  * Controller class of the general profile setup screen
  */
 public class ProfileSetupGeneralController extends Controller {
+    private User user;
 
     /**
      * Launches the screen with navigator
@@ -21,6 +21,7 @@ public class ProfileSetupGeneralController extends Controller {
      */
     public ProfileSetupGeneralController(ScreenNavigator navigator) {
         super(navigator);
+        user = new User();
     }
 
     @FXML
@@ -44,7 +45,6 @@ public class ProfileSetupGeneralController extends Controller {
     @FXML
     private void initialize() {
         super.getUserService().setGuest(false);
-        User user = super.getUserService().getUser();
 
         RegionFinder regionFinder = new RegionFinder();
         List<String> regionList = regionFinder.getRegionNames();
@@ -78,18 +78,19 @@ public class ProfileSetupGeneralController extends Controller {
         boolean isNameValid = setUserPreferences();
 
         if (isNameValid) {
-            super.getNavigator().launchScreen(new ProfileQuizController(super.getNavigator(), 1));
+            super.getNavigator().launchScreen(new ProfileQuizController(super.getNavigator(), 1, user));
         }
     }
 
     /**
      * Gets user input and sets attributes of User object
+     *
+     * @return true if name is valid, false otherwise
      */
     private boolean setUserPreferences() {
         String name = usernameTextField.getText().trim();
-        UserService userService = super.getUserService();
 
-        if (!userService.isValidName(name)) {
+        if (!super.getUserService().isValidName(name)) {
             usernameTextField.setStyle("-fx-border-color: red; -fx-border-width: 2px;");
             usernameLabel.setText("Invalid name. Please try again.");
             return false;
@@ -98,7 +99,6 @@ public class ProfileSetupGeneralController extends Controller {
             usernameLabel.setText("Username");
         }
 
-        User user = super.getUserService().getUser();
         if (usernameTextField.getText().isEmpty()) {
             user.setName("YompYomp User");
         } else {
@@ -107,8 +107,6 @@ public class ProfileSetupGeneralController extends Controller {
         user.setRegion(regionCheckComboBox.getCheckModel().getCheckedItems());
         user.setIsFamilyFriendly(familyFriendlyCheckBox.isSelected());
         user.setIsAccessible(accessibleCheckBox.isSelected());
-
-        userService.setUser(user);
         return true;
     }
 

@@ -12,7 +12,7 @@ import seng202.team5.services.UserService;
 
 public class LoadingController extends Controller {
 
-    private boolean isMatchmakingComplete = false;
+    private User user;
     private boolean isSkip = false;
 
     @FXML
@@ -26,10 +26,14 @@ public class LoadingController extends Controller {
      *
      * @param navigator screen navigator
      */
-    public LoadingController(ScreenNavigator navigator, boolean isMatchmakingComplete, boolean isSkip) {
+    public LoadingController(ScreenNavigator navigator, User user) {
         super(navigator);
-        this.isMatchmakingComplete = isMatchmakingComplete;
-        this.isSkip = isSkip;
+        this.user = user;
+        if (user != null) {
+            isSkip = false;
+        } else {
+            isSkip = true;
+        }
 
         // Use Platform.runLater to execute
         javafx.application.Platform.runLater(this::startMatchmaking);
@@ -43,7 +47,7 @@ public class LoadingController extends Controller {
         if (progressIndicator != null) {
             progressIndicator.setProgress(-1.0); // Indeterminate progress
         }
-        if (isMatchmakingComplete) {
+        if (isSkip) {
             statusLabel.setText("Just a moment...");
         } else {
             statusLabel.setText("Matching you to your favourite trails...");
@@ -67,18 +71,16 @@ public class LoadingController extends Controller {
                 // Wait for database setup before we can matchmake
                 App.getSetupService().waitForDatabaseSetup();
 
-                // If skipping, set user as guest if no user exists
+                // If skipping, set user as guest and skip the matchmaking and saving
                 if (isSkip) {
                     if (userService.getUser() == null) {
                         userService.setGuest(true);
                     }
-                } else {
-                    userService.markProfileComplete();
-                }
-
-                if (isMatchmakingComplete) {
                     return null;
                 }
+
+                // Save the user to the database
+                userService.saveUser(user);
 
                 // Create MatchmakingService AFTER database setup is complete
                 MatchmakingService matchmakingService = new MatchmakingService(App.getDatabaseService());
