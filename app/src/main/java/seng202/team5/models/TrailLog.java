@@ -11,7 +11,7 @@ public class TrailLog {
     private String timeUnit;
     private String completionType;
     private Integer rating;
-    private String personalDifficulty;
+    private String perceivedDifficulty;
     private String notes;
 
     /**
@@ -34,7 +34,7 @@ public class TrailLog {
         this.timeUnit = timeUnit;
         this.completionType = completionType;
         this.rating = rating;
-        this.personalDifficulty = personalDifficulty;
+        this.perceivedDifficulty = personalDifficulty;
         this.notes = notes;
     }
 
@@ -46,7 +46,7 @@ public class TrailLog {
     public String getTimeUnit() { return timeUnit; }
     public String getCompletionType() { return completionType; }
     public Integer getRating() { return rating; }
-    public String getPersonalDifficulty() { return personalDifficulty; }
+    public String getPerceivedDifficulty() { return perceivedDifficulty; }
     public String getNotes() { return notes; }
 
     //Setters
@@ -57,6 +57,6 @@ public class TrailLog {
     public void setTimeUnit(String timeUnit) { this.timeUnit = timeUnit; }
     public void setCompletionType(String completionType) { this.completionType = completionType; }
     public void setRating(Integer rating) { this.rating = rating; }
-    public void setPersonalDifficulty(String personalDifficulty) { this.personalDifficulty = personalDifficulty; }
+    public void setPerceivedDifficulty(String personalDifficulty) { this.perceivedDifficulty = personalDifficulty; }
     public void setNotes(String notes) { this.notes = notes; }
 }
