@@ -60,4 +60,19 @@ public class BackgroundImageUtil {
             return new double[] { containerHeight * imageRatio, containerHeight };
         }
     }
+
+    /**
+     * Sets up more simple cover behavior for an ImageView to fill its container
+     * without preserving aspect ratio.
+     */
+    public static void setupFillBehavior(ImageView imageView, Region container) {
+        if (imageView == null || container == null) {
+            throw new IllegalArgumentException("ImageView and container cannot be null");
+        }
+
+        imageView.setPreserveRatio(false);
+
+        imageView.fitWidthProperty().bind(container.widthProperty());
+        imageView.fitHeightProperty().bind(container.heightProperty());
+    }
 }

@@ -6,21 +6,27 @@
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.FlowPane?>
+<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 
-<fx:root prefWidth="230.0" spacing="8" type="javafx.scene.layout.VBox" xmlns="http://javafx.com/javafx/21.0.2" xmlns:fx="http://javafx.com/fxml/1">
+<fx:root prefWidth="230.0" spacing="8" stylesheets="@../../styles/global.css" type="javafx.scene.layout.VBox" xmlns="http://javafx.com/javafx/21.0.2" xmlns:fx="http://javafx.com/fxml/1">
 
     <!-- VBox padding -->
     <padding>
         <Insets bottom="10" left="10" right="10" top="10" />
     </padding>
-
-    <!-- Thumbnail image -->
-    <ImageView fx:id="thumbnail" fitHeight="126.0" fitWidth="218.0" preserveRatio="true">
-      <image>
-         <Image url="@../../images/Default%20Trail%20Image.png" />
-      </image></ImageView>
+   <HBox fx:id="thumbnailContainer" prefHeight="120.0" VBox.vgrow="NEVER">
+      <children>
+      
+          <!-- Thumbnail image -->
+          <ImageView fx:id="thumbnail" fitHeight="126.0" fitWidth="218.0" preserveRatio="true">
+            <image>
+               <Image url="@../../images/Default%20Trail%20Image.png" />
+            </image>
+         </ImageView>
+      </children>
+   </HBox>
 
                       <!-- Title -->
     <Label fx:id="title" style="-fx-font-size: 16px; -fx-font-weight: bold;" text="Trail Name" />
@@ -35,7 +41,7 @@
 
     <StackPane>
         <ProgressBar fx:id="matchBar" maxWidth="Infinity" progress="0.0" />
-        <Label fx:id="matchLabel" style="-fx-font-size: 12px; -fx-text-fill: black; -fx-font-weight: bold;" text="0% Match" />
+        <Label fx:id="matchLabel" styleClass="text-light" text="0% Match" />
     </StackPane>
 
 </fx:root>
