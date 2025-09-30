@@ -8,7 +8,7 @@ import seng202.team5.models.TripLog;
 /**
  * Controller for the trip log screen
  */
-public class TripLogController extends Controller {
+public class LogTrailController extends Controller {
 
     private TripLog trip;
     private Controller lastController;
@@ -22,7 +22,7 @@ public class TripLogController extends Controller {
      * @param navigator screen navigator
      * @param lastController controller of the last screen the user interacted with
      */
-    public TripLogController(ScreenNavigator navigator, TripLog trip, Controller lastController) {
+    public LogTrailController(ScreenNavigator navigator, TripLog trip, Controller lastController) {
         super(navigator);
         this.trip = trip;
         this.lastController = lastController;
