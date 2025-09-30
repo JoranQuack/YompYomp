@@ -3,81 +3,60 @@ package seng202.team5.models;
 import java.util.Date;
 
 public class TrailLog {
-    //Some basic variables
+
     private int id;
-    private int userId;
     private int trailId;
     private Date startDate;
-    private Date endDate;
-    private String completionInfo; // Raw duration string
-    private int minDurationMinutes;
-    private int maxDurationMinutes;
-    private String durationType; // e.g. "estimated", "recorded".
-    private String timeUnit; // e.g. "days", "hours", "minutes".
-    private boolean isMultiDay;
-    private boolean hasVariableTime;
-    private String notes;
-    private int rating;
-    private String weather;
+    private Integer completionTime;
+    private String timeUnit;
+    private String completionType;
+    private Integer rating;
     private String personalDifficulty;
+    private String notes;
 
-
-
-    //Constructor for base variables
-    public TrailLog(int id, int userId, int trailId, Date startDate, Date endDate, String completionInfo,
-                    int minDurationMinutes, int maxDurationMinutes, String durationType, String timeUnit,
-                    boolean isMultiDay, boolean hasVariableTime, String notes, int rating, String weather,
-                    String personalDifficulty) {
+    /**
+     * Constructor for a trail log.
+     *
+     * @param id
+     * @param trailId
+     * @param startDate
+     * @param timeUnit
+     * @param rating
+     * @param personalDifficulty
+     * @param notes
+     */
+    public TrailLog(int id, int trailId, Date startDate, Integer completionTime, String timeUnit, String completionType,
+                    Integer rating, String personalDifficulty, String notes) {
         this.id = id;
-        this.userId = userId;
         this.trailId = trailId;
         this.startDate = startDate;
-        this.endDate = endDate;
-        this.completionInfo = completionInfo;
-        this.minDurationMinutes = minDurationMinutes;
-        this.maxDurationMinutes = maxDurationMinutes;
-        this.durationType = durationType;
+        this.completionTime = completionTime;
         this.timeUnit = timeUnit;
-        this.isMultiDay = isMultiDay;
-        this.hasVariableTime = hasVariableTime;
-        this.notes = notes;
+        this.completionType = completionType;
         this.rating = rating;
-        this.weather = weather;
         this.personalDifficulty = personalDifficulty;
+        this.notes = notes;
     }
 
     //Getters
     public int getId() { return id; }
-    public int getUserId() { return userId; }
     public int getTrailId() { return trailId; }
     public Date getStartDate() { return startDate; }
-    public Date getEndDate() { return endDate; }
-    public String getCompletionInfo() { return completionInfo; }
-    public int getMinDurationMinutes() { return minDurationMinutes; }
-    public int getMaxDurationMinutes() { return maxDurationMinutes; }
-    public String getDurationType() { return durationType; }
+    public Integer getCompletionTime() { return completionTime; }
     public String getTimeUnit() { return timeUnit; }
-    public boolean isMultiDay() { return isMultiDay; }
-    public boolean isHasVariableTime() { return hasVariableTime; }
-    public String getNotes() { return notes; }
-    public int getRating() { return rating; }
-    public String getWeather() { return weather; }
+    public String getCompletionType() { return completionType; }
+    public Integer getRating() { return rating; }
     public String getPersonalDifficulty() { return personalDifficulty; }
+    public String getNotes() { return notes; }
 
     //Setters
-    public void setUserId(int userId) { this.userId = userId; }
-    public void setTrail(int trailId) { this.trailId = trailId; }
+    public void setId(int id) { this.id = id; }
+    public void setTrailId(int trailId) { this.trailId = trailId; }
     public void setStartDate(Date startDate) { this.startDate = startDate; }
-    public void setEndDate(Date endDate) { this.endDate = endDate; }
-    public void setCompletionInfo(String completionInfo) { this.completionInfo = completionInfo; }
-    public void setMinDurationMinutes(int minDurationMinutes) { this.minDurationMinutes = minDurationMinutes; }
-    public void setMaxDurationMinutes(int maxDurationMinutes) { this.maxDurationMinutes = maxDurationMinutes; }
-    public void setDurationType(String durationType) { this.durationType = durationType; }
+    public void setCompletionTime(Integer completionTime) { this.completionTime = completionTime; }
     public void setTimeUnit(String timeUnit) { this.timeUnit = timeUnit; }
-    public void setIsMultiDay(boolean isMultiDay) { this.isMultiDay = isMultiDay; }
-    public void setHasVariableTime(boolean hasVariableTime) { this.hasVariableTime = hasVariableTime; }
+    public void setCompletionType(String completionType) { this.completionType = completionType; }
+    public void setRating(Integer rating) { this.rating = rating; }
+    public void setPersonalDifficulty(String personalDifficulty) { this.personalDifficulty = personalDifficulty; }
     public void setNotes(String notes) { this.notes = notes; }
-    public void setRating(int rating) { this.rating = rating; }
-    public void setWeather(String weather) { this.weather = weather; }
-    public void setPersonalDifficulty(String difficulty) { this.personalDifficulty = difficulty; }
 }
