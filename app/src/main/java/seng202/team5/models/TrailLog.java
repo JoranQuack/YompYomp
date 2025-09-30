@@ -2,7 +2,7 @@ package seng202.team5.models;
 
 import java.util.Date;
 
-public class TripLog {
+public class TrailLog {
     //Some basic variables
     private int id;
     private int userId;
@@ -24,10 +24,10 @@ public class TripLog {
 
 
     //Constructor for base variables
-    public TripLog(int id, int userId, int trailId, Date startDate, Date endDate, String completionInfo,
-                   int minDurationMinutes, int maxDurationMinutes, String durationType, String timeUnit,
-                   boolean isMultiDay, boolean hasVariableTime, String notes, int rating, String weather,
-                   String personalDifficulty) {
+    public TrailLog(int id, int userId, int trailId, Date startDate, Date endDate, String completionInfo,
+                    int minDurationMinutes, int maxDurationMinutes, String durationType, String timeUnit,
+                    boolean isMultiDay, boolean hasVariableTime, String notes, int rating, String weather,
+                    String personalDifficulty) {
         this.id = id;
         this.userId = userId;
         this.trailId = trailId;

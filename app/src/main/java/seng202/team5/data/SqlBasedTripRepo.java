@@ -1,7 +1,7 @@
 package seng202.team5.data;
 
 import seng202.team5.exceptions.MatchmakingFailedException;
-import seng202.team5.models.TripLog;
+import seng202.team5.models.TrailLog;
 
 import java.sql.Date;
 import java.sql.*;
@@ -45,7 +45,7 @@ public class SqlBasedTripRepo implements ITrip {
      * @return a list of all rows in the trip table
      */
     @Override
-    public List<TripLog> getAllTrips() {
+    public List<TrailLog> getAllTrips() {
         return queryHelper.executeQuery(SELECT_ALL, null, this::mapRowToTrip);
     }
 
@@ -56,7 +56,7 @@ public class SqlBasedTripRepo implements ITrip {
      * @return an Optional containing the trip if found; otherwise empty
      */
     @Override
-    public Optional<TripLog> findById(int id) {
+    public Optional<TrailLog> findById(int id) {
         return queryHelper.executeQuerySingle(
                 SELECT_BY_ID,
                 stmt -> stmt.setInt(1, id),
@@ -80,7 +80,7 @@ public class SqlBasedTripRepo implements ITrip {
      *
      * @param trip trip that needs to be updated
      */
-    public void upsert(TripLog trip) {
+    public void upsert(TrailLog trip) {
         queryHelper.executeUpdate(UPSERT_SQL, stmt -> setTripParameters(stmt, trip));
     }
 
@@ -89,7 +89,7 @@ public class SqlBasedTripRepo implements ITrip {
      *
      * @param trips List of trips to insert into the database
      */
-    public void upsertAll(List<TripLog> trips) throws MatchmakingFailedException {
+    public void upsertAll(List<TrailLog> trips) throws MatchmakingFailedException {
         if (trips.isEmpty())
             throw new MatchmakingFailedException("Trips is empty.");
 
@@ -122,8 +122,8 @@ public class SqlBasedTripRepo implements ITrip {
      * @return mapped trip
      * @throws java.sql.SQLException if the column cannot be read
      */
-    private TripLog mapRowToTrip(ResultSet rs) throws SQLException {
-        return new TripLog(
+    private TrailLog mapRowToTrip(ResultSet rs) throws SQLException {
+        return new TrailLog(
                 rs.getInt("id"),
                 rs.getInt("userId"),
                 rs.getInt("tripId"),
@@ -160,7 +160,7 @@ public class SqlBasedTripRepo implements ITrip {
      * @param trip source of values
      * @throws SQLException if a parameter cannot be set
      */
-    private void setTripParameters(PreparedStatement stmt, TripLog trip) throws SQLException {
+    private void setTripParameters(PreparedStatement stmt, TrailLog trip) throws SQLException {
         stmt.setInt(1, trip.getId());
         stmt.setInt(2, trip.getUserId());
         stmt.setInt(3, trip.getTrailId());

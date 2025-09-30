@@ -1,6 +1,6 @@
 package seng202.team5.data;
 
-import seng202.team5.models.TripLog;
+import seng202.team5.models.TrailLog;
 
 import java.util.*;
 
@@ -11,7 +11,7 @@ public interface ITrip {
     /**
      * Returns all trips available
      */
-    List<TripLog> getAllTrips();
+    List<TrailLog> getAllTrips();
 
     /**
      * Finds a trip by its ID
@@ -19,7 +19,7 @@ public interface ITrip {
      * @param id id of the object
      * @return the trip
      */
-    Optional<TripLog> findById(int id);
+    Optional<TrailLog> findById(int id);
 
     /**
      * Count all trips
