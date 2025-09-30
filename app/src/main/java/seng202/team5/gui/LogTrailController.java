@@ -31,7 +31,15 @@ public class LogTrailController extends Controller {
         this.tripRepo = new SqlBasedTripRepo(databaseService);
     }
 
+    @Override
+    protected String getFxmlFile() {
+        return "/fxml/log_trip.fxml";
+    }
 
+    @Override
+    protected String getTitle() {
+        return "Trip Log Screen";
+    }
 
 
 }
