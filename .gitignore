@@ -44,5 +44,6 @@ bin/
 
 ### Project Specific ###
 */data/images/*
+data/
 test.db
 *.db*

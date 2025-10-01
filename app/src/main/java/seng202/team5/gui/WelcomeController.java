@@ -3,6 +3,9 @@ package seng202.team5.gui;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.StackPane;
+import seng202.team5.gui.util.BackgroundImageUtil;
 import seng202.team5.models.User;
 
 public class WelcomeController extends Controller {
@@ -28,11 +31,20 @@ public class WelcomeController extends Controller {
     @FXML
     private Button skipButton;
 
+    @FXML
+    private ImageView bgImage;
+
+    @FXML
+    private StackPane rootStackPane;
+
     /**
      * Initializes the welcome screen
      */
     @FXML
     private void initialize() {
+
+        BackgroundImageUtil.setupCoverBehavior(bgImage, rootStackPane);
+
         super.getUserService().cleanupIncompleteProfiles();
 
         User existingUser = super.getUserService().getUser();
@@ -51,9 +63,8 @@ public class WelcomeController extends Controller {
      */
     @FXML
     private void onSetUpProfileButtonClicked() {
-        super.getUserService().clearUser();
         super.getNavigator()
-                .launchScreen(new ProfileSetupGeneralController(super.getNavigator()), null);
+                .launchScreen(new ProfileSetupGeneralController(super.getNavigator()));
     }
 
     /**
@@ -61,10 +72,7 @@ public class WelcomeController extends Controller {
      */
     @FXML
     private void onSkipButtonClicked() {
-        if (super.getUserService().getUser() == null) {
-            super.getUserService().setGuest(true);
-        }
-        super.getNavigator().launchScreen(new LoadingController(super.getNavigator(), true), null);
+        super.getNavigator().launchScreen(new LoadingController(super.getNavigator(), null));
     }
 
     @Override
@@ -75,5 +83,15 @@ public class WelcomeController extends Controller {
     @Override
     protected String getTitle() {
         return "Welcome to YompYomp!";
+    }
+
+    @Override
+    protected boolean shouldShowNavbar() {
+        return false;
+    }
+
+    @Override
+    protected int getNavbarPageIndex() {
+        return -1; // No navbar
     }
 }

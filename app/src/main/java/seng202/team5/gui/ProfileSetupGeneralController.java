@@ -2,10 +2,14 @@ package seng202.team5.gui;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.StackPane;
+
 import org.controlsfx.control.CheckComboBox;
+
+import seng202.team5.gui.util.BackgroundImageUtil;
 import seng202.team5.models.User;
 import seng202.team5.services.RegionFinder;
-import seng202.team5.services.UserService;
 
 import java.util.List;
 
@@ -13,6 +17,7 @@ import java.util.List;
  * Controller class of the general profile setup screen
  */
 public class ProfileSetupGeneralController extends Controller {
+    private User user;
 
     /**
      * Launches the screen with navigator
@@ -21,6 +26,7 @@ public class ProfileSetupGeneralController extends Controller {
      */
     public ProfileSetupGeneralController(ScreenNavigator navigator) {
         super(navigator);
+        user = new User();
     }
 
     @FXML
@@ -37,14 +43,20 @@ public class ProfileSetupGeneralController extends Controller {
     private CheckBox familyFriendlyCheckBox;
     @FXML
     private CheckBox accessibleCheckBox;
+    @FXML
+    private StackPane rootPane;
+    @FXML
+    private ImageView bgImage;
 
     /**
      * Initializes the first profile setup screen
      */
     @FXML
     private void initialize() {
+        System.out.println();
+        BackgroundImageUtil.setupCoverBehavior(bgImage, rootPane);
+
         super.getUserService().setGuest(false);
-        User user = super.getUserService().getUser();
 
         RegionFinder regionFinder = new RegionFinder();
         List<String> regionList = regionFinder.getRegionNames();
@@ -78,37 +90,31 @@ public class ProfileSetupGeneralController extends Controller {
         boolean isNameValid = setUserPreferences();
 
         if (isNameValid) {
-            super.getNavigator().launchScreen(new ProfileQuizController(super.getNavigator(), 1), null);
+            super.getNavigator().launchScreen(new ProfileQuizController(super.getNavigator(), 1, user));
         }
     }
 
     /**
      * Gets user input and sets attributes of User object
+     *
+     * @return true if name is valid, false otherwise
      */
     private boolean setUserPreferences() {
-        String name = usernameTextField.getText().trim();
-        UserService userService = super.getUserService();
+        String name = usernameTextField.getText();
 
-        if (!userService.isValidName(name)) {
+        if (name == null || name.trim().isEmpty() || !super.getUserService().isValidName(name.trim())) {
             usernameTextField.setStyle("-fx-border-color: red; -fx-border-width: 2px;");
             usernameLabel.setText("Invalid name. Please try again.");
             return false;
-        } else {
-            usernameTextField.setStyle("");
-            usernameLabel.setText("Username");
         }
+        usernameTextField.setStyle("");
+        usernameLabel.setText("Username");
 
-        User user = super.getUserService().getUser();
-        if (usernameTextField.getText().isEmpty()) {
-            user.setName("YompYomp User");
-        } else {
-            user.setName(usernameTextField.getText());
-        }
+        user.setName(name.trim());
+
         user.setRegion(regionCheckComboBox.getCheckModel().getCheckedItems());
         user.setIsFamilyFriendly(familyFriendlyCheckBox.isSelected());
         user.setIsAccessible(accessibleCheckBox.isSelected());
-
-        userService.setUser(user);
         return true;
     }
 
@@ -120,5 +126,15 @@ public class ProfileSetupGeneralController extends Controller {
     @Override
     protected String getTitle() {
         return "Profile Setup Screen";
+    }
+
+    @Override
+    protected boolean shouldShowNavbar() {
+        return false;
+    }
+
+    @Override
+    protected int getNavbarPageIndex() {
+        return -1; // No navbar
     }
 }

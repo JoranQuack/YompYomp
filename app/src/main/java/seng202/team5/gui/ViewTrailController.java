@@ -6,29 +6,27 @@ import com.sun.javafx.webkit.WebConsoleListener;
 import javafx.concurrent.Worker;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.Priority;
+import javafx.scene.paint.Paint;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
 import netscape.javascript.JSObject;
+import seng202.team5.data.SqlBasedTrailRepo;
+import seng202.team5.gui.components.TrailCardComponent;
 import seng202.team5.models.Trail;
-import seng202.team5.services.ImageService;
-import seng202.team5.services.SearchService;
 import seng202.team5.services.TrailService;
 
 import java.util.List;
-
-import java.util.Objects;
 
 /**
  * Controller for the view trail screen
  */
 public class ViewTrailController extends Controller {
-
-    private final ImageService imageService;
     private Trail trail;
     private TrailService trailService;
-    private SearchService searchService;
+    private SqlBasedTrailRepo sqlBasedTrailRepo;
 
     private WebEngine webEngine;
     private JavaScriptBridge javaScriptBridge;
@@ -37,60 +35,72 @@ public class ViewTrailController extends Controller {
     /**
      * Launches the screen with navigator
      *
-     * @param navigator     screen navigator
-     * @param trail         trail object to be displayed on screen
-     * @param searchService searchService
+     * @param navigator         screen navigator
+     * @param trail             trail object to be displayed on screen
+     * @param sqlBasedTrailRepo sqlBasedTrailRepo
      */
-    public ViewTrailController(ScreenNavigator navigator, Trail trail, SearchService searchService) {
+    public ViewTrailController(ScreenNavigator navigator, Trail trail, SqlBasedTrailRepo sqlBasedTrailRepo) {
         super(navigator);
-        this.imageService = new ImageService();
         this.trail = trail;
-        this.searchService = searchService;
+        this.sqlBasedTrailRepo = sqlBasedTrailRepo;
     }
 
     @FXML
-    private Label trailNameLabel;
-    @FXML
     private Label translationLabel;
-    @FXML
-    private Label regionLabel;
-    @FXML
-    private Label matchLabel;
-    @FXML
-    private ProgressBar matchBar;
     @FXML
     private Label descriptionLabel;
     @FXML
     private Button editInfoButton;
     @FXML
-    private WebView trailMapView;
-    @FXML
-    private ImageView trailThumbnail;
+    private HBox mapContainer;
     @FXML
     private Button backButton;
     @FXML
     private CheckBox nearbyTrailsCheckbox;
     @FXML
     private TextField trailsRadiusTextField;
+    @FXML
+    private HBox trailCardHBox;
+    @FXML
+    private Label easiestColourLabel;
+    @FXML
+    private Label easyColourLabel;
+    @FXML
+    private Label intermediateColourLabel;
+    @FXML
+    private Label advancedColourLabel;
+    @FXML
+    private Label expertColourLabel;
+    private WebView trailMapWebView;
 
     /**
      * Initialises the view trail screen with data retrieved from database
      */
     @FXML
     private void initialize() {
-        trailService = new TrailService();
-        trailNameLabel.setText(trail.getName());
-        regionLabel.setText(trail.getRegion());
-        Image trailImage = imageService.loadTrailImage(trail.getThumbnailURL());
-        trailThumbnail.setImage(trailImage);
-        double weight = trail.getUserWeight();
-        matchBar.setProgress(weight);
-        int matchPercent = (int) Math.round(weight * 100);
-        matchLabel.setText(matchPercent + "% match");
-        descriptionLabel.setText(trail.getDescription());
-        backButton.setOnAction(e -> onBackButtonClicked());
-        editInfoButton.setOnAction(e -> onEditInfoButtonClicked());
+        setupFormFields();
+        setupEventHandlers();
+        setupLegend();
+        javafx.application.Platform.runLater(this::initMap);
+    }
 
+    /**
+     * Sets up all form fields and their initial values
+     */
+    private void setupFormFields() {
+        trailService = new TrailService();
+        initTrailCard();
+        descriptionLabel.setText(trail.getDescription());
+        if (!trail.getTranslation().isEmpty()) {
+            translationLabel.setText(trail.getTranslation());
+            translationLabel.setVisible(true);
+        } else {
+            translationLabel.setVisible(false);
+        }
+        setupTrailRadiusFields();
+    }
+
+    private void setupTrailRadiusFields() {
         // Allow only digits in the text field
         trailsRadiusTextField.setTextFormatter(new TextFormatter<>(change -> {
             String newText = change.getControlNewText();
@@ -101,44 +111,68 @@ public class ViewTrailController extends Controller {
         }));
 
         // Initially disable the text field if checkbox is not selected
-        trailsRadiusTextField.setDisable(!nearbyTrailsCheckbox.isSelected());
+        nearbyTrailsCheckbox.setSelected(true);
+        trailsRadiusTextField.setText("20");
+    }
 
-        nearbyTrailsCheckbox.setOnAction(e -> {
-            boolean selected = nearbyTrailsCheckbox.isSelected();
-            trailsRadiusTextField.setDisable(!selected); // disable if unchecked
-            if (selected) {
-                trailsRadiusTextField.setText("20");
-                List<Trail> nearby = trailService.getNearbyTrails(trail,
-                        Integer.parseInt(trailsRadiusTextField.getText()), searchService.getAllTrails());
-                displayTrailsOnMap(nearby);
-            } else {
-                // reset to just the current trail
-                addLocation();
-                removeTrailsFromMap();
-                trailsRadiusTextField.clear();
-            }
-        });
+    /**
+     * Sets up event handlers for form controls
+     */
+    private void setupEventHandlers() {
+        backButton.setOnAction(e -> onBackButtonClicked());
+        editInfoButton.setOnAction(e -> onEditInfoButtonClicked());
 
-        trailsRadiusTextField.textProperty().addListener((observable, oldValue, newValue) -> {
+        nearbyTrailsCheckbox.setOnAction(e -> refreshNearbyTrails());
+        trailsRadiusTextField.textProperty().addListener((obs, oldVal, newVal) -> {
             if (nearbyTrailsCheckbox.isSelected()) {
-                int radius;
-                if (newValue == null || newValue.trim().isEmpty()) {
-                    radius = 0; // when no value has been input
-                } else {
-                    radius = Integer.parseInt(newValue);
-                }
-                List<Trail> nearby = trailService.getNearbyTrails(trail, radius, searchService.getAllTrails());
-                displayTrailsOnMap(nearby);
+                refreshNearbyTrails();
             }
         });
 
-        if (!trail.getTranslation().isEmpty()) {
-            translationLabel.setText(trail.getTranslation());
-            translationLabel.setVisible(true);
-        } else {
-            translationLabel.setVisible(false);
-        }
-        initMap();
+        // Checkbox toggled
+        nearbyTrailsCheckbox.setOnAction(e -> {
+            if (nearbyTrailsCheckbox.isSelected()) {
+                trailsRadiusTextField.setText("20"); // reset to 20 on reselect
+            }
+            refreshNearbyTrails();
+        });
+
+        // Text field value changed
+        trailsRadiusTextField.textProperty().addListener((obs, oldVal, newVal) -> {
+            if (nearbyTrailsCheckbox.isSelected()) {
+                refreshNearbyTrails();
+            }
+        });
+    }
+
+    /**
+     * Sets up the legend for the map marker colours
+     */
+    private void setupLegend() {
+        easiestColourLabel.setBackground(Background.fill(Paint.valueOf("008000")));
+        easyColourLabel.setBackground(Background.fill(Paint.valueOf("8de45f")));
+        intermediateColourLabel.setBackground(Background.fill(Paint.valueOf("ffff00")));
+        advancedColourLabel.setBackground(Background.fill(Paint.valueOf("ffa500")));
+        expertColourLabel.setBackground(Background.fill(Paint.valueOf("ff0000")));
+    }
+
+    /**
+     * Initialises the trail card at the top of the screen
+     */
+    private void initTrailCard() {
+        TrailCardComponent trailCard = new TrailCardComponent(super.getUserService().isGuest());
+        trailCard.setData(trail);
+        trailCardHBox.getChildren().add(trailCard);
+    }
+
+    /**
+     * Calls the function to display nearby trails on the map within a given radius
+     *
+     * @param radius the radius in km of nearby trails to be viewed
+     */
+    private void updateNearbyTrails(int radius) {
+        List<Trail> nearby = trailService.getNearbyTrails(trail, radius, sqlBasedTrailRepo.getAllTrails());
+        displayTrailsOnMap(nearby);
     }
 
     /**
@@ -147,29 +181,45 @@ public class ViewTrailController extends Controller {
      * objects between Java and Javascript
      */
     private void initMap() {
-        webEngine = trailMapView.getEngine();
+        javaScriptBridge = new JavaScriptBridge(this, sqlBasedTrailRepo);
+        mapContainer.getChildren().clear();
+        trailMapWebView = new WebView();
+        trailMapWebView.setPrefHeight(-1);
+        trailMapWebView.setPrefWidth(-1);
+        HBox.setHgrow(trailMapWebView, Priority.ALWAYS);
+        mapContainer.getChildren().add(trailMapWebView);
+
+        webEngine = trailMapWebView.getEngine();
+
         webEngine.setJavaScriptEnabled(true);
-        webEngine.load(Controller.class.getResource("/html/map.html").toExternalForm());
-        //Forwards console.log() output from any javascript to info log
-        WebConsoleListener.setDefaultListener((view, message, lineNumber, sourceID) ->
-                System.out.printf(String.format("Map WebView console log line: %d, message : %s", lineNumber, message)));
+
+        WebConsoleListener.setDefaultListener((view, message, lineNumber, sourceID) -> System.out
+                .printf(String.format("Map WebView console log line: %d, message : %s", lineNumber, message)));
 
         webEngine.getLoadWorker().stateProperty().addListener(
                 (ov, oldState, newState) -> {
-                    // if javascript loads successfully
                     if (newState == Worker.State.SUCCEEDED) {
-                        // set our bridge object
-                        JSObject window = (JSObject) webEngine.executeScript("window");
-                        window.setMember("javaScriptBridge", javaScriptBridge);
-                        // get a reference to the js object that has a reference to the js methods we
-                        // need to use in java
-                        javaScriptConnector = (JSObject) webEngine.executeScript("jsConnector");
-                        // call the javascript function to initialise the map
-                        javaScriptConnector.call("initMap", trail.getLat(), trail.getLon());
-
-                        addLocation();
+                        setupJavaScriptBridge();
+                        initializeMapView();
                     }
                 });
+
+        webEngine.load(Controller.class.getResource("/html/map.html").toExternalForm());
+    }
+
+    /**
+     * Sets up the JavaScript bridge for communication between Java and JavaScript
+     */
+    private void setupJavaScriptBridge() {
+        JSObject window = (JSObject) webEngine.executeScript("window");
+        window.setMember("javaScriptBridge", javaScriptBridge);
+        javaScriptConnector = (JSObject) webEngine.executeScript("jsConnector");
+    }
+
+    private void initializeMapView() {
+        javaScriptConnector.call("initMap", trail.getLat(), trail.getLon());
+        addLocation();
+        refreshNearbyTrails();
     }
 
     /**
@@ -195,6 +245,31 @@ public class ViewTrailController extends Controller {
         }
     }
 
+    /**
+     * Handles showing/hiding nearby trails depending on checbox state and radius.
+     */
+    private void refreshNearbyTrails() {
+        if (nearbyTrailsCheckbox.isSelected()) {
+            int radius;
+            String text = trailsRadiusTextField.getText();
+            if (text == null || text.trim().isEmpty()) {
+                radius = 0;
+            } else {
+                radius = Integer.parseInt(text);
+            }
+            trailsRadiusTextField.setDisable(false);
+            updateNearbyTrails(radius);
+        } else {
+            addLocation();
+            removeTrailsFromMap();
+            trailsRadiusTextField.clear();
+            trailsRadiusTextField.setDisable(true);
+        }
+    }
+
+    /**
+     * removes the markers on the map
+     */
     private void removeTrailsFromMap() {
         if (javaScriptConnector != null) {
             javaScriptConnector.call("clearMarkers");
@@ -207,27 +282,18 @@ public class ViewTrailController extends Controller {
      * @param trail the trail whose page will be opened
      */
     public void openTrailInfo(Trail trail) {
-        Controller lastController = super.getNavigator().getLastController();
-        super.getNavigator().launchScreen(new ViewTrailController(super.getNavigator(), trail, searchService),
-                lastController); // pass dashboard as last controller (or this??)
+        super.getNavigator().launchScreen(new ViewTrailController(super.getNavigator(), trail, sqlBasedTrailRepo));
     }
 
     @FXML
     private void onBackButtonClicked() {
-        String lastScreenName = super.getNavigator().getLastController().getTitle();
-        Controller lastController;
-        if (Objects.equals(lastScreenName, "Dashboard")) {
-            lastController = new DashboardController(super.getNavigator());
-        } else {
-            lastController = new TrailsController(super.getNavigator());
-        }
-        super.getNavigator().launchScreen(lastController, null);
+        super.getNavigator().goBack();
     }
 
     @FXML
     private void onEditInfoButtonClicked() {
         super.getNavigator().launchScreen(new ModifyTrailController(super.getNavigator(), trail,
-                this, searchService), null);
+                sqlBasedTrailRepo));
     }
 
     @Override
@@ -240,6 +306,16 @@ public class ViewTrailController extends Controller {
         return "View Trail Screen";
     }
 
+    @Override
+    protected boolean shouldShowNavbar() {
+        return true;
+    }
+
+    @Override
+    protected int getNavbarPageIndex() {
+        return 1; // Trails section
+    }
+
     /**
      * Handles the case where the View Trail Screen fails to load
      * by displaying an alert to the user
@@ -249,6 +325,7 @@ public class ViewTrailController extends Controller {
     @Override
     public void onLoadFailed(Exception e) {
         showAlert(Alert.AlertType.ERROR, "Trail Card Failed To Load",
-                "Loading selected trail failed, please close the application and try again.");
+                "Loading selected trail failed, please close the application and try " +
+                        "again.");
     }
 }

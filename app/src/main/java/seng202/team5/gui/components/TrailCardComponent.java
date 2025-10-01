@@ -9,7 +9,9 @@ import javafx.scene.control.ProgressBar;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.FlowPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.scene.shape.Rectangle;
 import seng202.team5.models.Trail;
 import seng202.team5.services.ImageService;
 import seng202.team5.utils.CompletionTimeParser;
@@ -36,6 +38,8 @@ public class TrailCardComponent extends VBox {
     private Label durationLabel;
     @FXML
     private Label typeLabel;
+    @FXML
+    private HBox thumbnailContainer;
 
     private final ImageService imageService;
 
@@ -83,6 +87,15 @@ public class TrailCardComponent extends VBox {
 
         Image trailImage = imageService.loadTrailImage(trail.getThumbnailURL());
         thumbnail.setImage(trailImage);
+
+        Rectangle clip = new Rectangle();
+        clip.setArcWidth(20);
+        clip.setArcHeight(20);
+
+        clip.widthProperty().bind(thumbnailContainer.widthProperty());
+        clip.heightProperty().bind(thumbnailContainer.heightProperty());
+
+        thumbnail.setClip(clip);
 
         if (!trail.getDifficulty().contains("unknown")) {
             difficultyLabel.setText(StringManipulator.capitaliseFirstLetter(trail.getDifficulty()));

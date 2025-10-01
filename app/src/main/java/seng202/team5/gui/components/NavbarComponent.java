@@ -7,7 +7,11 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Button;
 import javafx.scene.layout.HBox;
-import seng202.team5.gui.*;
+import seng202.team5.data.SqlBasedTrailRepo;
+import seng202.team5.gui.ProfileSetupGeneralController;
+import seng202.team5.gui.ScreenNavigator;
+import seng202.team5.gui.DashboardController;
+import seng202.team5.gui.TrailsController;
 import seng202.team5.services.UserService;
 
 public class NavbarComponent extends HBox {
@@ -21,18 +25,18 @@ public class NavbarComponent extends HBox {
     private Button trailsButton;
     @FXML
     private Button profileButton;
-    // @FXML
-    // private Button loggedButton;
-    // @FXML
-    // private Button toDoButton;
     @FXML
     private Button redoQuizButton;
 
     /**
      * Initialise the NavbarController and put the buttons into the list to easily
      * switch between them.
+     *
+     * @param navigator         the screen navigator
+     * @param userService       the userService
+     * @param sqlBasedTrailRepo the trail repo
      */
-    public NavbarComponent(ScreenNavigator navigator, UserService userService) {
+    public NavbarComponent(ScreenNavigator navigator, UserService userService, SqlBasedTrailRepo sqlBasedTrailRepo) {
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/components/navbar.fxml"));
         fxmlLoader.setRoot(this);
         fxmlLoader.setController(this);
@@ -48,13 +52,11 @@ public class NavbarComponent extends HBox {
             redoQuizButton.setText("Redo Quiz");
         }
 
-        // navButtons = List.of(homeButton, trailsButton, loggedButton, toDoButton);
         navButtons = List.of(homeButton, trailsButton, profileButton);
-        homeButton.setOnAction(e -> navigator.launchScreen(new DashboardController(navigator), null));
-        trailsButton.setOnAction(e -> navigator.launchScreen(new TrailsController(navigator), null));
-        profileButton.setOnAction(e -> navigator.launchScreen(new AccountController(navigator), null));
-        redoQuizButton.setOnAction(e -> navigator.launchScreen(new ProfileSetupGeneralController(navigator), null));
-        // Implement actions for the remaining buttons when we're ready to rock
+        homeButton.setOnAction(e -> navigator.launchScreen(new DashboardController(navigator)));
+        trailsButton.setOnAction(e -> navigator.launchScreen(new TrailsController(navigator sqlBasedTrailRepo)));
+        profileButton.setOnAction(e -> navigator.launchScreen(new AccountController(navigator)));
+        redoQuizButton.setOnAction(e -> navigator.launchScreen(new ProfileSetupGeneralController(navigator)));
     }
 
     /**
@@ -63,8 +65,13 @@ public class NavbarComponent extends HBox {
      * @param pageIndex The index of the page button to highlight.
      */
     public void setPage(int pageIndex) {
-        navButtons.forEach(button -> button.setStyle(""));
-        navButtons.get(pageIndex).setStyle("-fx-background-color: #0078D4; -fx-text-fill: white;");
+        navButtons.forEach(button -> button.getStyleClass().remove("active"));
+        navButtons.get(pageIndex).getStyleClass().add("active");
+    }
+
+    @FXML
+    private void onLogoClicked() {
+        homeButton.fire();
     }
 
     public Button getProfileButton() {

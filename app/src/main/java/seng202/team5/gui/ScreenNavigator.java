@@ -4,9 +4,13 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.util.ArrayDeque;
+import java.util.Deque;
 
 /**
  * Class that handles navigation between various {@link Controller}s. This
@@ -19,7 +23,8 @@ public class ScreenNavigator {
 
     private final Stage stage;
     private final BorderPane rootPane;
-    private Controller lastController;
+    private final Deque<Controller> history = new ArrayDeque<>();
+    private boolean isBack = false;
 
     /**
      * Constructor for ScreenNavigator
@@ -29,8 +34,7 @@ public class ScreenNavigator {
     public ScreenNavigator(Stage stage) {
         this.stage = stage;
         this.rootPane = new BorderPane();
-        this.lastController = null;
-        Scene scene = new Scene(rootPane, 1200, 800);
+        Scene scene = new Scene(rootPane, 1300, 900);
         stage.setScene(scene);
 
         stage.setMinWidth(800);
@@ -61,22 +65,51 @@ public class ScreenNavigator {
      *
      * @param controller The JavaFX screen controller for the screen to be launched
      */
-    public void launchScreen(Controller controller, Controller lastController) {
+    public void launchScreen(Controller controller) {
+
         try {
-            if (lastController != null) {
-                this.lastController = lastController;
-            }
             FXMLLoader setupLoader = new FXMLLoader(getClass().getResource(controller.getFxmlFile()));
             setupLoader.setControllerFactory(param -> controller);
             Parent setupParent = setupLoader.load();
-            rootPane.setCenter(setupParent);
+
+            // Handle navbar rendering
+            if (controller.shouldShowNavbar()) {
+                // Create a wrapper VBox with navbar at top and content below
+                VBox wrapperPane = new VBox();
+                wrapperPane.setSpacing(0);
+                wrapperPane.getChildren().add(controller.getNavbarController());
+                wrapperPane.getChildren().add(setupParent);
+                controller.getNavbarController().setPage(controller.getNavbarPageIndex());
+
+                VBox.setVgrow(setupParent, Priority.ALWAYS);
+
+                rootPane.setCenter(wrapperPane);
+            } else {
+                rootPane.setCenter(setupParent);
+            }
+
             stage.setTitle(controller.getTitle());
+
+            if (!isBack) {
+                history.push(controller);
+            } else {
+                isBack = false;
+            }
         } catch (IOException e) {
             controller.onLoadFailed(e);
         }
     }
 
-    public Controller getLastController() {
-        return lastController;
+    public void goBack() {
+        isBack = true;
+        if (!history.isEmpty()) {
+            history.pop();
+        }
+
+        if (!history.isEmpty()) {
+            Controller previous = history.peek();
+            System.out.println(previous.getTitle());
+            launchScreen(previous);
+        }
     }
 }

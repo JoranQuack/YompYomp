@@ -6,11 +6,12 @@ import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.VBox;
 import seng202.team5.data.DatabaseService;
 import seng202.team5.data.SqlBasedTrailRepo;
-import seng202.team5.gui.components.NavbarComponent;
 import seng202.team5.gui.components.TrailCardComponent;
 import seng202.team5.models.Trail;
 import seng202.team5.services.SearchService;
@@ -21,15 +22,10 @@ import seng202.team5.services.SearchService;
 public class DashboardController extends Controller {
     /** Service for searching and filtering trails */
     private SearchService searchService;
-
-    @FXML
-    private VBox navbarContainer;
+    private SqlBasedTrailRepo repo;
 
     @FXML
     private FlowPane trailsContainer;
-
-    @FXML
-    private Button addTrailButton;
 
     @FXML
     private Button searchButton;
@@ -58,7 +54,8 @@ public class DashboardController extends Controller {
      * Initializes the search service.
      */
     private void initializeSearchService() {
-        this.searchService = new SearchService(new SqlBasedTrailRepo(new DatabaseService()));
+        this.repo = new SqlBasedTrailRepo(new DatabaseService());
+        this.searchService = new SearchService(repo);
         searchService.setMaxResults(8);
     }
 
@@ -67,35 +64,37 @@ public class DashboardController extends Controller {
      */
     @FXML
     private void initialize() {
-        // Initialize the navbar
-        NavbarComponent navbar = super.getNavbarController();
-        navbar.setPage(0);
-        navbarContainer.getChildren().add(navbar);
-
         // Initialize search service if not already done
         if (searchService == null) {
             initializeSearchService();
         }
 
-        SqlBasedTrailRepo repo = new SqlBasedTrailRepo(new DatabaseService());
         List<Trail> trails = repo.getRecommendedTrails();
         initializeRecommendedTrails(trails);
-        addTrailButton.setOnAction(e -> onAddTrailButtonClicked());
+        // addTrailButton.setOnAction(e -> onAddTrailButtonClicked());
+
+        searchBarTextField.addEventHandler(KeyEvent.KEY_PRESSED, event -> {
+            if (event.getCode() == KeyCode.ENTER) {
+                searchButton.fire();
+                event.consume();
+            }
+        });
     }
 
     @FXML
     private void onViewAllClicked() {
-        super.getNavigator().launchScreen(new TrailsController(super.getNavigator()), null);
+        super.getNavigator().launchScreen(new TrailsController(super.getNavigator(), repo));
     }
 
     @FXML
     private void onAddTrailButtonClicked() {
-        super.getNavigator().launchScreen(new ModifyTrailController(super.getNavigator(), null, this, searchService), null);
+        super.getNavigator().launchScreen(new ModifyTrailController(super.getNavigator(), null, repo));
     }
 
     @FXML
     private void onSearchButtonClicked() {
-        super.getNavigator().launchScreen(new TrailsController(super.getNavigator(), searchBarTextField.getText()), null);
+        super.getNavigator()
+                .launchScreen(new TrailsController(super.getNavigator(), searchBarTextField.getText(), repo));
     }
 
     /**
@@ -120,7 +119,7 @@ public class DashboardController extends Controller {
 
     @FXML
     private void onTrailCardClicked(Trail trail) {
-        super.getNavigator().launchScreen(new ViewTrailController(super.getNavigator(), trail, searchService), this);
+        super.getNavigator().launchScreen(new ViewTrailController(super.getNavigator(), trail, repo));
     }
 
     @Override
@@ -131,5 +130,15 @@ public class DashboardController extends Controller {
     @Override
     protected String getTitle() {
         return "Dashboard";
+    }
+
+    @Override
+    protected boolean shouldShowNavbar() {
+        return true;
+    }
+
+    @Override
+    protected int getNavbarPageIndex() {
+        return 0; // Dashboard is the first tab
     }
 }

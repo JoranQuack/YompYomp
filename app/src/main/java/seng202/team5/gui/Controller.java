@@ -3,6 +3,7 @@ package seng202.team5.gui;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import seng202.team5.App;
+import seng202.team5.data.SqlBasedTrailRepo;
 import seng202.team5.gui.components.NavbarComponent;
 import seng202.team5.services.UserService;
 
@@ -14,6 +15,7 @@ public abstract class Controller {
     private final ScreenNavigator navigator;
     private final NavbarComponent navbarController;
     private final UserService userService;
+    private final SqlBasedTrailRepo sqlBasedTrailRepo;
 
     /**
      * No-argument constructor for FXML compatibility
@@ -22,6 +24,7 @@ public abstract class Controller {
         this.navigator = null; // Will be set later via setter
         this.navbarController = null; // Will be set later via setter
         this.userService = new UserService(App.getDatabaseService()); // Create new instance for FXML controllers
+        this.sqlBasedTrailRepo = new SqlBasedTrailRepo(App.getDatabaseService());
     }
 
     /**
@@ -32,7 +35,8 @@ public abstract class Controller {
     protected Controller(final ScreenNavigator navigator) {
         this.navigator = navigator;
         this.userService = new UserService(App.getDatabaseService());
-        this.navbarController = new NavbarComponent(navigator, userService);
+        this.sqlBasedTrailRepo = new SqlBasedTrailRepo(App.getDatabaseService());
+        this.navbarController = new NavbarComponent(navigator, userService, sqlBasedTrailRepo);
     }
 
     /**
@@ -119,5 +123,20 @@ public abstract class Controller {
     protected NavbarComponent getNavbarController() {
         return navbarController;
     }
+
+    /**
+     * Determines whether this screen should show the navbar.
+     *
+     * @return true if the navbar should be shown
+     */
+    protected abstract boolean shouldShowNavbar();
+
+    /**
+     * Gets the page index for the navbar highlighting.
+     *
+     * @return the index of the navbar button to highlight (0 for Dashboard, 1 for
+     *         Trails, and -1 for none)
+     */
+    protected abstract int getNavbarPageIndex();
 
 }

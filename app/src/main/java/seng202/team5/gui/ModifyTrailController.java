@@ -5,6 +5,8 @@ import com.sun.javafx.webkit.WebConsoleListener;
 import javafx.concurrent.Worker;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
 import javafx.scene.paint.Color;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
@@ -14,7 +16,6 @@ import seng202.team5.data.SqlBasedTrailRepo;
 import seng202.team5.models.Trail;
 import seng202.team5.services.MatchmakingService;
 import seng202.team5.services.RegionFinder;
-import seng202.team5.services.SearchService;
 import seng202.team5.utils.StringManipulator;
 import seng202.team5.utils.TrailsProcessor;
 
@@ -26,9 +27,7 @@ import java.util.List;
 public class ModifyTrailController extends Controller {
 
     private Trail trail;
-    private Controller lastController;
     private SqlBasedTrailRepo sqlBasedTrailRepo;
-    private SearchService searchService;
     private RegionFinder regionFinder;
 
     private WebEngine webEngine;
@@ -38,19 +37,16 @@ public class ModifyTrailController extends Controller {
     /**
      * Launches the screen with navigator
      *
-     * @param navigator      screen navigator
-     * @param trail          the selected trail
-     * @param lastController controller of last screen user interacted with
-     * @param searchService  searchService
+     * @param navigator         screen navigator
+     * @param trail             the selected trail
+     * @param sqlBasedTrailRepo the trail repository
      */
-    public ModifyTrailController(ScreenNavigator navigator, Trail trail, Controller lastController,
-            SearchService searchService) {
+    public ModifyTrailController(ScreenNavigator navigator, Trail trail,
+            SqlBasedTrailRepo sqlBasedTrailRepo) {
         super(navigator);
         this.trail = trail;
-        this.lastController = lastController;
-        this.searchService = searchService;
         this.regionFinder = new RegionFinder();
-        this.sqlBasedTrailRepo = new SqlBasedTrailRepo(App.getDatabaseService());
+        this.sqlBasedTrailRepo = sqlBasedTrailRepo;
     }
 
     @FXML
@@ -68,7 +64,7 @@ public class ModifyTrailController extends Controller {
     @FXML
     private TextField cultureUrlTextField;
     @FXML
-    private WebView trailMapView;
+    private HBox mapContainer;
     @FXML
     private Label emptyFieldLabel;
     @FXML
@@ -83,6 +79,7 @@ public class ModifyTrailController extends Controller {
     private Label regionLabel;
     @FXML
     private Label invalidNumberLabel;
+    private WebView trailMapWebView;
 
     /**
      * Initialises the screen with components for user to input data
@@ -93,7 +90,7 @@ public class ModifyTrailController extends Controller {
     private void initialize() {
         setupFormFields();
         setupEventHandlers();
-        initMap();
+        javafx.application.Platform.runLater(this::initMap);
     }
 
     /**
@@ -127,8 +124,15 @@ public class ModifyTrailController extends Controller {
      * Initialises the WebView and sets up the map with proper initialization flow
      */
     private void initMap() {
-        javaScriptBridge = new JavaScriptBridge(this, searchService);
-        webEngine = trailMapView.getEngine();
+        javaScriptBridge = new JavaScriptBridge(this, sqlBasedTrailRepo);
+        mapContainer.getChildren().clear();
+        trailMapWebView = new WebView();
+        trailMapWebView.setPrefHeight(-1);
+        trailMapWebView.setPrefWidth(-1);
+        HBox.setHgrow(trailMapWebView, Priority.ALWAYS);
+        mapContainer.getChildren().add(trailMapWebView);
+
+        webEngine = trailMapWebView.getEngine();
         webEngine.setJavaScriptEnabled(true);
 
         WebConsoleListener.setDefaultListener((view, message, lineNumber, sourceID) -> System.out
@@ -256,10 +260,10 @@ public class ModifyTrailController extends Controller {
     @FXML
     private void onSaveButtonClicked() {
         if (userInputValidation()) {
-            sqlBasedTrailRepo.upsert(getUpdatedTrail());
+            Trail updatedTrail = getUpdatedTrail();
+            sqlBasedTrailRepo.upsert(updatedTrail);
             super.getNavigator().launchScreen(
-                    new ViewTrailController(super.getNavigator(), getUpdatedTrail(), searchService),
-                    lastController.getNavigator().getLastController());
+                    new ViewTrailController(super.getNavigator(), updatedTrail, sqlBasedTrailRepo));
         } else {
             emptyFieldLabel.setText("Please make sure all required fields are filled!");
             emptyFieldLabel.setTextFill(Color.RED);
@@ -268,7 +272,7 @@ public class ModifyTrailController extends Controller {
 
     @FXML
     private void onBackButtonClicked() {
-        super.getNavigator().launchScreen(lastController, lastController.getNavigator().getLastController());
+        super.getNavigator().goBack();
     }
 
     /**
@@ -297,10 +301,8 @@ public class ModifyTrailController extends Controller {
                 return false; // user must choose a location by entering coordinates or selecting them on map
             }
         }
-        if (trailNameTextField.getText().isEmpty() || trailDescriptionTextArea.getText().isEmpty()) {
-            return false;
-        }
-        return true;
+        return !trailNameTextField.getText().isEmpty() && !trailDescriptionTextArea.getText().isEmpty()
+                && trailTypeComboBox.getValue() != null;
     }
 
     /**
@@ -335,7 +337,7 @@ public class ModifyTrailController extends Controller {
             userWeight = trail.getUserWeight();
         } else {
             // Creating new trail - temp values that will be recalculated
-            trailId = -1;
+            trailId = sqlBasedTrailRepo.getNewTrailId();
             region = regionLabel.getText();
             thumbUrl = "";
             webUrl = "";
@@ -367,5 +369,15 @@ public class ModifyTrailController extends Controller {
     @Override
     protected String getTitle() {
         return "Modify Trail Screen";
+    }
+
+    @Override
+    protected boolean shouldShowNavbar() {
+        return true;
+    }
+
+    @Override
+    protected int getNavbarPageIndex() {
+        return 1; // Trails section
     }
 }
