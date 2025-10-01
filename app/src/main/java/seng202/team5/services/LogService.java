@@ -1,18 +1,20 @@
 package seng202.team5.services;
 
-import org.hsqldb.DatabaseManager;
 import seng202.team5.data.DatabaseService;
+import seng202.team5.data.ITrailLog;
 import seng202.team5.data.SqlBasedTrailLogRepo;
 import seng202.team5.data.SqlBasedTrailRepo;
 import seng202.team5.models.Trail;
 import seng202.team5.models.TrailLog;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class LogService {
 
+    private ITrailLog trailInterface;
+    private SqlBasedTrailLogRepo trailLogRepo;
     private List<TrailLog> logs;
     private List<TrailLog> filteredLogs;
     private int maxResults = 50;
@@ -25,6 +27,9 @@ public class LogService {
     public LogService(DatabaseService databaseService) {
         this.logs = new SqlBasedTrailLogRepo(databaseService).getAllTrailLogs();
         this.filteredLogs = logs;
+        this.trailInterface = new SqlBasedTrailLogRepo(databaseService);
+        this.trailLogRepo = new SqlBasedTrailLogRepo(databaseService);
+        this.trailRepo = new SqlBasedTrailRepo(databaseService);
     }
 
     /**
@@ -45,8 +50,12 @@ public class LogService {
         return logs.size();
     }
 
-    public Trail getTrail(int id) {
-        return new SqlBasedTrailRepo(new DatabaseService()).findById(id).get();
+    public Optional<TrailLog> getTrailLog(int logId) {
+        return trailInterface.findById(logId);
+    }
+
+    public Optional<Trail> getTrail(int trailId) {
+        return trailRepo.findById(trailId);
     }
 
     /**
@@ -56,7 +65,10 @@ public class LogService {
         String lower = currentSearchValue == null ? "" : currentSearchValue.toLowerCase();
 
         filteredLogs = logs.stream()
-                .filter(t -> getTrail(t.getTrailId()).getName().toLowerCase().contains(lower))
+                .filter(t -> {
+                    Optional<Trail> trail = trailRepo.findById(t.getTrailId());
+                    return trail.isPresent() && trail.get().getName().toLowerCase().contains(lower);
+                })
                 .collect(Collectors.toList());
     }
 
@@ -80,4 +92,25 @@ public class LogService {
     public void setCurrentQuery(String query) {
         currentSearchValue = query;
     }
+
+    public List<TrailLog> getAllLogs() {
+        return trailInterface.getAllTrailLogs();
+    }
+
+    public void addLog(TrailLog trailLog) {
+        trailLogRepo.upsert(trailLog);
+    }
+
+    public void updateLog(TrailLog trailLog) {
+        trailLogRepo.upsert(trailLog);
+    }
+
+    public void deleteLog(int logId) {
+        trailLogRepo.deleteById(logId);
+    }
+
+    public boolean isTrailLogged(int trailId) {
+        return trailInterface.findById(trailId).isPresent();
+    }
+
 }
