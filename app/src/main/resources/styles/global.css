@@ -279,3 +279,7 @@ Label {
 .search-button {
   -fx-padding: 10;
 }
+
+Button.bg-bluey:hover {
+  -fx-opacity: 0.7;
+}
