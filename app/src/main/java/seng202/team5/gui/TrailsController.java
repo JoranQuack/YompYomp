@@ -61,6 +61,8 @@ public class TrailsController extends Controller {
     private ChoiceBox<String> sortChoiceBox;
     @FXML
     private ToggleButton ascDescToggleButton;
+    @FXML
+    private Label savePopupLabel;
 
     /**
      * Creates controller with navigator.
@@ -400,8 +402,9 @@ public class TrailsController extends Controller {
         for (int i = 0; i < trails.size(); i++) {
             Trail trail = trails.get(i);
             TrailCardComponent trailCard = getOrCreateTrailCard(i, isGuest, cardMargin);
-
             trailCard.setData(trail, null);
+
+            trailCard.setOnBookmarkClicked(() -> showTemporaryMessage("Saved Trail To Logbook!", 2000));
             trailCard.setOnMouseClicked(e -> onTrailCardClicked(trail));
             trailsContainer.getChildren().add(trailCard);
         }
@@ -504,6 +507,18 @@ public class TrailsController extends Controller {
                 return 1;
             return a.compareToIgnoreCase(b);
         });
+    }
+
+    private void showTemporaryMessage(String message, int durationMillis) {
+        savePopupLabel.setText(message);
+        savePopupLabel.setVisible(true);
+
+        new Thread(() -> {
+            try {
+                Thread.sleep(durationMillis);
+            } catch (InterruptedException ignored) {}
+            Platform.runLater(() -> savePopupLabel.setVisible(false));
+        }).start();
     }
 
     @Override

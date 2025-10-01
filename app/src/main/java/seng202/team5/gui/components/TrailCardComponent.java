@@ -1,8 +1,8 @@
 package seng202.team5.gui.components;
 
 import java.io.IOException;
-import java.util.Optional;
 
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Label;
@@ -11,9 +11,11 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.VBox;
+import seng202.team5.data.DatabaseService;
 import seng202.team5.models.Trail;
 import seng202.team5.models.TrailLog;
 import seng202.team5.services.ImageService;
+import seng202.team5.services.LogService;
 import seng202.team5.utils.CompletionTimeParser;
 import seng202.team5.utils.StringManipulator;
 
@@ -47,7 +49,7 @@ public class TrailCardComponent extends VBox {
     @FXML
     private ImageView bookmarkFill;
 
-
+    private Runnable onBookmarkClicked;
     private final ImageService imageService;
 
     private boolean isUnmatched;
@@ -57,6 +59,7 @@ public class TrailCardComponent extends VBox {
         this.isUnmatched = isUnmatched;
         this.logMode = logMode;
         this.imageService = new ImageService();
+
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/components/trail_card.fxml"));
         fxmlLoader.setRoot(this);
         fxmlLoader.setController(this); // FXML elements
@@ -66,6 +69,23 @@ public class TrailCardComponent extends VBox {
         } catch (IOException e) {
             throw new RuntimeException(e);
         } // If not work, crash?
+
+        setupBookmarkHandler();
+    }
+
+    public void setOnBookmarkClicked(Runnable callback) {
+        this.onBookmarkClicked = callback;
+    }
+
+    private void setupBookmarkHandler() {
+        bookmark.setOnMouseClicked(event -> {
+            bookmark.setVisible(false);
+            bookmarkFill.setVisible(true);
+
+            if (onBookmarkClicked != null) {
+                onBookmarkClicked.run();
+            }
+        });
     }
 
     /**
@@ -100,7 +120,6 @@ public class TrailCardComponent extends VBox {
         resetComponentVisibility();
 
         title.setText(trail.getName());
-
         Image trailImage = imageService.loadTrailImage(trail.getThumbnailURL());
         thumbnail.setImage(trailImage);
 
