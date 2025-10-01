@@ -8,10 +8,12 @@ import javafx.scene.control.ProgressIndicator;
 import seng202.team5.App;
 import seng202.team5.models.User;
 import seng202.team5.services.MatchmakingService;
+import seng202.team5.services.UserService;
 
 public class LoadingController extends Controller {
 
-    private boolean isMatchmakingComplete = false;
+    private User user;
+    private boolean isSkip = false;
 
     @FXML
     private ProgressIndicator progressIndicator;
@@ -24,9 +26,14 @@ public class LoadingController extends Controller {
      *
      * @param navigator screen navigator
      */
-    public LoadingController(ScreenNavigator navigator, boolean isMatchmakingComplete) {
+    public LoadingController(ScreenNavigator navigator, User user) {
         super(navigator);
-        this.isMatchmakingComplete = isMatchmakingComplete;
+        this.user = user;
+        if (user != null) {
+            isSkip = false;
+        } else {
+            isSkip = true;
+        }
 
         // Use Platform.runLater to execute
         javafx.application.Platform.runLater(this::startMatchmaking);
@@ -40,7 +47,7 @@ public class LoadingController extends Controller {
         if (progressIndicator != null) {
             progressIndicator.setProgress(-1.0); // Indeterminate progress
         }
-        if (isMatchmakingComplete) {
+        if (isSkip) {
             statusLabel.setText("Just a moment...");
         } else {
             statusLabel.setText("Matching you to your favourite trails...");
@@ -55,6 +62,7 @@ public class LoadingController extends Controller {
         progressIndicator.setProgress(-1.0);
 
         final ScreenNavigator navigator = super.getNavigator();
+        final UserService userService = super.getUserService();
 
         // Create a background task for the matchmaking process
         Task<Void> matchmakingTask = new Task<Void>() {
@@ -63,9 +71,17 @@ public class LoadingController extends Controller {
                 // Wait for database setup before we can matchmake
                 App.getSetupService().waitForDatabaseSetup();
 
-                if (isMatchmakingComplete) {
+                // If skipping, set user as guest and skip the matchmaking and saving
+                if (isSkip) {
+                    if (userService.getUser() == null) {
+                        userService.setGuest(true);
+                    }
                     return null;
                 }
+
+                // Save the user to the database
+                userService.clearUser();
+                userService.saveUser(user);
 
                 // Create MatchmakingService AFTER database setup is complete
                 MatchmakingService matchmakingService = new MatchmakingService(App.getDatabaseService());
