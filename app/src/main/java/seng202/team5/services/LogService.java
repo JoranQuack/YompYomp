@@ -3,10 +3,12 @@ package seng202.team5.services;
 import org.hsqldb.DatabaseManager;
 import seng202.team5.data.DatabaseService;
 import seng202.team5.data.SqlBasedTrailLogRepo;
+import seng202.team5.models.Trail;
 import seng202.team5.models.TrailLog;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class LogService {
 
@@ -32,5 +34,11 @@ public class LogService {
         return (int) Math.ceil((double) logs.size() / maxResults);
     }
 
+    /**
+     * Gets the total number of logs in the results.
+     */
+    public int getNumberOfLogs() {
+        return logs.size();
+    }
 
 }

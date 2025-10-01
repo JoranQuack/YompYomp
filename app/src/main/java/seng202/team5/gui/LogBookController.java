@@ -17,6 +17,7 @@ import javafx.application.Platform;
 import seng202.team5.App;
 import seng202.team5.gui.components.TrailCardComponent;
 import seng202.team5.models.Trail;
+import seng202.team5.models.TrailLog;
 import seng202.team5.services.LogService;
 import seng202.team5.services.SearchService;
 
@@ -39,7 +40,7 @@ public class LogBookController extends Controller {
     @FXML
     private TextField searchBarTextField;
     @FXML
-    private FlowPane trailsContainer;
+    private FlowPane logContainer;
     @FXML
     private Label resultsLabel;
     @FXML
@@ -67,11 +68,11 @@ public class LogBookController extends Controller {
             return;
         }
 
-        //setupUIComponents();
+        setupPageChoiceBoxListener();
         isUpdating = false;
 
         // show loading stuff straight away
-        //showLoadingState();
+        showLoadingState();
 
         // Load data asynchronously
         //loadInitialDataAsync();
@@ -91,11 +92,154 @@ public class LogBookController extends Controller {
         resultsLabel.setText("No logs available");
         Label noResultsLabel = new Label(
                 "There are no logs available, as you have not logged any trails yet. Please create a trail log and try again.");
-        trailsContainer.getChildren().add(noResultsLabel);
+        logContainer.getChildren().add(noResultsLabel);
         showAlert(Alert.AlertType.ERROR, "No logs available",
                 "Failed to load logs, please add a trail log and try again.");
     }
 
+    /**
+     * Sets up the page choice box listener for pagination.
+     */
+    private void setupPageChoiceBoxListener() {
+        pageChoiceBox.getSelectionModel().selectedItemProperty().addListener(
+                (observable, oldValue, newValue) -> {
+                    if (!isUpdating) {
+                        onPageSelected();
+                    }
+                });
+    }
+
+    /**
+     * Handles page selection changes by updating the displayed trails.
+     */
+    private void onPageSelected() {
+        String selectedPage = pageChoiceBox.getValue();
+        if (selectedPage != null) {
+            int pageIndex = Integer.parseInt(selectedPage) - 1;
+            //TODO add the following lines below
+            //List<Trail> trails = logService.getPage(pageIndex);
+            //updateLogDisplay(trails);
+        }
+    }
+
+    /**
+     * Shows a loading state while trails are being fetched.
+     */
+    private void showLoadingState() {
+        logContainer.getChildren().clear();
+        Label loadingLabel = new Label("Loading trails...");
+        logContainer.getChildren().add(loadingLabel);
+        resultsLabel.setText("Loading...");
+    }
+
+    /**
+     * Loads initial data asynchronously
+     */
+    private void loadInitialDataAsync() {
+        Task<Void> loadTask = new Task<Void>() {
+            @Override
+            protected Void call() throws Exception {
+                if (searchText != null) {
+                    //logService.setCurrentQuery(searchText);
+                }
+                //logService.getPage(0);
+                return null;
+            }
+
+            @Override
+            protected void succeeded() {
+                // JavaFX app thread
+                Platform.runLater(() -> {
+                    updateSearchDisplay();
+                });
+            }
+
+            @Override
+            protected void failed() {
+                Platform.runLater(() -> {
+                    logContainer.getChildren().clear();
+                    Label errorLabel = new Label("Failed to load trails. Please try again.");
+                    logContainer.getChildren().add(errorLabel);
+                    resultsLabel.setText("Error loading trails");
+                });
+            }
+        };
+
+        Thread loadThread = new Thread(loadTask);
+        loadThread.setDaemon(true);
+        loadThread.start();
+    }
+
+    /**
+     * Updates the displayed trails based on the current search, filter, sort, and
+     * pagination settings.
+     */
+    private void updateSearchDisplay() {
+        //List<TrailLog> logs = logService.getPage(0);
+        //updateLogsDisplay(logs);
+        //resetPageChoiceBox();
+    }
+
+    /**
+     * Updates the trails displayed in the UI, reusing TrailCardComponents from a
+     * pool for performance.
+     *
+     * @param logs List of trails to display
+     */
+    private void updateLogsDisplay(List<TrailLog> logs) {
+        logContainer.getChildren().clear();
+
+        if (logs.isEmpty()) {
+            //showNoResultsMessage();
+            return;
+        }
+
+        boolean isGuest = super.getUserService().isGuest();
+        Insets cardMargin = new Insets(10);
+
+        for (int i = 0; i < logs.size(); i++) {
+            TrailLog log = logs.get(i);
+            TrailCardComponent logCard = getOrCreateLogCard(i, cardMargin);
+
+            logCard.setData(null, log);
+            logCard.setOnMouseClicked(e -> onLogCardClicked(log));
+            logContainer.getChildren().add(logCard);
+        }
+
+        updateResultsLabel(logs.size());
+    }
+
+    //TODO add feature for when click on a trail log
+    @FXML
+    private void onLogCardClicked(TrailLog log) {
+    }
+
+    /**
+     * Retrieves a TrailCardComponent from the pool or creates a new one if needed.
+     *
+     * @param index      The index of the log card
+     * @param cardMargin The margin to apply to the card
+     * @return A TrailCardComponent
+     */
+    private TrailCardComponent getOrCreateLogCard(int index, Insets cardMargin) {
+        if (index < logCardPool.size()) {
+            return logCardPool.get(index);
+        } else {
+            TrailCardComponent logCard = new TrailCardComponent(false, true);
+            logCardPool.add(logCard);
+            VBox.setMargin(logCard, cardMargin);
+            return logCard;
+        }
+    }
+
+    /**
+     * Updates the results label to show the number of trails currently displayed
+     *
+     * @param trailCount Number of trails currently displayed
+     */
+    private void updateResultsLabel(int trailCount) {
+        resultsLabel.setText(trailCount + "/" + logService.getNumberOfLogs() + " trails showing");
+    }
 
     @Override
     protected String getFxmlFile() {
