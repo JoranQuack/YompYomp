@@ -75,7 +75,7 @@ public class LogBookController extends Controller {
         showLoadingState();
 
         // Load data asynchronously
-        //loadInitialDataAsync();
+        loadInitialDataAsync();
     }
 
     /**
@@ -140,9 +140,9 @@ public class LogBookController extends Controller {
             @Override
             protected Void call() throws Exception {
                 if (searchText != null) {
-                    //logService.setCurrentQuery(searchText);
+                    logService.setCurrentQuery(searchText);
                 }
-                //logService.getPage(0);
+                logService.getPage(0);
                 return null;
             }
 
@@ -175,9 +175,9 @@ public class LogBookController extends Controller {
      * pagination settings.
      */
     private void updateSearchDisplay() {
-        //List<TrailLog> logs = logService.getPage(0);
-        //updateLogsDisplay(logs);
-        //resetPageChoiceBox();
+        List<TrailLog> logs = logService.getPage(0);
+        updateLogsDisplay(logs);
+        resetPageChoiceBox();
     }
 
     /**
@@ -193,15 +193,14 @@ public class LogBookController extends Controller {
             //showNoResultsMessage();
             return;
         }
-
-        boolean isGuest = super.getUserService().isGuest();
         Insets cardMargin = new Insets(10);
 
         for (int i = 0; i < logs.size(); i++) {
             TrailLog log = logs.get(i);
+            Trail trail = logService.getTrail(log.getTrailId());
             TrailCardComponent logCard = getOrCreateLogCard(i, cardMargin);
 
-            logCard.setData(null, log);
+            logCard.setData(trail, log);
             logCard.setOnMouseClicked(e -> onLogCardClicked(log));
             logContainer.getChildren().add(logCard);
         }
@@ -241,6 +240,33 @@ public class LogBookController extends Controller {
         resultsLabel.setText(trailCount + "/" + logService.getNumberOfLogs() + " trails showing");
     }
 
+    /**
+     * Resets the page selection dropdown to the initial state.
+     */
+    private void resetPageChoiceBox() {
+        isUpdating = true;
+
+        pageChoiceBox.getItems().clear();
+        int numPages = logService.getNumberOfPages();
+
+        if (numPages > 0) {
+            String[] pageItems = new String[numPages];
+            for (int i = 0; i < numPages; i++) {
+                pageItems[i] = String.valueOf(i + 1);
+            }
+            pageChoiceBox.getItems().addAll(pageItems);
+            pageChoiceBox.setValue("1");
+        }
+
+        isUpdating = false;
+    }
+
+    @FXML
+    private void onSearchButtonClicked() {
+        logService.setCurrentQuery(searchBarTextField.getText());
+        updateSearchDisplay();
+    }
+
     @Override
     protected String getFxmlFile() {
         return "/fxml/logbook.fxml";
@@ -258,6 +284,6 @@ public class LogBookController extends Controller {
 
     @Override
     protected int getNavbarPageIndex() {
-        return -1;
+        return 1;
     }
 }
