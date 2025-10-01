@@ -11,7 +11,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import seng202.team5.gui.util.BackgroundImageUtil;
+import javafx.scene.shape.Rectangle;
 import seng202.team5.models.Trail;
 import seng202.team5.services.ImageService;
 import seng202.team5.utils.CompletionTimeParser;
@@ -87,7 +87,15 @@ public class TrailCardComponent extends VBox {
 
         Image trailImage = imageService.loadTrailImage(trail.getThumbnailURL());
         thumbnail.setImage(trailImage);
-        BackgroundImageUtil.setupFillBehaviorWithRoundedCorners(thumbnail, thumbnailContainer, 10);
+
+        Rectangle clip = new Rectangle();
+        clip.setArcWidth(20);
+        clip.setArcHeight(20);
+
+        clip.widthProperty().bind(thumbnailContainer.widthProperty());
+        clip.heightProperty().bind(thumbnailContainer.heightProperty());
+
+        thumbnail.setClip(clip);
 
         if (!trail.getDifficulty().contains("unknown")) {
             difficultyLabel.setText(StringManipulator.capitaliseFirstLetter(trail.getDifficulty()));

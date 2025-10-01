@@ -3,7 +3,6 @@ package seng202.team5.gui.util;
 import javafx.beans.binding.Bindings;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Region;
-import javafx.scene.shape.Rectangle;
 
 /**
  * Utility class for setting up background images with cover behaviour
@@ -60,47 +59,5 @@ public class BackgroundImageUtil {
             // Container is taller relative to image - scale based on height
             return new double[] { containerHeight * imageRatio, containerHeight };
         }
-    }
-
-    /**
-     * Sets up more simple cover behaviour for an ImageView to fill its container
-     * without preserving aspect ratio.
-     *
-     * @param imageView The ImageView to configure
-     * @param container The container that the image should fill
-     */
-    public static void setupFillBehavior(ImageView imageView, Region container) {
-        if (imageView == null || container == null) {
-            throw new IllegalArgumentException("ImageView and container cannot be null");
-        }
-
-        imageView.setPreserveRatio(false);
-
-        imageView.fitWidthProperty().bind(container.widthProperty());
-        imageView.fitHeightProperty().bind(container.heightProperty());
-    }
-
-    /**
-     * Sets up fill behaviour with rounded corners by applying a clipping rectangle.
-     *
-     * @param imageView    The ImageView to configure
-     * @param container    The container that the image should fill
-     * @param cornerRadius The radius for the rounded corners
-     */
-    public static void setupFillBehaviorWithRoundedCorners(ImageView imageView, Region container, double cornerRadius) {
-        if (imageView == null || container == null) {
-            throw new IllegalArgumentException("ImageView and container cannot be null");
-        }
-
-        setupFillBehavior(imageView, container);
-
-        Rectangle clip = new Rectangle();
-        clip.setArcWidth(cornerRadius * 2);
-        clip.setArcHeight(cornerRadius * 2);
-
-        clip.widthProperty().bind(container.widthProperty());
-        clip.heightProperty().bind(container.heightProperty());
-
-        imageView.setClip(clip);
     }
 }

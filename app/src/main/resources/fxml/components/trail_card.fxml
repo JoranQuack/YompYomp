@@ -16,7 +16,7 @@
       <children>
       
           <!-- Thumbnail image -->
-          <ImageView fx:id="thumbnail" fitHeight="188.0" fitWidth="294.0" preserveRatio="true" styleClass="round-top">
+          <ImageView fx:id="thumbnail" fitHeight="180.0" fitWidth="300.0" styleClass="round-top">
             <image>
                <Image url="@../../images/Default%20Trail%20Image.png" />
             </image>
