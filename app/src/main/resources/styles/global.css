@@ -281,5 +281,5 @@ Label {
 }
 
 Button.bg-pinky:hover {
-  -fx-opacity: 0.7;
+  -fx-background-color: #d8e5fd;
 }
