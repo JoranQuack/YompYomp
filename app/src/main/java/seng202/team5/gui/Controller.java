@@ -13,7 +13,6 @@ public abstract class Controller {
 
     private final ScreenNavigator navigator;
     private final NavbarComponent navbarController;
-    private final UserService userService;
 
     /**
      * No-argument constructor for FXML compatibility
@@ -21,7 +20,6 @@ public abstract class Controller {
     protected Controller() {
         this.navigator = null; // Will be set later via setter
         this.navbarController = null; // Will be set later via setter
-        this.userService = new UserService(App.getDatabaseService()); // Create new instance for FXML controllers
     }
 
     /**
@@ -31,8 +29,7 @@ public abstract class Controller {
      */
     protected Controller(final ScreenNavigator navigator) {
         this.navigator = navigator;
-        this.userService = new UserService(App.getDatabaseService());
-        this.navbarController = new NavbarComponent(navigator, userService);
+        this.navbarController = new NavbarComponent(navigator, App.getUserService());
     }
 
     /**
@@ -99,7 +96,7 @@ public abstract class Controller {
      * @return The user service for this controller
      */
     protected UserService getUserService() {
-        return userService;
+        return App.getUserService();
     }
 
     /**
