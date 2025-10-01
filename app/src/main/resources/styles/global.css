@@ -280,6 +280,6 @@ Label {
   -fx-padding: 10;
 }
 
-Button.bg-bluey:hover {
+Button.bg-pinky:hover {
   -fx-opacity: 0.7;
 }
