@@ -16,6 +16,8 @@ import java.util.List;
 public class AccountController extends Controller {
 
     @FXML
+    private VBox navbarContainer;
+    @FXML
     private ImageView profileImage;
     @FXML
     private ImageView clearProfileImage;
@@ -85,6 +87,10 @@ public class AccountController extends Controller {
 
     @FXML
     private void initialize() {
+        NavbarComponent navbar = super.getNavbarController();
+        navbar.setPage(2);
+        navbarContainer.getChildren().add(navbar);
+
         welcomeLabel.setText("Kia Ora " + user.getName() + "!");
         setPreferenceLabels();
 

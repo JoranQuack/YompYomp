@@ -66,4 +66,8 @@ public class NavbarComponent extends HBox {
         navButtons.forEach(button -> button.setStyle(""));
         navButtons.get(pageIndex).setStyle("-fx-background-color: #0078D4; -fx-text-fill: white;");
     }
+
+    public Button getProfileButton() {
+        return profileButton;
+    }
 }
