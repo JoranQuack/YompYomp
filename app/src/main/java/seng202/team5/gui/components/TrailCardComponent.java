@@ -54,6 +54,7 @@ public class TrailCardComponent extends VBox {
 
     public TrailCardComponent(boolean isUnmatched, boolean logMode) {
         this.isUnmatched = isUnmatched;
+        this.logMode = logMode;
         this.imageService = new ImageService();
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/components/trail_card.fxml"));
         fxmlLoader.setRoot(this);
