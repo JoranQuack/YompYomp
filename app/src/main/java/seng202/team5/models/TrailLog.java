@@ -22,11 +22,11 @@ public class TrailLog {
      * @param startDate
      * @param timeUnit
      * @param rating
-     * @param personalDifficulty
+     * @param perceivedDifficulty
      * @param notes
      */
     public TrailLog(int id, int trailId, Date startDate, Integer completionTime, String timeUnit, String completionType,
-                    Integer rating, String personalDifficulty, String notes) {
+                    Integer rating, String perceivedDifficulty, String notes) {
         this.id = id;
         this.trailId = trailId;
         this.startDate = startDate;
@@ -34,7 +34,7 @@ public class TrailLog {
         this.timeUnit = timeUnit;
         this.completionType = completionType;
         this.rating = rating;
-        this.perceivedDifficulty = personalDifficulty;
+        this.perceivedDifficulty = perceivedDifficulty;
         this.notes = notes;
     }
 
