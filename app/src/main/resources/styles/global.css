@@ -25,7 +25,7 @@
 Button {
   -fx-font-family: "Quicksand SemiBold";
   -fx-cursor: hand;
-  -fx-font-size: 14px;
+  -fx-font-size: 15px;
   -fx-text-fill: #04140b;
   -fx-background-color: #d5e6d4;
   -fx-background-radius: 10;
@@ -42,7 +42,7 @@ Button.active {
 
 TextField {
   -fx-font-family: "Quicksand";
-  -fx-font-size: 14px;
+  -fx-font-size: 15px;
   -fx-text-fill: #04140b;
   -fx-prompt-text-fill: #7b7b7b;
   -fx-background-color: #eef1ed;
@@ -54,7 +54,7 @@ TextField {
 
 CheckComboBox {
   -fx-font-family: "Quicksand";
-  -fx-font-size: 14px;
+  -fx-font-size: 15px;
   -fx-text-fill: #04140b;
   -fx-background-color: #eef1ed;
   -fx-background-radius: 10;
@@ -98,7 +98,7 @@ CheckComboBox > .combo-box .list-cell:hover {
 
 .check-box {
   -fx-font-family: "Quicksand";
-  -fx-font-size: 14px;
+  -fx-font-size: 15px;
   -fx-text-fill: #04140b;
   -fx-cursor: hand;
 }
@@ -209,7 +209,7 @@ ProgressIndicator {
 
 Label {
   -fx-font-family: "Quicksand Medium";
-  -fx-font-size: 14px;
+  -fx-font-size: 15px;
   -fx-text-fill: #04140b;
 }
 
@@ -220,7 +220,7 @@ Label {
 
 .heading {
   -fx-font-family: "Quicksand SemiBold";
-  -fx-font-size: 16px;
+  -fx-font-size: 18px;
 }
 
 .text-light {
@@ -250,8 +250,8 @@ Label {
   -fx-background-color: #d5e6d4;
 }
 
-.round-top {
-  -fx-background-radius: 10 10 0 0;
+.round-corners {
+  -fx-background-radius: 10;
 }
 
 .trail-card {
