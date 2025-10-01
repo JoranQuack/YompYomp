@@ -3,6 +3,7 @@ package seng202.team5.gui;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import seng202.team5.App;
+import seng202.team5.data.SqlBasedTrailRepo;
 import seng202.team5.gui.components.NavbarComponent;
 import seng202.team5.services.UserService;
 
@@ -13,6 +14,7 @@ public abstract class Controller {
 
     private final ScreenNavigator navigator;
     private final NavbarComponent navbarController;
+    private final SqlBasedTrailRepo sqlBasedTrailRepo;
 
     /**
      * No-argument constructor for FXML compatibility
@@ -20,6 +22,7 @@ public abstract class Controller {
     protected Controller() {
         this.navigator = null; // Will be set later via setter
         this.navbarController = null; // Will be set later via setter
+        this.sqlBasedTrailRepo = new SqlBasedTrailRepo(App.getDatabaseService());
     }
 
     /**
@@ -29,7 +32,8 @@ public abstract class Controller {
      */
     protected Controller(final ScreenNavigator navigator) {
         this.navigator = navigator;
-        this.navbarController = new NavbarComponent(navigator, App.getUserService());
+        this.sqlBasedTrailRepo = new SqlBasedTrailRepo(App.getDatabaseService());
+        this.navbarController = new NavbarComponent(navigator, App.getUserService(), sqlBasedTrailRepo);
     }
 
     /**

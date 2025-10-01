@@ -79,8 +79,13 @@ public class SetupService {
      */
     void scrapeTrailImage(String url) {
         String filename = extractFilenameFromUrl(url);
+        if (filename.contains("no-photo")) {
+            return;
+        }
+
         String imagePath = AppDataManager.getAppData("images/" + filename);
         File imageFile = new File(imagePath);
+
         if (!imageFile.exists()) {
             try {
                 // Create the images directory if it doesn't exist

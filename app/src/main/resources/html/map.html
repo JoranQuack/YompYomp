@@ -3,6 +3,8 @@
 <head>
     <title>Leaflet & OSM Map</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.2.0/dist/leaflet.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.Default.css" />
     <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.css" />
     <meta name="viewport" content="initial-scale=1.0">
     <meta charset="utf-8">
@@ -21,11 +23,12 @@
 <div id="map"></div>
 <script src="https://unpkg.com/leaflet@1.2.0/dist/leaflet.js"></script>
 <script src="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.js"></script>
+<script src="https://unpkg.com/leaflet.markercluster/dist/leaflet.markercluster.js"></script>
 <script>
     let map;
     var javaScriptBridge;
     let activeMarker = null; // for single trail (when adding/editing/viewing trail)
-    let markers = []; // for multiple trails (when browsing)
+    var markers = new L.MarkerClusterGroup();
 
     /**
      * This object can be returned to our java code, where we can call the functions we define inside it
@@ -35,7 +38,10 @@
         initMap: initMap,
         enableClick: enableClick,
         clearMarkers: clearMarkers,
-        displayTrails: displayTrails
+        getColorByDifficulty: getColorByDifficulty,
+        displayTrails: displayTrails,
+        buildPopupContent: buildPopupContent,
+        openTrailInfo: openTrailInfo
     };
 
     /**
@@ -90,13 +96,12 @@
     }
 
     /**
-     *Removes all markers currently stored in the markers array from the map
-     * After removal, the markers array is cleared
+     *Removes all markers currently stored in the MarkerClusterGroup markers
+     * from the map.
      * This does not affect the activeMarker
      */
     function clearMarkers() {
-        markers.forEach(m => map.removeLayer(m));
-        markers = [];
+        markers.clearLayers();
     }
 
     /**
@@ -107,9 +112,9 @@
     function getColorByDifficulty(difficulty) {
         switch (difficulty.toLowerCase()) {
             case "easiest": return "green";
-            case "easy": return "green";
+            case "easy": return "#8de45f";
             case "intermediate": return "yellow";
-            case "advanced": return "red";
+            case "advanced": return "orange";
             case "expert": return "red";
             default: return "gray";
         }
@@ -122,7 +127,8 @@
      * @param trailsJson a JSON string representing an array of trail objects
      */
     function displayTrails(trailsJson) {
-        clearMarkers();
+        markers.clearLayers(); // clear the cluster group before adding new markers
+
         const trails = JSON.parse(trailsJson);
 
         trails.forEach(trail => {
@@ -134,25 +140,30 @@
             }
             const color = getColorByDifficulty(trail.difficulty);
 
-            const marker = L.circleMarker([trail.lat, trail.lon], {
+
+            const colourMarker = L.circleMarker([trail.lat, trail.lon], {
                 radius: 8,
                 fillColor: color,
                 color: "#000",
                 weight: 1,
                 opacity: 1,
                 fillOpacity: 0.8
-            }).addTo(map);
+            });
 
             const popupContent = buildPopupContent(trail);
-            marker.bindPopup(popupContent);
+            colourMarker.bindPopup(popupContent);
 
-            markers.push(marker);
+            markers.addLayer(colourMarker);
         });
 
+        map.addLayer(markers);
+
+        let bounds = null;
         // Auto-zoom to fit all markers
-        if (markers.length > 0) {
-            const group = L.featureGroup(markers);
-            map.fitBounds(group.getBounds());
+        if (markers.getLayers().length > 0) {
+            bounds = markers.getBounds();
+            bounds.extend(activeMarker.getLatLng());
+            map.fitBounds(bounds);
         }
     }
 

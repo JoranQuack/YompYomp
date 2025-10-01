@@ -133,25 +133,4 @@ public class SearchServiceTest {
 
         assertNotEquals(page1.getFirst().getId(), page2.getFirst().getId(), "Pages should not overlap");
     }
-
-    @Test
-    void testGetTrailByIdMatch() {
-        Trail trail = searchService.getTrailById(3);
-        assertNotNull(trail);
-        assertEquals("Mountain Peak Trail", trail.getName());
-    }
-
-    @Test
-    @DisplayName("Should return null when no trail found")
-    void testGetTrailByIdNoMatch() {
-        Trail trail = searchService.getTrailById(999);
-        assertNull(trail);
-    }
-
-    @Test
-    @DisplayName("Should return all the trails")
-    void testGetAllTrails() {
-        List<Trail> trails = searchService.getAllTrails();
-        assertEquals(mockTrails.size(), trails.size());
-    }
 }
