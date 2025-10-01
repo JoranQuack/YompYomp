@@ -1,5 +1,6 @@
-/*
- * Color Palette:
+/* ========================================
+ * COLOR PALETTE
+ * ========================================
  *
  * Light: #FDFFFB
  * OffWhite: #EEF1ED
@@ -10,20 +11,17 @@
  * GreenDark: #447055
  * Dark: #04140B
  * OffBlack: #7B7B7B
- */
+ *
+ * ======================================== */
 
 * {
   -fx-background-color: transparent;
 }
 
-/* TEXT STUFF */
-Label {
-  -fx-font-family: "Quicksand Medium";
-  -fx-font-size: 14px;
-  -fx-text-fill: #04140b;
-}
+/* ========================================
+ * INPUT ELEMENTS
+ * ======================================== */
 
-/* BUTTON STUFF */
 Button {
   -fx-font-family: "Quicksand SemiBold";
   -fx-cursor: hand;
@@ -42,7 +40,6 @@ Button.active {
   -fx-text-fill: #fdfffb;
 }
 
-/* INPUT STUFF */
 TextField {
   -fx-font-family: "Quicksand";
   -fx-font-size: 14px;
@@ -145,7 +142,10 @@ Slider .thumb:pressed {
   -fx-background-color: #d5e6d4;
 }
 
-/* PROGRESS STUFF */
+/* ========================================
+ * PROGRESS ELEMENTS
+ * ======================================== */
+
 ProgressBar {
   -fx-accent: #447055; /* Color of the filled portion */
   -fx-control-inner-background: #8faf8e; /* Color of the track */
@@ -171,7 +171,10 @@ ProgressIndicator {
   -fx-progress-color: #e9d8ed; /* Changes the color of the moving part */
 }
 
-/* SCROLL BAR STUFF */
+/* ========================================
+ * SCROLL BAR ELEMENTS
+ * ======================================== */
+
 .scroll-bar {
   -fx-background-color: #eef1ed;
   -fx-background-radius: 10;
@@ -188,13 +191,26 @@ ProgressIndicator {
   -fx-background-color: #d5e6d4;
 }
 
-/* GENERAL CLASSES */
+/* ========================================
+ * GENERAL CLASSES
+ * ======================================== */
+
 .root-pane {
   -fx-background-color: #fdfffb;
 }
 
 .root-pane-dark {
   -fx-background-color: #000000;
+}
+
+/* ========================================
+ * TEXT & TYPOGRAPHY
+ * ======================================== */
+
+Label {
+  -fx-font-family: "Quicksand Medium";
+  -fx-font-size: 14px;
+  -fx-text-fill: #04140b;
 }
 
 .title {
