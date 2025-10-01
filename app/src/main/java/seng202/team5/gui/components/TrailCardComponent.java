@@ -1,6 +1,7 @@
 package seng202.team5.gui.components;
 
 import java.io.IOException;
+import java.util.Optional;
 
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -136,16 +137,25 @@ public class TrailCardComponent extends VBox {
             } else {
                 updateMatchBar(trail);
             }
-        }
-        else {
+        } else {
             matchBar.setVisible(false);
             matchLabel.setVisible(false);
             typeLabel.setVisible(false);
+
             starLabel.setVisible(true);
             starIcon.setVisible(true);
-            starLabel.setText(String.valueOf(log.getRating()));
+            if (log.getRating() != null) {
+                starLabel.setText(String.valueOf(log.getRating()));
+            } else {
+                starLabel.setText("Rate Me!");
+            }
 
-            difficultyLabel.setText(StringManipulator.capitaliseFirstLetter(log.getPerceivedDifficulty()));
+            if (log.getPerceivedDifficulty() != null) {
+                difficultyLabel.setText(StringManipulator.capitaliseFirstLetter(log.getPerceivedDifficulty()));
+            } else {
+                attributesFlowPane.getChildren().remove(difficultyLabel);
+            }
+
             //TODO implement the label for the duration when the model is updated
             //durationLabel.setText(StringManipulator.capitaliseFirstLetter())
         }
