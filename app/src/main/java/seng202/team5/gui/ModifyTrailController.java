@@ -90,7 +90,6 @@ public class ModifyTrailController extends Controller {
     private void initialize() {
         setupFormFields();
         setupEventHandlers();
-        javaScriptBridge = new JavaScriptBridge(this, sqlBasedTrailRepo);
         javafx.application.Platform.runLater(this::initMap);
     }
 

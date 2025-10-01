@@ -11,7 +11,6 @@ import javafx.scene.layout.Background;
 import javafx.scene.layout.Priority;
 import javafx.scene.paint.Paint;
 import javafx.scene.web.WebEngine;
-import javafx.scene.layout.HBox;
 import javafx.scene.web.WebView;
 import netscape.javascript.JSObject;
 import seng202.team5.data.SqlBasedTrailRepo;
@@ -82,7 +81,6 @@ public class ViewTrailController extends Controller {
         setupFormFields();
         setupEventHandlers();
         setupLegend();
-        javaScriptBridge = new JavaScriptBridge(this, sqlBasedTrailRepo);
         javafx.application.Platform.runLater(this::initMap);
     }
 
