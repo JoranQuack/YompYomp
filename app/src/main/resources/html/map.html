@@ -18,6 +18,36 @@
             height: 100%;
         }
     </style>
+    <style>
+        .custom-div-icon {
+            position: relative;
+        }
+
+        .marker-pin {
+            width: 30px;
+            height: 30px;
+            border-radius: 50% 50% 50% 0; /* makes the teardrop shape */
+            transform: rotate(-45deg); /* rotates to point downwards */
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            margin: -15px 0 0 -15px;
+            border: 1px solid #000;
+        }
+
+        /* image overlay */
+        .marker-img {
+            position: absolute;
+            width: 18px;
+            height: 18px;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            background-size: cover;
+            background-position: center;
+            border-radius: 50%; // make image circular
+        }
+    </style>
 </head>
 <body>
 <div id="map"></div>
@@ -120,8 +150,8 @@
     }
 
     /**
-     * Displays a list of trails on the map as coloured circle markers.
-     * Each trail is represented by a circle marker whose colour is determined by
+     * Displays a list of trails on the map as coloured custom icons.
+     * Each trail is represented by an icon whose colour is determined by
      * the trail's difficulty. The currently active marker is not modified
      * @param trailsJson a JSON string representing an array of trail objects
      */
@@ -139,20 +169,20 @@
             }
             const color = getColorByDifficulty(trail.difficulty);
 
-
-            const colourMarker = L.circleMarker([trail.lat, trail.lon], {
-                radius: 8,
-                fillColor: color,
-                color: "#000",
-                weight: 1,
-                opacity: 1,
-                fillOpacity: 0.8
+            const customIcon = L.divIcon({
+                className: 'custom-div-icon',
+                html: `
+                    <div class="marker-pin" style="background:${color};"></div>
+                    <div class="marker-img" style="background-image:url('../images/Default Trail Image.png');"></div>
+                `,
+                iconSize: [32, 42],
+                iconAnchor: [16, 42],
+                popupAnchor: [0, -42]
             });
 
-            const popupContent = buildPopupContent(trail);
-            colourMarker.bindPopup(popupContent);
-
-            markers.addLayer(colourMarker);
+            const marker = L.marker([trail.lat, trail.lon], { icon: customIcon });
+            marker.bindPopup(buildPopupContent(trail));
+            markers.addLayer(marker);
         });
 
         map.addLayer(markers);
