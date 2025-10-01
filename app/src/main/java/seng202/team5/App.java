@@ -3,6 +3,7 @@ package seng202.team5;
 import seng202.team5.data.DatabaseService;
 import seng202.team5.gui.FXAppEntry;
 import seng202.team5.services.SetupService;
+import seng202.team5.services.UserService;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -14,6 +15,7 @@ import java.util.concurrent.Executors;
 public class App {
     private static SetupService setupService;
     private static final DatabaseService databaseService = new DatabaseService();
+    private static final UserService userService = new UserService(databaseService);
 
     /**
      * Application entry point. It handles the starting of the executer and then
@@ -70,6 +72,15 @@ public class App {
      */
     public static DatabaseService getDatabaseService() {
         return databaseService;
+    }
+
+    /**
+     * Gets the user service instance
+     *
+     * @return the user service instance
+     */
+    public static UserService getUserService() {
+        return userService;
     }
 
 }
