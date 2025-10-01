@@ -211,9 +211,12 @@ public class LogBookController extends Controller {
         updateResultsLabel(logs.size());
     }
 
-    //TODO add feature for when click on a trail log
     @FXML
     private void onLogCardClicked(TrailLog log) {
+        Optional<Trail> trailOpt = logService.getTrail(log.getTrailId());
+        trailOpt.ifPresent(trail -> {
+            super.getNavigator().launchScreen(new LogTrailController(super.getNavigator(), log));
+        });
     }
 
     /**

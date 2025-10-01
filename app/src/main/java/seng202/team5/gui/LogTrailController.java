@@ -5,8 +5,11 @@ import javafx.scene.control.*;
 import seng202.team5.data.DatabaseService;
 import seng202.team5.data.SqlBasedTrailLogRepo;
 import seng202.team5.data.SqlBasedTrailRepo;
+import seng202.team5.models.Trail;
 import seng202.team5.models.TrailLog;
+import seng202.team5.services.LogService;
 
+import java.time.ZoneId;
 import java.util.List;
 
 /**
@@ -15,6 +18,8 @@ import java.util.List;
 public class LogTrailController extends Controller {
 
     private TrailLog trailLog;
+    private Trail trail;
+    private LogService logService;
     private DatabaseService databaseService;
     private SqlBasedTrailRepo trailRepo;
     private SqlBasedTrailLogRepo trailLogRepo;
@@ -30,6 +35,13 @@ public class LogTrailController extends Controller {
         this.trailLog = trailLog;
         this.databaseService = new DatabaseService();
         this.trailRepo = new SqlBasedTrailRepo(databaseService);
+    }
+
+    public void setTrailAndLog(Trail trail, TrailLog trailLog) {
+        this.trail = trail;
+        this.trailLog = trailLog;
+        this.logService = new LogService(databaseService);
+        populateFields();
     }
 
     @FXML
@@ -68,6 +80,32 @@ public class LogTrailController extends Controller {
         timeUnitSelector.getItems().addAll(List.of("Minutes", "Hours", "Days"));
         trailTypeSelector.getItems().addAll(List.of("One way", "Loop", "Return"));
         perceivedDifficultySelector.getItems().addAll(List.of("Easiest", "Easy", "Intermediate", "Advanced", "Expert"));
+    }
+
+    private void populateFields() {
+        trailNameLabel.setText(trail.getName());
+        startDatePicker.setValue(trailLog.getStartDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate());
+        durationTextField.setText(trailLog.getCompletionTime() != null ? trailLog.getCompletionTime().toString() : "");
+        timeUnitSelector.setValue(trailLog.getTimeUnit());
+        trailTypeSelector.setValue(trailLog.getCompletionType());
+        rateSlider.setValue(trailLog.getRating() != null ? trailLog.getRating() : 3);
+        perceivedDifficultySelector.setValue(trailLog.getPerceivedDifficulty());
+        noteTextArea.setText(trailLog.getNotes());
+    }
+
+    @FXML
+    private void onDoneButtonClicked() {
+        trailLog.setStartDate(java.sql.Date.valueOf(startDatePicker.getValue()));
+        trailLog.setCompletionTime(!durationTextField.getText().isEmpty() ? Integer.parseInt(durationTextField.getText()) : null);
+        trailLog.setTimeUnit(timeUnitSelector.getValue());
+        trailLog.setCompletionType(trailTypeSelector.getValue());
+        trailLog.setRating((int) rateSlider.getValue());
+        trailLog.setPerceivedDifficulty(perceivedDifficultySelector.getValue());
+        trailLog.setNotes(noteTextArea.getText());
+
+        logService.updateLog(trailLog);
+        // TODO implement confirmation label: Trail log saved successfully (not alert tho)
+        super.getNavigator().goBack();
     }
 
     @FXML
