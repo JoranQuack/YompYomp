@@ -2,6 +2,7 @@ package seng202.team5.gui;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
@@ -19,7 +20,6 @@ import seng202.team5.gui.components.TrailCardComponent;
 import seng202.team5.models.Trail;
 import seng202.team5.models.TrailLog;
 import seng202.team5.services.LogService;
-import seng202.team5.services.SearchService;
 
 /**
  * Controller for the trails display screen.
@@ -197,12 +197,15 @@ public class LogBookController extends Controller {
 
         for (int i = 0; i < logs.size(); i++) {
             TrailLog log = logs.get(i);
-            Trail trail = logService.getTrail(log.getTrailId());
-            TrailCardComponent logCard = getOrCreateLogCard(i, cardMargin);
+            Optional<Trail> trailOpt = logService.getTrail(log.getTrailId());
+            if (trailOpt.isPresent()) {
+                Trail trail = trailOpt.get();
+                TrailCardComponent logCard = getOrCreateLogCard(i, cardMargin);
 
-            logCard.setData(trail, log);
-            logCard.setOnMouseClicked(e -> onLogCardClicked(log));
-            logContainer.getChildren().add(logCard);
+                logCard.setData(trail, log);
+                logCard.setOnMouseClicked(e -> onLogCardClicked(log));
+                logContainer.getChildren().add(logCard);
+            }
         }
 
         updateResultsLabel(logs.size());
