@@ -23,18 +23,15 @@ public class NavbarComponent extends HBox {
     private Button homeButton;
     @FXML
     private Button trailsButton;
-    // @FXML
-    // private Button loggedButton;
-    // @FXML
-    // private Button toDoButton;
     @FXML
     private Button redoQuizButton;
 
     /**
      * Initialise the NavbarController and put the buttons into the list to easily
      * switch between them.
-     * @param navigator the screen navigator
-     * @param userService the userService
+     *
+     * @param navigator         the screen navigator
+     * @param userService       the userService
      * @param sqlBasedTrailRepo the trail repo
      */
     public NavbarComponent(ScreenNavigator navigator, UserService userService, SqlBasedTrailRepo sqlBasedTrailRepo) {
@@ -53,7 +50,6 @@ public class NavbarComponent extends HBox {
             redoQuizButton.setText("Redo Quiz");
         }
 
-        // navButtons = List.of(homeButton, trailsButton, loggedButton, toDoButton);
         navButtons = List.of(homeButton, trailsButton);
         homeButton.setOnAction(e -> navigator.launchScreen(new DashboardController(navigator)));
         trailsButton.setOnAction(e -> navigator.launchScreen(new TrailsController(navigator, sqlBasedTrailRepo)));
@@ -68,5 +64,10 @@ public class NavbarComponent extends HBox {
     public void setPage(int pageIndex) {
         navButtons.forEach(button -> button.getStyleClass().remove("active"));
         navButtons.get(pageIndex).getStyleClass().add("active");
+    }
+
+    @FXML
+    private void onLogoClicked() {
+        homeButton.fire();
     }
 }

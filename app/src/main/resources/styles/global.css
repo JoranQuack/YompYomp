@@ -263,3 +263,15 @@ Label {
 .trail-card:hover {
   -fx-opacity: 0.7;
 }
+
+.navbar-root {
+  -fx-background-color: #eef1ed;
+}
+
+.logo-button {
+  -fx-cursor: hand;
+}
+
+.logo-button:hover {
+  -fx-opacity: 0.7;
+}
