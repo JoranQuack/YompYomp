@@ -3,6 +3,7 @@ package seng202.team5.gui;
 import javafx.fxml.FXML;
 import javafx.scene.chart.PieChart;
 import javafx.scene.control.Label;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -10,20 +11,20 @@ import seng202.team5.gui.components.NavbarComponent;
 import seng202.team5.models.Question;
 import seng202.team5.models.User;
 
+import java.util.List;
+
 public class AccountController extends Controller {
 
     @FXML
-    private VBox navBarContainer;
-    @FXML
     private ImageView profileImage;
+    @FXML
+    private ImageView clearProfileImage;
     @FXML
     private ImageView optionImage1;
     @FXML
     private ImageView optionImage2;
     @FXML
     private ImageView optionImage3;
-    @FXML
-    private ImageView optionImage4;
     @FXML
     private Label welcomeLabel;
     @FXML
@@ -84,13 +85,24 @@ public class AccountController extends Controller {
 
     @FXML
     private void initialize() {
-        // Initialize the navbar
-        NavbarComponent navbar = super.getNavbarController();
-        navbar.setPage(2);
-        navBarContainer.getChildren().add(navbar);
-
         welcomeLabel.setText("Kia Ora " + user.getName() + "!");
         setPreferenceLabels();
+
+        List<ImageView> optionImages = List.of(optionImage1, optionImage2, optionImage3);
+        for (ImageView optionImage : optionImages) {
+            optionImage.setOnMouseClicked(e -> onOptionImageClicked(optionImage));
+        }
+        clearProfileImage.setOnMouseClicked(e -> onClearProfileImageClicked());
+    }
+
+    @FXML
+    private void onClearProfileImageClicked() {
+        profileImage.setImage(null);
+    }
+
+    @FXML
+    private void onOptionImageClicked(ImageView optionImage) {
+        profileImage.setImage(optionImage.getImage());
     }
 
     @FXML

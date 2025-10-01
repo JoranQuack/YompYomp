@@ -9,10 +9,8 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-
 <VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/21.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="seng202.team5.gui.AccountController">
    <children>
-      <VBox fx:id="navbarContainer" />
       <VBox alignment="TOP_CENTER">
          <children>
             <Label fx:id="welcomeLabel" text="Kia Ora">
@@ -33,22 +31,22 @@
                   <Label text="Choose your profile photo" />
                   <HBox alignment="TOP_CENTER" spacing="10.0">
                      <children>
-                        <ImageView fx:id="optionImage1" fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                        <ImageView fx:id="clearProfileImage" fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
                            <image>
                               <Image url="@../images/profiles/ban.png" />
                            </image>
                         </ImageView>
-                        <ImageView fx:id="optionImage2" fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                        <ImageView fx:id="optionImage1" fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
                            <image>
                               <Image url="@../images/profiles/aztec_4607060.png" />
                            </image>
                         </ImageView>
-                        <ImageView fx:id="optionImage3" fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                        <ImageView fx:id="optionImage2" fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
                            <image>
                               <Image url="@../images/profiles/sculpture_8379929.png" />
                            </image>
                         </ImageView>
-                        <ImageView fx:id="optionImage4" fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                        <ImageView fx:id="optionImage3" fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
                            <image>
                               <Image url="@../images/profiles/tiki-mask_5257036.png" />
                            </image>
