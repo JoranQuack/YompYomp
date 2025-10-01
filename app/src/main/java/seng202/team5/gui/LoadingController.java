@@ -5,7 +5,10 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressIndicator;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.StackPane;
 import seng202.team5.App;
+import seng202.team5.gui.util.BackgroundImageUtil;
 import seng202.team5.models.User;
 import seng202.team5.services.MatchmakingService;
 import seng202.team5.services.UserService;
@@ -20,6 +23,12 @@ public class LoadingController extends Controller {
 
     @FXML
     private Label statusLabel;
+
+    @FXML
+    private ImageView bgImage;
+
+    @FXML
+    private StackPane rootPane;
 
     /**
      * Constructs the controller with navigator
@@ -44,6 +53,7 @@ public class LoadingController extends Controller {
      */
     @FXML
     private void initialize() {
+        BackgroundImageUtil.setupCoverBehavior(bgImage, rootPane);
         if (progressIndicator != null) {
             progressIndicator.setProgress(-1.0); // Indeterminate progress
         }

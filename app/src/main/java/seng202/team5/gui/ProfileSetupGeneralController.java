@@ -2,7 +2,12 @@ package seng202.team5.gui;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.StackPane;
+
 import org.controlsfx.control.CheckComboBox;
+
+import seng202.team5.gui.util.BackgroundImageUtil;
 import seng202.team5.models.User;
 import seng202.team5.services.RegionFinder;
 
@@ -38,12 +43,19 @@ public class ProfileSetupGeneralController extends Controller {
     private CheckBox familyFriendlyCheckBox;
     @FXML
     private CheckBox accessibleCheckBox;
+    @FXML
+    private StackPane rootPane;
+    @FXML
+    private ImageView bgImage;
 
     /**
      * Initializes the first profile setup screen
      */
     @FXML
     private void initialize() {
+        System.out.println();
+        BackgroundImageUtil.setupCoverBehavior(bgImage, rootPane);
+
         super.getUserService().setGuest(false);
 
         RegionFinder regionFinder = new RegionFinder();
@@ -88,22 +100,18 @@ public class ProfileSetupGeneralController extends Controller {
      * @return true if name is valid, false otherwise
      */
     private boolean setUserPreferences() {
-        String name = usernameTextField.getText().trim();
+        String name = usernameTextField.getText();
 
-        if (!super.getUserService().isValidName(name)) {
+        if (name == null || name.trim().isEmpty() || !super.getUserService().isValidName(name.trim())) {
             usernameTextField.setStyle("-fx-border-color: red; -fx-border-width: 2px;");
             usernameLabel.setText("Invalid name. Please try again.");
             return false;
-        } else {
-            usernameTextField.setStyle("");
-            usernameLabel.setText("Username");
         }
+        usernameTextField.setStyle("");
+        usernameLabel.setText("Username");
 
-        if (usernameTextField.getText().isEmpty()) {
-            user.setName("YompYomp User");
-        } else {
-            user.setName(usernameTextField.getText());
-        }
+        user.setName(name.trim());
+
         user.setRegion(regionCheckComboBox.getCheckModel().getCheckedItems());
         user.setIsFamilyFriendly(familyFriendlyCheckBox.isSelected());
         user.setIsAccessible(accessibleCheckBox.isSelected());

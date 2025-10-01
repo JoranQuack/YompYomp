@@ -5,6 +5,8 @@ import com.sun.javafx.webkit.WebConsoleListener;
 import javafx.concurrent.Worker;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
 import javafx.scene.paint.Color;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
@@ -35,8 +37,8 @@ public class ModifyTrailController extends Controller {
     /**
      * Launches the screen with navigator
      *
-     * @param navigator     screen navigator
-     * @param trail         the selected trail
+     * @param navigator         screen navigator
+     * @param trail             the selected trail
      * @param sqlBasedTrailRepo the trail repository
      */
     public ModifyTrailController(ScreenNavigator navigator, Trail trail,
@@ -62,7 +64,7 @@ public class ModifyTrailController extends Controller {
     @FXML
     private TextField cultureUrlTextField;
     @FXML
-    private WebView trailMapView;
+    private HBox mapContainer;
     @FXML
     private Label emptyFieldLabel;
     @FXML
@@ -77,6 +79,7 @@ public class ModifyTrailController extends Controller {
     private Label regionLabel;
     @FXML
     private Label invalidNumberLabel;
+    private WebView trailMapWebView;
 
     /**
      * Initialises the screen with components for user to input data
@@ -87,7 +90,7 @@ public class ModifyTrailController extends Controller {
     private void initialize() {
         setupFormFields();
         setupEventHandlers();
-        initMap();
+        javafx.application.Platform.runLater(this::initMap);
     }
 
     /**
@@ -122,7 +125,14 @@ public class ModifyTrailController extends Controller {
      */
     private void initMap() {
         javaScriptBridge = new JavaScriptBridge(this, sqlBasedTrailRepo);
-        webEngine = trailMapView.getEngine();
+        mapContainer.getChildren().clear();
+        trailMapWebView = new WebView();
+        trailMapWebView.setPrefHeight(-1);
+        trailMapWebView.setPrefWidth(-1);
+        HBox.setHgrow(trailMapWebView, Priority.ALWAYS);
+        mapContainer.getChildren().add(trailMapWebView);
+
+        webEngine = trailMapWebView.getEngine();
         webEngine.setJavaScriptEnabled(true);
 
         WebConsoleListener.setDefaultListener((view, message, lineNumber, sourceID) -> System.out
@@ -291,7 +301,8 @@ public class ModifyTrailController extends Controller {
                 return false; // user must choose a location by entering coordinates or selecting them on map
             }
         }
-        return !trailNameTextField.getText().isEmpty() && !trailDescriptionTextArea.getText().isEmpty() && trailTypeComboBox.getValue() != null;
+        return !trailNameTextField.getText().isEmpty() && !trailDescriptionTextArea.getText().isEmpty()
+                && trailTypeComboBox.getValue() != null;
     }
 
     /**

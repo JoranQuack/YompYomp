@@ -2,12 +2,23 @@
 
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ProgressIndicator?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 
-
-<VBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="200.0" minWidth="300.0" spacing="10.0" xmlns="http://javafx.com/javafx/21.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="seng202.team5.gui.LoadingController">
+<StackPane fx:id="rootPane" minHeight="350.0" minWidth="500.0" styleClass="root-pane-dark" stylesheets="@../styles/global.css" xmlns="http://javafx.com/javafx/21.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="seng202.team5.gui.LoadingController">
    <children>
-      <Label text="Getting the app ready..." fx:id="statusLabel" />
-      <ProgressIndicator fx:id="progressIndicator" progress="-1.0" />
+      <ImageView fx:id="bgImage" fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../images/welcome_background.png" />
+         </image>
+      </ImageView>
+      <VBox alignment="CENTER" spacing="10.0" styleClass="active" stylesheets="@../styles/global.css">
+         <children>
+            <Label fx:id="statusLabel" styleClass="text-light" text="Getting the app ready..." />
+            <ProgressIndicator fx:id="progressIndicator" progress="-1.0" />
+         </children>
+      </VBox>
    </children>
-</VBox>
+</StackPane>

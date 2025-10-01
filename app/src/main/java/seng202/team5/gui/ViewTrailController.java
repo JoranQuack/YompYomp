@@ -11,7 +11,6 @@ import javafx.scene.layout.Background;
 import javafx.scene.layout.Priority;
 import javafx.scene.paint.Paint;
 import javafx.scene.web.WebEngine;
-import javafx.scene.layout.HBox;
 import javafx.scene.web.WebView;
 import netscape.javascript.JSObject;
 import seng202.team5.data.SqlBasedTrailRepo;
@@ -36,8 +35,8 @@ public class ViewTrailController extends Controller {
     /**
      * Launches the screen with navigator
      *
-     * @param navigator     screen navigator
-     * @param trail         trail object to be displayed on screen
+     * @param navigator         screen navigator
+     * @param trail             trail object to be displayed on screen
      * @param sqlBasedTrailRepo sqlBasedTrailRepo
      */
     public ViewTrailController(ScreenNavigator navigator, Trail trail, SqlBasedTrailRepo sqlBasedTrailRepo) {
@@ -81,7 +80,7 @@ public class ViewTrailController extends Controller {
     private void initialize() {
         setupFormFields();
         setupEventHandlers();
-        setupLegend();javaScriptBridge = new JavaScriptBridge(this, sqlBasedTrailRepo);
+        setupLegend();
         javafx.application.Platform.runLater(this::initMap);
     }
 
@@ -191,7 +190,6 @@ public class ViewTrailController extends Controller {
         mapContainer.getChildren().add(trailMapWebView);
 
         webEngine = trailMapWebView.getEngine();
-
 
         webEngine.setJavaScriptEnabled(true);
 
@@ -324,10 +322,10 @@ public class ViewTrailController extends Controller {
      *
      * @param e the exception that occurred while loading the trail screen
      */
-     @Override
-     public void onLoadFailed(Exception e) {
-     showAlert(Alert.AlertType.ERROR, "Trail Card Failed To Load",
-             "Loading selected trail failed, please close the application and try " +
-                     "again.");
-     }
+    @Override
+    public void onLoadFailed(Exception e) {
+        showAlert(Alert.AlertType.ERROR, "Trail Card Failed To Load",
+                "Loading selected trail failed, please close the application and try " +
+                        "again.");
+    }
 }
