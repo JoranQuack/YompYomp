@@ -10,7 +10,7 @@
    <children>
       <HBox prefWidth="100.0">
          <children>
-            <ImageView fitHeight="40.0" fitWidth="40.0" onMousePressed="#onLogoClicked" pickOnBounds="true" preserveRatio="true" styleClass="logo-button">
+            <ImageView fitHeight="40.0" fitWidth="40.0" onMousePressed="#onLogoClicked" pickOnBounds="true" preserveRatio="true" styleClass="special-button">
                <image>
                   <Image url="@../../images/YompYompIcon.png" />
                </image>

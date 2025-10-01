@@ -268,10 +268,14 @@ Label {
   -fx-background-color: #eef1ed;
 }
 
-.logo-button {
+.special-button {
   -fx-cursor: hand;
 }
 
-.logo-button:hover {
+.special-button:hover {
   -fx-opacity: 0.7;
+}
+
+.search-button {
+  -fx-padding: 10;
 }
