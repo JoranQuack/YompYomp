@@ -558,9 +558,15 @@ public class TrailsController extends Controller {
     }
 
     /**
-     * Gets selected filter values, excluding "Select All" (don't want that boi)
+     * Gets selected filter values, handling "Select All" case properly
      */
     private String getSelectedFilterValues(CheckComboBox<String> checkComboBox) {
+        // If "Select All" is checked, return null (which disables filtering)
+        if (checkComboBox.getCheckModel().isChecked("Select All")) {
+            return null;
+        }
+
+        // Otherwise return the selected specific values
         return checkComboBox.getCheckModel().getCheckedItems().stream()
                 .filter(item -> !"Select All".equals(item))
                 .collect(Collectors.joining(","));

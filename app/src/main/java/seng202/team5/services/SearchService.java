@@ -137,6 +137,13 @@ public class SearchService {
         }
 
         List<String> selectedValues = List.of(filterValue.split(","));
+
+        String defaultValue = DEFAULT_VALUES.get(filterType);
+        if (defaultValue != null && selectedValues.stream()
+                .anyMatch(selected -> selected.trim().equalsIgnoreCase(defaultValue))) {
+            return true; // include all the trails
+        }
+
         return selectedValues.stream()
                 .anyMatch(selected -> selected.trim().equalsIgnoreCase(trailValue));
     }
