@@ -22,7 +22,6 @@ import seng202.team5.data.SqlBasedTrailRepo;
 import seng202.team5.gui.components.TrailCardComponent;
 import seng202.team5.models.Trail;
 import seng202.team5.models.User;
-import seng202.team5.services.RegionFinder;
 import seng202.team5.services.SearchService;
 
 /**
@@ -218,8 +217,12 @@ public class TrailsController extends Controller {
      * Preselects user's preferred regions if not guest
      */
     private void setupRegionCheckComboBox() {
-        RegionFinder regionFinder = new RegionFinder();
-        List<String> regionList = regionFinder.getRegionNames();
+        List<String> regionList = searchService.getFilterOptions("regions");
+
+        // Remove the default "All regions" option as we handle that separately
+        regionList = regionList.stream()
+                .filter(region -> !region.equals("All regions"))
+                .collect(Collectors.toList());
 
         // Add Select All option at the top
         List<String> allRegions = new ArrayList<>();

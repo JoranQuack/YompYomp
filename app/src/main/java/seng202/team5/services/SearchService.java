@@ -19,7 +19,8 @@ public class SearchService {
     private static final Map<String, String> DEFAULT_VALUES = Map.of(
             "completionType", "All types",
             "timeUnit", "All durations",
-            "difficulty", "All difficulties");
+            "difficulty", "All difficulties",
+            "regions", "All regions");
 
     private final SqlBasedFilterOptionsRepo filterOptionsRepo;
 
