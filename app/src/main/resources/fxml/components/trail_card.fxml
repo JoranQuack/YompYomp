@@ -38,6 +38,11 @@
                      <Image url="@../../images/bookmark_filled.png" />
                   </image>
                </ImageView>
+               <ImageView fx:id="trashIcon" fitHeight="29.0" fitWidth="21.0" pickOnBounds="true" preserveRatio="true">
+                  <image>
+                     <Image url="@../../images/trash.png" />
+                  </image>
+               </ImageView>
             </children>
          </StackPane>
       </children>
