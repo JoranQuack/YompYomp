@@ -139,6 +139,11 @@ public class SearchService {
 
         List<String> selectedValues = List.of(filterValue.split(","));
 
+        // If "Select All" is in the selected values, allow all trails through
+        if (selectedValues.stream().anyMatch(selected -> selected.trim().equals("Select All"))) {
+            return true;
+        }
+
         String defaultValue = DEFAULT_VALUES.get(filterType);
         if (defaultValue != null && selectedValues.stream()
                 .anyMatch(selected -> selected.trim().equalsIgnoreCase(defaultValue))) {
@@ -162,6 +167,11 @@ public class SearchService {
         }
 
         List<String> selectedRegions = List.of(regionFilter.split(","));
+
+        // If "Select All" is in the selected regions, allow all trails through
+        if (selectedRegions.stream().anyMatch(selected -> selected.trim().equals("Select All"))) {
+            return true;
+        }
 
         if (trailRegion != null && !trailRegion.isEmpty()) {
             return selectedRegions.stream()

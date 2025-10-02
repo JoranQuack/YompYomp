@@ -21,7 +21,6 @@ import seng202.team5.App;
 import seng202.team5.data.SqlBasedTrailRepo;
 import seng202.team5.gui.components.TrailCardComponent;
 import seng202.team5.models.Trail;
-import seng202.team5.models.User;
 import seng202.team5.services.SearchService;
 
 /**
@@ -242,25 +241,21 @@ public class TrailsController extends Controller {
 
         isUpdating = true;
 
-        // preselection
+        // Default: select user's preferred regions if not guest, else select all
         if (!super.getUserService().isGuest()) {
-            User user = super.getUserService().getUser();
-            if (user != null && user.getRegion() != null && !user.getRegion().isEmpty()) {
-                // Only check specific user regions, not Select All
-                for (String region : user.getRegion()) {
+            List<String> preferredRegions = super.getUserService().getUser().getRegion();
+            boolean anyMatched = false;
+            for (String region : preferredRegions) {
+                if (regionList.contains(region)) {
                     regionCheckComboBox.getCheckModel().check(region);
+                    anyMatched = true;
                 }
-                // Check if all regions are selected to determine Select All state
-                if (user.getRegion().size() == regionList.size()) {
-                    regionCheckComboBox.getCheckModel().check("Select All");
-                }
-            } else {
-                // Default to all regions selected if user has no preferences
-                regionCheckComboBox.getCheckModel().checkAll();
+            }
+            if (!anyMatched) {
+                regionCheckComboBox.getCheckModel().check("Select All");
             }
         } else {
-            // Guest user
-            regionCheckComboBox.getCheckModel().checkAll();
+            regionCheckComboBox.getCheckModel().check("Select All");
         }
 
         isUpdating = false;
@@ -296,7 +291,8 @@ public class TrailsController extends Controller {
                 });
 
         isUpdating = true;
-        checkComboBox.getCheckModel().checkAll();
+        // Default: only check "Select All"
+        checkComboBox.getCheckModel().check("Select All");
         isUpdating = false;
     }
 
@@ -523,38 +519,79 @@ public class TrailsController extends Controller {
             javafx.collections.ListChangeListener.Change<? extends String> change) {
         isUpdating = true;
 
-        // check or uncheck everyone if Select All was changed
         while (change.next()) {
             if (change.wasAdded()) {
                 for (String added : change.getAddedSubList()) {
                     if ("Select All".equals(added)) {
-                        checkComboBox.getCheckModel().checkAll();
+                        // When Select All is checked, uncheck all other items
+                        for (String item : checkComboBox.getItems()) {
+                            if (!"Select All".equals(item)) {
+                                checkComboBox.getCheckModel().clearCheck(item);
+                            }
+                        }
                         break;
+                    } else {
+                        // When any specific item is checked, uncheck Select All
+                        if (checkComboBox.getCheckModel().isChecked("Select All")) {
+                            checkComboBox.getCheckModel().clearCheck("Select All");
+                        }
                     }
                 }
             } else if (change.wasRemoved()) {
                 for (String removed : change.getRemoved()) {
                     if ("Select All".equals(removed)) {
-                        checkComboBox.getCheckModel().clearChecks();
-                        break;
+                        // Check if Select All was the only thing selected
+                        boolean anySpecificItemChecked = false;
+                        for (String item : checkComboBox.getItems()) {
+                            if (!"Select All".equals(item) && checkComboBox.getCheckModel().isChecked(item)) {
+                                anySpecificItemChecked = true;
+                                break;
+                            }
+                        }
+                        // If no items are checked, re-check "Select All" coz we always want it by
+                        // default
+                        if (!anySpecificItemChecked) {
+                            checkComboBox.getCheckModel().check("Select All");
+                        }
+                    } else {
+                        // automatically check "Select All" to prevent having nothing selected
+                        boolean anySpecificItemChecked = false;
+                        for (String item : checkComboBox.getItems()) {
+                            if (!"Select All".equals(item) && checkComboBox.getCheckModel().isChecked(item)) {
+                                anySpecificItemChecked = true;
+                                break;
+                            }
+                        }
+                        if (!anySpecificItemChecked && !checkComboBox.getCheckModel().isChecked("Select All")) {
+                            checkComboBox.getCheckModel().check("Select All");
+                        }
                     }
                 }
             }
         }
 
-        // check "select all" if everyone else is checked - doesn't want to be left out
-        boolean allSelected = true;
+        // Ensure Select All is checked if all other items are checked
+        boolean allSpecificItemsSelected = true;
+        boolean anySpecificItemSelected = false;
         for (String item : checkComboBox.getItems()) {
-            if (!"Select All".equals(item) && !checkComboBox.getCheckModel().isChecked(item)) {
-                allSelected = false;
-                break;
+            if (!"Select All".equals(item)) {
+                if (checkComboBox.getCheckModel().isChecked(item)) {
+                    anySpecificItemSelected = true;
+                } else {
+                    allSpecificItemsSelected = false;
+                }
             }
         }
 
-        if (allSelected && !checkComboBox.getCheckModel().isChecked("Select All")) {
+        // If all specific items are selected, check Select All
+        if (allSpecificItemsSelected && anySpecificItemSelected
+                && !checkComboBox.getCheckModel().isChecked("Select All")) {
             checkComboBox.getCheckModel().check("Select All");
-        } else if (!allSelected && checkComboBox.getCheckModel().isChecked("Select All")) {
-            checkComboBox.getCheckModel().clearCheck("Select All");
+            for (String item : checkComboBox.getItems()) {
+                if (!"Select All".equals(item)) {
+                    checkComboBox.getCheckModel().clearCheck(item);
+                }
+            }
         }
 
         isUpdating = false;
@@ -564,15 +601,18 @@ public class TrailsController extends Controller {
      * Gets selected filter values, handling "Select All" case properly
      */
     private String getSelectedFilterValues(CheckComboBox<String> checkComboBox) {
-        // If "Select All" is checked, return null (which disables filtering)
+        // If "Select All" is checked, all items should pass
         if (checkComboBox.getCheckModel().isChecked("Select All")) {
-            return null;
+            return "Select All";
         }
 
         // Otherwise return the selected specific values
-        return checkComboBox.getCheckModel().getCheckedItems().stream()
+        String selectedValues = checkComboBox.getCheckModel().getCheckedItems().stream()
                 .filter(item -> !"Select All".equals(item))
                 .collect(Collectors.joining(","));
+
+        // Default to "Select All"
+        return selectedValues.isEmpty() ? "Select All" : selectedValues;
     }
 
     /**
