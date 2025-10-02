@@ -48,12 +48,15 @@ public class TrailCardComponent extends VBox {
     private ImageView bookmark;
     @FXML
     private ImageView bookmarkFill;
+    @FXML
+    private ImageView trashIcon;
 
     private Runnable onBookmarkClicked;
     private final ImageService imageService;
 
     private boolean isUnmatched;
     private boolean logMode;
+    private boolean inLogBook = false;
 
     public TrailCardComponent(boolean isUnmatched, boolean logMode) {
         this.isUnmatched = isUnmatched;
@@ -71,6 +74,23 @@ public class TrailCardComponent extends VBox {
         } // If not work, crash?
 
         setupBookmarkHandler();
+    }
+
+    public TrailCardComponent() {
+        this.isUnmatched = false;
+        this.logMode = true;
+        this.inLogBook = true;
+        this.imageService = new ImageService();
+
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/components/trail_card.fxml"));
+        fxmlLoader.setRoot(this);
+        fxmlLoader.setController(this); // FXML elements
+
+        try {
+            fxmlLoader.load();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        } // If not work, crash?
     }
 
     public void setOnBookmarkClicked(Runnable callback) {
@@ -132,6 +152,7 @@ public class TrailCardComponent extends VBox {
         if (!logMode) {
             starLabel.setVisible(false);
             starIcon.setVisible(false);
+            trashIcon.setVisible(false);
             if (!trail.getDifficulty().contains("unknown")) {
                 difficultyLabel.setText(StringManipulator.capitaliseFirstLetter(trail.getDifficulty()));
             } else {
@@ -156,7 +177,37 @@ public class TrailCardComponent extends VBox {
             } else {
                 updateMatchBar(trail);
             }
-        } else {
+        }
+        else if (logMode) {
+            matchBar.setVisible(false);
+            matchLabel.setVisible(false);
+            typeLabel.setVisible(false);
+            trashIcon.setVisible(false);
+
+            starLabel.setVisible(true);
+            starIcon.setVisible(true);
+            if (log.getRating() != null) {
+                starLabel.setText(String.valueOf(log.getRating()));
+            } else {
+                starLabel.setText("Rate Me!");
+            }
+
+            if (log.getPerceivedDifficulty() != null) {
+                difficultyLabel.setText(StringManipulator.capitaliseFirstLetter(log.getPerceivedDifficulty()));
+            } else {
+                attributesFlowPane.getChildren().remove(difficultyLabel);
+            }
+
+            if (inLogBook) {
+               trashIcon.setVisible(true);
+               bookmark.setVisible(false);
+               bookmarkFill.setVisible(false);
+            }
+
+            //TODO implement the label for the duration when the model is updated
+            //durationLabel.setText(StringManipulator.capitaliseFirstLetter())
+        }
+        /*else {
             matchBar.setVisible(false);
             matchLabel.setVisible(false);
             typeLabel.setVisible(false);
@@ -175,9 +226,8 @@ public class TrailCardComponent extends VBox {
                 attributesFlowPane.getChildren().remove(difficultyLabel);
             }
 
-            //TODO implement the label for the duration when the model is updated
-            //durationLabel.setText(StringManipulator.capitaliseFirstLetter())
-        }
+        }*/
+
     }
 
     /**

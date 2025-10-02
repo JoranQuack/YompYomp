@@ -230,7 +230,7 @@ public class LogBookController extends Controller {
         if (index < logCardPool.size()) {
             return logCardPool.get(index);
         } else {
-            TrailCardComponent logCard = new TrailCardComponent(false, true);
+            TrailCardComponent logCard = new TrailCardComponent();
             logCardPool.add(logCard);
             VBox.setMargin(logCard, cardMargin);
             return logCard;
