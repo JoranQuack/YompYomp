@@ -8,10 +8,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Button;
 import javafx.scene.layout.HBox;
 import seng202.team5.data.SqlBasedTrailRepo;
-import seng202.team5.gui.ProfileSetupGeneralController;
-import seng202.team5.gui.ScreenNavigator;
-import seng202.team5.gui.DashboardController;
-import seng202.team5.gui.TrailsController;
+import seng202.team5.gui.*;
 import seng202.team5.services.UserService;
 
 public class NavbarComponent extends HBox {
@@ -54,7 +51,7 @@ public class NavbarComponent extends HBox {
 
         navButtons = List.of(homeButton, trailsButton, profileButton);
         homeButton.setOnAction(e -> navigator.launchScreen(new DashboardController(navigator)));
-        trailsButton.setOnAction(e -> navigator.launchScreen(new TrailsController(navigator sqlBasedTrailRepo)));
+        trailsButton.setOnAction(e -> navigator.launchScreen(new TrailsController(navigator, sqlBasedTrailRepo)));
         profileButton.setOnAction(e -> navigator.launchScreen(new AccountController(navigator)));
         redoQuizButton.setOnAction(e -> navigator.launchScreen(new ProfileSetupGeneralController(navigator)));
     }
