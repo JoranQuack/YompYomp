@@ -152,4 +152,14 @@ public class AccountController extends Controller {
     protected String getTitle() {
         return "Account Screen";
     }
+
+    @Override
+    protected boolean shouldShowNavbar() {
+        return true;
+    }
+
+    @Override
+    protected int getNavbarPageIndex() {
+        return 2;
+    }
 }
