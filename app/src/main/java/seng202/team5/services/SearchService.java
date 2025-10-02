@@ -21,12 +21,6 @@ public class SearchService {
             "timeUnit", "All durations",
             "difficulty", "All difficulties");
 
-    /**
-     * Predefined difficulty order for sorting.
-     */
-    private static final List<String> DIFFICULTY_ORDER = List.of(
-            "easiest", "easy", "intermediate", "advanced", "expert");
-
     private final SqlBasedFilterOptionsRepo filterOptionsRepo;
 
     private List<Trail> trails;
@@ -222,9 +216,10 @@ public class SearchService {
      * Gets a comparator for sorting by difficulty level.
      */
     private Comparator<Trail> getDifficultyComparator() {
+        List<String> difficultyOrder = getDifficultyOrder();
         return Comparator.comparing(trail -> {
             String difficulty = trail.getDifficulty().toLowerCase();
-            int index = DIFFICULTY_ORDER.indexOf(difficulty);
+            int index = difficultyOrder.indexOf(difficulty);
             return index == -1 ? 999 : index;
         });
     }
@@ -316,9 +311,9 @@ public class SearchService {
     }
 
     /**
-     * Gets the difficulty order for UI components.
+     * Gets the difficulty order for UI components from the database.
      */
-    public static List<String> getDifficultyOrder() {
-        return DIFFICULTY_ORDER;
+    public List<String> getDifficultyOrder() {
+        return filterOptionsRepo.getFilterOptions("difficulty");
     }
 }

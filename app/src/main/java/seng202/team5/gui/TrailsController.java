@@ -487,7 +487,7 @@ public class TrailsController extends Controller {
      * @param options List of difficulty options
      */
     private void sortDifficultyOptions(List<String> options) {
-        List<String> difficultyOrder = SearchService.getDifficultyOrder();
+        List<String> difficultyOrder = searchService.getDifficultyOrder();
         options.sort((a, b) -> {
             if (a.equals("All difficulties"))
                 return -1;
