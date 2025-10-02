@@ -19,8 +19,7 @@ public class SearchService {
     private static final Map<String, String> DEFAULT_VALUES = Map.of(
             "completionType", "All types",
             "timeUnit", "All durations",
-            "difficulty", "All difficulties",
-            "multiDay", "Any time range");
+            "difficulty", "All difficulties");
 
     /**
      * Predefined difficulty order for sorting.
@@ -57,7 +56,6 @@ public class SearchService {
         this.filteredTrails = trails;
         this.filters = new HashMap<>();
     }
-
 
     /**
      * Calculates the total number of pages required to display the currently
@@ -129,15 +127,6 @@ public class SearchService {
         if (difficulty != null && !difficulty.equals("All difficulties") &&
                 !trail.getDifficulty().equalsIgnoreCase(difficulty)) {
             return false;
-        }
-
-        String multiDay = filters.get("multiDay");
-        if (multiDay != null && !multiDay.equals("Any time range")) {
-            boolean isMultiDay = trail.isMultiDay();
-            if (multiDay.equals("Multi-day") && !isMultiDay)
-                return false;
-            if (multiDay.equals("Day walk") && isMultiDay)
-                return false;
         }
 
         String regions = filters.get("regions");

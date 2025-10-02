@@ -58,8 +58,6 @@ public class TrailsController extends Controller {
     @FXML
     private ChoiceBox<String> difficultyChoiceBox;
     @FXML
-    private ChoiceBox<String> multiDayChoiceBox;
-    @FXML
     private ChoiceBox<String> sortChoiceBox;
     @FXML
     private ToggleButton ascDescToggleButton;
@@ -67,7 +65,7 @@ public class TrailsController extends Controller {
     /**
      * Creates a controller with navigator.
      *
-     * @param navigator Screen navigator
+     * @param navigator         Screen navigator
      * @param sqlBasedTrailRepo the trail repo
      */
     public TrailsController(ScreenNavigator navigator, SqlBasedTrailRepo sqlBasedTrailRepo) {
@@ -78,8 +76,8 @@ public class TrailsController extends Controller {
     /**
      * Creates controller with navigator and initial search text.
      *
-     * @param navigator  Screen navigator
-     * @param searchText Initial search text
+     * @param navigator         Screen navigator
+     * @param searchText        Initial search text
      * @param sqlBasedTrailRepo The trail repo
      */
     public TrailsController(ScreenNavigator navigator, String searchText, SqlBasedTrailRepo sqlBasedTrailRepo) {
@@ -211,7 +209,6 @@ public class TrailsController extends Controller {
         setupChoiceBox(completionTypeChoiceBox, "completionType");
         setupChoiceBox(timeUnitChoiceBox, "timeUnit");
         setupChoiceBox(difficultyChoiceBox, "difficulty");
-        setupChoiceBox(multiDayChoiceBox, "multiDay");
     }
 
     /**
@@ -333,7 +330,6 @@ public class TrailsController extends Controller {
         searchService.updateFilter("completionType", completionTypeChoiceBox.getValue());
         searchService.updateFilter("timeUnit", timeUnitChoiceBox.getValue());
         searchService.updateFilter("difficulty", difficultyChoiceBox.getValue());
-        searchService.updateFilter("multiDay", multiDayChoiceBox.getValue());
         updateSearchDisplay();
     }
 
