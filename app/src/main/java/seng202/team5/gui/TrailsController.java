@@ -60,6 +60,8 @@ public class TrailsController extends Controller {
     private ChoiceBox<String> sortChoiceBox;
     @FXML
     private ToggleButton ascDescToggleButton;
+    @FXML
+    private Label resetButton;
 
     /**
      * Creates a controller with navigator.
@@ -111,6 +113,29 @@ public class TrailsController extends Controller {
     @FXML
     private void onAddTrailButtonClicked() {
         super.getNavigator().launchScreen(new ModifyTrailController(super.getNavigator(), null, sqlBasedTrailRepo));
+    }
+
+    @FXML
+    private void onResetClicked() {
+        isUpdating = true;
+
+        // Reset search bar
+        searchBarTextField.clear();
+        searchService.setCurrentQuery("");
+
+        // Reset filters
+        regionCheckComboBox.getCheckModel().clearChecks();
+        completionTypeCheckComboBox.getCheckModel().clearChecks();
+        timeUnitCheckComboBox.getCheckModel().clearChecks();
+        difficultyCheckComboBox.getCheckModel().clearChecks();
+
+        regionCheckComboBox.getCheckModel().check("Select All");
+        completionTypeCheckComboBox.getCheckModel().check("Select All");
+        timeUnitCheckComboBox.getCheckModel().check("Select All");
+        difficultyCheckComboBox.getCheckModel().check("Select All");
+
+        isUpdating = false;
+        loadInitialDataAsync();
     }
 
     /**
@@ -450,6 +475,9 @@ public class TrailsController extends Controller {
                 "No trails match your search. Please try adjusting your search and filter preferences.");
         trailsContainer.getChildren().add(noResultsLabel);
         resultsLabel.setText("No trails found.");
+
+        Label noResultsResetButton = createResetButton();
+        trailsContainer.getChildren().add(noResultsResetButton);
     }
 
     /**
@@ -618,6 +646,29 @@ public class TrailsController extends Controller {
 
         // Default to "Select All"
         return selectedValues.isEmpty() ? "Select All" : selectedValues;
+    }
+
+    /**
+     * Creates a reset button
+     *
+     * @return A configured reset button Label
+     */
+    private Label createResetButton() {
+        Label resetBtn = new Label("Reset");
+        resetBtn.setAlignment(javafx.geometry.Pos.CENTER);
+        resetBtn.setGraphicTextGap(2.0);
+        resetBtn.setOnMouseClicked(event -> onResetClicked());
+
+        javafx.scene.image.ImageView resetIcon = new javafx.scene.image.ImageView();
+        resetIcon.setFitHeight(17.0);
+        resetIcon.setFitWidth(17.0);
+        resetIcon.setPickOnBounds(true);
+        resetIcon.setPreserveRatio(true);
+        resetIcon.setImage(new javafx.scene.image.Image(getClass().getResourceAsStream("/images/reset.png")));
+        resetBtn.setGraphic(resetIcon);
+
+        resetBtn.getStyleClass().addAll("special-button", "regular-text");
+        return resetBtn;
     }
 
     /**
