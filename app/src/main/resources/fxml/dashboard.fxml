@@ -43,11 +43,6 @@
             <HBox minWidth="340.0" prefHeight="20.0">
                <children>
                   <Button fx:id="addTrailButton" mnemonicParsing="false" text="Add new trail" />
-                  <Label fx:id="savePopupLabel" alignment="CENTER" contentDisplay="CENTER" text="Invisible" textAlignment="CENTER">
-                     <HBox.margin>
-                        <Insets left="100.0" top="5.0" />
-                     </HBox.margin>
-                  </Label>
                </children>
                <HBox.margin>
                   <Insets bottom="5.0" left="10.0" top="5.0" />
