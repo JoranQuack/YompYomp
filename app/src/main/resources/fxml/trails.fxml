@@ -31,18 +31,18 @@
       <!-- Results and pagination -->
       <HBox alignment="CENTER_LEFT" spacing="10.0">
          <children>
-            <Label fx:id="resultsLabel" prefWidth="180.0" text="Loading trails...">
+            <Label fx:id="resultsLabel" prefWidth="180.0" styleClass="regular-text" text="Loading trails...">
                <padding>
                   <Insets left="5.0" />
                </padding></Label>
             <Region HBox.hgrow="ALWAYS" />
-            <Label text="Sort:" />
+            <Label styleClass="regular-text" text="Sort:" />
             <ChoiceBox fx:id="sortChoiceBox" />
             <ToggleButton fx:id="ascDescToggleButton" mnemonicParsing="false" text="↑ Asc" />
             <Region HBox.hgrow="ALWAYS" />
             <HBox alignment="CENTER_RIGHT" prefWidth="180.0" spacing="5.0">
                <children>
-                  <Label text="Page:" />
+                  <Label styleClass="regular-text" text="Page:" />
                   <ChoiceBox fx:id="pageChoiceBox" prefWidth="60.0" />
                </children>
             </HBox>

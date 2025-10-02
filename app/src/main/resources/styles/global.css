@@ -53,6 +53,11 @@ Label {
   -fx-font-size: 12px;
 }
 
+.regular-text {
+  -fx-font-family: "Quicksand Regular";
+  -fx-font-size: 15px;
+}
+
 /* ========================================
  * INPUT ELEMENTS
  * ======================================== */
@@ -73,6 +78,20 @@ Button:hover {
 Button.active {
   -fx-background-color: #447055;
   -fx-text-fill: #fdfffb;
+}
+
+ToggleButton {
+  -fx-font-family: "Quicksand";
+  -fx-cursor: hand;
+  -fx-font-size: 15px;
+  -fx-text-fill: #04140b;
+  -fx-background-color: #eef1ed;
+  -fx-background-radius: 10;
+  -fx-padding: 10;
+}
+
+ToggleButton:hover {
+  -fx-background-color: #d5e6d4;
 }
 
 TextField {
