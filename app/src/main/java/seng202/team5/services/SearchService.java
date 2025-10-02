@@ -105,22 +105,55 @@ public class SearchService {
             return false;
         }
 
-        String completionType = filters.get("completionType");
-        if (completionType != null && !completionType.equals("All types") &&
-                !trail.getCompletionType().equalsIgnoreCase(completionType)) {
-            return false;
+        String completionTypes = filters.get("completionType");
+        if (completionTypes != null && !completionTypes.isEmpty()) {
+            List<String> selectedTypes = List.of(completionTypes.split(","));
+            if (!selectedTypes.isEmpty()) {
+                boolean typeMatch = false;
+                for (String selectedType : selectedTypes) {
+                    if (selectedType.trim().equalsIgnoreCase(trail.getCompletionType())) {
+                        typeMatch = true;
+                        break;
+                    }
+                }
+                if (!typeMatch) {
+                    return false;
+                }
+            }
         }
 
-        String timeUnit = filters.get("timeUnit");
-        if (timeUnit != null && !timeUnit.equals("All durations") &&
-                !trail.getTimeUnit().equalsIgnoreCase(timeUnit)) {
-            return false;
+        String timeUnits = filters.get("timeUnit");
+        if (timeUnits != null && !timeUnits.isEmpty()) {
+            List<String> selectedUnits = List.of(timeUnits.split(","));
+            if (!selectedUnits.isEmpty()) {
+                boolean unitMatch = false;
+                for (String selectedUnit : selectedUnits) {
+                    if (selectedUnit.trim().equalsIgnoreCase(trail.getTimeUnit())) {
+                        unitMatch = true;
+                        break;
+                    }
+                }
+                if (!unitMatch) {
+                    return false;
+                }
+            }
         }
 
-        String difficulty = filters.get("difficulty");
-        if (difficulty != null && !difficulty.equals("All difficulties") &&
-                !trail.getDifficulty().equalsIgnoreCase(difficulty)) {
-            return false;
+        String difficulties = filters.get("difficulty");
+        if (difficulties != null && !difficulties.isEmpty()) {
+            List<String> selectedDifficulties = List.of(difficulties.split(","));
+            if (!selectedDifficulties.isEmpty()) {
+                boolean difficultyMatch = false;
+                for (String selectedDifficulty : selectedDifficulties) {
+                    if (selectedDifficulty.trim().equalsIgnoreCase(trail.getDifficulty())) {
+                        difficultyMatch = true;
+                        break;
+                    }
+                }
+                if (!difficultyMatch) {
+                    return false;
+                }
+            }
         }
 
         String regions = filters.get("regions");

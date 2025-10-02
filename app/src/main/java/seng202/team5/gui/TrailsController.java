@@ -2,6 +2,7 @@ package seng202.team5.gui;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
@@ -52,11 +53,11 @@ public class TrailsController extends Controller {
     @FXML
     private ChoiceBox<String> pageChoiceBox;
     @FXML
-    private ChoiceBox<String> completionTypeChoiceBox;
+    private CheckComboBox<String> completionTypeCheckComboBox;
     @FXML
-    private ChoiceBox<String> timeUnitChoiceBox;
+    private CheckComboBox<String> timeUnitCheckComboBox;
     @FXML
-    private ChoiceBox<String> difficultyChoiceBox;
+    private CheckComboBox<String> difficultyCheckComboBox;
     @FXML
     private ChoiceBox<String> sortChoiceBox;
     @FXML
@@ -140,6 +141,7 @@ public class TrailsController extends Controller {
                     if (searchText != null) {
                         executeDashboardSearch();
                     } else {
+                        onFilterChanged();
                         updateSearchDisplay();
                     }
                 });
@@ -206,9 +208,9 @@ public class TrailsController extends Controller {
      * Initialises the filter choice boxes.
      */
     private void setupFilterChoiceBoxes() {
-        setupChoiceBox(completionTypeChoiceBox, "completionType");
-        setupChoiceBox(timeUnitChoiceBox, "timeUnit");
-        setupChoiceBox(difficultyChoiceBox, "difficulty");
+        setupCheckComboBox(completionTypeCheckComboBox, "completionType");
+        setupCheckComboBox(timeUnitCheckComboBox, "timeUnit");
+        setupCheckComboBox(difficultyCheckComboBox, "difficulty");
     }
 
     /**
@@ -219,15 +221,35 @@ public class TrailsController extends Controller {
         RegionFinder regionFinder = new RegionFinder();
         List<String> regionList = regionFinder.getRegionNames();
 
-        regionCheckComboBox.getItems().addAll(regionList);
+        // Add Select All option at the top
+        List<String> allRegions = new ArrayList<>();
+        allRegions.add("Select All");
+        allRegions.addAll(regionList);
+
+        regionCheckComboBox.getItems().addAll(allRegions);
         regionCheckComboBox.setTitle("Regions");
+
+        regionCheckComboBox.getCheckModel().getCheckedItems().addListener(
+                (javafx.collections.ListChangeListener.Change<? extends String> change) -> {
+                    if (!isUpdating) {
+                        handleSelectAllLogic(regionCheckComboBox, change);
+                        onFilterChanged();
+                    }
+                });
+
+        isUpdating = true;
 
         // preselection
         if (!super.getUserService().isGuest()) {
             User user = super.getUserService().getUser();
             if (user != null && user.getRegion() != null && !user.getRegion().isEmpty()) {
+                // Only check specific user regions, not Select All
                 for (String region : user.getRegion()) {
                     regionCheckComboBox.getCheckModel().check(region);
+                }
+                // Check if all regions are selected to determine Select All state
+                if (user.getRegion().size() == regionList.size()) {
+                    regionCheckComboBox.getCheckModel().check("Select All");
                 }
             } else {
                 // Default to all regions selected if user has no preferences
@@ -238,32 +260,41 @@ public class TrailsController extends Controller {
             regionCheckComboBox.getCheckModel().checkAll();
         }
 
-        regionCheckComboBox.getCheckModel().getCheckedItems().addListener(
-                (javafx.collections.ListChangeListener.Change<? extends String> change) -> {
-                    if (!isUpdating) {
-                        onFilterChanged();
-                    }
-                });
+        isUpdating = false;
     }
 
     /**
-     * Generic method to initialise a choice box
+     * Generic method to initialise a CheckComboBox with Select All functionality
      *
-     * @param choiceBox  The ChoiceBox to initialise
-     * @param filterType The filter type identifier
+     * @param checkComboBox The CheckComboBox to initialise
+     * @param filterType    The filter type identifier
      */
-    private void setupChoiceBox(ChoiceBox<String> choiceBox, String filterType) {
+    private void setupCheckComboBox(CheckComboBox<String> checkComboBox, String filterType) {
         List<String> options = searchService.getFilterOptions(filterType);
 
-        choiceBox.getItems().addAll(options);
-        choiceBox.setValue(searchService.getDefaultFilterValue(filterType));
+        // Remove the default "All" option since we'll have Select All
+        options.removeIf(option -> option.startsWith("All "));
 
-        choiceBox.getSelectionModel().selectedItemProperty().addListener(
-                (observable, oldValue, newValue) -> {
+        // Add Select All option at the top
+        List<String> allOptions = new ArrayList<>();
+        allOptions.add("Select All");
+        allOptions.addAll(options);
+
+        checkComboBox.getItems().addAll(allOptions);
+        checkComboBox.setTitle(getFilterTitle(filterType));
+
+        // Add listener first
+        checkComboBox.getCheckModel().getCheckedItems().addListener(
+                (javafx.collections.ListChangeListener.Change<? extends String> change) -> {
                     if (!isUpdating) {
+                        handleSelectAllLogic(checkComboBox, change);
                         onFilterChanged();
                     }
                 });
+
+        isUpdating = true;
+        checkComboBox.getCheckModel().checkAll();
+        isUpdating = false;
     }
 
     /**
@@ -322,10 +353,10 @@ public class TrailsController extends Controller {
      * display.
      */
     private void onFilterChanged() {
-        searchService.updateFilter("regions", String.join(",", regionCheckComboBox.getCheckModel().getCheckedItems()));
-        searchService.updateFilter("completionType", completionTypeChoiceBox.getValue());
-        searchService.updateFilter("timeUnit", timeUnitChoiceBox.getValue());
-        searchService.updateFilter("difficulty", difficultyChoiceBox.getValue());
+        searchService.updateFilter("regions", getSelectedFilterValues(regionCheckComboBox));
+        searchService.updateFilter("completionType", getSelectedFilterValues(completionTypeCheckComboBox));
+        searchService.updateFilter("timeUnit", getSelectedFilterValues(timeUnitCheckComboBox));
+        searchService.updateFilter("difficulty", getSelectedFilterValues(difficultyCheckComboBox));
         updateSearchDisplay();
     }
 
@@ -464,6 +495,75 @@ public class TrailsController extends Controller {
         }
 
         isUpdating = false;
+    }
+
+    /**
+     * Gets the title for a filter type
+     */
+    private String getFilterTitle(String filterType) {
+        switch (filterType) {
+            case "completionType":
+                return "Completion Types";
+            case "timeUnit":
+                return "Time Units";
+            case "difficulty":
+                return "Difficulties";
+            default:
+                return filterType;
+        }
+    }
+
+    /**
+     * Handles Select All logic for CheckComboBox (cool stuff)
+     */
+    private void handleSelectAllLogic(CheckComboBox<String> checkComboBox,
+            javafx.collections.ListChangeListener.Change<? extends String> change) {
+        isUpdating = true;
+
+        // check or uncheck everyone if Select All was changed
+        while (change.next()) {
+            if (change.wasAdded()) {
+                for (String added : change.getAddedSubList()) {
+                    if ("Select All".equals(added)) {
+                        checkComboBox.getCheckModel().checkAll();
+                        break;
+                    }
+                }
+            } else if (change.wasRemoved()) {
+                for (String removed : change.getRemoved()) {
+                    if ("Select All".equals(removed)) {
+                        checkComboBox.getCheckModel().clearChecks();
+                        break;
+                    }
+                }
+            }
+        }
+
+        // check "select all" if everyone else is checked - doesn't want to be left out
+        boolean allSelected = true;
+        for (String item : checkComboBox.getItems()) {
+            if (!"Select All".equals(item) && !checkComboBox.getCheckModel().isChecked(item)) {
+                allSelected = false;
+                break;
+            }
+        }
+
+        if (allSelected && !checkComboBox.getCheckModel().isChecked("Select All")) {
+            checkComboBox.getCheckModel().check("Select All");
+        } else if (!allSelected && checkComboBox.getCheckModel().isChecked("Select All")) {
+            checkComboBox.getCheckModel().clearCheck("Select All");
+        }
+
+        isUpdating = false;
+    }
+
+    /**
+     * Gets selected filter values, excluding "Select All" (don't want that boi)
+     */
+    private String getSelectedFilterValues(CheckComboBox<String> checkComboBox) {
+        return checkComboBox.getCheckModel().getCheckedItems().stream()
+                .filter(item -> !"Select All".equals(item))
+                .collect(Collectors.joining(","));
     }
 
     /**
