@@ -12,7 +12,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import org.controlsfx.control.CheckComboBox?>
 
-<VBox minHeight="300.0" minWidth="500.0" styleClass="root-pane" stylesheets="@../styles/global.css" xmlns="http://javafx.com/javafx/21.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="seng202.team5.gui.TrailsController">
+<VBox minHeight="400.0" minWidth="600.0" styleClass="root-pane" stylesheets="@../styles/global.css" xmlns="http://javafx.com/javafx/21.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="seng202.team5.gui.TrailsController">
    <children>
       <!-- Search section -->
       <HBox alignment="CENTER_LEFT" spacing="10.0">
@@ -31,12 +31,16 @@
       <!-- Results and pagination -->
       <HBox alignment="CENTER_LEFT" spacing="10.0">
          <children>
-            <Label fx:id="resultsLabel" prefWidth="150.0" text="Loading trails..." />
+            <Label fx:id="resultsLabel" prefWidth="180.0" text="Loading trails...">
+               <padding>
+                  <Insets left="5.0" />
+               </padding></Label>
             <Region HBox.hgrow="ALWAYS" />
+            <Label text="Sort:" />
             <ChoiceBox fx:id="sortChoiceBox" />
             <ToggleButton fx:id="ascDescToggleButton" mnemonicParsing="false" text="↑ Asc" />
             <Region HBox.hgrow="ALWAYS" />
-            <HBox alignment="CENTER_RIGHT" prefWidth="150.0" spacing="5.0">
+            <HBox alignment="CENTER_RIGHT" prefWidth="180.0" spacing="5.0">
                <children>
                   <Label text="Page:" />
                   <ChoiceBox fx:id="pageChoiceBox" prefWidth="60.0" />
