@@ -255,10 +255,6 @@ public class TrailsController extends Controller {
     private void setupChoiceBox(ChoiceBox<String> choiceBox, String filterType) {
         List<String> options = searchService.getFilterOptions(filterType);
 
-        if (filterType.equals("difficulty")) {
-            sortDifficultyOptions(options);
-        }
-
         choiceBox.getItems().addAll(options);
         choiceBox.setValue(searchService.getDefaultFilterValue(filterType));
 
@@ -479,33 +475,6 @@ public class TrailsController extends Controller {
         } else {
             ascDescToggleButton.setText("↓ Desc");
         }
-    }
-
-    /**
-     * Difficulty sorting logic
-     *
-     * @param options List of difficulty options
-     */
-    private void sortDifficultyOptions(List<String> options) {
-        List<String> difficultyOrder = searchService.getDifficultyOrder();
-        options.sort((a, b) -> {
-            if (a.equals("All difficulties"))
-                return -1;
-            if (b.equals("All difficulties"))
-                return 1;
-
-            int indexA = difficultyOrder.indexOf(a.toLowerCase());
-            int indexB = difficultyOrder.indexOf(b.toLowerCase());
-
-            if (indexA != -1 && indexB != -1) {
-                return Integer.compare(indexA, indexB);
-            }
-            if (indexA != -1)
-                return -1;
-            if (indexB != -1)
-                return 1;
-            return a.compareToIgnoreCase(b);
-        });
     }
 
     @Override
