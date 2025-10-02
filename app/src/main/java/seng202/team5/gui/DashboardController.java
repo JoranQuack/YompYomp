@@ -1,21 +1,21 @@
 package seng202.team5.gui;
 
+import java.util.Date;
 import java.util.List;
 
-import javafx.animation.PauseTransition;
-import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.scene.control.Button;
-import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.VBox;
-import javafx.util.Duration;
 import seng202.team5.data.DatabaseService;
+import seng202.team5.data.SqlBasedTrailLogRepo;
 import seng202.team5.data.SqlBasedTrailRepo;
 import seng202.team5.gui.components.TrailCardComponent;
 import seng202.team5.models.Trail;
+import seng202.team5.models.TrailLog;
+import seng202.team5.services.LogService;
 import seng202.team5.services.SearchService;
 
 /**
@@ -24,6 +24,8 @@ import seng202.team5.services.SearchService;
 public class DashboardController extends Controller {
     /** Service for searching and filtering trails */
     private SearchService searchService;
+    private SqlBasedTrailLogRepo trailLogRepo;
+    private LogService logService;
 
     @FXML
     private FlowPane trailsContainer;
@@ -36,9 +38,6 @@ public class DashboardController extends Controller {
 
     @FXML
     private TextField searchBarTextField;
-
-    @FXML
-    private Label savePopupLabel;
 
     /**
      * Default constructor required by JavaFX FXML loading.
@@ -55,6 +54,8 @@ public class DashboardController extends Controller {
     public DashboardController(ScreenNavigator navigator) {
         super(navigator);
         initializeSearchService();
+        this.logService = new LogService(new DatabaseService());
+        this.trailLogRepo = new SqlBasedTrailLogRepo(new DatabaseService());
     }
 
     /**
@@ -70,8 +71,6 @@ public class DashboardController extends Controller {
      */
     @FXML
     private void initialize() {
-        savePopupLabel.setVisible(false);
-        savePopupLabel.setMouseTransparent(true);
         // Initialize search service if not already done
         if (searchService == null) {
             initializeSearchService();
@@ -109,23 +108,41 @@ public class DashboardController extends Controller {
         for (Trail trail : trails) {
             TrailCardComponent trailCard = new TrailCardComponent(super.getUserService().isGuest(), false);
             trailCard.setData(trail, null);
+            trailCard.setTrail(trail);
 
-            trailCard.setOnBookmarkClicked(() -> showTemporaryMessage("Saved Trail To Logbook!"));
             // Add some spacing between cards
             VBox.setMargin(trailCard, new Insets(10));
 
             trailsContainer.getChildren().add(trailCard);
             trailCard.setOnMouseClicked(e -> onTrailCardClicked(trail));
+
+            trailCard.setOnBookmarkClickedHandler(clickedTrail -> {
+                TrailLog newLog = new TrailLog(
+                        trailLogRepo.getNewTrailLogId(),
+                        clickedTrail.getId(),
+                        new Date(),
+                        null, null, null, null, null, null
+                );
+
+                LogTrailController logController = new LogTrailController(
+                        super.getNavigator(),
+                        clickedTrail,
+                        newLog
+                );
+                super.getNavigator().launchScreen(logController);
+            });
+
+            trailCard.setOnBookmarkFillClickedHandler(clickedTrail -> {
+                // TODO confirmation dialog
+                logService.deleteLog(clickedTrail.getId());
+                trailCard.setBookmarked(false);
+            });
+
+            trailCard.setOnTrashClickedHandler(clickedTrail -> {
+                logService.deleteLog(clickedTrail.getId());
+                trailsContainer.getChildren().remove(trailCard);
+            });
         }
-    }
-
-    private void showTemporaryMessage(String message) {
-        savePopupLabel.setText(message);
-        savePopupLabel.setVisible(true);
-
-        PauseTransition delay = new PauseTransition(Duration.millis(3000));
-        delay.setOnFinished(event -> savePopupLabel.setVisible(false));
-        delay.play();
     }
 
     @FXML

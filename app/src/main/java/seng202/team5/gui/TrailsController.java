@@ -1,6 +1,7 @@
 package seng202.team5.gui;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javafx.fxml.FXML;
@@ -17,9 +18,13 @@ import javafx.concurrent.Task;
 import javafx.application.Platform;
 import org.controlsfx.control.CheckComboBox;
 import seng202.team5.App;
+import seng202.team5.data.DatabaseService;
+import seng202.team5.data.SqlBasedTrailLogRepo;
 import seng202.team5.gui.components.TrailCardComponent;
 import seng202.team5.models.Trail;
+import seng202.team5.models.TrailLog;
 import seng202.team5.models.User;
+import seng202.team5.services.LogService;
 import seng202.team5.services.RegionFinder;
 import seng202.team5.services.SearchService;
 
@@ -30,6 +35,8 @@ import seng202.team5.services.SearchService;
  */
 public class TrailsController extends Controller {
 
+    private SqlBasedTrailLogRepo trailLogRepo;
+    private LogService logService;
     private SearchService searchService;
     private String searchText;
     private final List<TrailCardComponent> trailCardPool = new ArrayList<>();
@@ -61,8 +68,6 @@ public class TrailsController extends Controller {
     private ChoiceBox<String> sortChoiceBox;
     @FXML
     private ToggleButton ascDescToggleButton;
-    @FXML
-    private Label savePopupLabel;
 
     /**
      * Creates controller with navigator.
@@ -71,6 +76,8 @@ public class TrailsController extends Controller {
      */
     public TrailsController(ScreenNavigator navigator) {
         super(navigator);
+        this.logService = new LogService(new DatabaseService());
+        this.trailLogRepo = new SqlBasedTrailLogRepo(new DatabaseService());
     }
 
     /**
@@ -404,9 +411,35 @@ public class TrailsController extends Controller {
             TrailCardComponent trailCard = getOrCreateTrailCard(i, isGuest, cardMargin);
             trailCard.setData(trail, null);
 
-            trailCard.setOnBookmarkClicked(() -> showTemporaryMessage("Saved Trail To Logbook!", 2000));
             trailCard.setOnMouseClicked(e -> onTrailCardClicked(trail));
             trailsContainer.getChildren().add(trailCard);
+
+            trailCard.setOnBookmarkClickedHandler(clickedTrail -> {
+                TrailLog newLog = new TrailLog(
+                        trailLogRepo.getNewTrailLogId(),
+                        clickedTrail.getId(),
+                        new Date(),
+                        null, null, null, null, null, null
+                );
+
+                LogTrailController logController = new LogTrailController(
+                        super.getNavigator(),
+                        clickedTrail,
+                        newLog
+                );
+                super.getNavigator().launchScreen(logController);
+            });
+
+            trailCard.setOnBookmarkFillClickedHandler(clickedTrail -> {
+                // TODO confirmation dialog
+                logService.deleteLog(clickedTrail.getId());
+                trailCard.setBookmarked(false);
+            });
+
+            trailCard.setOnTrashClickedHandler(clickedTrail -> {
+                logService.deleteLog(clickedTrail.getId());
+                trailsContainer.getChildren().remove(trailCard);
+            });
         }
 
         updateResultsLabel(trails.size());
@@ -507,18 +540,6 @@ public class TrailsController extends Controller {
                 return 1;
             return a.compareToIgnoreCase(b);
         });
-    }
-
-    private void showTemporaryMessage(String message, int durationMillis) {
-        savePopupLabel.setText(message);
-        savePopupLabel.setVisible(true);
-
-        new Thread(() -> {
-            try {
-                Thread.sleep(durationMillis);
-            } catch (InterruptedException ignored) {}
-            Platform.runLater(() -> savePopupLabel.setVisible(false));
-        }).start();
     }
 
     @Override

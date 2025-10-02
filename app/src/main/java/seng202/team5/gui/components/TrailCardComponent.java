@@ -1,10 +1,13 @@
 package seng202.team5.gui.components;
 
 import java.io.IOException;
+import java.sql.Date;
+import java.util.function.Consumer;
 
-import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.image.Image;
@@ -12,6 +15,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.VBox;
 import seng202.team5.data.DatabaseService;
+import seng202.team5.gui.LogTrailController;
 import seng202.team5.models.Trail;
 import seng202.team5.models.TrailLog;
 import seng202.team5.services.ImageService;
@@ -51,13 +55,24 @@ public class TrailCardComponent extends VBox {
     @FXML
     private ImageView trashIcon;
 
-    private Runnable onBookmarkClicked;
+    private Trail trail;
+
+    private Consumer<Trail> onBookmarkClickedHandler;
+    private Consumer<Trail> onBookmarkFillClickedHandler;
+    private Consumer<Trail> onTrashClickedHandler;
+
     private final ImageService imageService;
 
     private boolean isUnmatched;
     private boolean logMode;
     private boolean inLogBook = false;
+    private boolean bookmarked = false;
 
+    /**
+     * Constructor for the trail card component.
+     * @param isUnmatched
+     * @param logMode
+     */
     public TrailCardComponent(boolean isUnmatched, boolean logMode) {
         this.isUnmatched = isUnmatched;
         this.logMode = logMode;
@@ -72,10 +87,12 @@ public class TrailCardComponent extends VBox {
         } catch (IOException e) {
             throw new RuntimeException(e);
         } // If not work, crash?
-
-        setupBookmarkHandler();
     }
 
+    /**
+     * Log trail card constructor.
+     *
+     */
     public TrailCardComponent() {
         this.isUnmatched = false;
         this.logMode = true;
@@ -93,19 +110,56 @@ public class TrailCardComponent extends VBox {
         } // If not work, crash?
     }
 
-    public void setOnBookmarkClicked(Runnable callback) {
-        this.onBookmarkClicked = callback;
+    public void setTrail(Trail trail) {
+        this.trail = trail;
     }
 
-    private void setupBookmarkHandler() {
-        bookmark.setOnMouseClicked(event -> {
-            bookmark.setVisible(false);
-            bookmarkFill.setVisible(true);
+    public void setOnBookmarkClickedHandler(Consumer<Trail> handler) {
+        this.onBookmarkClickedHandler = handler;
+    }
 
-            if (onBookmarkClicked != null) {
-                onBookmarkClicked.run();
-            }
-        });
+    public void setOnBookmarkFillClickedHandler(Consumer<Trail> handler) {
+        this.onBookmarkFillClickedHandler = handler;
+    }
+
+    public void setOnTrashClickedHandler(Consumer<Trail> handler) {
+        this.onTrashClickedHandler = handler;
+    }
+
+    @FXML
+    private void onBookmarkClicked() {
+        if (onBookmarkClickedHandler != null && trail != null) {
+            onBookmarkClickedHandler.accept(trail);
+        }
+    }
+
+    @FXML
+    private void onBookmarkFillClicked() {
+        if (onBookmarkFillClickedHandler != null && trail != null) {
+            onBookmarkFillClickedHandler.accept(trail);
+        }
+    }
+
+    @FXML
+    private void onTrashIconClicked() {
+        if (onTrashClickedHandler != null && trail != null) {
+            onTrashClickedHandler.accept(trail);
+        }
+    }
+
+    public void setBookmarked(boolean value) {
+        bookmarked = value;
+        updateBookmarkIcon();
+    }
+
+    public void updateBookmarkIcon() {
+        if (bookmarked) {
+            bookmarkFill.setVisible(true);
+            bookmark.setVisible(false);
+        } else {
+            bookmarkFill.setVisible(false);
+            bookmark.setVisible(true);
+        }
     }
 
     /**
@@ -132,8 +186,6 @@ public class TrailCardComponent extends VBox {
      * @param log The log object to display
      */
     public void setData(Trail trail, TrailLog log) {
-        //these are being set to not visible as they havent been implemented
-        //TODO get rid of and implement the bookmarks to be shown
         bookmark.setVisible(true);
         bookmarkFill.setVisible(false);
 
@@ -150,9 +202,15 @@ public class TrailCardComponent extends VBox {
         }
 
         if (!logMode) {
+            LogService logService = new LogService(new DatabaseService());
+            boolean isLogged = logService.isTrailLogged(trail.getId());
+            bookmark.setVisible(!isLogged);
+            bookmarkFill.setVisible(isLogged);
+
             starLabel.setVisible(false);
             starIcon.setVisible(false);
             trashIcon.setVisible(false);
+
             if (!trail.getDifficulty().contains("unknown")) {
                 difficultyLabel.setText(StringManipulator.capitaliseFirstLetter(trail.getDifficulty()));
             } else {
@@ -204,29 +262,8 @@ public class TrailCardComponent extends VBox {
                bookmarkFill.setVisible(false);
             }
 
-            //TODO implement the label for the duration when the model is updated
-            //durationLabel.setText(StringManipulator.capitaliseFirstLetter())
+            // durationLabel.setText(StringManipulator.capitaliseFirstLetter();
         }
-        /*else {
-            matchBar.setVisible(false);
-            matchLabel.setVisible(false);
-            typeLabel.setVisible(false);
-
-            starLabel.setVisible(true);
-            starIcon.setVisible(true);
-            if (log.getRating() != null) {
-                starLabel.setText(String.valueOf(log.getRating()));
-            } else {
-                starLabel.setText("Rate Me!");
-            }
-
-            if (log.getPerceivedDifficulty() != null) {
-                difficultyLabel.setText(StringManipulator.capitaliseFirstLetter(log.getPerceivedDifficulty()));
-            } else {
-                attributesFlowPane.getChildren().remove(difficultyLabel);
-            }
-
-        }*/
 
     }
 
