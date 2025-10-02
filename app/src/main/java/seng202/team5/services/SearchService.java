@@ -96,7 +96,7 @@ public class SearchService {
     }
 
     /**
-     * Checks if a trail matches all current filters.
+     * Checks if a trail matches all current filters, strictly
      */
     private boolean matchesAllFilters(Trail trail) {
         String query = filters.get("query");
@@ -106,58 +106,64 @@ public class SearchService {
         }
 
         String completionTypes = filters.get("completionType");
-        if (completionTypes != null && !completionTypes.isEmpty()) {
+        if (completionTypes != null) {
+            if (completionTypes.isEmpty()) {
+                return false;
+            }
             List<String> selectedTypes = List.of(completionTypes.split(","));
-            if (!selectedTypes.isEmpty()) {
-                boolean typeMatch = false;
-                for (String selectedType : selectedTypes) {
-                    if (selectedType.trim().equalsIgnoreCase(trail.getCompletionType())) {
-                        typeMatch = true;
-                        break;
-                    }
+            boolean typeMatch = false;
+            for (String selectedType : selectedTypes) {
+                if (selectedType.trim().equalsIgnoreCase(trail.getCompletionType())) {
+                    typeMatch = true;
+                    break;
                 }
-                if (!typeMatch) {
-                    return false;
-                }
+            }
+            if (!typeMatch) {
+                return false;
             }
         }
 
         String timeUnits = filters.get("timeUnit");
-        if (timeUnits != null && !timeUnits.isEmpty()) {
+        if (timeUnits != null) {
+            if (timeUnits.isEmpty()) {
+                return false;
+            }
             List<String> selectedUnits = List.of(timeUnits.split(","));
-            if (!selectedUnits.isEmpty()) {
-                boolean unitMatch = false;
-                for (String selectedUnit : selectedUnits) {
-                    if (selectedUnit.trim().equalsIgnoreCase(trail.getTimeUnit())) {
-                        unitMatch = true;
-                        break;
-                    }
+            boolean unitMatch = false;
+            for (String selectedUnit : selectedUnits) {
+                if (selectedUnit.trim().equalsIgnoreCase(trail.getTimeUnit())) {
+                    unitMatch = true;
+                    break;
                 }
-                if (!unitMatch) {
-                    return false;
-                }
+            }
+            if (!unitMatch) {
+                return false;
             }
         }
 
         String difficulties = filters.get("difficulty");
-        if (difficulties != null && !difficulties.isEmpty()) {
+        if (difficulties != null) {
+            if (difficulties.isEmpty()) {
+                return false;
+            }
             List<String> selectedDifficulties = List.of(difficulties.split(","));
-            if (!selectedDifficulties.isEmpty()) {
-                boolean difficultyMatch = false;
-                for (String selectedDifficulty : selectedDifficulties) {
-                    if (selectedDifficulty.trim().equalsIgnoreCase(trail.getDifficulty())) {
-                        difficultyMatch = true;
-                        break;
-                    }
+            boolean difficultyMatch = false;
+            for (String selectedDifficulty : selectedDifficulties) {
+                if (selectedDifficulty.trim().equalsIgnoreCase(trail.getDifficulty())) {
+                    difficultyMatch = true;
+                    break;
                 }
-                if (!difficultyMatch) {
-                    return false;
-                }
+            }
+            if (!difficultyMatch) {
+                return false;
             }
         }
 
         String regions = filters.get("regions");
-        if (regions != null && !regions.isEmpty()) {
+        if (regions != null) {
+            if (regions.isEmpty()) {
+                return false;
+            }
             List<String> selectedRegions = List.of(regions.split(","));
             String trailRegion = trail.getRegion();
             if (trailRegion != null && !trailRegion.isEmpty()) {
