@@ -105,88 +105,63 @@ public class SearchService {
             return false;
         }
 
-        String completionTypes = filters.get("completionType");
-        if (completionTypes != null) {
-            if (completionTypes.isEmpty()) {
-                return false;
-            }
-            List<String> selectedTypes = List.of(completionTypes.split(","));
-            boolean typeMatch = false;
-            for (String selectedType : selectedTypes) {
-                if (selectedType.trim().equalsIgnoreCase(trail.getCompletionType())) {
-                    typeMatch = true;
-                    break;
-                }
-            }
-            if (!typeMatch) {
-                return false;
-            }
+        if (!matchesFilter("completionType", filters.get("completionType"), trail.getCompletionType())) {
+            return false;
         }
 
-        String timeUnits = filters.get("timeUnit");
-        if (timeUnits != null) {
-            if (timeUnits.isEmpty()) {
-                return false;
-            }
-            List<String> selectedUnits = List.of(timeUnits.split(","));
-            boolean unitMatch = false;
-            for (String selectedUnit : selectedUnits) {
-                if (selectedUnit.trim().equalsIgnoreCase(trail.getTimeUnit())) {
-                    unitMatch = true;
-                    break;
-                }
-            }
-            if (!unitMatch) {
-                return false;
-            }
+        if (!matchesFilter("timeUnit", filters.get("timeUnit"), trail.getTimeUnit())) {
+            return false;
         }
 
-        String difficulties = filters.get("difficulty");
-        if (difficulties != null) {
-            if (difficulties.isEmpty()) {
-                return false;
-            }
-            List<String> selectedDifficulties = List.of(difficulties.split(","));
-            boolean difficultyMatch = false;
-            for (String selectedDifficulty : selectedDifficulties) {
-                if (selectedDifficulty.trim().equalsIgnoreCase(trail.getDifficulty())) {
-                    difficultyMatch = true;
-                    break;
-                }
-            }
-            if (!difficultyMatch) {
-                return false;
-            }
+        if (!matchesFilter("difficulty", filters.get("difficulty"), trail.getDifficulty())) {
+            return false;
         }
 
-        String regions = filters.get("regions");
-        if (regions != null) {
-            if (regions.isEmpty()) {
-                return false;
-            }
-            List<String> selectedRegions = List.of(regions.split(","));
-            String trailRegion = trail.getRegion();
-            if (trailRegion != null && !trailRegion.isEmpty()) {
-                boolean regionMatch = false;
-                for (String selectedRegion : selectedRegions) {
-                    if (selectedRegion.trim().equalsIgnoreCase(trailRegion)) {
-                        regionMatch = true;
-                        break;
-                    }
-                }
-                if (!regionMatch) {
-                    return false;
-                }
-            } else {
-                boolean otherSelected = selectedRegions.stream()
-                        .anyMatch(region -> region.trim().equalsIgnoreCase("Other"));
-                if (!otherSelected) {
-                    return false;
-                }
-            }
+        if (!matchesRegionFilter(filters.get("regions"), trail.getRegion())) {
+            return false;
         }
 
         return true;
+    }
+
+    /**
+     * Checks if a trail attribute matches the selected filter values.
+     */
+    private boolean matchesFilter(String filterType, String filterValue, String trailValue) {
+        if (filterValue == null) {
+            return true; // No filter applied
+        }
+
+        if (filterValue.isEmpty()) {
+            return false; // Empty filter means exclude all
+        }
+
+        List<String> selectedValues = List.of(filterValue.split(","));
+        return selectedValues.stream()
+                .anyMatch(selected -> selected.trim().equalsIgnoreCase(trailValue));
+    }
+
+    /**
+     * Checks if a trail's region matches the selected region filter values.
+     */
+    private boolean matchesRegionFilter(String regionFilter, String trailRegion) {
+        if (regionFilter == null) {
+            return true; // No filter applied
+        }
+
+        if (regionFilter.isEmpty()) {
+            return false; // Empty filter means exclude all
+        }
+
+        List<String> selectedRegions = List.of(regionFilter.split(","));
+
+        if (trailRegion != null && !trailRegion.isEmpty()) {
+            return selectedRegions.stream()
+                    .anyMatch(selected -> selected.trim().equalsIgnoreCase(trailRegion));
+        } else {
+            return selectedRegions.stream()
+                    .anyMatch(region -> region.trim().equalsIgnoreCase("Other"));
+        }
     }
 
     /**
