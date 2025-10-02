@@ -503,7 +503,7 @@ public class TrailsController extends Controller {
     private String getFilterTitle(String filterType) {
         switch (filterType) {
             case "completionType":
-                return "Completion Types";
+                return "Types";
             case "timeUnit":
                 return "Time Units";
             case "difficulty":
