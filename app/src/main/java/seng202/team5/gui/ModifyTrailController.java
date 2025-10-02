@@ -297,9 +297,33 @@ public class ModifyTrailController extends Controller {
      * @return whether inputs are valid
      */
     private boolean userInputValidation() {
-        return !latitudeTextField.getText().isEmpty() && !trailNameTextField.getText().isEmpty() &&
-                !trailDescriptionTextArea.getText().isEmpty() && trailTypeComboBox.getValue() != null &&
-                !longitudeTextField.getText().isEmpty();
+        if (latitudeTextField.getText().isEmpty() || longitudeTextField.getText().isEmpty()) {
+            latitudeTextField.setStyle("-fx-border-color: red; -fx-border-width: 2px;");
+            mapContainer.setStyle("-fx-border-color: red; -fx-border-width: 2px;");
+            return false;
+        } else {
+            latitudeTextField.setStyle("");
+            mapContainer.setStyle("");
+        }
+        if (trailNameTextField.getText().isEmpty()) {
+            trailNameTextField.setStyle("-fx-border-color: red; -fx-border-width: 2px;");
+            return false;
+        } else {
+            trailNameTextField.setStyle("");
+        }
+        if (trailDescriptionTextArea.getText().isEmpty()) {
+            trailDescriptionTextArea.setStyle("-fx-border-color: red; -fx-border-width: 2px;");
+            return false;
+        } else {
+            trailDescriptionTextArea.setStyle("");
+        }
+        if (trailTypeComboBox.getValue() == null) {
+            trailTypeComboBox.setStyle("-fx-border-color: red; -fx-border-width: 2px;");
+            return false;
+        } else {
+            trailTypeComboBox.setStyle("");
+        }
+        return true;
     }
 
     /**
