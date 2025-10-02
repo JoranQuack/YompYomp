@@ -108,6 +108,11 @@ public class TrailsController extends Controller {
         loadInitialDataAsync();
     }
 
+    @FXML
+    private void onAddTrailButtonClicked() {
+        super.getNavigator().launchScreen(new ModifyTrailController(super.getNavigator(), null, sqlBasedTrailRepo));
+    }
+
     /**
      * Shows a loading state while trails are being fetched.
      */
