@@ -110,7 +110,7 @@ public class LogService {
     }
 
     public boolean isTrailLogged(int trailId) {
-        return trailInterface.findById(trailId).isPresent();
+        return getAllLogs().stream().anyMatch(log -> log.getTrailId() == trailId);
     }
 
 }

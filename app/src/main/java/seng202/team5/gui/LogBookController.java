@@ -215,7 +215,9 @@ public class LogBookController extends Controller {
     private void onLogCardClicked(TrailLog log) {
         Optional<Trail> trailOpt = logService.getTrail(log.getTrailId());
         trailOpt.ifPresent(trail -> {
-            super.getNavigator().launchScreen(new LogTrailController(super.getNavigator(), log));
+            super.getNavigator().launchScreen(
+                    new LogTrailController(super.getNavigator(), trail, log)
+            );
         });
     }
 

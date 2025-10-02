@@ -9,6 +9,7 @@ import seng202.team5.models.Trail;
 import seng202.team5.models.TrailLog;
 import seng202.team5.services.LogService;
 
+import java.sql.Date;
 import java.time.ZoneId;
 import java.util.List;
 
@@ -30,18 +31,13 @@ public class LogTrailController extends Controller {
      * @param navigator screen navigator
      * @param trailLog  the trail log to be logged
      */
-    public LogTrailController(ScreenNavigator navigator, TrailLog trailLog) {
+    public LogTrailController(ScreenNavigator navigator, Trail trail, TrailLog trailLog) {
         super(navigator);
+        this.trail = trail;
         this.trailLog = trailLog;
         this.databaseService = new DatabaseService();
         this.trailRepo = new SqlBasedTrailRepo(databaseService);
-    }
-
-    public void setTrailAndLog(Trail trail, TrailLog trailLog) {
-        this.trail = trail;
-        this.trailLog = trailLog;
         this.logService = new LogService(databaseService);
-        populateFields();
     }
 
     @FXML
@@ -71,6 +67,11 @@ public class LogTrailController extends Controller {
     @FXML
     private void initialize() {
         setupFormFields();
+        if (trail != null && trailLog != null) {
+            populateFields();
+        }
+        backButton.setOnAction(event -> onBackButtonClicked());
+        doneButton.setOnAction(event -> onDoneButtonClicked());
     }
 
     /**
@@ -95,16 +96,16 @@ public class LogTrailController extends Controller {
 
     @FXML
     private void onDoneButtonClicked() {
-        trailLog.setStartDate(java.sql.Date.valueOf(startDatePicker.getValue()));
-        trailLog.setCompletionTime(!durationTextField.getText().isEmpty() ? Integer.parseInt(durationTextField.getText()) : null);
+        trailLog.setStartDate(Date.valueOf(startDatePicker.getValue()));
+        trailLog.setCompletionTime(!durationTextField.getText().isEmpty() ?
+                Integer.parseInt(durationTextField.getText()) : null);
         trailLog.setTimeUnit(timeUnitSelector.getValue());
         trailLog.setCompletionType(trailTypeSelector.getValue());
         trailLog.setRating((int) rateSlider.getValue());
         trailLog.setPerceivedDifficulty(perceivedDifficultySelector.getValue());
         trailLog.setNotes(noteTextArea.getText());
 
-        logService.updateLog(trailLog);
-        // TODO implement confirmation label: Trail log saved successfully (not alert tho)
+        logService.addLog(trailLog);
         super.getNavigator().goBack();
     }
 
