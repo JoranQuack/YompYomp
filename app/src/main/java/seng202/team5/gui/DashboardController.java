@@ -6,6 +6,8 @@ import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.VBox;
 import seng202.team5.data.DatabaseService;
@@ -24,9 +26,6 @@ public class DashboardController extends Controller {
 
     @FXML
     private FlowPane trailsContainer;
-
-    @FXML
-    private Button addTrailButton;
 
     @FXML
     private Button searchButton;
@@ -72,7 +71,14 @@ public class DashboardController extends Controller {
 
         List<Trail> trails = repo.getRecommendedTrails();
         initializeRecommendedTrails(trails);
-        addTrailButton.setOnAction(e -> onAddTrailButtonClicked());
+        // addTrailButton.setOnAction(e -> onAddTrailButtonClicked());
+
+        searchBarTextField.addEventHandler(KeyEvent.KEY_PRESSED, event -> {
+            if (event.getCode() == KeyCode.ENTER) {
+                searchButton.fire();
+                event.consume();
+            }
+        });
     }
 
     @FXML
@@ -87,7 +93,8 @@ public class DashboardController extends Controller {
 
     @FXML
     private void onSearchButtonClicked() {
-        super.getNavigator().launchScreen(new TrailsController(super.getNavigator(), searchBarTextField.getText(), repo));
+        super.getNavigator()
+                .launchScreen(new TrailsController(super.getNavigator(), searchBarTextField.getText(), repo));
     }
 
     /**

@@ -64,12 +64,6 @@ public class UserService {
         }
 
         User existingUser = loadUserFromDatabase();
-        if (existingUser == null) {
-            // Create new user for profile creation flow
-            User newUser = new User();
-            newUser.setName("");
-            return newUser;
-        }
         return existingUser;
     }
 

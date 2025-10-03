@@ -1,9 +1,12 @@
 package seng202.team5.gui;
 
 import javafx.fxml.FXML;
+import seng202.team5.gui.util.BackgroundImageUtil;
 import seng202.team5.models.Question;
 import seng202.team5.models.User;
 import javafx.scene.control.*;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.StackPane;
 
 /**
  * Controller class for profile quiz screens
@@ -51,12 +54,17 @@ public class ProfileQuizController extends Controller {
     private Button continueButton;
     @FXML
     private ProgressBar quizProgressBar;
+    @FXML
+    private ImageView bgImage;
+    @FXML
+    private StackPane rootPane;
 
     /**
      * Initializes the quiz screen with the first two questions
      */
     @FXML
     private void initialize() {
+        BackgroundImageUtil.setupCoverBehavior(bgImage, rootPane);
         setSliders(slider1);
         setSliders(slider2);
         setProgressBar();

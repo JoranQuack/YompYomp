@@ -34,7 +34,7 @@ public class ScreenNavigator {
     public ScreenNavigator(Stage stage) {
         this.stage = stage;
         this.rootPane = new BorderPane();
-        Scene scene = new Scene(rootPane, 1200, 800);
+        Scene scene = new Scene(rootPane, 1300, 900);
         stage.setScene(scene);
 
         stage.setMinWidth(800);

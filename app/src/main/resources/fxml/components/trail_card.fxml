@@ -1,41 +1,72 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.lang.String?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ProgressBar?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.FlowPane?>
+<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 
-<fx:root prefWidth="230.0" spacing="8" type="javafx.scene.layout.VBox" xmlns="http://javafx.com/javafx/21.0.2" xmlns:fx="http://javafx.com/fxml/1">
-
-    <!-- VBox padding -->
-    <padding>
-        <Insets bottom="10" left="10" right="10" top="10" />
-    </padding>
-
-    <!-- Thumbnail image -->
-    <ImageView fx:id="thumbnail" fitHeight="126.0" fitWidth="218.0" preserveRatio="true">
-      <image>
-         <Image url="@../../images/Default%20Trail%20Image.png" />
-      </image></ImageView>
-
-                      <!-- Title -->
-    <Label fx:id="title" style="-fx-font-size: 16px; -fx-font-weight: bold;" text="Trail Name" />
-   <Label fx:id="regionLabel" text="Region" />
-   <FlowPane fx:id="attributesFlowPane" hgap="5.0" vgap="5.0">
+<fx:root prefWidth="300.0" spacing="8" stylesheets="@../../styles/global.css" type="javafx.scene.layout.VBox" xmlns="http://javafx.com/javafx/21.0.2" xmlns:fx="http://javafx.com/fxml/1">
+   <HBox fx:id="thumbnailContainer" prefHeight="180.0" styleClass="round-top" VBox.vgrow="NEVER">
       <children>
-         <Label fx:id="difficultyLabel" text="Difficulty" />
-         <Label fx:id="typeLabel" text="Type" />
-         <Label fx:id="durationLabel" text="Duration" />
+      
+          <!-- Thumbnail image -->
+          <ImageView fx:id="thumbnail" fitHeight="180.0" fitWidth="300.0" styleClass="round-top">
+            <image>
+               <Image url="@../../images/Default%20Trail%20Image.png" />
+            </image>
+         </ImageView>
       </children>
-   </FlowPane>
-
-    <StackPane>
-        <ProgressBar fx:id="matchBar" maxWidth="Infinity" progress="0.0" />
-        <Label fx:id="matchLabel" style="-fx-font-size: 12px; -fx-text-fill: black; -fx-font-weight: bold;" text="0% Match" />
-    </StackPane>
+   </HBox>
+   <VBox fx:id="infoContainer" spacing="5.0">
+      <children>
+      
+                            <!-- Title -->
+          <Label fx:id="title" styleClass="heading" text="Trail Name" />
+         <Label fx:id="regionLabel" text="Region" />
+         <FlowPane fx:id="attributesFlowPane" hgap="5.0" vgap="5.0">
+            <children>
+               <Label fx:id="difficultyLabel" text="Difficulty">
+                  <styleClass>
+                     <String fx:value="pill" />
+                     <String fx:value="bg-pinky" />
+                  </styleClass>
+               </Label>
+               <Label fx:id="typeLabel" text="Type">
+                  <styleClass>
+                     <String fx:value="pill" />
+                     <String fx:value="bg-greeny" />
+                  </styleClass>
+               </Label>
+               <Label fx:id="durationLabel" text="Duration">
+                  <styleClass>
+                     <String fx:value="pill" />
+                     <String fx:value="bg-bluey" />
+                  </styleClass>
+               </Label>
+            </children>
+            <padding>
+               <Insets bottom="10.0" top="5.0" />
+            </padding>
+         </FlowPane>
+      
+          <StackPane fx:id="matchContainer">
+              <ProgressBar fx:id="matchBar" maxWidth="Infinity" progress="0.0" />
+              <Label fx:id="matchLabel" styleClass="text-light" text="0% Match" />
+          </StackPane>
+      </children>
+      <padding>
+         <Insets bottom="10.0" left="15.0" right="15.0" />
+      </padding>
+   </VBox>
+   <styleClass>
+      <String fx:value="round-corners" />
+      <String fx:value="trail-card" />
+   </styleClass>
 
 </fx:root>

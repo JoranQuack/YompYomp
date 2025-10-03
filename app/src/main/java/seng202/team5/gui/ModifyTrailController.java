@@ -37,8 +37,8 @@ public class ModifyTrailController extends Controller {
     /**
      * Launches the screen with navigator
      *
-     * @param navigator     screen navigator
-     * @param trail         the selected trail
+     * @param navigator         screen navigator
+     * @param trail             the selected trail
      * @param sqlBasedTrailRepo the trail repository
      */
     public ModifyTrailController(ScreenNavigator navigator, Trail trail,
@@ -80,7 +80,6 @@ public class ModifyTrailController extends Controller {
     @FXML
     private Label invalidNumberLabel;
     private WebView trailMapWebView;
-
 
     /**
      * Initialises the screen with components for user to input data
