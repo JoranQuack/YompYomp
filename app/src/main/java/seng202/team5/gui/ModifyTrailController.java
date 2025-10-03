@@ -108,6 +108,25 @@ public class ModifyTrailController extends Controller {
             initializeTextFields();
             updateLatLonFields(trail.getLat(), trail.getLon());
         }
+
+        // Allow only digits in the text field
+        latitudeTextField.setTextFormatter(new TextFormatter<>(change -> {
+            String newText = change.getControlNewText();
+            // Allow optional '-' at start, digits, optional decimal, up to 6 decimals
+            if (newText.matches("-?\\d*(\\.\\d{0,6})?")) {
+                return change;
+            }
+            return null; // reject invalid input
+        }));
+
+        longitudeTextField.setTextFormatter(new TextFormatter<>(change -> {
+            String newText = change.getControlNewText();
+            // Allow optional '-' at start, digits, optional decimal, up to 6 decimals
+            if (newText.matches("-?\\d*(\\.\\d{0,6})?")) {
+                return change;
+            }
+            return null; // reject invalid input
+        }));
     }
 
     /**
@@ -297,33 +316,38 @@ public class ModifyTrailController extends Controller {
      * @return whether inputs are valid
      */
     private boolean userInputValidation() {
-        if (latitudeTextField.getText().isEmpty() || longitudeTextField.getText().isEmpty()) {
+        boolean isValid = false;
+        if (latitudeTextField.getText().isEmpty()) {
             latitudeTextField.setStyle("-fx-border-color: red; -fx-border-width: 2px;");
             mapContainer.setStyle("-fx-border-color: red; -fx-border-width: 2px;");
-            return false;
         } else {
             latitudeTextField.setStyle("");
             mapContainer.setStyle("");
         }
+        if (longitudeTextField.getText().isEmpty()) {
+            longitudeTextField.setStyle("-fx-border-color: red; -fx-border-width: 2px;");
+            mapContainer.setStyle("-fx-border-color: red; -fx-border-width: 2px;");
+        } else {
+            longitudeTextField.setStyle("");
+            mapContainer.setStyle("");
+        }
         if (trailNameTextField.getText().isEmpty()) {
             trailNameTextField.setStyle("-fx-border-color: red; -fx-border-width: 2px;");
-            return false;
         } else {
             trailNameTextField.setStyle("");
         }
         if (trailDescriptionTextArea.getText().isEmpty()) {
             trailDescriptionTextArea.setStyle("-fx-border-color: red; -fx-border-width: 2px;");
-            return false;
         } else {
             trailDescriptionTextArea.setStyle("");
         }
         if (trailTypeComboBox.getValue() == null) {
             trailTypeComboBox.setStyle("-fx-border-color: red; -fx-border-width: 2px;");
-            return false;
         } else {
             trailTypeComboBox.setStyle("");
         }
-        return true;
+        return !latitudeTextField.getText().isEmpty() && !longitudeTextField.getText().isEmpty() && !trailNameTextField.getText().isEmpty()
+                && !trailDescriptionTextArea.getText().isEmpty() && !trailTypeComboBox.getValue().isEmpty();
     }
 
     /**
