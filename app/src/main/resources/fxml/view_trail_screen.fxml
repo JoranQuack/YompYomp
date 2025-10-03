@@ -4,7 +4,6 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
-<?import javafx.scene.web.*?>
 
 <HBox alignment="CENTER_LEFT" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="400.0" minWidth="600.0" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="seng202.team5.gui.ViewTrailController">
    <children>
@@ -45,7 +44,6 @@
             <HBox alignment="CENTER_LEFT">
                <children>
                   <CheckBox fx:id="nearbyTrailsCheckbox" mnemonicParsing="false" text="View nearby trails" wrapText="true" />
-                  <Region HBox.hgrow="ALWAYS" />
                   <TextField fx:id="trailsRadiusTextField" prefHeight="25.0" prefWidth="59.0" />
                   <Label prefHeight="25.0" prefWidth="40.0" text="km" wrapText="true" />
                </children>

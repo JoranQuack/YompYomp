@@ -24,9 +24,9 @@ import java.util.List;
  * Controller for the view trail screen
  */
 public class ViewTrailController extends Controller {
-    private Trail trail;
+    private final Trail trail;
     private TrailService trailService;
-    private SqlBasedTrailRepo sqlBasedTrailRepo;
+    private final SqlBasedTrailRepo sqlBasedTrailRepo;
 
     private WebEngine webEngine;
     private JavaScriptBridge javaScriptBridge;
@@ -190,7 +190,6 @@ public class ViewTrailController extends Controller {
         mapContainer.getChildren().add(trailMapWebView);
 
         webEngine = trailMapWebView.getEngine();
-
         webEngine.setJavaScriptEnabled(true);
 
         WebConsoleListener.setDefaultListener((view, message, lineNumber, sourceID) -> System.out

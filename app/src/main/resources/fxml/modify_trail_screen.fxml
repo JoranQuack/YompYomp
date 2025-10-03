@@ -4,7 +4,6 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
-<?import javafx.scene.web.*?>
 
 <HBox minHeight="-Infinity" minWidth="-Infinity" spacing="40.0" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="seng202.team5.gui.ModifyTrailController">
    <children>
