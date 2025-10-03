@@ -72,37 +72,30 @@ public class LoadingController extends Controller {
         progressIndicator.setProgress(-1.0);
 
         final ScreenNavigator navigator = super.getNavigator();
-        final UserService userService = super.getUserService();
 
         // Create a background task for the matchmaking process
         Task<Void> matchmakingTask = new Task<Void>() {
             @Override
             protected Void call() throws Exception {
-                // Wait for database setup before we can matchmake
+                // Wait for database setup before we do ANYTHING
                 App.getSetupService().waitForDatabaseSetup();
 
                 // If skipping, set user as guest and skip the matchmaking and saving
                 if (isSkip) {
+                    UserService userService = App.getUserService();
                     if (userService.getUser() == null) {
                         userService.setGuest(true);
                     }
                     return null;
                 }
 
-                // Save the user to the database
+                // Save the user to the database, clearing any previous user bye bye
+                UserService userService = App.getUserService();
                 userService.clearUser();
                 userService.saveUser(user);
 
-                // Create MatchmakingService AFTER database setup is complete
+                // Do matchmaking now that we know everything is slaytastic
                 MatchmakingService matchmakingService = new MatchmakingService(App.getDatabaseService());
-
-                // Get user AFTER database setup is complete
-                User user = getUserService().getUser();
-                if (user == null) {
-                    return null;
-                }
-
-                // Run the matchmaking process
                 matchmakingService.generateTrailWeights(user);
                 return null;
             }

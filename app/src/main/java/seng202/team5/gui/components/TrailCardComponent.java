@@ -10,6 +10,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.Rectangle;
 import seng202.team5.models.Trail;
@@ -40,6 +41,10 @@ public class TrailCardComponent extends VBox {
     private Label typeLabel;
     @FXML
     private HBox thumbnailContainer;
+    @FXML
+    private VBox infoContainer;
+    @FXML
+    private StackPane matchContainer;
 
     private final ImageService imageService;
 
@@ -122,8 +127,7 @@ public class TrailCardComponent extends VBox {
         }
 
         if (isUnmatched) {
-            matchBar.setVisible(false);
-            matchLabel.setVisible(false);
+            infoContainer.getChildren().remove(matchContainer);
         } else {
             updateMatchBar(trail);
         }
@@ -135,6 +139,11 @@ public class TrailCardComponent extends VBox {
     private void resetComponentVisibility() {
         attributesFlowPane.getChildren().clear();
         attributesFlowPane.getChildren().addAll(difficultyLabel, durationLabel, typeLabel);
+
+        // Ensure matchContainer is in the infoContainer
+        if (!infoContainer.getChildren().contains(matchContainer)) {
+            infoContainer.getChildren().add(matchContainer);
+        }
         matchBar.setVisible(true);
         matchLabel.setVisible(true);
     }
