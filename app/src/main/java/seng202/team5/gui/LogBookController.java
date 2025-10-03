@@ -310,4 +310,11 @@ public class LogBookController extends Controller {
     protected int getNavbarPageIndex() {
         return 1;
     }
+
+    @Override
+    public void onLoadFailed(Exception e) {
+        showAlert(Alert.AlertType.ERROR, "Log Book Failed To Load",
+                "Logbook failed to load, please close and reload " +
+                        "the application");
+    }
 }
