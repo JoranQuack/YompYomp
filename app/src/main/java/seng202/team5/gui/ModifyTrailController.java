@@ -14,6 +14,7 @@ import netscape.javascript.JSObject;
 import seng202.team5.App;
 import seng202.team5.data.SqlBasedTrailRepo;
 import seng202.team5.models.Trail;
+import seng202.team5.models.User;
 import seng202.team5.services.MatchmakingService;
 import seng202.team5.services.RegionFinder;
 import seng202.team5.utils.StringManipulator;
@@ -424,7 +425,9 @@ public class ModifyTrailController extends Controller {
 
         // Calculate user weight
         try {
+            User user = super.getUserService().getUser();
             MatchmakingService matchmakingService = new MatchmakingService(App.getDatabaseService());
+            matchmakingService.setUserPreferences(user);
             double calculatedWeight = matchmakingService.getUserWeightFromTrail(newTrail);
             newTrail.setUserWeight(calculatedWeight);
         } catch (Exception e) {
