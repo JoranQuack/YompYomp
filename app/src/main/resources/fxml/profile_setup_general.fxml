@@ -33,7 +33,7 @@
             </VBox>
             <VBox alignment="TOP_CENTER" spacing="5.0">
                <children>
-                  <Label fx:id="regionLabel" styleClass="text-light" text="Choose your region" />
+                  <Label fx:id="regionLabel" styleClass="text-light" text="Choose your region(s)" />
                   <CheckComboBox fx:id="regionCheckComboBox" prefWidth="200.0" />
                </children>
             </VBox>

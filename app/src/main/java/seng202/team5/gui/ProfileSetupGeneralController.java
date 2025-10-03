@@ -60,6 +60,7 @@ public class ProfileSetupGeneralController extends Controller {
 
         RegionFinder regionFinder = new RegionFinder();
         List<String> regionList = regionFinder.getRegionNames();
+        regionList.remove("Other");
         regionCheckComboBox.getItems().addAll(regionList);
 
         if (user != null) {
