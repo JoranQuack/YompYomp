@@ -10,11 +10,17 @@ import javafx.scene.layout.HBox;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
 import netscape.javascript.JSObject;
+import seng202.team5.data.DatabaseService;
+import seng202.team5.data.SqlBasedTrailLogRepo;
 import seng202.team5.gui.components.TrailCardComponent;
 import seng202.team5.models.Trail;
+import seng202.team5.models.TrailLog;
+import seng202.team5.services.LogService;
 import seng202.team5.services.SearchService;
 import seng202.team5.services.TrailService;
 
+import java.time.LocalDate;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -24,6 +30,8 @@ public class ViewTrailController extends Controller {
     private Trail trail;
     private TrailService trailService;
     private SearchService searchService;
+    private SqlBasedTrailLogRepo trailLogRepo;
+    private LogService logService;
 
     private WebEngine webEngine;
     private JavaScriptBridge javaScriptBridge;
@@ -40,6 +48,8 @@ public class ViewTrailController extends Controller {
         super(navigator);
         this.trail = trail;
         this.searchService = searchService;
+        this.trailLogRepo = new SqlBasedTrailLogRepo(new DatabaseService());
+        this.logService = new LogService(new DatabaseService());
     }
 
     @FXML
@@ -130,6 +140,48 @@ public class ViewTrailController extends Controller {
     private void initTrailCard() {
         TrailCardComponent trailCard = new TrailCardComponent(super.getUserService().isGuest(), false);
         trailCard.setData(trail, null);
+        trailCard.setTrail(trail);
+
+        trailCard.setOnBookmarkClickedHandler(clickedTrail -> {
+            TrailLog newLog = new TrailLog(
+                trailLogRepo.getNewTrailLogId(),
+                clickedTrail.getId(),
+                LocalDate.now(),
+                null, null, null, null, null, null
+            );
+
+            LogTrailController logController = new LogTrailController(
+                    super.getNavigator(),
+                    clickedTrail,
+                    newLog
+            );
+            super.getNavigator().launchScreen(logController);
+        });
+
+        trailCard.setOnBookmarkFillClickedHandler(clickedTrail -> {
+            // TODO confirmation dialog
+            Alert confirm = new Alert(Alert.AlertType.CONFIRMATION);
+            confirm.setTitle("Delete Log");
+            confirm.setHeaderText("Are you sure you want to delete this log?");
+            confirm.setContentText("This action cannot be undone.");
+
+            confirm.showAndWait().ifPresent(response -> {
+                if (response == ButtonType.OK) {
+                    logService.deleteLog(clickedTrail.getId());
+                    trailCard.setBookmarked(false);
+                }
+            });
+
+            List<TrailLog> logs = logService.getAllLogs();
+            logs.stream()
+                .filter(log -> log.getTrailId() == clickedTrail.getId())
+                .findFirst()
+                .ifPresent(log -> {
+                    logService.deleteLog(log.getId());
+                    trailCard.setBookmarked(false);
+                });
+        });
+
         trailCardHBox.getChildren().add(trailCard);
     }
 

@@ -1,11 +1,14 @@
 package seng202.team5.gui;
 
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.VBox;
@@ -120,7 +123,7 @@ public class DashboardController extends Controller {
                 TrailLog newLog = new TrailLog(
                         trailLogRepo.getNewTrailLogId(),
                         clickedTrail.getId(),
-                        new Date(),
+                        LocalDate.now(),
                         null, null, null, null, null, null
                 );
 
@@ -134,8 +137,26 @@ public class DashboardController extends Controller {
 
             trailCard.setOnBookmarkFillClickedHandler(clickedTrail -> {
                 // TODO confirmation dialog
-                logService.deleteLog(clickedTrail.getId());
-                trailCard.setBookmarked(false);
+                Alert confirm = new Alert(Alert.AlertType.CONFIRMATION);
+                confirm.setTitle("Delete Log");
+                confirm.setHeaderText("Are you sure you want to delete this log?");
+                confirm.setContentText("This action cannot be undone.");
+
+                confirm.showAndWait().ifPresent(response -> {
+                    if (response == ButtonType.OK) {
+                        logService.deleteLog(clickedTrail.getId());
+                        trailCard.setBookmarked(false);
+                    }
+                });
+
+                List<TrailLog> logs = logService.getAllLogs();
+                logs.stream()
+                    .filter(log -> log.getTrailId() == clickedTrail.getId())
+                    .findFirst()
+                    .ifPresent(log -> {
+                        logService.deleteLog(log.getId());
+                        trailCard.setBookmarked(false);
+                    });
             });
 
             trailCard.setOnTrashClickedHandler(clickedTrail -> {
