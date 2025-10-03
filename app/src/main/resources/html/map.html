@@ -109,7 +109,7 @@
             if (trailJson) {
                 trail = JSON.parse(trailJson);
             }
-
+            [lat, lng] = normalizeLng(lat, lng);
             if (activeMarker) {
                 // Move existing marker instead of adding new
                 activeMarker.setLatLng([lat, lng]);
@@ -128,8 +128,9 @@
          */
         function enableClick() {
             map.on("click", (map_event) => {
-                var latlng = map.mouseEventToLatLng(map_event.originalEvent)
-                javaScriptBridge.addMarkerFromClick(`{"lat": ${latlng.lat}, "lng": ${latlng.lng}}`)
+                var latlng = map.mouseEventToLatLng(map_event.originalEvent);
+                const [lat, lng] = normalizeLng(latlng.lat, latlng.lng);
+                javaScriptBridge.addMarkerFromClick(`{"lat": ${lat}, "lng": ${lng}}`)
             })
         }
 
