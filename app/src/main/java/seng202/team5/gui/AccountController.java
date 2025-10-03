@@ -28,6 +28,14 @@ public class AccountController extends Controller {
     @FXML
     private ImageView optionImage3;
     @FXML
+    private ImageView optionImage4;
+    @FXML
+    private ImageView optionImage5;
+    @FXML
+    private ImageView optionImage6;
+    @FXML
+    private ImageView optionImage7;
+    @FXML
     private Label welcomeLabel;
     @FXML
     private Label familyFriendlyLabel;
@@ -94,7 +102,8 @@ public class AccountController extends Controller {
         welcomeLabel.setText("Kia Ora " + user.getName() + "!");
         setPreferenceLabels();
 
-        List<ImageView> optionImages = List.of(optionImage1, optionImage2, optionImage3);
+        List<ImageView> optionImages = List.of(optionImage1, optionImage2, optionImage3, optionImage4,
+                optionImage5, optionImage6, optionImage7);
         for (ImageView optionImage : optionImages) {
             optionImage.setOnMouseClicked(e -> onOptionImageClicked(optionImage));
         }
@@ -103,7 +112,7 @@ public class AccountController extends Controller {
 
     @FXML
     private void onClearProfileImageClicked() {
-        profileImage.setImage(null);
+        profileImage.setImage(new Image("./"));
     }
 
     @FXML

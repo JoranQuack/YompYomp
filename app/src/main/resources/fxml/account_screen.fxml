@@ -9,7 +9,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/23" xmlns:fx="http://javafx.com/fxml/1" fx:controller="seng202.team5.gui.AccountController">
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/21.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="seng202.team5.gui.AccountController">
    <children>
       <VBox fx:id="navbarContainer" />
       <VBox alignment="TOP_CENTER">
@@ -50,6 +50,30 @@
                         <ImageView fx:id="optionImage3" fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
                            <image>
                               <Image url="@../images/profiles/tiki-mask_5257036.png" />
+                           </image>
+                        </ImageView>
+                     </children>
+                  </HBox>
+                  <HBox alignment="TOP_CENTER" spacing="10.0">
+                     <children>
+                        <ImageView fx:id="optionImage4" fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../images/profiles/maori_7436499.png" />
+                           </image>
+                        </ImageView>
+                        <ImageView fx:id="optionImage5" fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../images/profiles/kiwi_1452311.png" />
+                           </image>
+                        </ImageView>
+                        <ImageView fx:id="optionImage6" fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../images/profiles/boots_4218601.png" />
+                           </image>
+                        </ImageView>
+                        <ImageView fx:id="optionImage7" fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../images/profiles/tiki-mask_5257065.png" />
                            </image>
                         </ImageView>
                      </children>
