@@ -53,6 +53,8 @@ public class ProfileQuizController extends Controller {
     @FXML
     private Button continueButton;
     @FXML
+    private Button skipQuizButton;
+    @FXML
     private ProgressBar quizProgressBar;
     @FXML
     private ImageView bgImage;
@@ -75,6 +77,7 @@ public class ProfileQuizController extends Controller {
             continueButton.setText("Continue");
         }
         continueButton.setOnAction(e -> onContinueButtonClicked());
+        skipQuizButton.setOnAction(e -> onSkipQuizButtonClicked());
     }
 
     /**
@@ -156,6 +159,17 @@ public class ProfileQuizController extends Controller {
         } else {
             super.getNavigator().launchScreen(new LoadingController(super.getNavigator(), user));
         }
+    }
+
+    /**
+     * Action method for skip quiz button
+     * Skips the rest of setup quiz and discard current quiz progress
+     * Default to previous profile if one has been made prior, else continues as guest
+     */
+    @FXML
+    private void onSkipQuizButtonClicked() {
+        user = super.getUserService().getUserAfterSkip();
+        super.getNavigator().launchScreen(new LoadingController(super.getNavigator(), user));
     }
 
     /**

@@ -102,13 +102,7 @@ public class ProfileSetupGeneralController extends Controller {
      */
     @FXML
     private void onSkipSetupButtonClicked() {
-        User prevUser = super.getUserService().getUser();
-        if (prevUser != null && prevUser.getName() != null) {
-            user = prevUser;
-        } else {
-            super.getUserService().setGuest(true);
-            user = null;
-        }
+        user = super.getUserService().getUserAfterSkip();
         super.getNavigator().launchScreen(new LoadingController(super.getNavigator(), user));
     }
 
