@@ -4,7 +4,6 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
-<?import javafx.scene.web.*?>
 
 <HBox minHeight="-Infinity" minWidth="-Infinity" spacing="40.0" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="seng202.team5.gui.ModifyTrailController">
    <children>
@@ -64,7 +63,10 @@
                <children>
                   <VBox prefHeight="0.0" prefWidth="100.0">
                      <children>
-                        <VBox prefHeight="200.0" prefWidth="100.0" />
+                        <VBox prefHeight="200.0" prefWidth="100.0">
+                           <children>
+                              <Label prefHeight="26.0" prefWidth="135.0" text="Click map location" wrapText="true" />
+                           </children></VBox>
                         <Label fx:id="regionLabel" alignment="CENTER" text="Region" />
                      </children></VBox>
                   <VBox alignment="TOP_CENTER">
