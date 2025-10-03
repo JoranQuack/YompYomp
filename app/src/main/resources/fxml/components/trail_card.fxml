@@ -27,7 +27,7 @@
       <children>
       
                             <!-- Title -->
-          <Label fx:id="title" styleClass="heading" text="Trail Name" />
+          <Label fx:id="title" styleClass="heading" text="Trail Name" wrapText="true" />
          <Label fx:id="regionLabel" text="Region" />
          <FlowPane fx:id="attributesFlowPane" hgap="5.0" vgap="5.0">
             <children>
