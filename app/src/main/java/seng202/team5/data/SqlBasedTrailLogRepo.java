@@ -5,6 +5,7 @@ import seng202.team5.models.TrailLog;
 
 import java.sql.*;
 import java.sql.Date;
+import java.time.LocalDate;
 import java.util.*;
 
 import static java.util.logging.Level.parse;
@@ -128,20 +129,9 @@ public class SqlBasedTrailLogRepo implements ITrailLog {
      * @throws SQLException if the column cannot be read
      */
     private TrailLog mapRowToTrailLog(ResultSet rs) throws SQLException {
-        String dateString = rs.getString("startDate"); // i.e. 2025-10-03
-        java.sql.Date startDate = null;
-        if (dateString != null) {
-            try {
-                if (dateString.matches("\\d+")) {
-                    startDate = new java.sql.Date(Long.parseLong(dateString));
-                } else {
-                    java.util.Date utilDate = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(dateString);
-                    startDate = new java.sql.Date(utilDate.getTime());
-                }
-            } catch (java.text.ParseException e) {
-                throw new SQLException("Could not parse date: " + dateString, e);
-            }
-        }
+        String dateString = rs.getString("startDate");
+        LocalDate startDate = null;
+        if (dateString != null) startDate = LocalDate.parse(dateString);
         return new TrailLog(
                 rs.getInt("id"),
                 rs.getInt("trailId"),
@@ -165,7 +155,7 @@ public class SqlBasedTrailLogRepo implements ITrailLog {
     private void setTrailLogParameters(PreparedStatement stmt, TrailLog trailLog) throws SQLException {
         stmt.setInt(1, trailLog.getId());
         stmt.setInt(2, trailLog.getTrailId());
-        stmt.setString(3, new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(trailLog.getStartDate()));
+        stmt.setString(3, trailLog.getStartDate().toString());
         if (trailLog.getCompletionTime() != null) stmt.setInt(4, trailLog.getCompletionTime());
         else stmt.setNull(4, Types.INTEGER);
         stmt.setString(5, trailLog.getTimeUnit());

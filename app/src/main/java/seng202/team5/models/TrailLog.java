@@ -1,12 +1,12 @@
 package seng202.team5.models;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 public class TrailLog {
 
     private int id;
     private int trailId;
-    private Date startDate;
+    private LocalDate startDate;
     private Integer completionTime;
     private String timeUnit;
     private String completionType;
@@ -25,7 +25,7 @@ public class TrailLog {
      * @param perceivedDifficulty
      * @param notes
      */
-    public TrailLog(int id, int trailId, Date startDate, Integer completionTime, String timeUnit, String completionType,
+    public TrailLog(int id, int trailId, LocalDate startDate, Integer completionTime, String timeUnit, String completionType,
                     Integer rating, String perceivedDifficulty, String notes) {
         this.id = id;
         this.trailId = trailId;
@@ -41,7 +41,7 @@ public class TrailLog {
     //Getters
     public int getId() { return id; }
     public int getTrailId() { return trailId; }
-    public Date getStartDate() { return startDate; }
+    public LocalDate getStartDate() { return startDate; }
     public Integer getCompletionTime() { return completionTime; }
     public String getTimeUnit() { return timeUnit; }
     public String getCompletionType() { return completionType; }
@@ -52,7 +52,7 @@ public class TrailLog {
     //Setters
     public void setId(int id) { this.id = id; }
     public void setTrailId(int trailId) { this.trailId = trailId; }
-    public void setStartDate(Date startDate) { this.startDate = startDate; }
+    public void setStartDate(LocalDate startDate) { this.startDate = startDate; }
     public void setCompletionTime(Integer completionTime) { this.completionTime = completionTime; }
     public void setTimeUnit(String timeUnit) { this.timeUnit = timeUnit; }
     public void setCompletionType(String completionType) { this.completionType = completionType; }
