@@ -166,7 +166,6 @@ ChoiceBox .menu-item:focused {
 .arrow {
   -fx-background-color: #04140b;
   -fx-background-radius: 10;
-  /* -fx-shape: ""; Define a custom SVG path for the arrow */
 }
 
 .check-box {
