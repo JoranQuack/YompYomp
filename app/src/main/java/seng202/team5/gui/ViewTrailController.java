@@ -17,6 +17,8 @@ import seng202.team5.data.SqlBasedTrailRepo;
 import seng202.team5.gui.components.TrailCardComponent;
 import seng202.team5.models.Trail;
 import seng202.team5.services.TrailService;
+import seng202.team5.models.Weather;
+import seng202.team5.services.WeatherAPI;
 
 import java.util.List;
 
@@ -72,6 +74,11 @@ public class ViewTrailController extends Controller {
     @FXML
     private Label expertColourLabel;
     private WebView trailMapWebView;
+
+    @FXML
+    private Label WeatherLabel;
+    @FXML
+    private Label WeatherDescriptionLabel;
 
     /**
      * Initialises the view trail screen with data retrieved from database
@@ -283,6 +290,10 @@ public class ViewTrailController extends Controller {
      */
     public void openTrailInfo(Trail trail) {
         super.getNavigator().launchScreen(new ViewTrailController(super.getNavigator(), trail, sqlBasedTrailRepo));
+    }
+
+    private void initWeather() {
+        Gson gson = new GsonBuilder().create();
     }
 
     @FXML
