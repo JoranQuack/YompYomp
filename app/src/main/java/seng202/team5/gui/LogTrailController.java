@@ -85,8 +85,12 @@ public class LogTrailController extends Controller {
 
     private void populateFields() {
         trailNameLabel.setText(trail.getName());
-        startDatePicker.setValue(trailLog.getStartDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate());
-        durationTextField.setText(trailLog.getCompletionTime() != null ? trailLog.getCompletionTime().toString() : "");
+        if (trailLog.getStartDate() != null) {
+            startDatePicker.setValue(trailLog.getStartDate());
+        }
+        //startDatePicker.setValue(trailLog.getStartDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate());
+        durationTextField.setText(trailLog.getCompletionTime() != null ?
+                trailLog.getCompletionTime().toString() : "");
         timeUnitSelector.setValue(trailLog.getTimeUnit());
         trailTypeSelector.setValue(trailLog.getCompletionType());
         rateSlider.setValue(trailLog.getRating() != null ? trailLog.getRating() : 3);
@@ -96,7 +100,7 @@ public class LogTrailController extends Controller {
 
     @FXML
     private void onDoneButtonClicked() {
-        trailLog.setStartDate(Date.valueOf(startDatePicker.getValue()));
+        trailLog.setStartDate(startDatePicker.getValue());
         trailLog.setCompletionTime(!durationTextField.getText().isEmpty() ?
                 Integer.parseInt(durationTextField.getText()) : null);
         trailLog.setTimeUnit(timeUnitSelector.getValue());

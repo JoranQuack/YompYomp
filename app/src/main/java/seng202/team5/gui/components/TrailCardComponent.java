@@ -1,21 +1,18 @@
 package seng202.team5.gui.components;
 
 import java.io.IOException;
-import java.sql.Date;
 import java.util.function.Consumer;
 
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.control.Alert;
-import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.VBox;
 import seng202.team5.data.DatabaseService;
-import seng202.team5.gui.LogTrailController;
 import seng202.team5.models.Trail;
 import seng202.team5.models.TrailLog;
 import seng202.team5.services.ImageService;
@@ -56,10 +53,11 @@ public class TrailCardComponent extends VBox {
     private ImageView trashIcon;
 
     private Trail trail;
+    private TrailLog trailLog;
 
     private Consumer<Trail> onBookmarkClickedHandler;
     private Consumer<Trail> onBookmarkFillClickedHandler;
-    private Consumer<Trail> onTrashClickedHandler;
+    private Consumer<TrailLog> onTrashClickedHandler;
 
     private final ImageService imageService;
 
@@ -122,28 +120,31 @@ public class TrailCardComponent extends VBox {
         this.onBookmarkFillClickedHandler = handler;
     }
 
-    public void setOnTrashClickedHandler(Consumer<Trail> handler) {
+    public void setOnTrashClickedHandler(Consumer<TrailLog> handler) {
         this.onTrashClickedHandler = handler;
     }
 
     @FXML
-    private void onBookmarkClicked() {
+    private void onBookmarkClicked(MouseEvent event) {
+        event.consume();
         if (onBookmarkClickedHandler != null && trail != null) {
             onBookmarkClickedHandler.accept(trail);
         }
     }
 
     @FXML
-    private void onBookmarkFillClicked() {
+    private void onBookmarkFillClicked(MouseEvent event) {
+        event.consume();
         if (onBookmarkFillClickedHandler != null && trail != null) {
             onBookmarkFillClickedHandler.accept(trail);
         }
     }
 
     @FXML
-    private void onTrashIconClicked() {
-        if (onTrashClickedHandler != null && trail != null) {
-            onTrashClickedHandler.accept(trail);
+    private void onTrashIconClicked(MouseEvent event) {
+        event.consume();
+        if (onTrashClickedHandler != null && trailLog != null) {
+            onTrashClickedHandler.accept(trailLog);
         }
     }
 
@@ -186,6 +187,8 @@ public class TrailCardComponent extends VBox {
      * @param log The log object to display
      */
     public void setData(Trail trail, TrailLog log) {
+        this.trail = trail;
+        this.trailLog = log;
         bookmark.setVisible(true);
         bookmarkFill.setVisible(false);
 
@@ -287,5 +290,9 @@ public class TrailCardComponent extends VBox {
         matchBar.setProgress(weight);
         int matchPercent = (int) Math.round(weight * 100);
         matchLabel.setText(matchPercent + "% match");
+    }
+
+    public ImageView getTrashIcon() {
+        return trashIcon;
     }
 }

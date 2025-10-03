@@ -6,11 +6,7 @@ import java.util.Optional;
 
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.ChoiceBox;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.VBox;
 import javafx.concurrent.Task;
@@ -203,8 +199,28 @@ public class LogBookController extends Controller {
                 TrailCardComponent logCard = getOrCreateLogCard(i, cardMargin);
 
                 logCard.setData(trail, log);
-                logCard.setOnMouseClicked(e -> onLogCardClicked(log));
+                logCard.setOnMouseClicked(e -> {
+                    if (!e.isConsumed() && e.getTarget() != logCard.getTrashIcon()) {
+                        onLogCardClicked(log);
+                    }
+                });
                 logContainer.getChildren().add(logCard);
+
+                logCard.setOnTrashClickedHandler(logTrail -> {
+                    Alert confirm = new Alert(Alert.AlertType.CONFIRMATION);
+                    confirm.setTitle("Delete Log");
+                    confirm.setHeaderText("Are you sure you want to delete this log?");
+                    confirm.setContentText("This action cannot be undone.");
+
+                    confirm.showAndWait().ifPresent(response -> {
+                        if (response == ButtonType.OK) {
+                            logService.deleteLog(logTrail.getId());
+                            logContainer.getChildren().remove(logCard);
+                            resultsLabel.setText(logContainer.getChildren().size() + "/" + logService.getNumberOfLogs() + " trails showing");
+                            updateLogsDisplay(logService.getPage(0));
+                        }
+                    });
+                });
             }
         }
 
