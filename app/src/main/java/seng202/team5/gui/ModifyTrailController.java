@@ -27,9 +27,9 @@ import java.util.List;
  */
 public class ModifyTrailController extends Controller {
 
-    private Trail trail;
-    private SqlBasedTrailRepo sqlBasedTrailRepo;
-    private RegionFinder regionFinder;
+    private final Trail trail;
+    private final SqlBasedTrailRepo sqlBasedTrailRepo;
+    private final RegionFinder regionFinder;
 
     private WebEngine webEngine;
     private JavaScriptBridge javaScriptBridge;
