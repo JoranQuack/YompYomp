@@ -137,6 +137,37 @@ public class ModifyTrailController extends Controller {
 
         saveButton.setOnAction(e -> onSaveButtonClicked());
         backButton.setOnAction(e -> onBackButtonClicked());
+
+        // For TextFields
+        latitudeTextField.textProperty().addListener((obs, oldText, newText) -> {
+            if (!newText.isEmpty()) {
+                latitudeTextField.setStyle("");
+                mapContainer.setStyle(""); // clear map border as well
+            }
+        });
+        longitudeTextField.textProperty().addListener((obs, oldText, newText) -> {
+            if (!newText.isEmpty()) {
+                longitudeTextField.setStyle("");
+                mapContainer.setStyle("");
+            }
+        });
+        trailNameTextField.textProperty().addListener((obs, oldText, newText) -> {
+            if (!newText.isEmpty()) {
+                trailNameTextField.setStyle("");
+            }
+        });
+        // For TextArea
+        trailDescriptionTextArea.textProperty().addListener((obs, oldText, newText) -> {
+            if (!newText.isEmpty()) {
+                trailDescriptionTextArea.setStyle("");
+            }
+        });
+        // For ComboBox
+        trailTypeComboBox.valueProperty().addListener((obs, oldVal, newVal) -> {
+            if (newVal != null && !newVal.isEmpty()) {
+                trailTypeComboBox.setStyle("");
+            }
+        });
     }
 
     /**
@@ -315,7 +346,6 @@ public class ModifyTrailController extends Controller {
      * @return whether inputs are valid
      */
     private boolean userInputValidation() {
-        boolean isValid = false;
         if (latitudeTextField.getText().isEmpty()) {
             latitudeTextField.setStyle("-fx-border-color: red; -fx-border-width: 2px;");
             mapContainer.setStyle("-fx-border-color: red; -fx-border-width: 2px;");
