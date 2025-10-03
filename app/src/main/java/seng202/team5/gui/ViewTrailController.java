@@ -292,8 +292,18 @@ public class ViewTrailController extends Controller {
         super.getNavigator().launchScreen(new ViewTrailController(super.getNavigator(), trail, sqlBasedTrailRepo));
     }
 
-    private void initWeather() {
-        Gson gson = new GsonBuilder().create();
+    private void LoadWeather(List<Trail> trails) {
+        new Thread(() -> {
+            Weather weather = WeatherAPI.getWeatherByCoords(trail.getLat(), trail.getLon());
+
+            if (weather != null) {
+                javafx.application.Platform.runLater(() -> {
+                    WeatherLabel.setText("Current weather is: " + weather.getTemperature());
+                });
+                WeatherDescriptionLabel.setText(weather.getDescription());
+
+            }
+        });
     }
 
     @FXML
