@@ -471,13 +471,19 @@ public class TrailsController extends Controller {
      * Updates labels to show to user there are no results matching their search.
      */
     private void showNoResultsMessage() {
+        VBox noResultsContainer = new VBox();
+
         Label noResultsLabel = new Label(
                 "No trails match your search. Please try adjusting your search and filter preferences.");
-        trailsContainer.getChildren().add(noResultsLabel);
-        resultsLabel.setText("No trails found.");
 
-        Label noResultsResetButton = createResetButton();
-        trailsContainer.getChildren().add(noResultsResetButton);
+        noResultsContainer.getChildren().add(noResultsLabel);
+        noResultsContainer.getChildren().add(createResetButton());
+        noResultsContainer.setSpacing(10);
+        noResultsContainer.setPadding(new Insets(20));
+        noResultsContainer.alignmentProperty().set(javafx.geometry.Pos.CENTER);
+        trailsContainer.getChildren().add(noResultsContainer);
+
+        resultsLabel.setText("No trails found.");
     }
 
     /**
