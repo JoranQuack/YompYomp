@@ -78,7 +78,8 @@
             getColorByDifficulty: getColorByDifficulty,
             displayTrails: displayTrails,
             buildPopupContent: buildPopupContent,
-            openTrailInfo: openTrailInfo
+            openTrailInfo: openTrailInfo,
+            normalizeLng: normalizeLng
         };
 
         /**
@@ -188,7 +189,8 @@
                     popupAnchor: [0, -42]
                 });
 
-                const marker = L.marker([trail.lat, trail.lon], { icon: customIcon });
+                const [lat, lng] = normalizeLng(trail.lat, trail.lon);
+                const marker = L.marker([lat, lng], { icon: customIcon });
                 marker.bindPopup(buildPopupContent(trail));
                 markers.addLayer(marker);
             });
@@ -202,6 +204,19 @@
                 bounds.extend(activeMarker.getLatLng());
                 map.fitBounds(bounds);
             }
+        }
+
+        /**
+         * Normalizes a longitude to the instance of the world closest to the current map center so Chatham Islands
+         * does not wrap around
+         * @param lat the latitude of the point
+         * @param lng the longitude of the point to normalize
+         * @returns {*[]} An array containing the latitude and the normalized longitude
+         */
+        function normalizeLng(lat, lng) {
+            while (lng - map.getCenter().lng > 180) lng -= 360;
+            while (lng - map.getCenter().lng < -180) lng += 360;
+            return [lat, lng];
         }
 
         /**
