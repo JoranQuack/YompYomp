@@ -7,16 +7,26 @@ import java.sql.Statement;
 
 import seng202.team5.utils.AppDataManager;
 
+/**
+ * Service class for managing the application's database
+ */
 public class DatabaseService {
     private final String customDatabasePath;
     private static String currentSchemaVersion;
 
+    /**
+     * Constructor for DatabaseService
+     */
     public DatabaseService() {
         this.customDatabasePath = null;
         currentSchemaVersion = getCurrentSchemaVersion();
     }
 
-    // Testing constructor with custom path
+    /**
+     * Constructor with a customer database path. Primarily for testing
+     *
+     * @param databasePath the file path to the database
+     */
     public DatabaseService(String databasePath) {
         this.customDatabasePath = databasePath;
     }
@@ -44,6 +54,13 @@ public class DatabaseService {
         return connection;
     }
 
+    /**
+     * Resolves the full database path.
+     * If a custom path was provided, it is used.
+     * Otherwise, defaults to the application's database path
+     *
+     * @return the resolved database file path
+     */
     public String getDatabasePath() {
         // Use custom path if provided (for testing)
         if (customDatabasePath != null && !customDatabasePath.isEmpty()) {
