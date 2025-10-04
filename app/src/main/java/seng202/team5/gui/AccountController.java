@@ -2,6 +2,7 @@ package seng202.team5.gui;
 
 import javafx.fxml.FXML;
 import javafx.scene.chart.PieChart;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -62,6 +63,10 @@ public class AccountController extends Controller {
     @FXML
     private Label waterfallLabel;
     @FXML
+    private Button redoQuizButton;
+    @FXML
+    private Button deleteProfileButton;
+    @FXML
     private PieChart logTrailPieChart;
     @FXML
     private HBox legendLabelContainer1;
@@ -108,11 +113,25 @@ public class AccountController extends Controller {
             optionImage.setOnMouseClicked(e -> onOptionImageClicked(optionImage));
         }
         clearProfileImage.setOnMouseClicked(e -> onClearProfileImageClicked());
+        redoQuizButton.setOnAction(e -> onRedoQuizButtonClicked());
+        deleteProfileButton.setOnAction(e -> onDeleteProfileButtonClicked());
+    }
+
+    @FXML
+    private void onRedoQuizButtonClicked() {
+        super.getNavigator().launchScreen(new ProfileSetupGeneralController(super.getNavigator()));
+    }
+
+    @FXML
+    private void onDeleteProfileButtonClicked() {
+        super.getUserService().clearUser();
+        super.getUserService().setGuest(true);
+        super.getNavigator().launchScreen(new DashboardController(super.getNavigator()));
     }
 
     @FXML
     private void onClearProfileImageClicked() {
-        profileImage.setImage(new Image("./"));
+        profileImage.setImage(new Image("./images/profiles/user.png"));
     }
 
     @FXML

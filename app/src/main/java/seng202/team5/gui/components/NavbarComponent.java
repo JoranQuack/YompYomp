@@ -23,7 +23,7 @@ public class NavbarComponent extends HBox {
     @FXML
     private Button profileButton;
     @FXML
-    private Button redoQuizButton;
+    private Button takeQuizButton;
 
     /**
      * Initialise the NavbarController and put the buttons into the list to easily
@@ -44,16 +44,17 @@ public class NavbarComponent extends HBox {
         }
 
         if (userService.isGuest()) {
-            redoQuizButton.setText("Take Quiz");
+            takeQuizButton.setText("Take Quiz");
+            takeQuizButton.setVisible(true);
         } else {
-            redoQuizButton.setText("Redo Quiz");
+            takeQuizButton.setVisible(false);
         }
 
         navButtons = List.of(homeButton, trailsButton, profileButton);
         homeButton.setOnAction(e -> navigator.launchScreen(new DashboardController(navigator)));
         trailsButton.setOnAction(e -> navigator.launchScreen(new TrailsController(navigator, sqlBasedTrailRepo)));
         profileButton.setOnAction(e -> navigator.launchScreen(new AccountController(navigator)));
-        redoQuizButton.setOnAction(e -> navigator.launchScreen(new ProfileSetupGeneralController(navigator)));
+        takeQuizButton.setOnAction(e -> navigator.launchScreen(new ProfileSetupGeneralController(navigator)));
     }
 
     /**

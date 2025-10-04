@@ -26,7 +26,7 @@
       </HBox>
       <HBox alignment="CENTER_RIGHT" prefWidth="100.0">
          <children>
-            <Button fx:id="redoQuizButton" alignment="CENTER" mnemonicParsing="false" text="Redo Quiz" HBox.hgrow="ALWAYS">
+            <Button fx:id="takeQuizButton" alignment="CENTER" mnemonicParsing="false" text="Take Quiz" HBox.hgrow="ALWAYS">
                <HBox.margin>
                   <Insets />
                </HBox.margin>
