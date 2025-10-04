@@ -22,11 +22,6 @@ package "models" {
     + TrailLog() : void
   }
 
-  class Location {
-    + Location() : void
-    + toString() : String
-  }
-
   class Weather {
     + Weather() : void
     + toString() : String
