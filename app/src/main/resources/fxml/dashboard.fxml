@@ -2,6 +2,7 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Hyperlink?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.TextField?>
@@ -9,9 +10,7 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.FlowPane?>
 <?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.Region?>
-<?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
@@ -28,55 +27,71 @@
             <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
          </padding>
       </HBox>
-      <Label alignment="CENTER" contentDisplay="CENTER" styleClass="title" text="Recommended Trails">
-         <font>
-            <Font size="38.0" />
-         </font>
-      </Label>
-      <HBox alignment="CENTER">
-         <children>
-            <Label alignment="BOTTOM_CENTER" contentDisplay="RIGHT" graphicTextGap="1.0" onMouseClicked="#onViewAllClicked" styleClass="special-button" text="View all">
-               <graphic>
-                  <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@../images/arrow.png" />
-                     </image>
-                  </ImageView>
-               </graphic></Label>
-         </children>
-         <padding>
-            <Insets bottom="10.0" />
-         </padding>
-      </HBox>
-      <StackPane VBox.vgrow="ALWAYS">
-         <children>
-            <!-- Trails container -->
-            <ScrollPane fitToWidth="true">
-               <content>
+      <!-- Trails container -->
+      <ScrollPane fitToWidth="true" VBox.vgrow="ALWAYS">
+         <content>
+            <VBox alignment="TOP_CENTER" spacing="20.0">
+               <children>
+                  <VBox alignment="TOP_CENTER">
+                     <children>
+                        <Label alignment="CENTER" contentDisplay="CENTER" styleClass="title" text="Recommended Trails">
+                           <font>
+                              <Font size="38.0" />
+                           </font>
+                        </Label>
+                        <HBox alignment="CENTER">
+                           <children>
+                              <Label alignment="BOTTOM_CENTER" contentDisplay="RIGHT" graphicTextGap="1.0" onMouseClicked="#onViewAllClicked" styleClass="special-button" text="View all">
+                                 <graphic>
+                                    <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@../images/arrow.png" />
+                                       </image>
+                                    </ImageView>
+                                 </graphic>
+                              </Label>
+                           </children>
+                        </HBox>
+                     </children>
+                  </VBox>
                   <FlowPane fx:id="trailsContainer" alignment="TOP_CENTER" columnHalignment="CENTER" hgap="15.0" prefWrapLength="0.0" vgap="15.0">
                      <padding>
-                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                        <Insets bottom="10.0" left="10.0" right="10.0" />
                      </padding>
                   </FlowPane>
-               </content>
-            </ScrollPane>
-            <Pane maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="70.0" prefWidth="70.0" StackPane.alignment="BOTTOM_RIGHT">
-               <children>
-                  <Button fx:id="plusButton" alignment="CENTER_RIGHT" mnemonicParsing="false" onAction="#onAddTrailButtonClicked" styleClass="bg-pinky">
-                     <graphic>
-                        <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
-                           <image>
-                              <Image url="@../images/plus.png" />
-                           </image>
-                        </ImageView>
-                     </graphic>
+                  <VBox alignment="TOP_CENTER" spacing="10.0">
+                     <children>
+                        <HBox alignment="TOP_CENTER">
+                           <children>
+                              <Label text="All trail data and images supplied by " />
+                              <Hyperlink fx:id="DOCLink" text="Department of Conservation Te Papa Atawhai" />
+                           </children>
+                        </HBox>
+                        <Label text="Don't see what you're looking for?">
+                           <VBox.margin>
+                              <Insets top="10.0" />
+                           </VBox.margin>
+                        </Label>
+                        <Button fx:id="plusButton" alignment="CENTER_RIGHT" mnemonicParsing="false" onAction="#onAddTrailButtonClicked" styleClass="bg-pinky" text="Add a Trail">
+                           <graphic>
+                              <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../images/plus.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic>
+                           <padding>
+                              <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
+                           </padding>
+                        </Button>
+                     </children>
                      <padding>
-                        <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
+                        <Insets bottom="20.0" />
                      </padding>
-                  </Button>
+                  </VBox>
                </children>
-            </Pane>
-         </children>
-      </StackPane>
+            </VBox>
+         </content>
+      </ScrollPane>
    </children>
 </VBox>

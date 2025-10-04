@@ -28,6 +28,15 @@ Label {
   -fx-text-fill: #04140b;
 }
 
+Hyperlink {
+  -fx-font-family: "Quicksand Medium";
+  -fx-font-size: 15px;
+  -fx-text-fill: #447055;
+  -fx-underline: true;
+  -fx-cursor: hand;
+  -fx-padding: 0;
+}
+
 .title {
   -fx-font-family: "Quicksand Bold";
   -fx-font-size: 26px;
