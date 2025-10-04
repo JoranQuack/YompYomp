@@ -90,7 +90,7 @@ public class ScreenNavigator {
 
             stage.setTitle(controller.getTitle());
 
-            if (!isBack) {
+            if (!isBack && controller.shouldShowNavbar()) {
                 history.push(controller);
             } else {
                 isBack = false;
@@ -100,6 +100,9 @@ public class ScreenNavigator {
         }
     }
 
+    /**
+     * Navigates back to the previous screen in the history.
+     */
     public void goBack() {
         isBack = true;
         if (!history.isEmpty()) {
@@ -111,5 +114,14 @@ public class ScreenNavigator {
             System.out.println(previous.getTitle());
             launchScreen(previous);
         }
+    }
+
+    /**
+     * Returns if there is a previous screen in the history.
+     * 
+     * @return true if there is a previous screen
+     */
+    public boolean hasPreviousScreen() {
+        return !history.isEmpty();
     }
 }
