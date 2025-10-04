@@ -8,13 +8,14 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.FlowPane?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 
 <fx:root prefWidth="300.0" spacing="8" stylesheets="@../../styles/global.css" type="javafx.scene.layout.VBox" xmlns="http://javafx.com/javafx/21.0.2" xmlns:fx="http://javafx.com/fxml/1">
    <HBox fx:id="thumbnailContainer" prefHeight="180.0" styleClass="round-top" VBox.vgrow="NEVER">
       <children>
-      
+
           <!-- Thumbnail image -->
           <ImageView fx:id="thumbnail" fitHeight="180.0" fitWidth="300.0" styleClass="round-top">
             <image>
@@ -25,9 +26,9 @@
    </HBox>
    <VBox fx:id="infoContainer" spacing="5.0">
       <children>
-      
+
                             <!-- Title -->
-          <Label fx:id="title" styleClass="heading" text="Trail Name" wrapText="true" />
+          <Label fx:id="title" styleClass="heading" text="Trail Name" />
          <Label fx:id="regionLabel" text="Region" />
          <FlowPane fx:id="attributesFlowPane" hgap="5.0" vgap="5.0">
             <children>
@@ -54,8 +55,9 @@
                <Insets bottom="10.0" top="5.0" />
             </padding>
          </FlowPane>
-      
-          <StackPane fx:id="matchContainer">
+         <Region VBox.vgrow="ALWAYS" />
+
+          <StackPane fx:id="matchContainer" alignment="BOTTOM_CENTER">
               <ProgressBar fx:id="matchBar" maxWidth="Infinity" progress="0.0" />
               <Label fx:id="matchLabel" styleClass="text-light" text="0% Match" />
           </StackPane>

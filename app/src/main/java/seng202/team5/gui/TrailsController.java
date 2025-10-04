@@ -67,7 +67,7 @@ public class TrailsController extends Controller {
     /**
      * Creates a controller with navigator.
      *
-     * @param navigator Screen navigator
+     * @param navigator         Screen navigator
      * @param sqlBasedTrailRepo the trail repo
      */
     public TrailsController(ScreenNavigator navigator, SqlBasedTrailRepo sqlBasedTrailRepo) {
@@ -78,8 +78,8 @@ public class TrailsController extends Controller {
     /**
      * Creates controller with navigator and initial search text.
      *
-     * @param navigator  Screen navigator
-     * @param searchText Initial search text
+     * @param navigator         Screen navigator
+     * @param searchText        Initial search text
      * @param sqlBasedTrailRepo The trail repo
      */
     public TrailsController(ScreenNavigator navigator, String searchText, SqlBasedTrailRepo sqlBasedTrailRepo) {
@@ -437,7 +437,7 @@ public class TrailsController extends Controller {
         if (index < trailCardPool.size()) {
             return trailCardPool.get(index);
         } else {
-            TrailCardComponent trailCard = new TrailCardComponent(isGuest);
+            TrailCardComponent trailCard = new TrailCardComponent(isGuest, false);
             trailCardPool.add(trailCard);
             VBox.setMargin(trailCard, cardMargin);
             return trailCard;
