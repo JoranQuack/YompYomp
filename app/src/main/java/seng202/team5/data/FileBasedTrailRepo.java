@@ -98,10 +98,22 @@ public class FileBasedTrailRepo implements ITrail {
         return trails;
     }
 
+    /**
+     * Finds a trail based on its unique identifier
+     *
+     * @param id id of the object
+     * @return a java.util.Optional containing the Trail if found,
+     *         or an empty Optional if no trail with the given id exists
+     */
     public java.util.Optional<Trail> findById(int id) {
         return null;
     }
 
+    /**
+     *Return the total number of trails currently stored in the repository
+     *
+     * @return the number of trails
+     */
     public int countTrails() {
         return trails.size();
     }

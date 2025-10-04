@@ -14,14 +14,22 @@ import java.util.Optional;
 public class QueryHelper {
     private final DatabaseService databaseService;
 
+    /**
+     * Constructor for QueryHelper class
+     *
+     * @param databaseService the databaseService instance
+     */
     public QueryHelper(DatabaseService databaseService) {
         this.databaseService = databaseService;
     }
 
     /**
      * Execute a query for result list
-     *
+     * @param sql
+     * @param paramSetter
+     * @param rowMapper
      * @return a list of results
+     * @param <T>
      */
     public <T> List<T> executeQuery(String sql, ParameterSetter paramSetter, RowMapper<T> rowMapper) {
         List<T> results = new ArrayList<>();
@@ -45,8 +53,11 @@ public class QueryHelper {
 
     /**
      * Execute a query for single result
-     *
-     * @return a single optional result
+     * @param sql
+     * @param paramSetter
+     * @param rowMapper
+     * @return
+     * @param <T>
      */
     public <T> Optional<T> executeQuerySingle(String sql, ParameterSetter paramSetter, RowMapper<T> rowMapper) {
         List<T> results = executeQuery(sql, paramSetter, rowMapper);

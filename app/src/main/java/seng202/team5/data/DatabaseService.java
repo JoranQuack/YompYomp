@@ -33,6 +33,9 @@ public class DatabaseService {
 
     /**
      * Creates a new database connection to the existing database.
+     *
+     * @return the new connection
+     * @throws SQLException if an error occurs while creating connection
      */
     public Connection getConnection() throws SQLException {
         String databasePath = getDatabasePath();
