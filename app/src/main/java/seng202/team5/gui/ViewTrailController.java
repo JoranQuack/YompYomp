@@ -73,12 +73,8 @@ public class ViewTrailController extends Controller {
     private Label advancedColourLabel;
     @FXML
     private Label expertColourLabel;
-    private WebView trailMapWebView;
-
     @FXML
     private Label WeatherLabel;
-    @FXML
-    private Label WeatherDescriptionLabel;
 
     /**
      * Initialises the view trail screen with data retrieved from database
@@ -89,6 +85,19 @@ public class ViewTrailController extends Controller {
         setupEventHandlers();
         setupLegend();
         javafx.application.Platform.runLater(this::initMap);
+
+        new Thread(() -> {
+            Weather weather = WeatherAPI.getWeatherByCoords(trail.getLat(), trail.getLon());
+            if (weather != null) {
+                javafx.application.Platform.runLater(() -> WeatherLabel.setText(String.format(
+                        "%.1f°C (min %.1f°C / max %.1f°C) — %s",
+                        weather.getTemperature(), weather.getTempMin(), weather.getTempMax(), weather.getDescription()
+                )));
+            } else {
+                javafx.application.Platform.runLater(() -> WeatherLabel.setText("Weather unavailable"));
+            }
+        }).start();
+
     }
 
     /**
@@ -190,7 +199,7 @@ public class ViewTrailController extends Controller {
     private void initMap() {
         javaScriptBridge = new JavaScriptBridge(this, sqlBasedTrailRepo);
         mapContainer.getChildren().clear();
-        trailMapWebView = new WebView();
+        WebView trailMapWebView = new WebView();
         trailMapWebView.setPrefHeight(-1);
         trailMapWebView.setPrefWidth(-1);
         HBox.setHgrow(trailMapWebView, Priority.ALWAYS);
@@ -289,20 +298,6 @@ public class ViewTrailController extends Controller {
      */
     public void openTrailInfo(Trail trail) {
         super.getNavigator().launchScreen(new ViewTrailController(super.getNavigator(), trail, sqlBasedTrailRepo));
-    }
-
-    private void LoadWeather(List<Trail> trails) {
-        new Thread(() -> {
-            Weather weather = WeatherAPI.getWeatherByCoords(trail.getLat(), trail.getLon());
-
-            if (weather != null) {
-                javafx.application.Platform.runLater(() -> {
-                    WeatherLabel.setText("Current weather is: " + weather.getTemperature());
-                });
-                WeatherDescriptionLabel.setText(weather.getDescription());
-
-            }
-        });
     }
 
     @FXML
