@@ -160,7 +160,7 @@ public class ViewTrailController extends Controller {
      * Initialises the trail card at the top of the screen
      */
     private void initTrailCard() {
-        TrailCardComponent trailCard = new TrailCardComponent(super.getUserService().isGuest());
+        TrailCardComponent trailCard = new TrailCardComponent(super.getUserService().isGuest(), true);
         trailCard.setData(trail);
         trailCardHBox.getChildren().add(trailCard);
     }

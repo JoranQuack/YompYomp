@@ -22,6 +22,8 @@ public class TrailCardComponent extends VBox {
 
     // UI Components
     @FXML
+    private VBox trailCardContainer;
+    @FXML
     private ImageView thumbnail;
     @FXML
     private Label title;
@@ -49,9 +51,11 @@ public class TrailCardComponent extends VBox {
     private final ImageService imageService;
 
     private boolean isUnmatched;
+    private boolean isSingle;
 
-    public TrailCardComponent(boolean isUnmatched) {
+    public TrailCardComponent(boolean isUnmatched, boolean isSingle) {
         this.isUnmatched = isUnmatched;
+        this.isSingle = isSingle;
         this.imageService = new ImageService();
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/components/trail_card.fxml"));
         fxmlLoader.setRoot(this);
@@ -88,7 +92,12 @@ public class TrailCardComponent extends VBox {
     public void setData(Trail trail) {
         resetComponentVisibility();
 
+        if (!isSingle) {
+            trailCardContainer.getStyleClass().add("hoverable");
+        }
+
         title.setText(trail.getName());
+        title.setWrapText(isSingle);
 
         Image trailImage = imageService.loadTrailImage(trail.getThumbnailURL());
         thumbnail.setImage(trailImage);

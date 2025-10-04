@@ -498,7 +498,7 @@ public class TrailsController extends Controller {
         if (index < trailCardPool.size()) {
             return trailCardPool.get(index);
         } else {
-            TrailCardComponent trailCard = new TrailCardComponent(isGuest);
+            TrailCardComponent trailCard = new TrailCardComponent(isGuest, false);
             trailCardPool.add(trailCard);
             VBox.setMargin(trailCard, cardMargin);
             return trailCard;
