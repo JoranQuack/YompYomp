@@ -8,7 +8,6 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.FlowPane?>
 <?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 
@@ -55,7 +54,6 @@
                <Insets bottom="10.0" top="5.0" />
             </padding>
          </FlowPane>
-         <Region VBox.vgrow="ALWAYS" />
 
           <StackPane fx:id="matchContainer" alignment="BOTTOM_CENTER">
               <ProgressBar fx:id="matchBar" maxWidth="Infinity" progress="0.0" />
