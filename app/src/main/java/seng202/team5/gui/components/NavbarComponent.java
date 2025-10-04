@@ -6,6 +6,7 @@ import java.util.List;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Button;
+import javafx.scene.control.Tooltip;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import seng202.team5.data.SqlBasedTrailRepo;
@@ -60,6 +61,7 @@ public class NavbarComponent extends HBox {
         if (navigator.hasPreviousScreen()) {
             backButton.setOnMouseClicked(e -> navigator.goBack());
             backButton.setVisible(true);
+            Tooltip.install(backButton, new Tooltip("Go Back"));
         } else {
             backButton.setVisible(false);
         }
