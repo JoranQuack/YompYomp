@@ -12,7 +12,7 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 
-<fx:root prefWidth="300.0" spacing="8" stylesheets="@../../styles/global.css" type="javafx.scene.layout.VBox" xmlns="http://javafx.com/javafx/21.0.2" xmlns:fx="http://javafx.com/fxml/1">
+<fx:root fx:id="trailCardContainer" prefWidth="300.0" spacing="8" stylesheets="@../../styles/global.css" type="javafx.scene.layout.VBox" xmlns="http://javafx.com/javafx/21.0.2" xmlns:fx="http://javafx.com/fxml/1">
    <HBox fx:id="thumbnailContainer" prefHeight="180.0" styleClass="round-top" VBox.vgrow="NEVER">
       <children>
 

@@ -22,6 +22,8 @@ public class TrailCardComponent extends VBox {
 
     // UI Components
     @FXML
+    private VBox trailCardContainer;
+    @FXML
     private ImageView thumbnail;
     @FXML
     private Label title;
@@ -89,6 +91,10 @@ public class TrailCardComponent extends VBox {
      */
     public void setData(Trail trail) {
         resetComponentVisibility();
+
+        if (!isSingle) {
+            trailCardContainer.getStyleClass().add("hoverable");
+        }
 
         title.setText(trail.getName());
         title.setWrapText(isSingle);

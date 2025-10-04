@@ -257,10 +257,13 @@ Label {
 .trail-card {
   -fx-background-color: #eef1ed;
   -fx-background-radius: 10;
+}
+
+.trail-card.hoverable {
   -fx-cursor: hand;
 }
 
-.trail-card:hover {
+.trail-card.hoverable:hover {
   -fx-opacity: 0.7;
 }
 
