@@ -171,7 +171,7 @@ ChoiceBox .menu-item:focused {
 .check-box {
   -fx-font-family: "Quicksand";
   -fx-font-size: 15px;
-  -fx-text-fill: #04140b;
+  -fx-text-fill: #fdfffb;
   -fx-cursor: hand;
 }
 
