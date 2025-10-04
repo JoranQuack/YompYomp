@@ -107,12 +107,7 @@
             </VBox>
             <VBox alignment="CENTER">
                <children>
-                  <HBox alignment="CENTER" spacing="15.0">
-                     <children>
-                        <Button fx:id="continueButton" mnemonicParsing="false" text="Continue" />
-                        <Button fx:id="skipQuizButton" mnemonicParsing="false" text="Skip Quiz" />
-                     </children>
-                  </HBox>
+                  <Button fx:id="continueButton" mnemonicParsing="false" text="Continue" />
                </children>
             </VBox>
             <Region VBox.vgrow="ALWAYS" />
@@ -126,5 +121,10 @@
             <Insets bottom="20.0" top="70.0" />
          </padding>
       </VBox>
+      <Button fx:id="skipQuizButton" mnemonicParsing="false" text="Skip Quiz" StackPane.alignment="TOP_RIGHT">
+         <StackPane.margin>
+            <Insets right="20.0" top="20.0" />
+         </StackPane.margin>
+      </Button>
    </children>
 </StackPane>
