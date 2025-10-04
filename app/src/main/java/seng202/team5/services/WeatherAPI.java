@@ -10,13 +10,25 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 public class WeatherAPI {
-    private static final String API_KEY = "API_KEY_HERE";
-    private static final String BASE_URL = "https://api.openweathermap.org/data/3.0/onecall";
 
+    // Your student/developer API key
+    private static final String API_KEY = "API_KEY";
+    private static final String BASE_URL = "https://api.openweathermap.org/data/2.5/weather";
+
+    /**
+     * Fetches current weather for a given latitude and longitude
+     *
+     * @param lat Latitude of location
+     * @param lon Longitude of location
+     * @return Weather object with temperature, min/max, and description
+     */
     public static Weather getWeatherByCoords(double lat, double lon) {
         try {
-            String urlStr = String.format("%s?lat=%f&lon=%f&exclude=minutely,hourly,alerts&units=metric&appid=%s",
-                    BASE_URL, lat, lon, API_KEY);
+            // Build the URL for the Current Weather API
+            String urlStr = String.format(
+                    "%s?lat=%f&lon=%f&units=metric&appid=%s",
+                    BASE_URL, lat, lon, API_KEY
+            );
             URL url = new URL(urlStr);
 
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
@@ -33,15 +45,15 @@ public class WeatherAPI {
             while ((line = in.readLine()) != null) response.append(line);
             in.close();
 
+            // Parse JSON response
             JsonObject json = JsonParser.parseString(response.toString()).getAsJsonObject();
-            JsonObject current = json.getAsJsonObject("current");
-            JsonObject today = json.getAsJsonArray("daily").get(0).getAsJsonObject();
+            JsonObject main = json.getAsJsonObject("main");
+            JsonObject weatherObj = json.getAsJsonArray("weather").get(0).getAsJsonObject();
 
-            double temp = current.get("temp").getAsDouble();
-            double tempMin = today.getAsJsonObject("temp").get("min").getAsDouble();
-            double tempMax = today.getAsJsonObject("temp").get("max").getAsDouble();
-            String description = current.getAsJsonArray("weather")
-                    .get(0).getAsJsonObject().get("description").getAsString();
+            double temp = main.get("temp").getAsDouble();
+            double tempMin = main.get("temp_min").getAsDouble();
+            double tempMax = main.get("temp_max").getAsDouble();
+            String description = weatherObj.get("description").getAsString();
 
             return new Weather(temp, tempMin, tempMax, description);
 
