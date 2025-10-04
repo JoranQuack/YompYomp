@@ -98,12 +98,13 @@ public class ProfileSetupGeneralController extends Controller {
     /**
      * Action method of skipSetupButton
      * Skips profile setup quiz
-     * Default to previous profile if one has been made prior, else continues as guest
+     * Default to previous profile if one has been made prior, else continues as
+     * guest
      */
     @FXML
     private void onSkipSetupButtonClicked() {
         user = super.getUserService().getUserAfterSkip();
-        super.getNavigator().launchScreen(new LoadingController(super.getNavigator(), user));
+        super.getNavigator().launchScreen(new LoadingController(super.getNavigator(), null));
     }
 
     /**

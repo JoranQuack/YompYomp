@@ -164,12 +164,13 @@ public class ProfileQuizController extends Controller {
     /**
      * Action method for skip quiz button
      * Skips the rest of setup quiz and discard current quiz progress
-     * Default to previous profile if one has been made prior, else continues as guest
+     * Default to previous profile if one has been made prior, else continues as
+     * guest
      */
     @FXML
     private void onSkipQuizButtonClicked() {
         user = super.getUserService().getUserAfterSkip();
-        super.getNavigator().launchScreen(new LoadingController(super.getNavigator(), user));
+        super.getNavigator().launchScreen(new LoadingController(super.getNavigator(), null));
     }
 
     /**
