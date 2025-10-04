@@ -33,14 +33,16 @@
             <Font size="38.0" />
          </font>
       </Label>
-      <HBox alignment="CENTER" onMouseClicked="#onViewAllClicked" styleClass="special-button">
+      <HBox alignment="CENTER">
          <children>
-            <Label text="View all" />
-            <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
-               <image>
-                  <Image url="@../images/Continue%20Arrow.png" />
-               </image>
-            </ImageView>
+            <Label alignment="BOTTOM_CENTER" contentDisplay="RIGHT" graphicTextGap="1.0" onMouseClicked="#onViewAllClicked" styleClass="special-button" text="View all">
+               <graphic>
+                  <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../images/arrow.png" />
+                     </image>
+                  </ImageView>
+               </graphic></Label>
          </children>
          <padding>
             <Insets bottom="10.0" />
