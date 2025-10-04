@@ -19,6 +19,55 @@
 }
 
 /* ========================================
+ * TEXT & TYPOGRAPHY
+ * ======================================== */
+
+Label {
+  -fx-font-family: "Quicksand Medium";
+  -fx-font-size: 15px;
+  -fx-text-fill: #04140b;
+}
+
+Hyperlink {
+  -fx-font-family: "Quicksand Medium";
+  -fx-font-size: 15px;
+  -fx-text-fill: #447055;
+  -fx-underline: true;
+  -fx-cursor: hand;
+  -fx-padding: 0;
+}
+
+.title {
+  -fx-font-family: "Quicksand Bold";
+  -fx-font-size: 26px;
+}
+
+.heading {
+  -fx-font-family: "Quicksand SemiBold";
+  -fx-font-size: 18px;
+}
+
+.text-light {
+  -fx-text-fill: #fdfffb;
+}
+
+.small-text {
+  -fx-font-size: 12px;
+  -fx-font-family: "Quicksand Regular";
+}
+
+.pill {
+  -fx-background-radius: 20;
+  -fx-padding: 5 10 5 10;
+  -fx-font-size: 12px;
+}
+
+.regular-text {
+  -fx-font-family: "Quicksand Regular";
+  -fx-font-size: 15px;
+}
+
+/* ========================================
  * INPUT ELEMENTS
  * ======================================== */
 
@@ -40,6 +89,20 @@ Button.active {
   -fx-text-fill: #fdfffb;
 }
 
+ToggleButton {
+  -fx-font-family: "Quicksand";
+  -fx-cursor: hand;
+  -fx-font-size: 15px;
+  -fx-text-fill: #04140b;
+  -fx-background-color: #eef1ed;
+  -fx-background-radius: 10;
+  -fx-padding: 10;
+}
+
+ToggleButton:hover {
+  -fx-background-color: #d5e6d4;
+}
+
 TextField {
   -fx-font-family: "Quicksand";
   -fx-font-size: 15px;
@@ -52,7 +115,8 @@ TextField {
   -fx-padding: 10 15 10 15;
 }
 
-CheckComboBox {
+CheckComboBox,
+ChoiceBox {
   -fx-font-family: "Quicksand";
   -fx-font-size: 15px;
   -fx-text-fill: #04140b;
@@ -74,12 +138,14 @@ CheckComboBox > .combo-box {
   -fx-padding: 5;
 }
 
-CheckComboBox .list-view {
+CheckComboBox .list-view,
+ChoiceBox .context-menu {
   -fx-background-radius: 10;
   -fx-background-color: #fdfffb;
 }
 
-CheckComboBox > .combo-box .list-cell {
+CheckComboBox > .combo-box .list-cell,
+ChoiceBox .menu-item {
   -fx-background-color: transparent;
   -fx-background-radius: 10;
   -fx-border-color: transparent;
@@ -87,19 +153,34 @@ CheckComboBox > .combo-box .list-cell {
   -fx-text-fill: #04140b;
 }
 
-CheckComboBox > .combo-box .list-cell:hover {
+CheckComboBox > .combo-box .list-cell:hover,
+ChoiceBox .menu-item:hover {
   -fx-background-color: #d5e6d4;
 }
 
+ChoiceBox {
+  -fx-padding: 5;
+}
+
+ChoiceBox .label {
+  -fx-font-family: "Quicksand";
+  -fx-font-size: 15px;
+  -fx-text-fill: #04140b;
+}
+
+ChoiceBox .menu-item:focused {
+  -fx-text-fill: #04140b;
+}
+
 .arrow {
-  -fx-background-color: #447055;
+  -fx-background-color: #04140b;
   -fx-background-radius: 10;
 }
 
 .check-box {
   -fx-font-family: "Quicksand";
   -fx-font-size: 15px;
-  -fx-text-fill: #04140b;
+  -fx-text-fill: #fdfffb;
   -fx-cursor: hand;
 }
 
@@ -203,41 +284,6 @@ ProgressIndicator {
   -fx-background-color: #000000;
 }
 
-/* ========================================
- * TEXT & TYPOGRAPHY
- * ======================================== */
-
-Label {
-  -fx-font-family: "Quicksand Medium";
-  -fx-font-size: 15px;
-  -fx-text-fill: #04140b;
-}
-
-.title {
-  -fx-font-family: "Quicksand Bold";
-  -fx-font-size: 26px;
-}
-
-.heading {
-  -fx-font-family: "Quicksand SemiBold";
-  -fx-font-size: 18px;
-}
-
-.text-light {
-  -fx-text-fill: #fdfffb;
-}
-
-.small-text {
-  -fx-font-size: 12px;
-  -fx-font-family: "Quicksand Regular";
-}
-
-.pill {
-  -fx-background-radius: 20;
-  -fx-padding: 5 10 5 10;
-  -fx-font-size: 12px;
-}
-
 .bg-pinky {
   -fx-background-color: #e9d8ed;
 }
@@ -257,10 +303,13 @@ Label {
 .trail-card {
   -fx-background-color: #eef1ed;
   -fx-background-radius: 10;
+}
+
+.trail-card.hoverable {
   -fx-cursor: hand;
 }
 
-.trail-card:hover {
+.trail-card.hoverable:hover {
   -fx-opacity: 0.7;
 }
 

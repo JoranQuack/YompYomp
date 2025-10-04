@@ -1,4 +1,4 @@
-@startuml
+@startuml Use Case Diagram
 left to right direction
 title YompYomp Use Case Diagram
 
@@ -18,9 +18,10 @@ Users <|-up- Profiled
 rectangle "YompYomp App System" {
   Users --> (Complete Profile Quiz)
 
-  Profiled -down-> (Log Trip)
-  (Log Trip) <.left. (Rate Trip) : <<extend>>
+  Profiled -down-> (Log Trail)
+  (Log Trail) <.left. (Rate Trail) : <<extend>>
   Profiled --> (View Personalised Recommended Trails)
+  Profiled --> (View and Customise Profile)
 
   Guest --> (View General Recommended Trails)
 

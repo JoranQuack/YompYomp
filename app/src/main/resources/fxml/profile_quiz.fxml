@@ -14,7 +14,6 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-
 <StackPane fx:id="rootPane" minHeight="350.0" minWidth="500.0" styleClass="root-pane-dark" stylesheets="@../styles/global.css" xmlns="http://javafx.com/javafx/21.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="seng202.team5.gui.ProfileQuizController">
    <children>
       <ImageView fx:id="bgImage" fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true">
@@ -55,14 +54,14 @@
                            </styleClass>
                         </Label>
                         <Region HBox.hgrow="ALWAYS" />
-                        <Label fx:id="maxLabel1" text="Expert">
+                        <Label fx:id="medLabel1" alignment="CENTER" minWidth="80.0" text="Intermediate" textAlignment="CENTER">
                            <styleClass>
                               <String fx:value="small-text" />
                               <String fx:value="text-light" />
                            </styleClass>
                         </Label>
                         <Region HBox.hgrow="ALWAYS" />
-                        <Label fx:id="medLabel1" alignment="CENTER_RIGHT" minWidth="80.0" text="Intermediate" textAlignment="RIGHT">
+                        <Label fx:id="maxLabel1" alignment="CENTER_RIGHT" minWidth="80.0" text="Expert" textAlignment="RIGHT">
                            <styleClass>
                               <String fx:value="small-text" />
                               <String fx:value="text-light" />
@@ -122,5 +121,10 @@
             <Insets bottom="20.0" top="70.0" />
          </padding>
       </VBox>
+      <Button fx:id="skipQuizButton" mnemonicParsing="false" text="Skip Quiz" StackPane.alignment="TOP_RIGHT">
+         <StackPane.margin>
+            <Insets right="20.0" top="20.0" />
+         </StackPane.margin>
+      </Button>
    </children>
 </StackPane>

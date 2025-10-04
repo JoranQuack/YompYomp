@@ -153,6 +153,19 @@ public class UserService {
     }
 
     /**
+     * Returns user object to be used when skip is clicked
+     */
+    public User getUserAfterSkip() {
+        User prevUser = getUser();
+        if (prevUser != null && prevUser.getName() != null) {
+            return prevUser;
+        } else {
+            setGuest(true);
+            return null;
+        }
+    }
+
+    /**
      * Clean up incomplete profiles on app startup.
      * This removes any user profiles that were not fully completed.
      */
