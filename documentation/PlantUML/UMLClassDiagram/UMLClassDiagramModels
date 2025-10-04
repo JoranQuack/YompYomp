@@ -33,8 +33,6 @@ package "models" {
   }
 }
 
-TripLog -- Trail
-TripLog -- User
-TripLog -- Location
+TrailLog -- Trail
 
 @enduml
