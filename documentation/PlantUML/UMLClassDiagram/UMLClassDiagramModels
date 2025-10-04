@@ -18,13 +18,17 @@ package "models" {
     + toString() : String
   }
 
-  class TripLog <<to be implemented>> {
-    + TripLog() : void
+  class TrailLog {
+    + TrailLog() : void
+  }
+
+  class Location {
+    + Location() : void
     + toString() : String
   }
 
-  class Location <<to be implemented>> {
-    + Location() : void
+  class Weather {
+    + Weather() : void
     + toString() : String
   }
 }
