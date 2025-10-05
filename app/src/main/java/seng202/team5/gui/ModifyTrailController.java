@@ -8,6 +8,7 @@ import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
 import netscape.javascript.JSObject;
@@ -182,6 +183,15 @@ public class ModifyTrailController extends Controller {
         trailMapWebView.setPrefWidth(-1);
         HBox.setHgrow(trailMapWebView, Priority.ALWAYS);
         mapContainer.getChildren().add(trailMapWebView);
+
+        Rectangle clip = new Rectangle();
+        clip.setArcWidth(20);
+        clip.setArcHeight(20);
+
+        clip.widthProperty().bind(mapContainer.widthProperty());
+        clip.heightProperty().bind(mapContainer.heightProperty());
+
+        trailMapWebView.setClip(clip);
 
         webEngine = trailMapWebView.getEngine();
         webEngine.setJavaScriptEnabled(true);

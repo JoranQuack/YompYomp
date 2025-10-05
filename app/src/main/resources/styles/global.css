@@ -339,6 +339,12 @@ ProgressIndicator {
   -fx-background-color: #eef1ed;
 }
 
+#mapContainer {
+  -fx-background-color: #d8e5fd;
+  -fx-background-radius: 10;
+  -fx-border-radius: 10;
+}
+
 .special-button {
   -fx-cursor: hand;
 }
