@@ -56,6 +56,8 @@ public abstract class Controller {
     public boolean showAlert(String title, String headerText, String contentText,
             String confirmText, String cancelText, String confirmCssClass) {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.initOwner(navigator.getPrimaryStage());
+        alert.initModality(javafx.stage.Modality.APPLICATION_MODAL);
         alert.setTitle(title);
         alert.setHeaderText(headerText);
         alert.setContentText(contentText);

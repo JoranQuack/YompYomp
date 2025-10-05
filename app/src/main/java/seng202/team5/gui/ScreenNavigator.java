@@ -112,4 +112,8 @@ public class ScreenNavigator {
             launchScreen(previous);
         }
     }
+
+    public Stage getPrimaryStage() {
+        return stage;
+    }
 }
