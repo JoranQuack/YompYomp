@@ -52,7 +52,7 @@ public class LogBookController extends Controller {
     }
 
     /**
-     * Initialises the trails view with default data.
+     * Initialises the logs view with default data.
      */
     @FXML
     private void initialize() {
@@ -75,7 +75,7 @@ public class LogBookController extends Controller {
     }
 
     /**
-     * Initializes the search service.
+     * Initializes the log service.
      */
     private void initializeLogService() {
         this.logService = new LogService(App.getDatabaseService());
@@ -104,7 +104,7 @@ public class LogBookController extends Controller {
     }
 
     /**
-     * Handles page selection changes by updating the displayed trails.
+     * Handles page selection changes by updating the displayed logs.
      */
     private void onPageSelected() {
         String selectedPage = pageChoiceBox.getValue();
@@ -117,7 +117,7 @@ public class LogBookController extends Controller {
     }
 
     /**
-     * Shows a loading state while trails are being fetched.
+     * Shows a loading state while logs are being fetched.
      */
     private void showLoadingState() {
         logContainer.getChildren().clear();
@@ -165,7 +165,7 @@ public class LogBookController extends Controller {
     }
 
     /**
-     * Updates the displayed trails based on the current search, filter, sort, and
+     * Updates the displayed logs based on the current search, filter, sort, and
      * pagination settings.
      */
     private void updateSearchDisplay() {
@@ -175,10 +175,10 @@ public class LogBookController extends Controller {
     }
 
     /**
-     * Updates the trails displayed in the UI, reusing TrailCardComponents from a
+     * Updates the logs displayed in the UI, reusing TrailCardComponents from a
      * pool for performance.
      *
-     * @param logs List of trails to display
+     * @param logs List of logs to display
      */
     private void updateLogsDisplay(List<TrailLog> logs) {
         logContainer.getChildren().clear();

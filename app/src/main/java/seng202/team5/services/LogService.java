@@ -43,16 +43,8 @@ public class LogService {
         return (int) Math.ceil((double) logs.size() / maxResults);
     }
 
-    public Optional<TrailLog> getTrailLog(int logId) {
-        return trailInterface.findById(logId);
-    }
-
-    public Optional<Trail> getTrail(int trailId) {
-        return trailRepo.findById(trailId);
-    }
-
     /**
-     * Updates trails based on current filters and sort settings.
+     * Updates logs based on current search
      */
     public void updateLogs() {
         String lower = currentSearchValue == null ? "" : currentSearchValue.toLowerCase();
@@ -66,10 +58,10 @@ public class LogService {
     }
 
     /**
-     * Gets a specific page of trails from the filtered results.
+     * Gets a specific page of logs from the filtered results.
      *
      * @param page the page number (0-indexed)
-     * @return list of trails for the specified page
+     * @return list of logs for the specified page
      */
     public List<TrailLog> getPage(int page) {
         if (currentSearchValue != null) {
@@ -85,29 +77,17 @@ public class LogService {
     public void setCurrentQuery(String query) {
         currentSearchValue = query;
     }
-
     public List<TrailLog> getAllLogs() {
         return trailInterface.getAllTrailLogs();
     }
-
     public void addLog(TrailLog trailLog) {
         trailLogRepo.upsert(trailLog);
     }
-
-    public void updateLog(TrailLog trailLog) {
-        trailLogRepo.upsert(trailLog);
+    public Optional<Trail> getTrail(int trailId) {
+        return trailRepo.findById(trailId);
     }
-
-    public void deleteLog(int logId) {
-        trailLogRepo.deleteById(logId);
-    }
-
-    public int countLogs() {
-        return trailInterface.countTrailLogs();
-    }
-
-    public boolean isTrailLogged(int trailId) {
-        return getAllLogs().stream().anyMatch(log -> log.getTrailId() == trailId);
-    }
+    public void deleteLog(int logId) { trailLogRepo.deleteById(logId); }
+    public int countLogs() { return trailInterface.countTrailLogs(); }
+    public boolean isTrailLogged(int trailId) { return getAllLogs().stream().anyMatch(log -> log.getTrailId() == trailId); }
 
 }
