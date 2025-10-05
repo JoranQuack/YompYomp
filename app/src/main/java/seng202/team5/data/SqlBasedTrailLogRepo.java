@@ -128,7 +128,7 @@ public class SqlBasedTrailLogRepo implements ITrailLog {
      * @return mapped trailLog
      * @throws SQLException if the column cannot be read
      */
-    private TrailLog mapRowToTrailLog(ResultSet rs) throws SQLException {
+    public TrailLog mapRowToTrailLog(ResultSet rs) throws SQLException {
         String dateString = rs.getString("startDate");
         LocalDate startDate = null;
         if (dateString != null) startDate = LocalDate.parse(dateString);
@@ -152,7 +152,7 @@ public class SqlBasedTrailLogRepo implements ITrailLog {
      * @param trailLog source of values
      * @throws SQLException if a parameter cannot be set
      */
-    private void setTrailLogParameters(PreparedStatement stmt, TrailLog trailLog) throws SQLException {
+    public void setTrailLogParameters(PreparedStatement stmt, TrailLog trailLog) throws SQLException {
         stmt.setInt(1, trailLog.getId());
         stmt.setInt(2, trailLog.getTrailId());
         stmt.setString(3, trailLog.getStartDate().toString());
