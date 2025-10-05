@@ -275,6 +275,31 @@ public class SqlBasedTrailRepo implements ITrail {
     }
 
     /**
+     * Checks if a trail name already exists in the database (case and whitespace
+     * insensitive)
+     *
+     * @param name      the trail name to check
+     * @param excludeId optional trail ID to exclude from the check (for editing
+     *                  existing trails)
+     * @return true if the name exists, false otherwise
+     */
+    public boolean existsByName(String name, Integer excludeId) {
+        String sql = "SELECT COUNT(*) FROM trail WHERE TRIM(LOWER(name)) = TRIM(LOWER(?))";
+        if (excludeId != null) {
+            sql += " AND id != ?";
+        }
+
+        Integer count = queryHelper.executeCountQuery(sql, stmt -> {
+            stmt.setString(1, name);
+            if (excludeId != null) {
+                stmt.setInt(2, excludeId);
+            }
+        });
+
+        return count != null && count > 0;
+    }
+
+    /**
      * Returns a new value of trail id in database
      */
     public int getNewTrailId() {
