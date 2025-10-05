@@ -14,7 +14,6 @@ import java.util.stream.Collectors;
 public class LogService {
 
     private ITrailLog trailInterface;
-    private SqlBasedTrailLogRepo trailLogRepo;
     private List<TrailLog> logs;
     private List<TrailLog> filteredLogs;
     private int maxResults = 50;
@@ -28,7 +27,6 @@ public class LogService {
         this.logs = new SqlBasedTrailLogRepo(databaseService).getAllTrailLogs();
         this.filteredLogs = logs;
         this.trailInterface = new SqlBasedTrailLogRepo(databaseService);
-        this.trailLogRepo = new SqlBasedTrailLogRepo(databaseService);
         this.trailRepo = new SqlBasedTrailRepo(databaseService);
     }
 
@@ -81,12 +79,12 @@ public class LogService {
         return trailInterface.getAllTrailLogs();
     }
     public void addLog(TrailLog trailLog) {
-        trailLogRepo.upsert(trailLog);
+        trailInterface.upsert(trailLog);
     }
     public Optional<Trail> getTrail(int trailId) {
         return trailRepo.findById(trailId);
     }
-    public void deleteLog(int logId) { trailLogRepo.deleteById(logId); }
+    public void deleteLog(int logId) { trailInterface.deleteById(logId); }
     public int countLogs() { return trailInterface.countTrailLogs(); }
     public boolean isTrailLogged(int trailId) { return getAllLogs().stream().anyMatch(log -> log.getTrailId() == trailId); }
 
