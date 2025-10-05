@@ -2,7 +2,6 @@ package seng202.team5.gui;
 
 import javafx.concurrent.Task;
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressIndicator;
 import javafx.scene.image.ImageView;
@@ -145,8 +144,9 @@ public class LoadingController extends Controller {
      */
     private void exitThread() {
         Thread.currentThread().interrupt();
-        showAlert(AlertType.ERROR, "Matchmaking Failed",
-                "Matchmaking failed, please close the application and try again.");
+        showAlert("Matchmaking Failed",
+                "Matchmaking failed, please close the application and try again.",
+                "OK", "Cancel", null, null);
         super.getNavigator().launchScreen(new DashboardController(super.getNavigator()));
     }
 
