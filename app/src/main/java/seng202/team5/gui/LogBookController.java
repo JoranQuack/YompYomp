@@ -59,7 +59,7 @@ public class LogBookController extends Controller {
         isUpdating = true;
 
         initializeLogService();
-        if (logService == null) {
+        if (logService.getAllLogs().isEmpty()) {
             handleInitializationFailure();
             return;
         }
@@ -89,8 +89,6 @@ public class LogBookController extends Controller {
         Label noResultsLabel = new Label(
                 "There are no logs available, as you have not logged any trails yet. Please create a trail log and try again.");
         logContainer.getChildren().add(noResultsLabel);
-        showAlert(Alert.AlertType.ERROR, "No logs available",
-                "Failed to load logs, please add a trail log and try again.");
     }
 
     /**

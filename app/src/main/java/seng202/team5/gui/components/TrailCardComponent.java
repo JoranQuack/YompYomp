@@ -287,6 +287,12 @@ public class TrailCardComponent extends VBox {
                 attributesFlowPane.getChildren().remove(difficultyLabel);
             }
 
+            if (log.getCompletionTime() != null) {
+                durationLabel.setText(log.getCompletionTime() + " "  + log.getTimeUnit());
+            } else {
+                attributesFlowPane.getChildren().remove(durationLabel);
+            }
+
             if (inLogBook) {
                trashIcon.setVisible(true);
                bookmark.setVisible(false);
