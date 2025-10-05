@@ -32,8 +32,13 @@ public class LogService {
         this.trailRepo = new SqlBasedTrailRepo(databaseService);
     }
 
-    public LogService(ITrailLog trailInterface) {
+    //TODO change this constructor to be passed ITrail instead of the repo when the refactor is complete
+    //TODO this means logServiceTest class is going to need to be updated aswell
+    public LogService(ITrailLog trailInterface, SqlBasedTrailRepo trailRepo) {
         this.trailInterface = trailInterface;
+        this.logs = trailInterface.getAllTrailLogs();
+        this.filteredLogs = logs;
+        this.trailRepo = trailRepo;
     }
 
     /**
