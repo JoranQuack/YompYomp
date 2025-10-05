@@ -6,7 +6,6 @@ import java.util.stream.Collectors;
 
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
-import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
@@ -206,8 +205,9 @@ public class TrailsController extends Controller {
         Label noResultsLabel = new Label(
                 "There are no trails available, as the application has failed. Please close the application and try again.");
         trailsContainer.getChildren().add(noResultsLabel);
-        showAlert(Alert.AlertType.ERROR, "Trails failed to load",
-                "Failed to load trails, please close the application and try again.");
+        showAlert("Trails failed to load",
+                "Failed to load trails, please close the application and try again.",
+                "OK", "Cancel", null, null);
     }
 
     /**

@@ -1,7 +1,13 @@
 package seng202.team5.gui;
 
+import java.util.Objects;
+
 import javafx.scene.control.Alert;
-import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.ButtonBar;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.DialogPane;
+import javafx.scene.image.Image;
+import javafx.stage.Stage;
 import seng202.team5.App;
 import seng202.team5.data.SqlBasedTrailRepo;
 import seng202.team5.gui.components.NavbarComponent;
@@ -37,30 +43,47 @@ public abstract class Controller {
     }
 
     /**
-     * Shows an alert dialog to the user.
+     * Shows a confirmation dialog with more customisation!
      *
-     * @param type    the type of alert (ERROR, INFORMATION, etc.)
-     * @param title   the title of the alert
-     * @param content the content message
+     * @param title           the title of the dialog
+     * @param headerText      the header text of the dialog
+     * @param contentText     the content message
+     * @param confirmText     the text for the confirm button
+     * @param cancelText      the text for the cancel button
+     * @param confirmCssClass optional CSS class for the confirm button
+     * @return true if the user clicked confirm, false otherwise
      */
-    public void showAlert(AlertType type, String title, String content) {
-        Alert alert = new Alert(type);
-
+    public boolean showAlert(String title, String headerText, String contentText,
+            String confirmText, String cancelText, String confirmCssClass) {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle(title);
-        alert.setContentText(content);
+        alert.setHeaderText(headerText);
+        alert.setContentText(contentText);
 
-        alert.setHeaderText(null);
-        alert.setGraphic(null);
+        Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
+        stage.getIcons()
+                .add(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/YompYompIcon.png"))));
 
-        // Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
-        // stage.getIcons().add(new
-        // Image(Objects.requireNonNull(getClass().getResourceAsStream("/icon.png"))));
+        DialogPane dialogPane = alert.getDialogPane();
+        dialogPane.getStylesheets().add(getClass().getResource("/styles/global.css").toExternalForm());
+        dialogPane.setGraphic(null);
 
-        // DialogPane dialogPane = alert.getDialogPane();
-        // dialogPane.getStylesheets().add(
-        // Objects.requireNonNull(getClass().getResource("/styles/global.css")).toExternalForm());
+        ButtonType confirmButton = new ButtonType(confirmText, ButtonBar.ButtonData.OK_DONE);
+        if (cancelText == null) {
+            alert.getButtonTypes().setAll(confirmButton);
+        } else {
+            ButtonType cancelButton = new ButtonType(cancelText, ButtonBar.ButtonData.CANCEL_CLOSE);
+            alert.getButtonTypes().setAll(confirmButton, cancelButton);
+        }
 
-        alert.showAndWait();
+        // Apply CSS class to confirm button if provided
+        if (confirmCssClass != null && !confirmCssClass.isEmpty()) {
+            alert.getDialogPane().lookupButton(confirmButton).getStyleClass().add(confirmCssClass);
+        }
+
+        return alert.showAndWait()
+                .map(response -> response == confirmButton)
+                .orElse(false);
     }
 
     /**

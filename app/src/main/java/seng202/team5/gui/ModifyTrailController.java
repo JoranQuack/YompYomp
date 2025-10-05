@@ -350,22 +350,18 @@ public class ModifyTrailController extends Controller {
     @FXML
     private void onDeleteTrailClicked() {
         if (trail != null) {
-            // Confirm deletion
-            Alert confirmAlert = new Alert(Alert.AlertType.CONFIRMATION);
-            confirmAlert.setTitle("Confirm Deletion");
-            confirmAlert.setHeaderText("Are you sure you want to delete this trail?");
-            confirmAlert.setContentText("This action cannot be undone.");
+            boolean confirmed = showAlert(
+                    "Confirm Deletion",
+                    "Are you sure you want to delete this trail?",
+                    "This action cannot be undone.",
+                    "Delete",
+                    "Cancel",
+                    "bg-red");
 
-            ButtonType deleteButton = new ButtonType("Delete", ButtonBar.ButtonData.OK_DONE);
-            ButtonType cancelButton = new ButtonType("Cancel", ButtonBar.ButtonData.CANCEL_CLOSE);
-            confirmAlert.getButtonTypes().setAll(deleteButton, cancelButton);
-
-            confirmAlert.showAndWait().ifPresent(response -> {
-                if (response == deleteButton) {
-                    sqlBasedTrailRepo.deleteById(trail.getId());
-                    super.getNavigator().launchScreen(new TrailsController(super.getNavigator(), sqlBasedTrailRepo));
-                }
-            });
+            if (confirmed) {
+                sqlBasedTrailRepo.deleteById(trail.getId());
+                super.getNavigator().launchScreen(new TrailsController(super.getNavigator(), sqlBasedTrailRepo));
+            }
         }
     }
 
