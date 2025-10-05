@@ -68,6 +68,11 @@ public class ScreenNavigator {
     public void launchScreen(Controller controller) {
 
         try {
+            if (!isBack && !history.isEmpty()) {
+                Controller currentController = history.peek();
+                currentController.saveState();
+            }
+
             FXMLLoader setupLoader = new FXMLLoader(getClass().getResource(controller.getFxmlFile()));
             setupLoader.setControllerFactory(param -> controller);
             Parent setupParent = setupLoader.load();
@@ -93,6 +98,7 @@ public class ScreenNavigator {
             if (!isBack) {
                 history.push(controller);
             } else {
+                controller.restoreState();
                 isBack = false;
             }
         } catch (IOException e) {
@@ -108,7 +114,6 @@ public class ScreenNavigator {
 
         if (!history.isEmpty()) {
             Controller previous = history.peek();
-            System.out.println(previous.getTitle());
             launchScreen(previous);
         }
     }
