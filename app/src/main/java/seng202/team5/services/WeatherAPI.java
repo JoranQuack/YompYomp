@@ -2,7 +2,6 @@ package seng202.team5.services;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import io.github.cdimascio.dotenv.Dotenv;
 import seng202.team5.models.Weather;
 
 import java.io.BufferedReader;
@@ -10,12 +9,31 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URL;
+import java.util.Properties;
 
 public class WeatherAPI {
 
-    private static final Dotenv dotenv = Dotenv.configure().ignoreIfMissing().load();
-    private static final String API_KEY = dotenv.get("OPENWEATHER_API_KEY", "API_KEY");
+    private static final String API_KEY = getApiKey();
     private static final String BASE_URL = "https://api.openweathermap.org/data/2.5/weather";
+
+    /**
+     * Fetches the API key from the properties file (very secure stuff)
+     */
+    private static String getApiKey() {
+        try {
+            Properties props = new Properties();
+            props.load(WeatherAPI.class.getClassLoader().getResourceAsStream("config.properties"));
+            String key = props.getProperty("openweather.api.key");
+            if (key != null && !key.isEmpty()) {
+                return key;
+            }
+        } catch (Exception e) {
+            System.err.println("Please make sure your properties file is set up correctly.");
+        }
+
+        throw new RuntimeException(
+                "OpenWeather API key not found. Please add to config.properties in the resources folder.");
+    }
 
     /**
      * Fetches current weather for a given latitude and longitude
