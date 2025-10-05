@@ -194,7 +194,6 @@ public class ViewTrailController extends Controller {
         });
 
         trailCard.setOnBookmarkFillClickedHandler(clickedTrail -> {
-            // TODO confirmation dialog
             Alert confirm = new Alert(Alert.AlertType.CONFIRMATION);
             confirm.setTitle("Delete Log");
             confirm.setHeaderText("Are you sure you want to delete this log?");

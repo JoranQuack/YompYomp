@@ -8,6 +8,8 @@ import seng202.team5.data.SqlBasedTrailRepo;
 import seng202.team5.models.Trail;
 import seng202.team5.models.TrailLog;
 import seng202.team5.services.LogService;
+import seng202.team5.utils.CompletionTimeParser;
+import seng202.team5.utils.StringManipulator;
 
 import java.sql.Date;
 import java.time.ZoneId;
@@ -83,19 +85,44 @@ public class LogTrailController extends Controller {
         perceivedDifficultySelector.getItems().addAll(List.of("Easiest", "Easy", "Intermediate", "Advanced", "Expert"));
     }
 
+    /**
+     * Populates the form fields with the data from the trailLog or prefills it with trail info that can be edited.
+     */
     private void populateFields() {
         trailNameLabel.setText(trail.getName());
         if (trailLog.getStartDate() != null) {
             startDatePicker.setValue(trailLog.getStartDate());
         }
-        //startDatePicker.setValue(trailLog.getStartDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate());
-        durationTextField.setText(trailLog.getCompletionTime() != null ?
-                trailLog.getCompletionTime().toString() : "");
-        timeUnitSelector.setValue(trailLog.getTimeUnit());
-        trailTypeSelector.setValue(trailLog.getCompletionType());
+
+        if (trailLog.getCompletionTime() != null) {
+            durationTextField.setText(trailLog.getCompletionTime().toString());
+            timeUnitSelector.setValue(StringManipulator.capitaliseFirstLetter(trailLog.getTimeUnit()));
+        } else {
+            var avg = CompletionTimeParser.convertFromMinutes(trail.getAvgCompletionTimeMinutes());
+            durationTextField.setText(String.valueOf((int) avg.value()));
+            timeUnitSelector.setValue(StringManipulator.capitaliseFirstLetter(avg.unit()));
+        }
+
+        trailTypeSelector.setValue(
+                trailLog.getCompletionType() != null
+                        ? StringManipulator.capitaliseFirstLetter(trailLog.getCompletionType())
+                        : getValidCompletionType(trail)
+        );
+        perceivedDifficultySelector.setValue(
+                trailLog.getPerceivedDifficulty() != null
+                        ? StringManipulator.capitaliseFirstLetter(trailLog.getPerceivedDifficulty())
+                        : StringManipulator.capitaliseFirstLetter(trail.getDifficulty())
+        );
         rateSlider.setValue(trailLog.getRating() != null ? trailLog.getRating() : 3);
-        perceivedDifficultySelector.setValue(trailLog.getPerceivedDifficulty());
         noteTextArea.setText(trailLog.getNotes());
+    }
+
+    private String getValidCompletionType(Trail trail) {
+        String type = trail.getCompletionType();
+        if (type == null || type.equalsIgnoreCase("unknown")) {
+            return "One way";
+        }
+        return StringManipulator.capitaliseFirstLetter(type);
     }
 
     @FXML
