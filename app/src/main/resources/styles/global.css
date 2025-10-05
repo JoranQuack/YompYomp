@@ -360,3 +360,13 @@ ProgressIndicator {
 Button.bg-pinky:hover {
   -fx-background-color: #d8e5fd;
 }
+
+Button.bg-red {
+  -fx-background-color: #ffb3b3;
+  -fx-text-fill: #04140b;
+}
+
+Button.bg-red:hover {
+  -fx-background-color: #ff0000;
+  -fx-text-fill: #fdfffb;
+}
