@@ -213,10 +213,18 @@ public class CompletionTimeParser {
      * This is used for prefilling input fields, not for display.
      */
     public static TimeValue convertFromMinutes(int minutes) {
-        if (minutes % (24 * 60) == 0) {
-            return new TimeValue(minutes / (24 * 60.0), "days");
-        } else if (minutes % 60 == 0) {
-            return new TimeValue(minutes / 60.0, "hours");
+        if (minutes >= 1440) {
+            double days = minutes / 1440.0;
+            return new TimeValue(days, "days");
+        } else if (minutes >= 60) {
+            int hours = minutes / 60;
+            int remainingMinutes = minutes % 60;
+            if (remainingMinutes == 0) {
+                return new TimeValue(hours, "hours");
+            } else {
+                double fractionalHours = hours + remainingMinutes / 60.0;
+                return new TimeValue(fractionalHours, "hours");
+            }
         } else {
             return new TimeValue(minutes, "minutes");
         }

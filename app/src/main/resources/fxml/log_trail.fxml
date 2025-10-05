@@ -25,7 +25,7 @@
       </VBox>
       <ScrollPane hbarPolicy="NEVER">
          <content>
-            <VBox alignment="CENTER_LEFT" prefHeight="550.0" prefWidth="268.0" spacing="10.0">
+            <VBox alignment="CENTER_LEFT" prefHeight="550.0" prefWidth="331.0" spacing="10.0">
                <children>
                   <Label prefHeight="36.0" prefWidth="184.0" text="Log trail">
                      <font>
@@ -35,28 +35,40 @@
                   <Label fx:id="trailNameLabel" text="&lt;Trail name&gt;" />
                   <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0" spacing="10.0">
                      <children>
-                        <VBox alignment="CENTER_LEFT" prefHeight="147.0" prefWidth="228.0" spacing="10.0">
+                        <VBox alignment="CENTER_LEFT" prefHeight="104.0" prefWidth="268.0" spacing="10.0">
                            <children>
                               <Label alignment="CENTER" text="Start date" />
                               <DatePicker fx:id="startDatePicker" />
                               <HBox spacing="10.0">
                                  <children>
-                                    <VBox prefHeight="42.0" prefWidth="113.0">
+                                    <VBox>
                                        <children>
                                           <Label text="Duration" />
-                                          <TextField fx:id="durationTextField" />
+                                          <TextField fx:id="durationTextField" prefHeight="25.0" prefWidth="129.0" />
                                        </children>
                                     </VBox>
-                                    <VBox prefHeight="42.0" prefWidth="109.0">
+                                    <VBox prefHeight="42.0" prefWidth="164.0">
                                        <children>
-                                          <Label text="Time unit" />
-                                          <ChoiceBox fx:id="timeUnitSelector" prefHeight="25.0" prefWidth="98.0" />
+                                          <Label text="Time unit">
+                                             <VBox.margin>
+                                                <Insets left="10.0" />
+                                             </VBox.margin></Label>
+                                          <ChoiceBox fx:id="timeUnitSelector">
+                                             <VBox.margin>
+                                                <Insets left="10.0" />
+                                             </VBox.margin></ChoiceBox>
                                        </children>
                                     </VBox>
-                                    <VBox prefHeight="200.0" prefWidth="100.0">
+                                    <VBox prefHeight="42.0" prefWidth="173.0">
                                        <children>
-                                          <Label text="Trail type" />
-                                          <ChoiceBox fx:id="trailTypeSelector" prefWidth="150.0" />
+                                          <Label text="Trail type">
+                                             <VBox.margin>
+                                                <Insets left="10.0" />
+                                             </VBox.margin></Label>
+                                          <ChoiceBox fx:id="trailTypeSelector">
+                                             <VBox.margin>
+                                                <Insets left="10.0" />
+                                             </VBox.margin></ChoiceBox>
                                        </children>
                                     </VBox>
                                  </children>
@@ -70,10 +82,10 @@
                   <Label text="Perceived difficulty" />
                   <ChoiceBox fx:id="perceivedDifficultySelector" prefHeight="25.0" prefWidth="211.0" />
                   <Label text="Notes" />
-                  <TextArea fx:id="noteTextArea" />
+                  <TextArea fx:id="noteTextArea" prefHeight="181.0" prefWidth="212.0" />
                </children>
                <padding>
-                  <Insets bottom="10.0" left="20.0" right="40.0" top="10.0" />
+                  <Insets bottom="10.0" left="20.0" right="60.0" top="10.0" />
                </padding>
             </VBox>
          </content>
