@@ -255,7 +255,8 @@ public class CompletionTimeParser {
         if (minMinutes == maxMinutes) {
             return formatMinutesToString(minMinutes);
         } else {
-            return formatMinutesToString(minMinutes) + " - " + formatMinutesToString(maxMinutes);
+            return formatMinutesToString(minMinutes).split(" ")[0] + " - "
+                    + formatMinutesToString(maxMinutes);
         }
     }
 }
