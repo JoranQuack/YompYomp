@@ -72,7 +72,7 @@
             <TextArea fx:id="trailDescriptionTextArea" maxHeight="1.7976931348623157E308" prefHeight="100.0" wrapText="true" VBox.vgrow="ALWAYS" />
             <Label text="Cultural URL" />
             <TextField fx:id="cultureUrlTextField" />
-            <Button alignment="BOTTOM_CENTER" contentDisplay="TOP" mnemonicParsing="false" styleClass="bg-red" text="Delete Trail">
+            <Button alignment="BOTTOM_CENTER" contentDisplay="TOP" mnemonicParsing="false" onAction="#onDeleteTrailClicked" styleClass="bg-red" text="Delete Trail">
                <VBox.margin>
                   <Insets top="10.0" />
                </VBox.margin>

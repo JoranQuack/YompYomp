@@ -184,6 +184,15 @@ public class SqlBasedTrailRepo implements ITrail {
      * @param id the trail identifier to delete
      */
     public void deleteById(int id) {
+        // First delete the stuff from the category table
+        try {
+            String deleteTrailCategoryQuery = "DELETE FROM trailCategory WHERE trailId = ?";
+            queryHelper.executeUpdate(deleteTrailCategoryQuery, stmt -> stmt.setInt(1, id));
+        } catch (Exception e) {
+            // Ignore if trailCategory table doesn't exist
+        }
+
+        // Then delete the trail itself
         queryHelper.executeUpdate(DELETE_SQL, stmt -> stmt.setInt(1, id));
     }
 
