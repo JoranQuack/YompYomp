@@ -36,6 +36,7 @@ public class TrailsController extends Controller {
     private final List<TrailCardComponent> trailCardPool = new ArrayList<>();
 
     private boolean isUpdating = false;
+    private boolean isRestoringState = false;
 
     // State preservation
     private String savedSearchText = "";
@@ -184,6 +185,12 @@ public class TrailsController extends Controller {
                     } else {
                         onFilterChanged();
                         updateSearchDisplay();
+                    }
+
+                    // page restoration after trails are loaded
+                    if (isRestoringState) {
+                        restorePageAndScrollPosition();
+                        isRestoringState = false;
                     }
                 });
             }
@@ -773,6 +780,7 @@ public class TrailsController extends Controller {
             return;
         }
 
+        isRestoringState = true;
         isUpdating = true;
 
         // search text
@@ -806,27 +814,7 @@ public class TrailsController extends Controller {
 
         isUpdating = false;
 
-        // display with saved page
-        updateSearchDisplay();
-
-        // page selection
-        if (pageChoiceBox != null && savedSelectedPage != null) {
-            isUpdating = true;
-            pageChoiceBox.setValue(savedSelectedPage);
-            int pageIndex = Integer.parseInt(savedSelectedPage) - 1;
-            List<Trail> trails = searchService.getPage(pageIndex);
-            updateTrailsDisplay(trails);
-            isUpdating = false;
-        }
-
-        // scroll position after short delay
-        if (trailsScrollPane != null) {
-            Platform.runLater(() -> {
-                Platform.runLater(() -> { // Double runLater to ensure UI is done loading
-                    trailsScrollPane.setVvalue(savedScrollPosition);
-                });
-            });
-        }
+        // The page restoration will happen in loadInitialDataAsync's success
     }
 
     /**
@@ -854,6 +842,29 @@ public class TrailsController extends Controller {
                     checkComboBox.getCheckModel().check(trimmedFilter);
                 }
             }
+        }
+    }
+
+    /**
+     * Restores the page selection and scroll position AFTER trails load in
+     * otherwise issues happen.
+     */
+    private void restorePageAndScrollPosition() {
+        // page selection
+        if (pageChoiceBox != null && savedSelectedPage != null) {
+            isUpdating = true;
+            pageChoiceBox.setValue(savedSelectedPage);
+            onPageSelected();
+            isUpdating = false;
+        }
+
+        // scroll position after short delay
+        if (trailsScrollPane != null) {
+            Platform.runLater(() -> {
+                Platform.runLater(() -> { // Double runLater to ensure UI is done loading
+                    trailsScrollPane.setVvalue(savedScrollPosition);
+                });
+            });
         }
     }
 }
