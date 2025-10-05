@@ -11,7 +11,10 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.FlowPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.shape.Rectangle;
 import seng202.team5.data.DatabaseService;
 import seng202.team5.models.Trail;
 import seng202.team5.models.TrailLog;
@@ -41,6 +44,12 @@ public class TrailCardComponent extends VBox {
     private Label durationLabel;
     @FXML
     private Label typeLabel;
+    @FXML
+    private HBox thumbnailContainer;
+    @FXML
+    private VBox infoContainer;
+    @FXML
+    private StackPane matchContainer;
     @FXML
     private ImageView starIcon;
     @FXML
@@ -198,6 +207,20 @@ public class TrailCardComponent extends VBox {
         Image trailImage = imageService.loadTrailImage(trail.getThumbnailURL());
         thumbnail.setImage(trailImage);
 
+        Rectangle clip = new Rectangle();
+        clip.setArcWidth(20);
+        clip.setArcHeight(20);
+
+        clip.widthProperty().bind(thumbnailContainer.widthProperty());
+        clip.heightProperty().bind(thumbnailContainer.heightProperty());
+
+        thumbnail.setClip(clip);
+
+        if (!trail.getDifficulty().contains("unknown")) {
+            difficultyLabel.setText(StringManipulator.capitaliseFirstLetter(trail.getDifficulty()));
+        } else {
+            attributesFlowPane.getChildren().remove(difficultyLabel);
+        }
         if (trail.getRegion() != null) {
             regionLabel.setText(trail.getRegion());
         } else {
@@ -232,9 +255,14 @@ public class TrailCardComponent extends VBox {
                 attributesFlowPane.getChildren().remove(typeLabel);
             }
 
+            if (trail.getRegion() != null) {
+                regionLabel.setText(trail.getRegion());
+            } else {
+                regionLabel.setVisible(false);
+            }
+
             if (isUnmatched) {
-                matchBar.setVisible(false);
-                matchLabel.setVisible(false);
+                infoContainer.getChildren().remove(matchContainer);
             } else {
                 updateMatchBar(trail);
             }
@@ -276,6 +304,11 @@ public class TrailCardComponent extends VBox {
     private void resetComponentVisibility() {
         attributesFlowPane.getChildren().clear();
         attributesFlowPane.getChildren().addAll(difficultyLabel, durationLabel, typeLabel);
+
+        // Ensure matchContainer is in the infoContainer
+        if (!infoContainer.getChildren().contains(matchContainer)) {
+            infoContainer.getChildren().add(matchContainer);
+        }
         matchBar.setVisible(true);
         matchLabel.setVisible(true);
     }

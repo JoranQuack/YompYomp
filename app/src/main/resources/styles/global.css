@@ -1,3 +1,285 @@
-.view-all-button:hover {
-    -fx-cursor: hand;
+/* ========================================
+ * COLOR PALETTE
+ * ========================================
+ *
+ * Light: #FDFFFB
+ * OffWhite: #EEF1ED
+ * Pinky: #E9D8ED
+ * Bluey: #D8E5FD
+ * GreenLight: #D5E6D4
+ * Green: #8FAF8E
+ * GreenDark: #447055
+ * Dark: #04140B
+ * OffBlack: #7B7B7B
+ *
+ * ======================================== */
+
+* {
+  -fx-background-color: transparent;
+}
+
+/* ========================================
+ * INPUT ELEMENTS
+ * ======================================== */
+
+Button {
+  -fx-font-family: "Quicksand SemiBold";
+  -fx-cursor: hand;
+  -fx-font-size: 15px;
+  -fx-text-fill: #04140b;
+  -fx-background-color: #d5e6d4;
+  -fx-background-radius: 10;
+}
+
+Button:hover {
+  -fx-background-color: #8faf8e;
+}
+
+Button.active {
+  -fx-background-color: #447055;
+  -fx-text-fill: #fdfffb;
+}
+
+TextField {
+  -fx-font-family: "Quicksand";
+  -fx-font-size: 15px;
+  -fx-text-fill: #04140b;
+  -fx-prompt-text-fill: #7b7b7b;
+  -fx-background-color: #eef1ed;
+  -fx-background-radius: 10;
+  -fx-border-radius: 10;
+  -fx-border-color: transparent;
+  -fx-padding: 10 15 10 15;
+}
+
+CheckComboBox {
+  -fx-font-family: "Quicksand";
+  -fx-font-size: 15px;
+  -fx-text-fill: #04140b;
+  -fx-background-color: #eef1ed;
+  -fx-background-radius: 10;
+  -fx-border-color: transparent;
+  -fx-padding: 0;
+  -fx-cursor: hand;
+}
+
+CheckComboBox:hover {
+  -fx-background-color: #d5e6d4;
+}
+
+CheckComboBox > .combo-box {
+  -fx-background-color: transparent;
+  -fx-border-color: transparent;
+  -fx-background-radius: 10;
+  -fx-padding: 5;
+}
+
+CheckComboBox .list-view {
+  -fx-background-radius: 10;
+  -fx-background-color: #fdfffb;
+}
+
+CheckComboBox > .combo-box .list-cell {
+  -fx-background-color: transparent;
+  -fx-background-radius: 10;
+  -fx-border-color: transparent;
+  -fx-cursor: hand;
+  -fx-text-fill: #04140b;
+}
+
+CheckComboBox > .combo-box .list-cell:hover {
+  -fx-background-color: #d5e6d4;
+}
+
+.arrow {
+  -fx-background-color: #447055;
+  -fx-background-radius: 10;
+}
+
+.check-box {
+  -fx-font-family: "Quicksand";
+  -fx-font-size: 15px;
+  -fx-text-fill: #04140b;
+  -fx-cursor: hand;
+}
+
+.check-box .box {
+  -fx-background-color: #eef1ed;
+  -fx-padding: 5px;
+  -fx-border-radius: 6;
+  -fx-background-radius: 6;
+}
+
+.check-box:selected .box {
+  -fx-background-color: #d5e6d4;
+}
+
+.check-box:selected .mark {
+  -fx-background-color: #447055;
+  -fx-background-radius: 6;
+}
+
+Slider {
+  -fx-padding: 5px;
+}
+
+Slider .track {
+  -fx-background-radius: 10;
+  -fx-background-color: #eef1ed;
+  -fx-border-radius: 10;
+  -fx-padding: 1px;
+  -fx-border-color: transparent;
+}
+
+Slider .thumb {
+  -fx-background-color: #8faf8e;
+  -fx-background-radius: 10;
+  -fx-cursor: hand;
+}
+
+Slider .thumb:hover,
+Slider .thumb:pressed {
+  -fx-background-color: #d5e6d4;
+}
+
+/* ========================================
+ * PROGRESS ELEMENTS
+ * ======================================== */
+
+ProgressBar {
+  -fx-accent: #447055; /* Color of the filled portion */
+  -fx-control-inner-background: #8faf8e; /* Color of the track */
+  -fx-background-radius: 20;
+  -fx-padding: 0;
+}
+
+ProgressBar .bar {
+  -fx-background-radius: 20;
+  -fx-border-color: transparent; /* Removes the border around the filled part of the bar */
+  -fx-background-insets: 0;
+  -fx-background-color: #447055;
+}
+
+ProgressBar .track {
+  -fx-background-radius: 20;
+  -fx-border-color: transparent;
+  -fx-background-insets: 0;
+  -fx-background-color: #8faf8e;
+}
+
+ProgressIndicator {
+  -fx-progress-color: #e9d8ed; /* Changes the color of the moving part */
+}
+
+/* ========================================
+ * SCROLL BAR ELEMENTS
+ * ======================================== */
+
+.scroll-bar {
+  -fx-background-color: #eef1ed;
+  -fx-background-radius: 10;
+}
+
+.scroll-bar .thumb {
+  -fx-background-color: #8faf8e;
+  -fx-background-radius: 10;
+  -fx-cursor: hand;
+}
+
+.scroll-bar .thumb:hover,
+.scroll-bar .thumb:pressed {
+  -fx-background-color: #d5e6d4;
+}
+
+/* ========================================
+ * GENERAL CLASSES
+ * ======================================== */
+
+.root-pane {
+  -fx-background-color: #fdfffb;
+}
+
+.root-pane-dark {
+  -fx-background-color: #000000;
+}
+
+/* ========================================
+ * TEXT & TYPOGRAPHY
+ * ======================================== */
+
+Label {
+  -fx-font-family: "Quicksand Medium";
+  -fx-font-size: 15px;
+  -fx-text-fill: #04140b;
+}
+
+.title {
+  -fx-font-family: "Quicksand Bold";
+  -fx-font-size: 26px;
+}
+
+.heading {
+  -fx-font-family: "Quicksand SemiBold";
+  -fx-font-size: 18px;
+}
+
+.text-light {
+  -fx-text-fill: #fdfffb;
+}
+
+.small-text {
+  -fx-font-size: 12px;
+  -fx-font-family: "Quicksand Regular";
+}
+
+.pill {
+  -fx-background-radius: 20;
+  -fx-padding: 5 10 5 10;
+  -fx-font-size: 12px;
+}
+
+.bg-pinky {
+  -fx-background-color: #e9d8ed;
+}
+
+.bg-bluey {
+  -fx-background-color: #d8e5fd;
+}
+
+.bg-greeny {
+  -fx-background-color: #d5e6d4;
+}
+
+.round-corners {
+  -fx-background-radius: 10;
+}
+
+.trail-card {
+  -fx-background-color: #eef1ed;
+  -fx-background-radius: 10;
+  -fx-cursor: hand;
+}
+
+.trail-card:hover {
+  -fx-opacity: 0.7;
+}
+
+.navbar-root {
+  -fx-background-color: #eef1ed;
+}
+
+.special-button {
+  -fx-cursor: hand;
+}
+
+.special-button:hover {
+  -fx-opacity: 0.7;
+}
+
+.search-button {
+  -fx-padding: 10;
+}
+
+Button.bg-pinky:hover {
+  -fx-background-color: #d8e5fd;
 }

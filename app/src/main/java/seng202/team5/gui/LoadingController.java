@@ -5,13 +5,18 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressIndicator;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.StackPane;
 import seng202.team5.App;
+import seng202.team5.gui.util.BackgroundImageUtil;
 import seng202.team5.models.User;
 import seng202.team5.services.MatchmakingService;
+import seng202.team5.services.UserService;
 
 public class LoadingController extends Controller {
 
-    private boolean isMatchmakingComplete = false;
+    private User user;
+    private boolean isSkip = false;
 
     @FXML
     private ProgressIndicator progressIndicator;
@@ -19,14 +24,25 @@ public class LoadingController extends Controller {
     @FXML
     private Label statusLabel;
 
+    @FXML
+    private ImageView bgImage;
+
+    @FXML
+    private StackPane rootPane;
+
     /**
      * Constructs the controller with navigator
      *
      * @param navigator screen navigator
      */
-    public LoadingController(ScreenNavigator navigator, boolean isMatchmakingComplete) {
+    public LoadingController(ScreenNavigator navigator, User user) {
         super(navigator);
-        this.isMatchmakingComplete = isMatchmakingComplete;
+        this.user = user;
+        if (user != null) {
+            isSkip = false;
+        } else {
+            isSkip = true;
+        }
 
         // Use Platform.runLater to execute
         javafx.application.Platform.runLater(this::startMatchmaking);
@@ -37,10 +53,11 @@ public class LoadingController extends Controller {
      */
     @FXML
     private void initialize() {
+        BackgroundImageUtil.setupCoverBehavior(bgImage, rootPane);
         if (progressIndicator != null) {
             progressIndicator.setProgress(-1.0); // Indeterminate progress
         }
-        if (isMatchmakingComplete) {
+        if (isSkip) {
             statusLabel.setText("Just a moment...");
         } else {
             statusLabel.setText("Matching you to your favourite trails...");
@@ -60,23 +77,25 @@ public class LoadingController extends Controller {
         Task<Void> matchmakingTask = new Task<Void>() {
             @Override
             protected Void call() throws Exception {
-                // Wait for database setup before we can matchmake
+                // Wait for database setup before we do ANYTHING
                 App.getSetupService().waitForDatabaseSetup();
 
-                if (isMatchmakingComplete) {
+                // If skipping, set user as guest and skip the matchmaking and saving
+                if (isSkip) {
+                    UserService userService = App.getUserService();
+                    if (userService.getUser() == null) {
+                        userService.setGuest(true);
+                    }
                     return null;
                 }
 
-                // Create MatchmakingService AFTER database setup is complete
+                // Save the user to the database, clearing any previous user bye bye
+                UserService userService = App.getUserService();
+                userService.clearUser();
+                userService.saveUser(user);
+
+                // Do matchmaking now that we know everything is slaytastic
                 MatchmakingService matchmakingService = new MatchmakingService(App.getDatabaseService());
-
-                // Get user AFTER database setup is complete
-                User user = getUserService().getUser();
-                if (user == null) {
-                    return null;
-                }
-
-                // Run the matchmaking process
                 matchmakingService.generateTrailWeights(user);
                 return null;
             }

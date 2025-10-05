@@ -22,6 +22,7 @@ public class User {
     private boolean isProfileComplete;
 
     public User() {
+        this.id = 1; // Set default ID for single user system
         this.isProfileComplete = false;
     }
 

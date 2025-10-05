@@ -22,7 +22,7 @@ public class ImageService {
      * @return The loaded Image object, or the default image if loading fails
      */
     public Image loadTrailImage(String thumbnailUrl) {
-        if (thumbnailUrl == null || thumbnailUrl.trim().isEmpty()) {
+        if (thumbnailUrl == null || thumbnailUrl.trim().isEmpty() || thumbnailUrl.contains("no-photo")) {
             return getDefaultTrailImage();
         }
 

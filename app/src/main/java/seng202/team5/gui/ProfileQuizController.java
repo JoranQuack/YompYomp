@@ -1,9 +1,12 @@
 package seng202.team5.gui;
 
 import javafx.fxml.FXML;
+import seng202.team5.gui.util.BackgroundImageUtil;
 import seng202.team5.models.Question;
 import seng202.team5.models.User;
 import javafx.scene.control.*;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.StackPane;
 
 /**
  * Controller class for profile quiz screens
@@ -13,6 +16,7 @@ public class ProfileQuizController extends Controller {
 
     // To keep track of which question the user is on
     private int quizId;
+    private User user;
 
     /**
      * Constructs the controller with navigator
@@ -20,9 +24,10 @@ public class ProfileQuizController extends Controller {
      * @param navigator screen navigator
      * @param quizId    quiz question id
      */
-    public ProfileQuizController(ScreenNavigator navigator, int quizId) {
+    public ProfileQuizController(ScreenNavigator navigator, int quizId, User user) {
         super(navigator);
         this.quizId = quizId;
+        this.user = user;
     }
 
     @FXML
@@ -49,6 +54,10 @@ public class ProfileQuizController extends Controller {
     private Button continueButton;
     @FXML
     private ProgressBar quizProgressBar;
+    @FXML
+    private ImageView bgImage;
+    @FXML
+    private StackPane rootPane;
 
     /**
      * Initialises the quiz screen with the first two questions
@@ -58,6 +67,7 @@ public class ProfileQuizController extends Controller {
         User user = super.getUserService().getUser();
         int[] sliderValues = getUserPreferences(user);
 
+        BackgroundImageUtil.setupCoverBehavior(bgImage, rootPane);
         setSliders(slider1, sliderValues[0]);
         setSliders(slider2, sliderValues[1]);
         setProgressBar();
@@ -165,11 +175,9 @@ public class ProfileQuizController extends Controller {
         incrementQuizId();
         if (quizId < 10) {
             super.getNavigator()
-                    .launchScreen(new ProfileQuizController(super.getNavigator(), quizId));
+                    .launchScreen(new ProfileQuizController(super.getNavigator(), quizId, user));
         } else {
-            // Mark the user's profile as complete and save the final state
-            super.getUserService().markProfileComplete();
-            super.getNavigator().launchScreen(new LoadingController(super.getNavigator(), false));
+            super.getNavigator().launchScreen(new LoadingController(super.getNavigator(), user));
         }
     }
 
@@ -196,7 +204,6 @@ public class ProfileQuizController extends Controller {
      * Gets values from sliders and sets attributes of a User object
      */
     private void setUserPreferences() {
-        User user = super.getUserService().getUser();
         switch (quizId) {
             case 1:
                 user.setExperienceLevel((int) slider1.getValue());
@@ -219,7 +226,6 @@ public class ProfileQuizController extends Controller {
                 user.setWaterfallPreference((int) slider2.getValue());
                 break;
         }
-        super.getUserService().setUser(user);
     }
 
     @Override
