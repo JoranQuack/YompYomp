@@ -209,6 +209,20 @@ public class CompletionTimeParser {
     }
 
     /**
+     * Converts a time value in minutes to a structured value-unit pair.
+     * This is used for prefilling input fields, not for display.
+     */
+    public static TimeValue convertFromMinutes(int minutes) {
+        if (minutes % (24 * 60) == 0) {
+            return new TimeValue(minutes / (24 * 60.0), "days");
+        } else if (minutes % 60 == 0) {
+            return new TimeValue(minutes / 60.0, "hours");
+        } else {
+            return new TimeValue(minutes, "minutes");
+        }
+    }
+
+    /**
      * Creates a default result for unparseable strings
      */
     private static CompletionTimeResult createDefaultResult() {
@@ -257,5 +271,13 @@ public class CompletionTimeParser {
         } else {
             return formatMinutesToString(minMinutes) + " - " + formatMinutesToString(maxMinutes);
         }
+    }
+
+    /**
+     * Helper class for storing time values and units together.
+     * @param value
+     * @param unit
+     */
+    public record TimeValue(double value, String unit) {
     }
 }
