@@ -75,14 +75,14 @@ public class LogBookController extends Controller {
     }
 
     /**
-     * Initializes the log service.
+     * Initialises the log service.
      */
     private void initializeLogService() {
         this.logService = new LogService(App.getDatabaseService());
     }
 
     /**
-     * Handles initialization failures by displaying an error message.
+     * Handles initialisation failures by displaying an error message.
      */
     private void handleInitializationFailure() {
         resultsLabel.setText("No logs available");
@@ -110,7 +110,6 @@ public class LogBookController extends Controller {
         String selectedPage = pageChoiceBox.getValue();
         if (selectedPage != null) {
             int pageIndex = Integer.parseInt(selectedPage) - 1;
-            //TODO add the following lines below
             List<TrailLog> logs = logService.getPage(pageIndex);
             updateLogsDisplay(logs);
         }
@@ -218,6 +217,9 @@ public class LogBookController extends Controller {
                             resultsLabel.setText(logContainer.getChildren().size() + "/" + logService.countLogs() + " trails showing");
                             //updateLogsDisplay(logService.getPage(0));
                             updateLogsDisplay(logService.getAllLogs());
+                            if (logService.getAllLogs().isEmpty()) {
+                                handleInitializationFailure();
+                            }
                         }
                     });
                 });
