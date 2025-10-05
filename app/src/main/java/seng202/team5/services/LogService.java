@@ -22,7 +22,7 @@ public class LogService {
     private SqlBasedTrailRepo trailRepo;
 
     /**
-     * Creates LogService with database-backed filter options.
+     * Creates LogService with database-backed searching and pagnation.
      */
     public LogService(DatabaseService databaseService) {
         this.logs = new SqlBasedTrailLogRepo(databaseService).getAllTrailLogs();

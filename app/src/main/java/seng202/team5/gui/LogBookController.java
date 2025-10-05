@@ -111,8 +111,8 @@ public class LogBookController extends Controller {
         if (selectedPage != null) {
             int pageIndex = Integer.parseInt(selectedPage) - 1;
             //TODO add the following lines below
-            //List<Trail> trails = logService.getPage(pageIndex);
-            //updateLogDisplay(trails);
+            List<TrailLog> logs = logService.getPage(pageIndex);
+            updateLogsDisplay(logs);
         }
     }
 
