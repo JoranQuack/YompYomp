@@ -13,21 +13,27 @@ import java.util.stream.Collectors;
 
 public class LogService {
 
-    private ITrailLog trailInterface;
+    private final ITrailLog trailInterface;
     private List<TrailLog> logs;
     private List<TrailLog> filteredLogs;
     private int maxResults = 50;
     private String currentSearchValue;
+    //TODO move this to use ITrail instead when refactor is complete
     private SqlBasedTrailRepo trailRepo;
 
     /**
      * Creates LogService with database-backed searching and pagnation.
      */
     public LogService(DatabaseService databaseService) {
-        this.logs = new SqlBasedTrailLogRepo(databaseService).getAllTrailLogs();
-        this.filteredLogs = logs;
         this.trailInterface = new SqlBasedTrailLogRepo(databaseService);
+        this.logs = trailInterface.getAllTrailLogs();
+        this.filteredLogs = logs;
+        //TODO move this to use ITrail instead when refactor is complete
         this.trailRepo = new SqlBasedTrailRepo(databaseService);
+    }
+
+    public LogService(ITrailLog trailInterface) {
+        this.trailInterface = trailInterface;
     }
 
     /**
