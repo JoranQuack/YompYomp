@@ -77,7 +77,7 @@ public class ModifyTrailController extends Controller {
     @FXML
     private TextField longitudeTextField;
     @FXML
-    private Label regionLabel;
+    private TextField regionTextField;
     @FXML
     private Label invalidNumberLabel;
     private WebView trailMapWebView;
@@ -291,9 +291,9 @@ public class ModifyTrailController extends Controller {
 
         try {
             String region = regionFinder.findRegionForPoint(lat, lon);
-            regionLabel.setText(region != null ? region : "Unknown Region");
+            regionTextField.setText(region != null ? region : "Unknown Region");
         } catch (Exception e) {
-            regionLabel.setText("Region lookup failed");
+            regionTextField.setText("Region lookup failed");
         }
     }
 
@@ -305,7 +305,7 @@ public class ModifyTrailController extends Controller {
         double lat = Double.parseDouble(latitudeTextField.getText());
         double lon = Double.parseDouble(longitudeTextField.getText());
         String region = regionFinder.findRegionForPoint(lat, lon);
-        regionLabel.setText(region);
+        regionTextField.setText(region);
     }
 
     @FXML
@@ -376,7 +376,8 @@ public class ModifyTrailController extends Controller {
         } else {
             trailTypeComboBox.setStyle("");
         }
-        return !latitudeTextField.getText().isEmpty() && !longitudeTextField.getText().isEmpty() && !trailNameTextField.getText().isEmpty()
+        return !latitudeTextField.getText().isEmpty() && !longitudeTextField.getText().isEmpty()
+                && !trailNameTextField.getText().isEmpty()
                 && !trailDescriptionTextArea.getText().isEmpty() && !trailTypeComboBox.getValue().isEmpty();
     }
 
@@ -413,7 +414,7 @@ public class ModifyTrailController extends Controller {
         } else {
             // Creating new trail - temp values that will be recalculated
             trailId = sqlBasedTrailRepo.getNewTrailId();
-            region = regionLabel.getText();
+            region = regionTextField.getText();
             thumbUrl = "";
             webUrl = "";
             userWeight = 0.5;
