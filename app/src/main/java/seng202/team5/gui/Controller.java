@@ -161,4 +161,20 @@ public abstract class Controller {
      */
     protected abstract int getNavbarPageIndex();
 
+    /**
+     * Saves the current state of this controller.
+     * Override this to preserve controller-specific state.
+     */
+    public void saveState() {
+        // Default does nothing
+    }
+
+    /**
+     * Restores the previously saved state of this controller.
+     * Override this to restore controller-specific state.
+     */
+    public void restoreState() {
+        // Default does nothing
+    }
+
 }
