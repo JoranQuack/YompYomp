@@ -43,13 +43,6 @@ public class LogService {
         return (int) Math.ceil((double) logs.size() / maxResults);
     }
 
-    /**
-     * Gets the total number of logs in the results.
-     */
-    public int getNumberOfLogs() {
-        return logs.size();
-    }
-
     public Optional<TrailLog> getTrailLog(int logId) {
         return trailInterface.findById(logId);
     }
@@ -107,6 +100,10 @@ public class LogService {
 
     public void deleteLog(int logId) {
         trailLogRepo.deleteById(logId);
+    }
+
+    public int countLogs() {
+        return trailInterface.countTrailLogs();
     }
 
     public boolean isTrailLogged(int trailId) {
