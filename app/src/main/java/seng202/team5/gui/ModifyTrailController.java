@@ -334,13 +334,11 @@ public class ModifyTrailController extends Controller {
 
                 if (nameExists) {
                     emptyFieldLabel.setText("A trail with this name already exists! Please choose a different name.");
-                    emptyFieldLabel.setTextFill(Color.RED);
                     return;
                 }
             }
 
             emptyFieldLabel.setText("Please make sure all required fields are filled!");
-            emptyFieldLabel.setTextFill(Color.RED);
         }
     }
 
@@ -373,35 +371,35 @@ public class ModifyTrailController extends Controller {
         boolean isValid = true;
 
         if (latitudeTextField.getText().isEmpty()) {
-            latitudeTextField.setStyle("-fx-border-color: red; -fx-border-width: 2px;");
-            mapContainer.setStyle("-fx-border-color: red; -fx-border-width: 2px;");
+            latitudeTextField.setStyle("-fx-border-color: red;");
+            mapContainer.setStyle("-fx-border-color: red;");
             isValid = false;
         } else {
             latitudeTextField.setStyle("");
             mapContainer.setStyle("");
         }
         if (longitudeTextField.getText().isEmpty()) {
-            longitudeTextField.setStyle("-fx-border-color: red; -fx-border-width: 2px;");
-            mapContainer.setStyle("-fx-border-color: red; -fx-border-width: 2px;");
+            longitudeTextField.setStyle("-fx-border-color: red;");
+            mapContainer.setStyle("-fx-border-color: red;");
             isValid = false;
         } else {
             longitudeTextField.setStyle("");
             mapContainer.setStyle("");
         }
         if (trailNameTextField.getText().isEmpty()) {
-            trailNameTextField.setStyle("-fx-border-color: red; -fx-border-width: 2px;");
+            trailNameTextField.setStyle("-fx-border-color: red;");
             isValid = false;
         } else {
             trailNameTextField.setStyle("");
         }
         if (trailDescriptionTextArea.getText().isEmpty()) {
-            trailDescriptionTextArea.setStyle("-fx-border-color: red; -fx-border-width: 2px;");
+            trailDescriptionTextArea.setStyle("-fx-border-color: red;");
             isValid = false;
         } else {
             trailDescriptionTextArea.setStyle("");
         }
         if (trailTypeComboBox.getValue() == null) {
-            trailTypeComboBox.setStyle("-fx-border-color: red; -fx-border-width: 2px;");
+            trailTypeComboBox.setStyle("-fx-border-color: red;");
             isValid = false;
         } else {
             trailTypeComboBox.setStyle("");
@@ -414,7 +412,7 @@ public class ModifyTrailController extends Controller {
             boolean nameExists = sqlBasedTrailRepo.existsByName(inputTrailName, excludeId);
 
             if (nameExists) {
-                trailNameTextField.setStyle("-fx-border-color: red; -fx-border-width: 2px;");
+                trailNameTextField.setStyle("-fx-border-color: red;");
                 isValid = false;
             }
         }

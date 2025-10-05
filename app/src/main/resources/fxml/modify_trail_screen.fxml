@@ -125,8 +125,8 @@
                      <children>
                         <VBox spacing="10.0">
                            <children>
-                              <Label fx:id="invalidNumberLabel" text="Label" wrapText="true" />
-                              <Label fx:id="emptyFieldLabel" text="Label" wrapText="true" />
+                              <Label fx:id="invalidNumberLabel" styleClass="text-red" text="Label" wrapText="true" />
+                              <Label fx:id="emptyFieldLabel" styleClass="text-red" text="Label" wrapText="true" />
                            </children>
                         </VBox>
                      </children>
