@@ -14,6 +14,7 @@ import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
 import netscape.javascript.JSObject;
 import seng202.team5.data.SqlBasedTrailRepo;
+import seng202.team5.gui.components.LegendLabelComponent;
 import seng202.team5.gui.components.TrailCardComponent;
 import seng202.team5.models.Trail;
 import seng202.team5.services.TrailService;
@@ -62,15 +63,8 @@ public class ViewTrailController extends Controller {
     @FXML
     private HBox trailCardHBox;
     @FXML
-    private Label easiestColourLabel;
+    private HBox legendContainer;
     @FXML
-    private Label easyColourLabel;
-    @FXML
-    private Label intermediateColourLabel;
-    @FXML
-    private Label advancedColourLabel;
-    @FXML
-    private Label expertColourLabel;
     private WebView trailMapWebView;
 
     /**
@@ -149,11 +143,17 @@ public class ViewTrailController extends Controller {
      * Sets up the legend for the map marker colours
      */
     private void setupLegend() {
-        easiestColourLabel.setBackground(Background.fill(Paint.valueOf("008000")));
-        easyColourLabel.setBackground(Background.fill(Paint.valueOf("8de45f")));
-        intermediateColourLabel.setBackground(Background.fill(Paint.valueOf("ffff00")));
-        advancedColourLabel.setBackground(Background.fill(Paint.valueOf("ffa500")));
-        expertColourLabel.setBackground(Background.fill(Paint.valueOf("ff0000")));
+        LegendLabelComponent easiestLegend = new LegendLabelComponent("008000", "Easiest");
+        LegendLabelComponent easyLegend = new LegendLabelComponent("8de45f", "Easy");
+        LegendLabelComponent intermediateLegend = new LegendLabelComponent("ffff00", "Intermediate");
+        LegendLabelComponent advancedLegend = new LegendLabelComponent("ffa500", "Advanced Colour");
+        LegendLabelComponent expertLegend = new LegendLabelComponent("ff0000", "Expert");
+
+        legendContainer.getChildren().add(easiestLegend);
+        legendContainer.getChildren().add(easyLegend);
+        legendContainer.getChildren().add(intermediateLegend);
+        legendContainer.getChildren().add(advancedLegend);
+        legendContainer.getChildren().add(expertLegend);
     }
 
     /**
