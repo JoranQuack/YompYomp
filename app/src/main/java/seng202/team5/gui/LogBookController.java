@@ -215,9 +215,11 @@ public class LogBookController extends Controller {
                     confirm.showAndWait().ifPresent(response -> {
                         if (response == ButtonType.OK) {
                             logService.deleteLog(logTrail.getId());
+                            System.out.println(logService.countLogs());
                             logContainer.getChildren().remove(logCard);
-                            resultsLabel.setText(logContainer.getChildren().size() + "/" + logService.getNumberOfLogs() + " trails showing");
-                            updateLogsDisplay(logService.getPage(0));
+                            resultsLabel.setText(logContainer.getChildren().size() + "/" + logService.countLogs() + " trails showing");
+                            //updateLogsDisplay(logService.getPage(0));
+                            updateLogsDisplay(logService.getAllLogs());
                         }
                     });
                 });
@@ -261,7 +263,7 @@ public class LogBookController extends Controller {
      * @param trailCount Number of trails currently displayed
      */
     private void updateResultsLabel(int trailCount) {
-        resultsLabel.setText(trailCount + "/" + logService.getNumberOfLogs() + " trails showing");
+        resultsLabel.setText(trailCount + "/" + logService.countLogs() + " trails showing");
     }
 
     /**
