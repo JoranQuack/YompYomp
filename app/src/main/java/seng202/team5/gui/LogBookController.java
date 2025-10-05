@@ -310,7 +310,7 @@ public class LogBookController extends Controller {
 
     @Override
     protected int getNavbarPageIndex() {
-        return 1;
+        return 2;
     }
 
     @Override

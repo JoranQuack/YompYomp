@@ -49,7 +49,7 @@ public class NavbarComponent extends HBox {
             redoQuizButton.setText("Redo Quiz");
         }
 
-        navButtons = List.of(homeButton, trailsButton);
+        navButtons = List.of(homeButton, trailsButton, logbookButton);
         homeButton.setOnAction(e -> navigator.launchScreen(new DashboardController(navigator)));
         trailsButton.setOnAction(e -> navigator.launchScreen(new TrailsController(navigator, sqlBasedTrailRepo)));
         redoQuizButton.setOnAction(e -> navigator.launchScreen(new ProfileSetupGeneralController(navigator)));
