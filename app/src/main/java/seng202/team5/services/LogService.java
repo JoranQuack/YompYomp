@@ -73,7 +73,7 @@ public class LogService {
      * @return list of logs for the specified page
      */
     public List<TrailLog> getPage(int page) {
-        if (currentSearchValue != null) {
+        if (currentSearchValue != "") {
             updateLogs();
         }
         int startIndex = page * maxResults;
@@ -98,5 +98,8 @@ public class LogService {
     public void deleteLog(int logId) { trailInterface.deleteById(logId); }
     public int countLogs() { return trailInterface.countTrailLogs(); }
     public boolean isTrailLogged(int trailId) { return getAllLogs().stream().anyMatch(log -> log.getTrailId() == trailId); }
+    public void setMaxResults(int maxResults) {
+        this.maxResults = maxResults;
+    }
 
 }
