@@ -400,9 +400,9 @@ public class ModifyTrailController extends Controller {
         // Get form values
         String trailName = trailNameTextField.getText();
         String translation = translationTextField.getText();
-        String difficulty = difficultyComboBox.getValue();
-        String trailType = trailTypeComboBox.getValue();
-        String completionTime = completionTimeTextField.getText();
+        String difficulty = difficultyComboBox.getValue().toLowerCase();
+        String trailType = trailTypeComboBox.getValue().toLowerCase();
+        String completionTime = completionTimeTextField.getText().toLowerCase();
         String trailDescription = trailDescriptionTextArea.getText();
         String cultureUrl = cultureUrlTextField.getText();
         double latitude = Double.parseDouble(latitudeTextField.getText());
