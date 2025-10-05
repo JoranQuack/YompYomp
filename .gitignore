@@ -47,3 +47,7 @@ bin/
 data/
 test.db
 *.db*
+
+### Environment Variables ###
+.env
+**/.env

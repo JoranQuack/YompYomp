@@ -102,6 +102,9 @@ dependencies {
     // this dependency is used for converting Trail objects into JSON for the map
     implementation 'com.google.code.gson:gson:2.10.1'
 
+    // dotenv for environment variable management
+    implementation 'io.github.cdimascio:dotenv-java:3.0.0'
+
 
 }
 

@@ -2,17 +2,19 @@ package seng202.team5.services;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import io.github.cdimascio.dotenv.Dotenv;
 import seng202.team5.models.Weather;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
+import java.net.URI;
 import java.net.URL;
 
 public class WeatherAPI {
 
-    // Your student/developer API key
-    private static final String API_KEY = "API_KEY";
+    private static final Dotenv dotenv = Dotenv.configure().ignoreIfMissing().load();
+    private static final String API_KEY = dotenv.get("OPENWEATHER_API_KEY", "API_KEY");
     private static final String BASE_URL = "https://api.openweathermap.org/data/2.5/weather";
 
     /**
@@ -27,9 +29,8 @@ public class WeatherAPI {
             // Build the URL for the Current Weather API
             String urlStr = String.format(
                     "%s?lat=%f&lon=%f&units=metric&appid=%s",
-                    BASE_URL, lat, lon, API_KEY
-            );
-            URL url = new URL(urlStr);
+                    BASE_URL, lat, lon, API_KEY);
+            URL url = URI.create(urlStr).toURL();
 
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod("GET");
@@ -42,7 +43,8 @@ public class WeatherAPI {
             BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream()));
             StringBuilder response = new StringBuilder();
             String line;
-            while ((line = in.readLine()) != null) response.append(line);
+            while ((line = in.readLine()) != null)
+                response.append(line);
             in.close();
 
             // Parse JSON response
