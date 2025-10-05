@@ -5,12 +5,14 @@ public class Weather {
     private double tempMax;
     private double tempMin;
     private String description;
+    private String date;
 
-    public Weather(double temperature, double tempMax, double tempMin, String description) {
+    public Weather(double temperature, double tempMax, double tempMin, String description, String date) {
         this.temperature = temperature;
         this.tempMax = tempMax;
         this.tempMin = tempMin;
         this.description = description;
+        this.date = date;
     }
 
     public double getTemperature() {
@@ -28,6 +30,8 @@ public class Weather {
     public String getDescription() {
         return description;
     }
+
+    public String getDate() {return date;}
 
     @Override
     public String toString() {
