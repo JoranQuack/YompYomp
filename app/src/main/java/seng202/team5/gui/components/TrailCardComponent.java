@@ -73,15 +73,8 @@ public class TrailCardComponent extends VBox {
      * @param trail
      */
     private String formatCompletionTime(Trail trail) {
-        if (trail.getMinCompletionTimeMinutes() == trail.getMaxCompletionTimeMinutes()) {
-            return StringManipulator.capitaliseFirstLetter(
-                    CompletionTimeParser.formatMinutesToString(trail.getMinCompletionTimeMinutes()));
-        }
-        return StringManipulator.capitaliseFirstLetter(
-                CompletionTimeParser.formatMinutesToString(trail.getMinCompletionTimeMinutes()))
-                + " - "
-                + StringManipulator.capitaliseFirstLetter(
-                        CompletionTimeParser.formatMinutesToString(trail.getMaxCompletionTimeMinutes()));
+        return CompletionTimeParser.formatTimeRange(trail.getMinCompletionTimeMinutes(),
+                trail.getMaxCompletionTimeMinutes());
     }
 
     /**
