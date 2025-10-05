@@ -75,6 +75,8 @@ public class ViewTrailController extends Controller {
     private Label expertColourLabel;
     @FXML
     private Label WeatherLabel;
+    @FXML
+    private Label forecastLabel;
 
     /**
      * Initialises the view trail screen with data retrieved from database
@@ -95,6 +97,22 @@ public class ViewTrailController extends Controller {
                 )));
             } else {
                 javafx.application.Platform.runLater(() -> WeatherLabel.setText("Weather unavailable"));
+            }
+        }).start();
+
+        new Thread(() -> {
+            List<Weather> forecast = WeatherAPI.getFourDayForecast(trail.getLat(), trail.getLon());
+            if (!forecast.isEmpty()) {
+                StringBuilder sb  = new StringBuilder("4 Day Forecast:\n");
+                for (Weather day : forecast) {
+                    sb.append(String.format(
+                            "%s: %.1f°C (min %.1f°C / max %.1f°C) — %s\n",
+                            day.getDate(), day.getTemperature(), day.getTempMin(), day.getTempMax(), day.getDescription()
+                    ));
+                }
+                    javafx.application.Platform.runLater(() -> forecastLabel.setText(sb.toString()));
+            } else {
+                javafx.application.Platform.runLater(() -> forecastLabel.setText("Forecast unavailable"));
             }
         }).start();
 

@@ -38,6 +38,7 @@
                   <Button fx:id="editInfoButton" mnemonicParsing="false" text="Edit Info" />
                </children>
             </HBox>
+            <Label fx:id="forecastLabel" prefHeight="122.0" prefWidth="180.0" text="Forecast" />
          </children>
          <padding>
             <Insets left="10.0" right="10.0" />
@@ -93,7 +94,8 @@
                   <Insets />
                </VBox.margin>
                <children>
-                  <Label fx:id="WeatherLabel" text="Weather forecast coming soon..." />
+                  <Label fx:id="WeatherLabel" prefHeight="17.0" prefWidth="264.0" text="Current Weather" />
+                  <VBox prefHeight="29.0" prefWidth="200.0" />
                </children>
             </HBox>
          </children>
