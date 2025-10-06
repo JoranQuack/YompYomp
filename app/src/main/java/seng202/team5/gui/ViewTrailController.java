@@ -16,8 +16,12 @@ import netscape.javascript.JSObject;
 import seng202.team5.data.SqlBasedTrailRepo;
 import seng202.team5.gui.components.TrailCardComponent;
 import seng202.team5.models.Trail;
+import seng202.team5.services.RegionFinder;
 import seng202.team5.services.TrailService;
+import seng202.team5.utils.StringManipulator;
 
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 /**
@@ -27,6 +31,7 @@ public class ViewTrailController extends Controller {
     private final Trail trail;
     private TrailService trailService;
     private final SqlBasedTrailRepo sqlBasedTrailRepo;
+    private RegionFinder regionFinder;
 
     private WebEngine webEngine;
     private JavaScriptBridge javaScriptBridge;
@@ -71,6 +76,10 @@ public class ViewTrailController extends Controller {
     private Label advancedColourLabel;
     @FXML
     private Label expertColourLabel;
+    @FXML
+    private Hyperlink docHutsLink;
+    @FXML
+    private Hyperlink remoteHutsLink;
     private WebView trailMapWebView;
 
     /**
@@ -98,6 +107,7 @@ public class ViewTrailController extends Controller {
             translationLabel.setVisible(false);
         }
         setupTrailRadiusFields();
+        setupHutLinks();
     }
 
     private void setupTrailRadiusFields() {
@@ -276,12 +286,45 @@ public class ViewTrailController extends Controller {
     }
 
     /**
-     * opens a page for a given trail
+     * Opens a page for a given trail
      *
      * @param trail the trail whose page will be opened
      */
     public void openTrailInfo(Trail trail) {
         super.getNavigator().launchScreen(new ViewTrailController(super.getNavigator(), trail, sqlBasedTrailRepo));
+    }
+
+    private void setupHutLinks() {
+        regionFinder = new RegionFinder();
+        String region = trail.getRegion();
+        String regionLower = trail.getRegion().toLowerCase();
+        String difficulty = trail.getDifficulty().toLowerCase();
+
+        Integer docRegionId = regionFinder.getDocRegionId(regionLower);
+        if (docRegionId != null) {
+            docHutsLink.setText("View DOC Huts in " + StringManipulator.capitaliseFirstLetter(region));
+            docHutsLink.setOnAction(e ->
+                super.getNavigator().openWebPage(
+                        "https://www.doc.govt.nz/parks-and-recreation/places-to-stay/stay-in-a-hut/?region-id=" + docRegionId
+                )
+            );
+            docHutsLink.setVisible(true);
+        } else {
+            docHutsLink.setText("View DOC Huts");
+            docHutsLink.setOnAction(e ->
+                    super.getNavigator().openWebPage(
+                            "https://www.doc.govt.nz/parks-and-recreation/places-to-stay/stay-in-a-hut/")
+            );
+        }
+
+        boolean isRemoteRegion = regionFinder.isRemoteHutRegion(region);
+        if (isRemoteRegion && (difficulty.contains("advanced") || difficulty.contains("expert"))) {
+            remoteHutsLink.setText("View Remote Huts");
+            remoteHutsLink.setOnAction(e -> super.getNavigator().openWebPage("https://www.remotehuts.co.nz/by-map.html"));
+            remoteHutsLink.setVisible(true);
+        } else {
+            remoteHutsLink.setVisible(false);
+        }
     }
 
     @FXML
