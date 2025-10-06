@@ -14,6 +14,6 @@ public class WeatherServiceTest {
 
     @BeforeEach
     public void setup() {
-        WeatherService weatherService = new WeatherService();
+        //WeatherService weatherService = new WeatherService(); TODO    change for new constructor
     }
 }

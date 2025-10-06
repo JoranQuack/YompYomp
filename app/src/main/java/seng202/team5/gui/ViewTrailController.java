@@ -29,6 +29,7 @@ public class ViewTrailController extends Controller {
     private final Trail trail;
     private TrailService trailService;
     private final SqlBasedTrailRepo sqlBasedTrailRepo;
+    private WeatherService weatherService;
 
     private WebEngine webEngine;
     private JavaScriptBridge javaScriptBridge;
@@ -89,7 +90,7 @@ public class ViewTrailController extends Controller {
         javafx.application.Platform.runLater(this::initMap);
 
         new Thread(() -> {
-            Weather weather = WeatherService.getWeatherByCoords(trail.getLat(), trail.getLon());
+            Weather weather = weatherService.getWeatherByCoords(trail.getLat(), trail.getLon());
             if (weather != null) {
                 javafx.application.Platform.runLater(() -> WeatherLabel.setText(String.format(
                         "%.1f°C (min %.1f°C / max %.1f°C) — %s",
@@ -101,7 +102,8 @@ public class ViewTrailController extends Controller {
         }).start();
 
         new Thread(() -> {
-            List<Weather> forecast = WeatherService.getFourDayForecast(trail.getLat(), trail.getLon());
+            weatherService = new WeatherService("https://api.openweathermap.org/data/2.5/weather", "https://api.openweathermap.org/data/2.5/forecast");
+            List<Weather> forecast = weatherService.getFourDayForecast(trail.getLat(), trail.getLon());
             if (!forecast.isEmpty()) {
                 StringBuilder sb  = new StringBuilder(" ");
                 for (Weather day : forecast) {

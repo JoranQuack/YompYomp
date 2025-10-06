@@ -15,10 +15,15 @@ import java.util.*;
 
 public class WeatherService {
 
-    private static final String API_KEY = getApiKey();
-    private static final String BASE_URL = "https://api.openweathermap.org/data/2.5/weather";
-    private static final String FORECAST_URL = "https://api.openweathermap.org/data/2.5/forecast";
+    private static String apiKey;
+    private final String baseUrl;
+    private final String forecastUrl;
 
+    public WeatherService(String baseUrl, String forecastUrl) {
+        apiKey = getApiKey();
+        this.baseUrl = baseUrl;
+        this.forecastUrl = forecastUrl;
+    }
 
     /**
      * Fetches the API key from the properties file (very secure stuff)
@@ -46,12 +51,12 @@ public class WeatherService {
      * @param lon Longitude of location
      * @return Weather object with temperature, min/max, and description
      */
-    public static Weather getWeatherByCoords(double lat, double lon) {
+    public Weather getWeatherByCoords(double lat, double lon) {
         try {
             // Build the URL for the Current Weather API
             String urlStr = String.format(
                     "%s?lat=%f&lon=%f&units=metric&appid=%s",
-                    BASE_URL, lat, lon, API_KEY);
+                    baseUrl, lat, lon, apiKey);
             URL url = URI.create(urlStr).toURL();
 
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
@@ -87,11 +92,11 @@ public class WeatherService {
         }
     }
 
-    public static List<Weather> getFourDayForecast(double lat, double lon) {
+    public List<Weather> getFourDayForecast(double lat, double lon) {
         try {
             String urlStr = String.format(
                     "%s?lat=%f&lon=%f&units=metric&appid=%s",
-                    FORECAST_URL, lat, lon, API_KEY);
+                    forecastUrl, lat, lon, apiKey);
             URL url = URI.create(urlStr).toURL();
 
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
