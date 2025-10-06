@@ -51,6 +51,8 @@ public class ViewTrailController extends Controller {
     @FXML
     private Label descriptionLabel;
     @FXML
+    private Hyperlink culturalUrlHyperlink;
+    @FXML
     private Button editInfoButton;
     @FXML
     private HBox mapContainer;
@@ -90,6 +92,12 @@ public class ViewTrailController extends Controller {
             translationLabel.setVisible(true);
         } else {
             translationLabel.setVisible(false);
+        }
+        if (!trail.getCultureUrl().isEmpty()) {
+            culturalUrlHyperlink.setText(trail.getCultureUrl());
+            culturalUrlHyperlink.setVisible(true);
+        } else {
+            culturalUrlHyperlink.setVisible(false);
         }
         setupTrailRadiusFields();
     }
