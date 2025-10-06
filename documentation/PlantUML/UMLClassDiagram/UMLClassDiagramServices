@@ -10,24 +10,19 @@ package "services" {
     + getDefaultTrailImage() : Image
   }
 
-  class LogService <<to be implemented>>{
-    + LogService()
-    + addNewLog(trailLog : TrailLog) : void
-    + removeLogByID(id : int) : bool
-    + removeLogByName(name : String) : bool
-    + getLogBookCount() : int
+  class LogService {
+    + LogService(databaseService : DatabaseService)
+    + getNumberOfPages() : int
+    + updateLogs()
+    + getAllLogs() : List<TrailLog>
+    + addLog(trailLog : TrailLog)
+    + deleteLog(logId : int)
 }
 
-  class MapService <<to be implemented>>{
-    + MapService()
-    + loadMap() : void
-    + highlightTrail() : void
-  }
-
-  class WeatherService <<to be implemented>>{
-    + WeatherService()
-    + getCurrent(lat : double, lon : double) : String
-    + getTrailForecast(trail : Trail, periodOfDays : int) : List<String>
+  class WeatherService{
+    + WeatherService(apiKey : String, baseUrl : String, forecastUrl : String)
+    + getWeatherByCoords(lat : double, lon : double) : Weather
+    + getFourDayForecast(lat : double, lon : double) : List<Weather>
 }
 
   class MatchMakingService {
@@ -76,7 +71,9 @@ SearchService *-- DatabaseService
 MatchMakingService *-- DatabaseService
 UserService *-- DatabaseService
 SetupService *-- DatabaseService
-MapService *-- DatabaseService
+TrailService *-- DatabaseService
+RegionFinder *-- DatabaseService
 WeatherService *-- DatabaseService
 LogService *-- DatabaseService
 @enduml
+//TODO connect remaining services
