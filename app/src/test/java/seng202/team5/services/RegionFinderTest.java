@@ -1,15 +1,13 @@
 package seng202.team5.services;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-
 import java.util.Map;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeAll;
 import org.locationtech.jts.geom.Geometry;
 
 import seng202.team5.models.Trail;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 public class RegionFinderTest {
 
@@ -91,5 +89,26 @@ public class RegionFinderTest {
         String region = regionFinder.findRegionForTrail(null);
         assertNotNull(region);
         assertEquals(region, "Other");
+    }
+
+    @Test
+    public void testGetDocRegionIdBasic() {
+        assertEquals(3001000, regionFinder.getDocRegionId("Northland"));
+        assertEquals(3004000, regionFinder.getDocRegionId("Waikato"));
+        assertEquals(3012000, regionFinder.getDocRegionId("Wellington"));
+        assertEquals(3009000, regionFinder.getDocRegionId("Manawatu-Whanganui"));
+        assertNull(regionFinder.getDocRegionId("UnknownRegion"));
+    }
+
+    @Test
+    public void testGetDocRegionIdSpecialCharacters() {
+        assertEquals(3009000, regionFinder.getDocRegionId("Manawatū-Whanganui"));
+    }
+
+    @Test
+    public void testIsRemoteHutRegion() {
+        assertTrue(regionFinder.isRemoteHutRegion("West Coast"));
+        assertTrue(regionFinder.isRemoteHutRegion("Tasman"));
+        assertFalse(regionFinder.isRemoteHutRegion("Auckland"));
     }
 }
