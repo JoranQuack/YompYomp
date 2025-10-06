@@ -103,7 +103,7 @@ public class ViewTrailController extends Controller {
         new Thread(() -> {
             List<Weather> forecast = WeatherAPI.getFourDayForecast(trail.getLat(), trail.getLon());
             if (!forecast.isEmpty()) {
-                StringBuilder sb  = new StringBuilder("4 Day Forecast:");
+                StringBuilder sb  = new StringBuilder(" ");
                 for (Weather day : forecast) {
                     sb.append(String.format(
                             "%s: %.1f°C (min %.1f°C / max %.1f°C) — %s ",
