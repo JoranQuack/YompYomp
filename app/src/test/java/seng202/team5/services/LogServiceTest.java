@@ -95,10 +95,12 @@ public class LogServiceTest {
                 new Trail(703947, "Packhorse Hut Route", "Te Ara o te Pōkai", "Canterbury", "Advanced",
                         "One way", "Steady climb to historic hut", "Excellent views and well-maintained track.",
                         "thumb_phr.jpg", "https://example.com/packhorse", "https://example.com/culture/phr",
-                        4.6, -43.6400, 172.6400)
+                        4.6, -43.6400, 172.6400),
+                new Trail(703924, "Milford Track", "", "", "", "", "", "", "", "", "", 0, 0, 0)
         );
 
         when(mockLogInterface.getAllTrailLogs()).thenReturn(mockLogs);
+
         when(mockTrailRepo.getAllTrails()).thenReturn(mockTrails);
 
         when(mockTrailRepo.findById(anyInt())).thenAnswer(invocation -> {
@@ -106,6 +108,12 @@ public class LogServiceTest {
             return mockTrails.stream().filter(t -> t.getId() == id)
                     .findFirst();
         });
+
+        doAnswer(invocation -> {
+            TrailLog newLog = invocation.getArgument(0);
+            mockLogs.add(newLog);
+            return null;
+        }).when(mockLogInterface).upsert(any(TrailLog.class));
 
         //TODO update to use the ITrail interface when refactor has been done
         logService = new LogService(mockLogInterface, mockTrailRepo);
@@ -189,5 +197,24 @@ public class LogServiceTest {
 
         assertNotEquals(page1.getFirst().getId(), page2.getFirst().getId(), "Pages should not overlap");
     }
+
+    @Test
+    @DisplayName("Should return all the logs in the database")
+    void testGetAllLogs() {
+        logService.setMaxResults(10);
+        logService.setCurrentQuery("");
+        List<TrailLog> logs = logService.getAllLogs();
+        assertEquals(10, logs.size(), "Should return all 10 logs");
+    }
+
+    //test isnt working currently
+//    @Test
+//    @DisplayName("Should add the correct Trail log to the database")
+//    void testAddTrailLog() {
+//        TrailLog testLog = new TrailLog(11, 703924, LocalDate.of(2025, 10, 12), 2, "days", "One way", 5, "Expert", "Very hard trail");
+//        logService.addLog(testLog);
+//        List<TrailLog> logs = logService.getAllLogs();
+//        assertEquals(logs.get(-1), testLog, "New log should have been added");
+//    }
 
 }
