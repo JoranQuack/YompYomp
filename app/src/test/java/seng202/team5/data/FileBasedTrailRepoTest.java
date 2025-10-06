@@ -81,10 +81,10 @@ public class FileBasedTrailRepoTest {
     }
 
     @Test
-    @DisplayName("findById should return null (current implementation)")
-    void testFindByIdReturnsNull() {
+    @DisplayName("findById should return no results")
+    void testFindByIdReturnsEmpty() {
         Optional<Trail> result = validRepo.findById(1);
-        assertNull(result, "findById currently returns null as per implementation");
+        assertTrue(result.isEmpty());
     }
 
     @Test
