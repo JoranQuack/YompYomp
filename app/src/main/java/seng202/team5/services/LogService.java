@@ -83,6 +83,13 @@ public class LogService {
                 .collect(Collectors.toList());
     }
 
+    public Optional<TrailLog> getLogByTrailId(int trailId) {
+        return getAllLogs()
+                .stream()
+                .filter(log -> log.getTrailId() == trailId)
+                .findFirst();
+    }
+
     public void setCurrentQuery(String query) {
         currentSearchValue = query;
     }

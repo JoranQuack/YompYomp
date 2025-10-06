@@ -192,8 +192,10 @@ public class DashboardController extends Controller {
         );
 
         if (confirmed) {
-            logService.deleteLog(clickedTrail.getId());   //should be getting log id not trail id
-            trailCard.setBookmarked(false);
+            logService.getLogByTrailId(clickedTrail.getId()).ifPresent(log -> {
+                logService.deleteLog(log.getId());
+                trailCard.setBookmarked(false);
+            });
         }
     }
 
