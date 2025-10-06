@@ -83,6 +83,12 @@ public class LogService {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Gets a trail log by its trail id.
+     *
+     * @param trailId the trail id to search for
+     * @return the trail log, if it exists
+     */
     public Optional<TrailLog> getLogByTrailId(int trailId) {
         return getAllLogs()
                 .stream()
