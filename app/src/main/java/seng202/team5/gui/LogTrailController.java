@@ -229,7 +229,7 @@ public class LogTrailController extends Controller {
 
     @Override
     protected boolean shouldShowNavbar() {
-        return false;
+        return true;
     }
 
     @Override

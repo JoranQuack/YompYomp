@@ -509,17 +509,18 @@ public class TrailsController extends Controller {
 
             trailCard.setOnBookmarkFillClickedHandler(clickedTrail -> {
                 // TODO confirmation dialog
-                Alert confirm = new Alert(Alert.AlertType.CONFIRMATION);
-                confirm.setTitle("Delete Log");
-                confirm.setHeaderText("Are you sure you want to delete this log?");
-                confirm.setContentText("This action cannot be undone.");
+                boolean confirmed = showAlert(
+                        "Delete Log",  "Are you sure you want to delete this log?",
+                        "This action cannot be undone.", "Delete",
+                        "Cancel", "danger-button"
+                );
 
-                confirm.showAndWait().ifPresent(response -> {
-                    if (response == ButtonType.OK) {
-                        logService.deleteLog(clickedTrail.getId());
-                        trailCard.setBookmarked(false);
-                    }
-                });
+                if (confirmed) {
+                    logService.deleteLog(clickedTrail.getId());
+                    trailCard.setBookmarked(false);
+                } else {
+                    return;
+                }
                 List<TrailLog> logs = logService.getAllLogs();
                 logs.stream()
                     .filter(log -> log.getTrailId() == clickedTrail.getId())
