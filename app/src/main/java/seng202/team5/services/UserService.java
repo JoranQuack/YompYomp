@@ -2,11 +2,13 @@ package seng202.team5.services;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.List;
+import java.util.*;
 
 import seng202.team5.data.DatabaseService;
 import seng202.team5.data.QueryHelper;
 import seng202.team5.data.SqlBasedTrailRepo;
+import seng202.team5.exceptions.MatchmakingFailedException;
+import seng202.team5.models.Trail;
 import seng202.team5.models.User;
 
 public class UserService {
@@ -271,5 +273,32 @@ public class UserService {
         stmt.setInt(15, user.getWaterfallPreference());
         stmt.setBoolean(16, user.isProfileComplete());
         stmt.setString(17, user.getProfilePicture());
+    }
+
+    /**
+     * Returns a map of pairs category : count
+     * To be used for pie chart
+     * Will be updated later after trip logging is merged
+     */
+    public Map<String, Integer> getTrailStats() {
+        SqlBasedTrailRepo trailRepo = new SqlBasedTrailRepo(databaseService);
+        MatchmakingService matchmakingService = new MatchmakingService(databaseService);
+        List<Trail> recommendedTrails = trailRepo.getRecommendedTrails();
+        Map<String, Integer> trailStats = new HashMap<>();
+        for (Trail trail : recommendedTrails) {
+            try {
+                Set<String> categories = matchmakingService.categoriseTrail(trail);
+                for (String category : categories) {
+                    if (trailStats.containsKey(category)) {
+                        trailStats.put(category, trailStats.get(category) + 1);
+                    } else {
+                        trailStats.put(category, 1);
+                    }
+                }
+            } catch (MatchmakingFailedException e) {
+                System.out.println(e);
+            }
+        }
+        return trailStats;
     }
 }

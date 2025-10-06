@@ -191,12 +191,12 @@
                               </VBox>
                            </children>
                         </HBox>
-                        <HBox alignment="TOP_CENTER" spacing="20.0">
+                        <HBox spacing="20.0">
                            <VBox.margin>
                               <Insets />
                            </VBox.margin>
                            <children>
-                              <PieChart fx:id="logTrailPieChart" maxHeight="70.0" maxWidth="70.0" />
+                              <PieChart fx:id="pieChart" labelsVisible="false" maxHeight="100.0" maxWidth="100.0" />
                               <VBox spacing="10.0">
                                  <children>
                                     <HBox fx:id="legendLabelContainer1" spacing="5.0" />

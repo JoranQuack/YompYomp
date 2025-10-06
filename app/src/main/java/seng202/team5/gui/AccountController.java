@@ -1,5 +1,7 @@
 package seng202.team5.gui;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.chart.PieChart;
 import javafx.scene.control.Button;
@@ -8,11 +10,14 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import seng202.team5.gui.components.LegendLabelComponent;
 import seng202.team5.gui.components.NavbarComponent;
 import seng202.team5.models.Question;
 import seng202.team5.models.User;
 
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 public class AccountController extends Controller {
 
@@ -67,7 +72,7 @@ public class AccountController extends Controller {
     @FXML
     private Button deleteProfileButton;
     @FXML
-    private PieChart logTrailPieChart;
+    private PieChart pieChart;
     @FXML
     private HBox legendLabelContainer1;
     @FXML
@@ -110,6 +115,10 @@ public class AccountController extends Controller {
         } else {
             profileImage.setImage(new Image(user.getProfilePicture()));
         }
+
+        List<HBox> legendLabelContainers = List.of(legendLabelContainer1, legendLabelContainer2, legendLabelContainer3,
+                legendLabelContainer4, legendLabelContainer5);
+        setPieChart(legendLabelContainers);
 
         List<ImageView> optionImages = List.of(optionImage1, optionImage2, optionImage3, optionImage4,
                 optionImage5, optionImage6, optionImage7);
@@ -162,6 +171,34 @@ public class AccountController extends Controller {
         wildlifeLabel.setText(getPreferenceLabel(user.getWildlifePreference(), Question.EIGHT.sliderLabels));
         historicLabel.setText(getPreferenceLabel(user.getHistoricPreference(), Question.NINE.sliderLabels));
         waterfallLabel.setText(getPreferenceLabel(user.getWaterfallPreference(), Question.TEN.sliderLabels));
+    }
+
+    @FXML
+    private void setPieChart(List<HBox> legendLabelContainers) {
+        List<String> legendColours = List.of("008000", "8de45f", "ffff00", "ffa500", "ff0000");
+        Map<String, Integer> trailStats = getUserService().getTrailStats();
+        System.out.println(trailStats.size());
+        Map<String, Integer> sortedTrailStats = trailStats.entrySet().stream()
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+        ObservableList<PieChart.Data> pieChartData = FXCollections.observableArrayList();
+        int count = 0;
+        int otherCategoryCount = 0;
+        for (Map.Entry<String, Integer> entry : sortedTrailStats.entrySet()) {
+            if (count < 4) {
+                PieChart.Data slice = new PieChart.Data(entry.getKey(), entry.getValue());
+                pieChartData.add(slice);
+                LegendLabelComponent legendLabel = new LegendLabelComponent(legendColours.get(count), entry.getKey());
+                legendLabelContainers.get(count).getChildren().add(legendLabel);
+            } else {
+                otherCategoryCount += entry.getValue();
+            }
+            count++;
+        }
+        PieChart.Data otherSlice = new PieChart.Data("Other", otherCategoryCount);
+        pieChartData.add(otherSlice);
+        LegendLabelComponent otherLegendLabel = new LegendLabelComponent(legendColours.get(4), "Other");
+        legendLabelContainers.get(4).getChildren().add(otherLegendLabel);
+        pieChart.setData(pieChartData);
     }
 
     /**
