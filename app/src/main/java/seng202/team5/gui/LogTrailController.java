@@ -62,6 +62,8 @@ public class LogTrailController extends Controller {
     private TextArea noteTextArea;
     @FXML
     private Button doneButton;
+    @FXML
+    private Label errorLabel;
 
     /**
      * Initialises the screen with components for the user to input data
@@ -69,11 +71,16 @@ public class LogTrailController extends Controller {
     @FXML
     private void initialize() {
         setupFormFields();
+        if (errorLabel != null) {
+            errorLabel.setVisible(false);
+        }
         if (trail != null && trailLog != null) {
             populateFields();
         }
         backButton.setOnAction(event -> onBackButtonClicked());
         doneButton.setOnAction(event -> onDoneButtonClicked());
+
+        durationTextField.textProperty().addListener((obs, oldVal, newVal) -> clearErrors());
     }
 
     /**
@@ -125,8 +132,48 @@ public class LogTrailController extends Controller {
         return StringManipulator.capitaliseFirstLetter(type);
     }
 
+    private void clearErrors() {
+        durationTextField.setStyle("");
+        if (errorLabel != null) {
+            errorLabel.setVisible(false);
+        }
+    }
+
+    private void showError(Control control, String message) {
+        clearErrors();
+        control.setStyle("-fx-border-color: red");
+        if (errorLabel != null) {
+            errorLabel.setText(message);
+            errorLabel.setVisible(true);
+        }
+    }
+
+    private boolean validateFields() {
+        String durationText = durationTextField.getText().trim();
+        if (durationText.isEmpty()) {
+            showError(durationTextField, "Please enter a duration");
+            return false;
+        }
+
+        try {
+            int duration = Integer.parseInt(durationText);
+            if (duration <= 0) {
+                showError(durationTextField, "Duration must be a positive integer");
+                return false;
+            }
+        } catch (NumberFormatException e) {
+            showError(durationTextField, "Duration must be a valid number");
+            return false;
+        }
+
+        return true;
+    }
+
     @FXML
     private void onDoneButtonClicked() {
+        if (!validateFields()) {
+            return;
+        }
         trailLog.setStartDate(startDatePicker.getValue());
         trailLog.setCompletionTime(!durationTextField.getText().isEmpty() ?
                 Integer.parseInt(durationTextField.getText()) : null);
