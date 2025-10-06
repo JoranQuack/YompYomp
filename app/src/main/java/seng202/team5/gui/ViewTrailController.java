@@ -88,6 +88,7 @@ public class ViewTrailController extends Controller {
         setupEventHandlers();
         setupLegend();
         javafx.application.Platform.runLater(this::initMap);
+        weatherService = new WeatherService("https://api.openweathermap.org/data/2.5/weather", "https://api.openweathermap.org/data/2.5/forecast");
 
         new Thread(() -> {
             Weather weather = weatherService.getWeatherByCoords(trail.getLat(), trail.getLon());
@@ -102,7 +103,6 @@ public class ViewTrailController extends Controller {
         }).start();
 
         new Thread(() -> {
-            weatherService = new WeatherService("https://api.openweathermap.org/data/2.5/weather", "https://api.openweathermap.org/data/2.5/forecast");
             List<Weather> forecast = weatherService.getFourDayForecast(trail.getLat(), trail.getLon());
             if (!forecast.isEmpty()) {
                 StringBuilder sb  = new StringBuilder(" ");
