@@ -41,6 +41,18 @@ public class TrailsController extends Controller {
     private final List<TrailCardComponent> trailCardPool = new ArrayList<>();
 
     private boolean isUpdating = false;
+    private boolean isRestoringState = false;
+
+    // State preservation
+    private String savedSearchText = "";
+    private String savedSelectedPage = "1";
+    private String savedSortBy = null;
+    private boolean savedSortAscending = true;
+    private String savedRegionFilters = "Select All";
+    private String savedCompletionTypeFilters = "Select All";
+    private String savedTimeUnitFilters = "Select All";
+    private String savedDifficultyFilters = "Select All";
+    private double savedScrollPosition = 0.0;
 
     // FXML components
     @FXML
@@ -67,6 +79,8 @@ public class TrailsController extends Controller {
     private ToggleButton ascDescToggleButton;
     @FXML
     private Label resetButton;
+    @FXML
+    private javafx.scene.control.ScrollPane trailsScrollPane;
 
     /**
      * Creates a controller with navigator.
@@ -178,6 +192,12 @@ public class TrailsController extends Controller {
                     } else {
                         onFilterChanged();
                         updateSearchDisplay();
+                    }
+
+                    // page restoration after trails are loaded
+                    if (isRestoringState) {
+                        restorePageAndScrollPosition();
+                        isRestoringState = false;
                     }
                 });
             }
@@ -758,5 +778,145 @@ public class TrailsController extends Controller {
     @Override
     protected int getNavbarPageIndex() {
         return 1; // Trails is the second tab
+    }
+
+    /**
+     * Saves the current state of the trails controller
+     */
+    @Override
+    public void saveState() {
+        // search text
+        if (searchBarTextField != null) {
+            savedSearchText = searchBarTextField.getText() != null ? searchBarTextField.getText() : "";
+        }
+
+        // current page
+        if (pageChoiceBox != null && pageChoiceBox.getValue() != null) {
+            savedSelectedPage = pageChoiceBox.getValue();
+        }
+
+        // sort settings
+        if (sortChoiceBox != null && sortChoiceBox.getValue() != null) {
+            savedSortBy = sortChoiceBox.getValue();
+        }
+        if (ascDescToggleButton != null) {
+            savedSortAscending = ascDescToggleButton.isSelected();
+        }
+
+        // filter states
+        if (regionCheckComboBox != null) {
+            savedRegionFilters = getSelectedFilterValues(regionCheckComboBox);
+        }
+        if (completionTypeCheckComboBox != null) {
+            savedCompletionTypeFilters = getSelectedFilterValues(completionTypeCheckComboBox);
+        }
+        if (timeUnitCheckComboBox != null) {
+            savedTimeUnitFilters = getSelectedFilterValues(timeUnitCheckComboBox);
+        }
+        if (difficultyCheckComboBox != null) {
+            savedDifficultyFilters = getSelectedFilterValues(difficultyCheckComboBox);
+        }
+
+        // scroll position
+        if (trailsScrollPane != null) {
+            savedScrollPosition = trailsScrollPane.getVvalue();
+        }
+    }
+
+    /**
+     * Restores the previously saved state of the trails controller.
+     */
+    @Override
+    public void restoreState() {
+        if (searchService == null) {
+            return;
+        }
+
+        isRestoringState = true;
+        isUpdating = true;
+
+        // search text
+        if (searchBarTextField != null && savedSearchText != null) {
+            searchBarTextField.setText(savedSearchText);
+            searchService.setCurrentQuery(savedSearchText);
+        }
+
+        // sort settings
+        if (sortChoiceBox != null && savedSortBy != null) {
+            sortChoiceBox.setValue(savedSortBy);
+            searchService.setSortBy(savedSortBy.toLowerCase());
+        }
+        if (ascDescToggleButton != null) {
+            ascDescToggleButton.setSelected(savedSortAscending);
+            searchService.setSortAscending(savedSortAscending);
+            updateToggleButtonText();
+        }
+
+        // filter states
+        restoreCheckComboBoxState(regionCheckComboBox, savedRegionFilters);
+        restoreCheckComboBoxState(completionTypeCheckComboBox, savedCompletionTypeFilters);
+        restoreCheckComboBoxState(timeUnitCheckComboBox, savedTimeUnitFilters);
+        restoreCheckComboBoxState(difficultyCheckComboBox, savedDifficultyFilters);
+
+        // Apply filters
+        searchService.updateFilter("regions", savedRegionFilters);
+        searchService.updateFilter("completionType", savedCompletionTypeFilters);
+        searchService.updateFilter("timeUnit", savedTimeUnitFilters);
+        searchService.updateFilter("difficulty", savedDifficultyFilters);
+
+        isUpdating = false;
+
+        // The page restoration will happen in loadInitialDataAsync's success
+    }
+
+    /**
+     * Helper method to restore CheckComboBox state from saved filter string.
+     *
+     * @param checkComboBox The CheckComboBox to restore
+     * @param savedFilters  The saved filter string
+     */
+    private void restoreCheckComboBoxState(CheckComboBox<String> checkComboBox, String savedFilters) {
+        if (checkComboBox == null || savedFilters == null) {
+            return;
+        }
+
+        // Clear all selections
+        checkComboBox.getCheckModel().clearChecks();
+
+        if ("Select All".equals(savedFilters)) {
+            checkComboBox.getCheckModel().check("Select All");
+        } else {
+            // Check items
+            String[] filters = savedFilters.split(",");
+            for (String filter : filters) {
+                String trimmedFilter = filter.trim();
+                if (checkComboBox.getItems().contains(trimmedFilter)) {
+                    checkComboBox.getCheckModel().check(trimmedFilter);
+                }
+            }
+        }
+    }
+
+    /**
+     * Restores the page selection and scroll position AFTER trails load in
+     * otherwise issues happen.
+     */
+    private void restorePageAndScrollPosition() {
+        // page selection
+        if (pageChoiceBox != null && savedSelectedPage != null) {
+            isUpdating = true;
+            pageChoiceBox.setValue(savedSelectedPage);
+            onPageSelected();
+            isUpdating = false;
+        }
+
+        // scroll position after short delay
+        if (trailsScrollPane != null) {
+            Platform.runLater(() -> {
+                Platform.runLater(() -> { // Double runLater to ensure UI is done loading
+                    trailsScrollPane.setVvalue(savedScrollPosition);
+                });
+            });
+        }
     }
 }

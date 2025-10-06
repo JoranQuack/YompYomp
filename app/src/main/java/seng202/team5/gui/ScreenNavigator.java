@@ -68,6 +68,11 @@ public class ScreenNavigator {
     public void launchScreen(Controller controller) {
 
         try {
+            if (!isBack && !history.isEmpty()) {
+                Controller currentController = history.peek();
+                currentController.saveState();
+            }
+
             FXMLLoader setupLoader = new FXMLLoader(getClass().getResource(controller.getFxmlFile()));
             setupLoader.setControllerFactory(param -> controller);
             Parent setupParent = setupLoader.load();
@@ -90,9 +95,10 @@ public class ScreenNavigator {
 
             stage.setTitle(controller.getTitle());
 
-            if (!isBack) {
+            if (!isBack && controller.shouldShowNavbar()) {
                 history.push(controller);
             } else {
+                controller.restoreState();
                 isBack = false;
             }
         } catch (IOException e) {
@@ -100,6 +106,9 @@ public class ScreenNavigator {
         }
     }
 
+    /**
+     * Navigates back to the previous screen in the history.
+     */
     public void goBack() {
         isBack = true;
         if (!history.isEmpty()) {
@@ -108,9 +117,17 @@ public class ScreenNavigator {
 
         if (!history.isEmpty()) {
             Controller previous = history.peek();
-            System.out.println(previous.getTitle());
             launchScreen(previous);
         }
+    }
+
+    /**
+     * Returns if there is a previous screen in the history.
+     *
+     * @return true if there is a previous screen
+     */
+    public boolean hasPreviousScreen() {
+        return !history.isEmpty();
     }
 
     public Stage getPrimaryStage() {

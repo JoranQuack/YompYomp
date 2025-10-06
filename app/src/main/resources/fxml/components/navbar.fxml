@@ -8,11 +8,16 @@
 
 <fx:root alignment="CENTER_LEFT" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minWidth="600.0" spacing="10.0" styleClass="navbar-root" stylesheets="@../../styles/global.css" type="HBox" xmlns="http://javafx.com/javafx/21.0.2" xmlns:fx="http://javafx.com/fxml/1">
    <children>
-      <HBox prefWidth="100.0">
+      <HBox alignment="CENTER_LEFT" prefWidth="100.0" spacing="10.0">
          <children>
             <ImageView fitHeight="40.0" fitWidth="40.0" onMousePressed="#onLogoClicked" pickOnBounds="true" preserveRatio="true" styleClass="special-button">
                <image>
                   <Image url="@../../images/YompYompIcon.png" />
+               </image>
+            </ImageView>
+            <ImageView fx:id="backButton" fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true" styleClass="special-button">
+               <image>
+                  <Image url="@../../images/back.png" />
                </image>
             </ImageView>
          </children>
