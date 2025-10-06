@@ -20,13 +20,7 @@ public class SearchService {
             "completionType", "All types",
             "timeUnit", "All durations",
             "difficulty", "All difficulties",
-            "multiDay", "Any time range");
-
-    /**
-     * Predefined difficulty order for sorting.
-     */
-    private static final List<String> DIFFICULTY_ORDER = List.of(
-            "easiest", "easy", "intermediate", "advanced", "expert");
+            "regions", "All regions");
 
     private final SqlBasedFilterOptionsRepo filterOptionsRepo;
 
@@ -57,7 +51,6 @@ public class SearchService {
         this.filteredTrails = trails;
         this.filters = new HashMap<>();
     }
-
 
     /**
      * Calculates the total number of pages required to display the currently
@@ -104,7 +97,7 @@ public class SearchService {
     }
 
     /**
-     * Checks if a trail matches all current filters.
+     * Checks if a trail matches all current filters, strictly
      */
     private boolean matchesAllFilters(Trail trail) {
         String query = filters.get("query");
@@ -113,58 +106,80 @@ public class SearchService {
             return false;
         }
 
-        String completionType = filters.get("completionType");
-        if (completionType != null && !completionType.equals("All types") &&
-                !trail.getCompletionType().equalsIgnoreCase(completionType)) {
+        if (!matchesFilter("completionType", filters.get("completionType"), trail.getCompletionType())) {
             return false;
         }
 
-        String timeUnit = filters.get("timeUnit");
-        if (timeUnit != null && !timeUnit.equals("All durations") &&
-                !trail.getTimeUnit().equalsIgnoreCase(timeUnit)) {
+        if (!matchesFilter("timeUnit", filters.get("timeUnit"), trail.getTimeUnit())) {
             return false;
         }
 
-        String difficulty = filters.get("difficulty");
-        if (difficulty != null && !difficulty.equals("All difficulties") &&
-                !trail.getDifficulty().equalsIgnoreCase(difficulty)) {
+        if (!matchesFilter("difficulty", filters.get("difficulty"), trail.getDifficulty())) {
             return false;
         }
 
-        String multiDay = filters.get("multiDay");
-        if (multiDay != null && !multiDay.equals("Any time range")) {
-            boolean isMultiDay = trail.isMultiDay();
-            if (multiDay.equals("Multi-day") && !isMultiDay)
-                return false;
-            if (multiDay.equals("Day walk") && isMultiDay)
-                return false;
-        }
-
-        String regions = filters.get("regions");
-        if (regions != null && !regions.isEmpty()) {
-            List<String> selectedRegions = List.of(regions.split(","));
-            String trailRegion = trail.getRegion();
-            if (trailRegion != null && !trailRegion.isEmpty()) {
-                boolean regionMatch = false;
-                for (String selectedRegion : selectedRegions) {
-                    if (selectedRegion.trim().equalsIgnoreCase(trailRegion)) {
-                        regionMatch = true;
-                        break;
-                    }
-                }
-                if (!regionMatch) {
-                    return false;
-                }
-            } else {
-                boolean otherSelected = selectedRegions.stream()
-                        .anyMatch(region -> region.trim().equalsIgnoreCase("Other"));
-                if (!otherSelected) {
-                    return false;
-                }
-            }
+        if (!matchesRegionFilter(filters.get("regions"), trail.getRegion())) {
+            return false;
         }
 
         return true;
+    }
+
+    /**
+     * Checks if a trail attribute matches the selected filter values.
+     */
+    private boolean matchesFilter(String filterType, String filterValue, String trailValue) {
+        if (filterValue == null) {
+            return true; // No filter applied
+        }
+
+        if (filterValue.isEmpty()) {
+            return false; // Empty filter means exclude all
+        }
+
+        List<String> selectedValues = List.of(filterValue.split(","));
+
+        // If "Select All" is in the selected values, allow all trails through
+        if (selectedValues.stream().anyMatch(selected -> selected.trim().equals("Select All"))) {
+            return true;
+        }
+
+        String defaultValue = DEFAULT_VALUES.get(filterType);
+        if (defaultValue != null && selectedValues.stream()
+                .anyMatch(selected -> selected.trim().equalsIgnoreCase(defaultValue))) {
+            return true; // include all the trails
+        }
+
+        return selectedValues.stream()
+                .anyMatch(selected -> selected.trim().equalsIgnoreCase(trailValue));
+    }
+
+    /**
+     * Checks if a trail's region matches the selected region filter values.
+     */
+    private boolean matchesRegionFilter(String regionFilter, String trailRegion) {
+        if (regionFilter == null) {
+            return true; // No filter applied
+        }
+
+        if (regionFilter.isEmpty()) {
+            return false; // Empty filter means exclude all
+        }
+
+        List<String> selectedRegions = List.of(regionFilter.split(","));
+
+        // If "Select All" is in the selected regions, allow all trails through
+        if (selectedRegions.stream().anyMatch(selected -> selected.trim().equals("Select All"))) {
+            return true;
+        }
+
+        if (trailRegion != null && !trailRegion.isEmpty()) {
+            return selectedRegions.stream()
+                    .anyMatch(selected -> selected.trim().equalsIgnoreCase(trailRegion));
+        } else {
+            return selectedRegions.stream()
+                    .anyMatch(region -> region.trim().equalsIgnoreCase("Other"));
+        }
     }
 
     /**
@@ -233,9 +248,10 @@ public class SearchService {
      * Gets a comparator for sorting by difficulty level.
      */
     private Comparator<Trail> getDifficultyComparator() {
+        List<String> difficultyOrder = getDifficultyOrder();
         return Comparator.comparing(trail -> {
             String difficulty = trail.getDifficulty().toLowerCase();
-            int index = DIFFICULTY_ORDER.indexOf(difficulty);
+            int index = difficultyOrder.indexOf(difficulty);
             return index == -1 ? 999 : index;
         });
     }
@@ -327,9 +343,9 @@ public class SearchService {
     }
 
     /**
-     * Gets the difficulty order for UI components.
+     * Gets the difficulty order for UI components from the database.
      */
-    public static List<String> getDifficultyOrder() {
-        return DIFFICULTY_ORDER;
+    public List<String> getDifficultyOrder() {
+        return filterOptionsRepo.getFilterOptions("difficulty");
     }
 }

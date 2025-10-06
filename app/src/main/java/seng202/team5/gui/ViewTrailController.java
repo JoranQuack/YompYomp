@@ -25,9 +25,9 @@ import java.util.List;
  * Controller for the view trail screen
  */
 public class ViewTrailController extends Controller {
-    private Trail trail;
+    private final Trail trail;
     private TrailService trailService;
-    private SqlBasedTrailRepo sqlBasedTrailRepo;
+    private final SqlBasedTrailRepo sqlBasedTrailRepo;
 
     private WebEngine webEngine;
     private JavaScriptBridge javaScriptBridge;
@@ -160,7 +160,7 @@ public class ViewTrailController extends Controller {
      * Initialises the trail card at the top of the screen
      */
     private void initTrailCard() {
-        TrailCardComponent trailCard = new TrailCardComponent(super.getUserService().isGuest());
+        TrailCardComponent trailCard = new TrailCardComponent(super.getUserService().isGuest(), true);
         trailCard.setData(trail);
         trailCardHBox.getChildren().add(trailCard);
     }
@@ -190,7 +190,6 @@ public class ViewTrailController extends Controller {
         mapContainer.getChildren().add(trailMapWebView);
 
         webEngine = trailMapWebView.getEngine();
-
         webEngine.setJavaScriptEnabled(true);
 
         WebConsoleListener.setDefaultListener((view, message, lineNumber, sourceID) -> System.out
@@ -324,8 +323,8 @@ public class ViewTrailController extends Controller {
      */
     @Override
     public void onLoadFailed(Exception e) {
-        showAlert(Alert.AlertType.ERROR, "Trail Card Failed To Load",
-                "Loading selected trail failed, please close the application and try " +
-                        "again.");
+        showAlert("Trail Card Failed To Load",
+                "Loading selected trail failed, please close the application and try again.",
+                "OK", "Cancel", null, null);
     }
 }
