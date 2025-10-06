@@ -8,6 +8,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.control.Tooltip;
 import javafx.scene.layout.HBox;
 import seng202.team5.data.SqlBasedTrailRepo;
 import seng202.team5.gui.*;
@@ -18,6 +19,8 @@ public class NavbarComponent extends HBox {
     private List<Button> navButtons;
 
     // Components
+    @FXML
+    private ImageView backButton;
     @FXML
     private Button homeButton;
     @FXML
@@ -67,6 +70,13 @@ public class NavbarComponent extends HBox {
         navButtons = List.of(homeButton, trailsButton);
         homeButton.setOnAction(e -> navigator.launchScreen(new DashboardController(navigator)));
         trailsButton.setOnAction(e -> navigator.launchScreen(new TrailsController(navigator, sqlBasedTrailRepo)));
+        if (navigator.hasPreviousScreen()) {
+            backButton.setOnMouseClicked(e -> navigator.goBack());
+            backButton.setVisible(true);
+            Tooltip.install(backButton, new Tooltip("Go Back"));
+        } else {
+            backButton.setVisible(false);
+        }
     }
 
     /**
