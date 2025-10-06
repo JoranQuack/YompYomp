@@ -9,7 +9,7 @@ public enum Question {
     SIX("Importance of coast on tramp?", new String[]{"Not important", "Nice to have", "Must-have"}),
     SEVEN("Preferred kind of mountain environment?", new String[]{"Lowland", "Mixed", "Alpine focus"}),
     EIGHT("Importance of wildlife/birdlife on tramp?", new String[]{"Not important", "Nice to have", "Must-have"}),
-    NINE("Importance of historic features on tramp?", new String[]{"Not important", "Nice to have", "Must-have"}),
+    NINE("Importance of historic/cultural features on tramp?", new String[]{"Not important", "Nice to have", "Must-have"}),
     TEN("Importance of waterfalls on tramp?", new String[]{"Not important", "Nice to have", "Must-have"});
 
     public final String question;
