@@ -51,12 +51,19 @@ package "data" {
     + getKeywords() : Map<String, List<String>>
   }
 
-  class SqlBasedLogRepo <<to be implemented>> {
+  class SqlBasedLogRepo {
     + SqlBasedLogRepo(databaseService : DatabaseService)
     + getAllLogs() : List<TrailLog>
     + findById(id : int) : Optional<TrailLog>
     + deleteById(id : int) : void
     + upsert(trailLog : TrailLog) : void
+  }
+
+  class SqlBasedFilterOptionsRepo {
+    + SqlBasedFilterOptionsRepo(databaseService : DatabaseService)
+    + getFilterOptions(filterType : String) : List<String>
+    + refreshAllFilterOptions()
+    + refreshRegionOptions()
   }
 }
 
@@ -70,4 +77,5 @@ SqlBasedKeywordRepo   ..|> IKeyword
 SqlBasedTrailRepo     *-- QueryHelper
 SqlBasedKeywordRepo   *-- QueryHelper
 SqlBasedLogRepo     *-- QueryHelper
+SqlBasedFilterOptionsRepo *-- QueryHelper
 @enduml
