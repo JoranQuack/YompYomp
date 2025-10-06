@@ -132,6 +132,7 @@ public class DashboardController extends Controller {
 
     /**
      * Creates the trail card for a specific trail
+     *
      * @param trail The trail that the card needs to be created for
      * @return the Trail card
      */
@@ -146,6 +147,7 @@ public class DashboardController extends Controller {
 
     /**
      * Sets up all the events for a given trail card
+     *
      * @param trailCard The card that needs to be set up
      * @param trail The respective trail
      */
@@ -158,6 +160,7 @@ public class DashboardController extends Controller {
 
     /**
      * Handles when a user bookmarks a trail
+     *
      * @param clickedTrail the trail that the user wants to bookmark
      */
     private void handleBookmarkClick(Trail clickedTrail) {
@@ -178,6 +181,7 @@ public class DashboardController extends Controller {
 
     /**
      * Handles when a user clicks on the filled bookmark icon (to unfill)
+     *
      * @param clickedTrail The trail that was clicked on
      * @param trailCard The respective card that was clicked on
      */
@@ -192,13 +196,16 @@ public class DashboardController extends Controller {
         );
 
         if (confirmed) {
-            logService.deleteLog(clickedTrail.getId());   //should be getting log id not trail id
-            trailCard.setBookmarked(false);
+            logService.getLogByTrailId(clickedTrail.getId()).ifPresent(log -> {
+                logService.deleteLog(log.getId());
+                trailCard.setBookmarked(false);
+            });
         }
     }
 
     /**
      * Handles when a user clicks on the trash button, on a log card
+     *
      * @param clickedLog The log that was clicked on
      * @param trailCard The respective card
      */
