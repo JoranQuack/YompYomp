@@ -16,8 +16,11 @@ import netscape.javascript.JSObject;
 import seng202.team5.data.SqlBasedTrailRepo;
 import seng202.team5.gui.components.TrailCardComponent;
 import seng202.team5.models.Trail;
+import seng202.team5.services.RegionFinder;
 import seng202.team5.services.TrailService;
 
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 /**
@@ -27,6 +30,7 @@ public class ViewTrailController extends Controller {
     private final Trail trail;
     private TrailService trailService;
     private final SqlBasedTrailRepo sqlBasedTrailRepo;
+    private RegionFinder regionFinder;
 
     private WebEngine webEngine;
     private JavaScriptBridge javaScriptBridge;
@@ -71,6 +75,10 @@ public class ViewTrailController extends Controller {
     private Label advancedColourLabel;
     @FXML
     private Label expertColourLabel;
+    @FXML
+    private Hyperlink docHutsLink;
+    @FXML
+    private Hyperlink remoteHutsLink;
     private WebView trailMapWebView;
 
     /**
@@ -276,12 +284,52 @@ public class ViewTrailController extends Controller {
     }
 
     /**
-     * opens a page for a given trail
+     * Opens a page for a given trail
      *
      * @param trail the trail whose page will be opened
      */
     public void openTrailInfo(Trail trail) {
         super.getNavigator().launchScreen(new ViewTrailController(super.getNavigator(), trail, sqlBasedTrailRepo));
+    }
+
+    private void setupHutLinks() {
+        // Consulted Oracle documentation for hyperlink and chatgpt for formatting of these urls
+        RegionFinder regionFinder = new RegionFinder();
+        String region = regionFinder.findRegionForTrail(trail);
+        String difficulty = trail.getDifficulty().toLowerCase();
+
+        String baseDocUrl = "https://www.doc.govt.nz/parks-and-recreation/places-to-stay/stay-in-a-hut/";
+        if (!region.equals("Other")) {
+            String regionParam = region.toLowerCase().replace(" ", "-");
+            docHutsLink.setText("View DOC Huts in " + region);
+            docHutsLink.setOnAction(e -> super.getNavigator().openWebPage(baseDocUrl + "?region=" + regionParam + "/"));
+            docHutsLink.setVisible(true);
+        } else {
+            docHutsLink.setVisible(false);
+        }
+
+        boolean isRemoteRegion = isRemoteHutRegion(region);
+        if (isRemoteRegion && (difficulty.contains("advanced") || difficulty.contains("expert"))) {
+            remoteHutsLink.setText("View Remote Huts");
+            remoteHutsLink.setOnAction(e -> super.getNavigator().openWebPage("\"https://www.remotehuts.co.nz/by-map.html"));
+            remoteHutsLink.setVisible(true);
+        } else {
+            remoteHutsLink.setVisible(false);
+        }
+    }
+
+    private boolean isRemoteHutRegion(String region) {
+        return region.equalsIgnoreCase("West Coast")
+                || region.equalsIgnoreCase("East Coast")
+    }
+
+    /**
+     * Gets the region of the trail being viewed.
+     *
+     * @return the region of the trail being viewed.
+     */
+    private String getTrailRegion() {
+        return regionFinder.findRegionForTrail(trail);
     }
 
     @FXML
