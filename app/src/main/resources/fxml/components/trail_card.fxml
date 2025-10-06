@@ -11,7 +11,7 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 
-<fx:root prefWidth="300.0" spacing="8" stylesheets="@../../styles/global.css" type="javafx.scene.layout.VBox" xmlns="http://javafx.com/javafx/21.0.2" xmlns:fx="http://javafx.com/fxml/1">
+<fx:root fx:id="trailCardContainer" prefWidth="300.0" spacing="8" stylesheets="@../../styles/global.css" type="javafx.scene.layout.VBox" xmlns="http://javafx.com/javafx/21.0.2" xmlns:fx="http://javafx.com/fxml/1">
    <HBox fx:id="thumbnailContainer" prefHeight="180.0" styleClass="round-top" VBox.vgrow="NEVER">
       <children>
 
@@ -74,8 +74,7 @@
                <Insets bottom="10.0" top="5.0" />
             </padding>
          </FlowPane>
-
-          <StackPane fx:id="matchContainer">
+          <StackPane fx:id="matchContainer" alignment="BOTTOM_CENTER">
               <ProgressBar fx:id="matchBar" maxWidth="Infinity" progress="0.0" />
               <Label fx:id="matchLabel" styleClass="text-light" text="0% Match" />
             <FlowPane fx:id="attributesFlowPane1" hgap="5.0" vgap="5.0">

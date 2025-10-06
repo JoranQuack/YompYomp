@@ -276,8 +276,27 @@ public class CompletionTimeParser {
     public static String formatTimeRange(int minMinutes, int maxMinutes) {
         if (minMinutes == maxMinutes) {
             return formatMinutesToString(minMinutes);
+        }
+
+        String minFormatted = formatMinutesToString(minMinutes);
+        String maxFormatted = formatMinutesToString(maxMinutes);
+
+        // Check if both times have the same unit
+        String[] minParts = minFormatted.split(" ");
+        String[] maxParts = maxFormatted.split(" ");
+        String minUnit = minParts[minParts.length - 1];
+        String maxUnit = maxParts[maxParts.length - 1];
+
+        // remove 's' if present
+        String normalizedMinUnit = minUnit.endsWith("s") ? minUnit.substring(0, minUnit.length() - 1) : minUnit;
+        String normalizedMaxUnit = maxUnit.endsWith("s") ? maxUnit.substring(0, maxUnit.length() - 1) : maxUnit;
+
+        // only show the number for min time
+        if (normalizedMinUnit.equals(normalizedMaxUnit)) {
+            return minParts[0] + " - " + maxFormatted;
         } else {
-            return formatMinutesToString(minMinutes) + " - " + formatMinutesToString(maxMinutes);
+            // If different, show full format for both
+            return minFormatted + " - " + maxFormatted;
         }
     }
 

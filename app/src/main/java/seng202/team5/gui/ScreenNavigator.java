@@ -37,8 +37,8 @@ public class ScreenNavigator {
         Scene scene = new Scene(rootPane, 1300, 900);
         stage.setScene(scene);
 
-        stage.setMinWidth(800);
-        stage.setMinHeight(600);
+        stage.setMinWidth(1010);
+        stage.setMinHeight(800);
 
         stage.setResizable(true);
         rootPane.prefWidthProperty().bind(scene.widthProperty());
@@ -111,5 +111,9 @@ public class ScreenNavigator {
             System.out.println(previous.getTitle());
             launchScreen(previous);
         }
+    }
+
+    public Stage getPrimaryStage() {
+        return stage;
     }
 }

@@ -36,9 +36,9 @@ public class ProfileSetupGeneralController extends Controller {
     @FXML
     private Button continueButton;
     @FXML
-    private Label usernameLabel;
+    private Button skipSetupButton;
     @FXML
-    private Label regionLabel;
+    private Label usernameLabel;
     @FXML
     private CheckBox familyFriendlyCheckBox;
     @FXML
@@ -60,6 +60,7 @@ public class ProfileSetupGeneralController extends Controller {
 
         RegionFinder regionFinder = new RegionFinder();
         List<String> regionList = regionFinder.getRegionNames();
+        regionList.remove("Other");
         regionCheckComboBox.getItems().addAll(regionList);
 
         if (user != null) {
@@ -79,6 +80,7 @@ public class ProfileSetupGeneralController extends Controller {
         }
 
         continueButton.setOnAction(e -> onContinueButtonClicked());
+        skipSetupButton.setOnAction(e -> onSkipSetupButtonClicked());
     }
 
     /**
@@ -92,6 +94,18 @@ public class ProfileSetupGeneralController extends Controller {
         if (isNameValid) {
             super.getNavigator().launchScreen(new ProfileQuizController(super.getNavigator(), 1, user));
         }
+    }
+
+    /**
+     * Action method of skipSetupButton
+     * Skips profile setup quiz
+     * Default to previous profile if one has been made prior, else continues as
+     * guest
+     */
+    @FXML
+    private void onSkipSetupButtonClicked() {
+        user = super.getUserService().getUserAfterSkip();
+        super.getNavigator().launchScreen(new LoadingController(super.getNavigator(), null));
     }
 
     /**

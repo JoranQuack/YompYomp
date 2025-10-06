@@ -71,8 +71,8 @@ public class CompletionTimeParserTest {
     @Test
     @DisplayName("Should format time range with different start and end times correctly")
     public void testFormatTimeRange_differentTimes() {
-        String result = CompletionTimeParser.formatTimeRange(30, 60);
-        assertEquals("30 min - 1 hr", result);
+        String result = CompletionTimeParser.formatTimeRange(60, 120);
+        assertEquals("1 - 2 hrs", result);
     }
 
     @Test

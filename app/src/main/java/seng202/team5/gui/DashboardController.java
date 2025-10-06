@@ -6,10 +6,7 @@ import java.util.List;
 
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.FlowPane;
@@ -41,6 +38,9 @@ public class DashboardController extends Controller {
 
     @FXML
     private TextField searchBarTextField;
+
+    @FXML
+    private Hyperlink DOCLink;
 
     /**
      * Default constructor required by JavaFX FXML loading.
@@ -90,6 +90,8 @@ public class DashboardController extends Controller {
                 event.consume();
             }
         });
+
+        DOCLink.setOnAction(e -> super.getNavigator().openWebPage("https://www.doc.govt.nz/"));
     }
 
     @FXML
@@ -117,7 +119,7 @@ public class DashboardController extends Controller {
         trailsContainer.getChildren().clear();
 
         for (Trail trail : trails) {
-            TrailCardComponent trailCard = new TrailCardComponent(super.getUserService().isGuest(), false);
+            TrailCardComponent trailCard = new TrailCardComponent(super.getUserService().isGuest(), false, false);
             trailCard.setData(trail, null);
             trailCard.setTrail(trail);
 

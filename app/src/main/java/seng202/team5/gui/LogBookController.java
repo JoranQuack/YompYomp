@@ -323,8 +323,14 @@ public class LogBookController extends Controller {
 
     @Override
     public void onLoadFailed(Exception e) {
-        showAlert(Alert.AlertType.ERROR, "Log Book Failed To Load",
-                "Logbook failed to load, please close and reload " +
-                        "the application");
+        showAlert(
+                "Log Book Failed To Load",
+                "Error",
+                "Logbook failed to load, please close and reload the application.",
+                "OK",
+                null,
+                "error-button"
+        );
+
     }
 }

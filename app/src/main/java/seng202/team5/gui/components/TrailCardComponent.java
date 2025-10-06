@@ -27,6 +27,8 @@ public class TrailCardComponent extends VBox {
 
     // UI Components
     @FXML
+    private VBox trailCardContainer;
+    @FXML
     private ImageView thumbnail;
     @FXML
     private Label title;
@@ -74,14 +76,11 @@ public class TrailCardComponent extends VBox {
     private boolean logMode;
     private boolean inLogBook = false;
     private boolean bookmarked = false;
+    private boolean isSingle;
 
-    /**
-     * Constructor for the trail card component.
-     * @param isUnmatched
-     * @param logMode
-     */
-    public TrailCardComponent(boolean isUnmatched, boolean logMode) {
+    public TrailCardComponent(boolean isUnmatched, boolean isSingle, boolean logMode) {
         this.isUnmatched = isUnmatched;
+        this.isSingle = isSingle;
         this.logMode = logMode;
         this.imageService = new ImageService();
 
@@ -178,15 +177,8 @@ public class TrailCardComponent extends VBox {
      * @param trail
      */
     private String formatCompletionTime(Trail trail) {
-        if (trail.getMinCompletionTimeMinutes() == trail.getMaxCompletionTimeMinutes()) {
-            return StringManipulator.capitaliseFirstLetter(
-                    CompletionTimeParser.formatMinutesToString(trail.getMinCompletionTimeMinutes()));
-        }
-        return StringManipulator.capitaliseFirstLetter(
-                CompletionTimeParser.formatMinutesToString(trail.getMinCompletionTimeMinutes()))
-                + " - "
-                + StringManipulator.capitaliseFirstLetter(
-                        CompletionTimeParser.formatMinutesToString(trail.getMaxCompletionTimeMinutes()));
+        return CompletionTimeParser.formatTimeRange(trail.getMinCompletionTimeMinutes(),
+                trail.getMaxCompletionTimeMinutes());
     }
 
     /**
@@ -203,7 +195,13 @@ public class TrailCardComponent extends VBox {
 
         resetComponentVisibility();
 
+        if (!isSingle) {
+            trailCardContainer.getStyleClass().add("hoverable");
+        }
+
         title.setText(trail.getName());
+        title.setWrapText(isSingle);
+
         Image trailImage = imageService.loadTrailImage(trail.getThumbnailURL());
         thumbnail.setImage(trailImage);
 
@@ -299,7 +297,6 @@ public class TrailCardComponent extends VBox {
                bookmarkFill.setVisible(false);
             }
 
-            // durationLabel.setText(StringManipulator.capitaliseFirstLetter();
         }
 
     }
