@@ -204,23 +204,29 @@ public class LogBookController extends Controller {
                 logContainer.getChildren().add(logCard);
 
                 logCard.setOnTrashClickedHandler(logTrail -> {
-                    Alert confirm = new Alert(Alert.AlertType.CONFIRMATION);
-                    confirm.setTitle("Delete Log");
-                    confirm.setHeaderText("Are you sure you want to delete this log?");
-                    confirm.setContentText("This action cannot be undone.");
+                    boolean confirmed = showAlert(
+                            "Delete Log", "Are you sure you want to delete this log?",
+                            "This action cannot be undone.", "Delete", "Cancel",
+                            "danger-button"
+                    );
 
-                    confirm.showAndWait().ifPresent(response -> {
-                        if (response == ButtonType.OK) {
-                            logService.deleteLog(logTrail.getId());
-                            System.out.println(logService.countLogs());
-                            logContainer.getChildren().remove(logCard);
-                            resultsLabel.setText(logContainer.getChildren().size() + "/" + logService.countLogs() + " trails showing");
-                            updateLogsDisplay(logService.getAllLogs());
-                            if (logService.getAllLogs().isEmpty()) {
-                                handleInitializationFailure();
-                            }
-                        }
-                    });
+                    if (!confirmed) {
+                        return;
+                    }
+
+                    logService.deleteLog(logTrail.getId());
+                    System.out.println(logService.countLogs());
+
+                    logContainer.getChildren().remove(logCard);
+
+                    resultsLabel.setText(
+                            logContainer.getChildren().size() + "/" + logService.countLogs() + " trails showing");
+
+                    updateLogsDisplay(logService.getAllLogs());
+
+                    if (logService.getAllLogs().isEmpty()) {
+                        handleInitializationFailure();
+                    }
                 });
             }
         }
