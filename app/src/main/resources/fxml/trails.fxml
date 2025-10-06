@@ -12,7 +12,6 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.FlowPane?>
 <?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
@@ -72,9 +71,9 @@
       </HBox>
       <StackPane VBox.vgrow="ALWAYS">
          <children>
-      
+
             <!-- Trails container -->
-            <ScrollPane fitToWidth="true">
+            <ScrollPane fx:id="trailsScrollPane" fitToWidth="true">
                <content>
                   <FlowPane fx:id="trailsContainer" alignment="CENTER" columnHalignment="CENTER" hgap="15.0" prefWrapLength="0.0" vgap="15.0">
                      <padding>
@@ -83,22 +82,21 @@
                   </FlowPane>
                </content>
             </ScrollPane>
-            <Pane maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="70.0" prefWidth="70.0" StackPane.alignment="BOTTOM_RIGHT">
-               <children>
-                  <Button fx:id="plusButton" alignment="CENTER_RIGHT" mnemonicParsing="false" onAction="#onAddTrailButtonClicked" styleClass="bg-pinky">
-                     <graphic>
-                        <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
-                           <image>
-                              <Image url="@../images/plus.png" />
-                           </image>
-                        </ImageView>
-                     </graphic>
-                     <padding>
-                        <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
-                     </padding>
-                  </Button>
-               </children>
-            </Pane>
+            <Button fx:id="plusButton" alignment="CENTER_RIGHT" mnemonicParsing="false" onAction="#onAddTrailButtonClicked" styleClass="bg-pinky" text="Add Trail" StackPane.alignment="BOTTOM_RIGHT">
+               <graphic>
+                  <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../images/plus.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+               <padding>
+                  <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
+               </padding>
+               <StackPane.margin>
+                  <Insets bottom="20.0" right="20.0" />
+               </StackPane.margin>
+            </Button>
          </children>
       </StackPane>
    </children>

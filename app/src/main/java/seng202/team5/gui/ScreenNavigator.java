@@ -37,8 +37,8 @@ public class ScreenNavigator {
         Scene scene = new Scene(rootPane, 1300, 900);
         stage.setScene(scene);
 
-        stage.setMinWidth(800);
-        stage.setMinHeight(600);
+        stage.setMinWidth(1010);
+        stage.setMinHeight(800);
 
         stage.setResizable(true);
         rootPane.prefWidthProperty().bind(scene.widthProperty());
@@ -68,6 +68,11 @@ public class ScreenNavigator {
     public void launchScreen(Controller controller) {
 
         try {
+            if (!isBack && !history.isEmpty()) {
+                Controller currentController = history.peek();
+                currentController.saveState();
+            }
+
             FXMLLoader setupLoader = new FXMLLoader(getClass().getResource(controller.getFxmlFile()));
             setupLoader.setControllerFactory(param -> controller);
             Parent setupParent = setupLoader.load();
@@ -93,6 +98,7 @@ public class ScreenNavigator {
             if (!isBack && controller.shouldShowNavbar()) {
                 history.push(controller);
             } else {
+                controller.restoreState();
                 isBack = false;
             }
         } catch (IOException e) {
@@ -111,17 +117,20 @@ public class ScreenNavigator {
 
         if (!history.isEmpty()) {
             Controller previous = history.peek();
-            System.out.println(previous.getTitle());
             launchScreen(previous);
         }
     }
 
     /**
      * Returns if there is a previous screen in the history.
-     * 
+     *
      * @return true if there is a previous screen
      */
     public boolean hasPreviousScreen() {
         return !history.isEmpty();
+    }
+
+    public Stage getPrimaryStage() {
+        return stage;
     }
 }

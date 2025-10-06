@@ -28,6 +28,15 @@ Label {
   -fx-text-fill: #04140b;
 }
 
+Hyperlink {
+  -fx-font-family: "Quicksand Medium";
+  -fx-font-size: 15px;
+  -fx-text-fill: #447055;
+  -fx-underline: true;
+  -fx-cursor: hand;
+  -fx-padding: 0;
+}
+
 .title {
   -fx-font-family: "Quicksand Bold";
   -fx-font-size: 26px;
@@ -40,6 +49,10 @@ Label {
 
 .text-light {
   -fx-text-fill: #fdfffb;
+}
+
+.text-red {
+  -fx-text-fill: #ff0000;
 }
 
 .small-text {
@@ -94,7 +107,8 @@ ToggleButton:hover {
   -fx-background-color: #d5e6d4;
 }
 
-TextField {
+TextField,
+TextArea {
   -fx-font-family: "Quicksand";
   -fx-font-size: 15px;
   -fx-text-fill: #04140b;
@@ -106,16 +120,30 @@ TextField {
   -fx-padding: 10 15 10 15;
 }
 
+TextArea {
+  -fx-padding: 0;
+}
+
+TextArea .content {
+  -fx-padding: 10 15 10 15;
+}
+
 CheckComboBox,
-ChoiceBox {
+ChoiceBox,
+ComboBox {
   -fx-font-family: "Quicksand";
   -fx-font-size: 15px;
   -fx-text-fill: #04140b;
   -fx-background-color: #eef1ed;
   -fx-background-radius: 10;
+  -fx-border-radius: 10;
   -fx-border-color: transparent;
   -fx-padding: 0;
   -fx-cursor: hand;
+}
+
+ComboBox {
+  -fx-padding: 5;
 }
 
 CheckComboBox:hover {
@@ -130,13 +158,15 @@ CheckComboBox > .combo-box {
 }
 
 CheckComboBox .list-view,
-ChoiceBox .context-menu {
+ChoiceBox .context-menu,
+ComboBox .list-view {
   -fx-background-radius: 10;
   -fx-background-color: #fdfffb;
 }
 
 CheckComboBox > .combo-box .list-cell,
-ChoiceBox .menu-item {
+ChoiceBox .menu-item,
+ComboBox .list-cell {
   -fx-background-color: transparent;
   -fx-background-radius: 10;
   -fx-border-color: transparent;
@@ -145,7 +175,8 @@ ChoiceBox .menu-item {
 }
 
 CheckComboBox > .combo-box .list-cell:hover,
-ChoiceBox .menu-item:hover {
+ChoiceBox .menu-item:hover,
+ComboBox .list-cell:hover {
   -fx-background-color: #d5e6d4;
 }
 
@@ -308,6 +339,12 @@ ProgressIndicator {
   -fx-background-color: #eef1ed;
 }
 
+#mapContainer {
+  -fx-background-color: #d8e5fd;
+  -fx-background-radius: 10;
+  -fx-border-radius: 10;
+}
+
 .special-button {
   -fx-cursor: hand;
 }
@@ -322,4 +359,14 @@ ProgressIndicator {
 
 Button.bg-pinky:hover {
   -fx-background-color: #d8e5fd;
+}
+
+Button.bg-red {
+  -fx-background-color: #ffb3b3;
+  -fx-text-fill: #04140b;
+}
+
+Button.bg-red:hover {
+  -fx-background-color: #ff0000;
+  -fx-text-fill: #fdfffb;
 }
