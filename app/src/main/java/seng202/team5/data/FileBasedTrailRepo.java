@@ -106,7 +106,7 @@ public class FileBasedTrailRepo implements ITrail {
      *         or an empty Optional if no trail with the given id exists
      */
     public java.util.Optional<Trail> findById(int id) {
-        return null;
+        return java.util.Optional.empty();
     }
 
     /**
