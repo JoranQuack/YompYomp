@@ -106,6 +106,7 @@ public class ViewTrailController extends Controller {
             translationLabel.setVisible(false);
         }
         setupTrailRadiusFields();
+        setupHutLinks();
     }
 
     private void setupTrailRadiusFields() {
@@ -308,7 +309,7 @@ public class ViewTrailController extends Controller {
             docHutsLink.setVisible(false);
         }
 
-        boolean isRemoteRegion = isRemoteHutRegion(region);
+        boolean isRemoteRegion = regionFinder.isRemoteHutRegion(region);
         if (isRemoteRegion && (difficulty.contains("advanced") || difficulty.contains("expert"))) {
             remoteHutsLink.setText("View Remote Huts");
             remoteHutsLink.setOnAction(e -> super.getNavigator().openWebPage("\"https://www.remotehuts.co.nz/by-map.html"));
@@ -316,20 +317,6 @@ public class ViewTrailController extends Controller {
         } else {
             remoteHutsLink.setVisible(false);
         }
-    }
-
-    private boolean isRemoteHutRegion(String region) {
-        return region.equalsIgnoreCase("West Coast")
-                || region.equalsIgnoreCase("East Coast")
-    }
-
-    /**
-     * Gets the region of the trail being viewed.
-     *
-     * @return the region of the trail being viewed.
-     */
-    private String getTrailRegion() {
-        return regionFinder.findRegionForTrail(trail);
     }
 
     @FXML
