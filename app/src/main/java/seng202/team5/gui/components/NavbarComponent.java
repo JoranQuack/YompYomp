@@ -56,6 +56,7 @@ public class NavbarComponent extends HBox {
         navButtons = List.of(homeButton, trailsButton, logbookButton);
         homeButton.setOnAction(e -> navigator.launchScreen(new DashboardController(navigator)));
         trailsButton.setOnAction(e -> navigator.launchScreen(new TrailsController(navigator, sqlBasedTrailRepo)));
+        logbookButton.setOnAction(e -> navigator.launchScreen(new LogBookController(navigator)));
         redoQuizButton.setOnAction(e -> navigator.launchScreen(new ProfileSetupGeneralController(navigator)));
         if (navigator.hasPreviousScreen()) {
             backButton.setOnMouseClicked(e -> navigator.goBack());
