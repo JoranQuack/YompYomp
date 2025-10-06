@@ -4,6 +4,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.mockito.Mock;
 
 import java.net.HttpURLConnection;
+import java.net.URL;
+
+import static org.mockito.Mockito.*;
 
 public class WeatherServiceTest {
     @Mock
@@ -12,8 +15,16 @@ public class WeatherServiceTest {
     @Mock
     private HttpURLConnection mockConnection;
 
+    @Mock
+    private URL mockURL;
+
     @BeforeEach
     public void setup() {
-        //WeatherService weatherService = new WeatherService(); TODO    change for new constructor
+        weatherService = new WeatherService("https://fake-weather-url", "https://fake-forecast-url");
+        mockConnection = mock(HttpURLConnection.class);
+        mockURL = mock(URL.class);
     }
+
+
+
 }
