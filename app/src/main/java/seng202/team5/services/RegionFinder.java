@@ -6,7 +6,7 @@ import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -37,7 +37,7 @@ public class RegionFinder {
 
     private static String regionalDatasetsPath;
     private static String fileName;
-    private static Map<String, Geometry> allRegions = new HashMap<>();
+    private static Map<String, Geometry> allRegions = new LinkedHashMap<>();
     private static final GeometryFactory geometryFactory = new GeometryFactory();
 
     public RegionFinder(String regionalDatasetsPath, String fileName) {
@@ -115,7 +115,7 @@ public class RegionFinder {
             CoordinateReferenceSystem sourceCRS = dataStore.getSchema().getCoordinateReferenceSystem();
             CoordinateReferenceSystem targetCRS = CRS.decode("EPSG:4326"); // lat/long
 
-            Map<String, Geometry> regions = new HashMap<>();
+            Map<String, Geometry> regions = new LinkedHashMap<>();
             iterator = featureCollection.features();
 
             // Prepare coordinate transformation if needed
@@ -247,11 +247,22 @@ public class RegionFinder {
     }
 
     /**
-     * Returns simple list of all region names.
+     * Returns simple list of all region names (now in order yippee)
      *
      * @return List of region names
      */
     public List<String> getRegionNames() {
-        return new ArrayList<>(allRegions.keySet().stream().map(this::cleanRegionName).toList());
+        List<String> orderedNames = new ArrayList<>();
+        for (String regionName : allRegions.keySet()) {
+            String cleanedName = cleanRegionName(regionName);
+            if (!orderedNames.contains(cleanedName)) {
+                orderedNames.add(cleanedName);
+            }
+        }
+        // Always add "Other" for the trails that have no regions boohoo
+        if (!orderedNames.contains("Other")) {
+            orderedNames.add("Other");
+        }
+        return orderedNames;
     }
 }

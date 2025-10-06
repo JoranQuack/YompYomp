@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
 
+import seng202.team5.services.RegionFinder;
+
 /**
  * Repository for managing filter options in the database.
  * Provides efficient access to filter dropdown options without
@@ -116,10 +118,23 @@ public class SqlBasedFilterOptionsRepo {
         queryHelper.executeUpdate(REFRESH_COMPLETION_TYPE_OPTIONS, null);
         queryHelper.executeUpdate(REFRESH_TIME_UNIT_OPTIONS, null);
         queryHelper.executeUpdate(REFRESH_DIFFICULTY_OPTIONS, null);
+        refreshRegionOptions();
 
         // Add multi-day options manually since it's a derived field
         insertOption("multiDay", "Multi-day", 1);
         insertOption("multiDay", "Day walk", 2);
+    }
+
+    /**
+     * Refreshes region filter options from RegionFinder
+     */
+    public void refreshRegionOptions() {
+        RegionFinder regionFinder = new RegionFinder();
+        List<String> orderedRegions = regionFinder.getRegionNames();
+
+        for (int i = 0; i < orderedRegions.size(); i++) {
+            insertOption("regions", orderedRegions.get(i), i);
+        }
     }
 
     /**

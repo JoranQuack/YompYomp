@@ -19,6 +19,59 @@
 }
 
 /* ========================================
+ * TEXT & TYPOGRAPHY
+ * ======================================== */
+
+Label {
+  -fx-font-family: "Quicksand Medium";
+  -fx-font-size: 15px;
+  -fx-text-fill: #04140b;
+}
+
+Hyperlink {
+  -fx-font-family: "Quicksand Medium";
+  -fx-font-size: 15px;
+  -fx-text-fill: #447055;
+  -fx-underline: true;
+  -fx-cursor: hand;
+  -fx-padding: 0;
+}
+
+.title {
+  -fx-font-family: "Quicksand Bold";
+  -fx-font-size: 26px;
+}
+
+.heading {
+  -fx-font-family: "Quicksand SemiBold";
+  -fx-font-size: 18px;
+}
+
+.text-light {
+  -fx-text-fill: #fdfffb;
+}
+
+.text-red {
+  -fx-text-fill: #ff0000;
+}
+
+.small-text {
+  -fx-font-size: 12px;
+  -fx-font-family: "Quicksand Regular";
+}
+
+.pill {
+  -fx-background-radius: 20;
+  -fx-padding: 5 10 5 10;
+  -fx-font-size: 12px;
+}
+
+.regular-text {
+  -fx-font-family: "Quicksand Regular";
+  -fx-font-size: 15px;
+}
+
+/* ========================================
  * INPUT ELEMENTS
  * ======================================== */
 
@@ -40,7 +93,22 @@ Button.active {
   -fx-text-fill: #fdfffb;
 }
 
-TextField {
+ToggleButton {
+  -fx-font-family: "Quicksand";
+  -fx-cursor: hand;
+  -fx-font-size: 15px;
+  -fx-text-fill: #04140b;
+  -fx-background-color: #eef1ed;
+  -fx-background-radius: 10;
+  -fx-padding: 10;
+}
+
+ToggleButton:hover {
+  -fx-background-color: #d5e6d4;
+}
+
+TextField,
+TextArea {
   -fx-font-family: "Quicksand";
   -fx-font-size: 15px;
   -fx-text-fill: #04140b;
@@ -52,15 +120,30 @@ TextField {
   -fx-padding: 10 15 10 15;
 }
 
-CheckComboBox {
+TextArea {
+  -fx-padding: 0;
+}
+
+TextArea .content {
+  -fx-padding: 10 15 10 15;
+}
+
+CheckComboBox,
+ChoiceBox,
+ComboBox {
   -fx-font-family: "Quicksand";
   -fx-font-size: 15px;
   -fx-text-fill: #04140b;
   -fx-background-color: #eef1ed;
   -fx-background-radius: 10;
+  -fx-border-radius: 10;
   -fx-border-color: transparent;
   -fx-padding: 0;
   -fx-cursor: hand;
+}
+
+ComboBox {
+  -fx-padding: 5;
 }
 
 CheckComboBox:hover {
@@ -74,12 +157,16 @@ CheckComboBox > .combo-box {
   -fx-padding: 5;
 }
 
-CheckComboBox .list-view {
+CheckComboBox .list-view,
+ChoiceBox .context-menu,
+ComboBox .list-view {
   -fx-background-radius: 10;
   -fx-background-color: #fdfffb;
 }
 
-CheckComboBox > .combo-box .list-cell {
+CheckComboBox > .combo-box .list-cell,
+ChoiceBox .menu-item,
+ComboBox .list-cell {
   -fx-background-color: transparent;
   -fx-background-radius: 10;
   -fx-border-color: transparent;
@@ -87,19 +174,35 @@ CheckComboBox > .combo-box .list-cell {
   -fx-text-fill: #04140b;
 }
 
-CheckComboBox > .combo-box .list-cell:hover {
+CheckComboBox > .combo-box .list-cell:hover,
+ChoiceBox .menu-item:hover,
+ComboBox .list-cell:hover {
   -fx-background-color: #d5e6d4;
 }
 
+ChoiceBox {
+  -fx-padding: 5;
+}
+
+ChoiceBox .label {
+  -fx-font-family: "Quicksand";
+  -fx-font-size: 15px;
+  -fx-text-fill: #04140b;
+}
+
+ChoiceBox .menu-item:focused {
+  -fx-text-fill: #04140b;
+}
+
 .arrow {
-  -fx-background-color: #447055;
+  -fx-background-color: #04140b;
   -fx-background-radius: 10;
 }
 
 .check-box {
   -fx-font-family: "Quicksand";
   -fx-font-size: 15px;
-  -fx-text-fill: #04140b;
+  -fx-text-fill: #fdfffb;
   -fx-cursor: hand;
 }
 
@@ -203,41 +306,6 @@ ProgressIndicator {
   -fx-background-color: #000000;
 }
 
-/* ========================================
- * TEXT & TYPOGRAPHY
- * ======================================== */
-
-Label {
-  -fx-font-family: "Quicksand Medium";
-  -fx-font-size: 15px;
-  -fx-text-fill: #04140b;
-}
-
-.title {
-  -fx-font-family: "Quicksand Bold";
-  -fx-font-size: 26px;
-}
-
-.heading {
-  -fx-font-family: "Quicksand SemiBold";
-  -fx-font-size: 18px;
-}
-
-.text-light {
-  -fx-text-fill: #fdfffb;
-}
-
-.small-text {
-  -fx-font-size: 12px;
-  -fx-font-family: "Quicksand Regular";
-}
-
-.pill {
-  -fx-background-radius: 20;
-  -fx-padding: 5 10 5 10;
-  -fx-font-size: 12px;
-}
-
 .bg-pinky {
   -fx-background-color: #e9d8ed;
 }
@@ -257,15 +325,24 @@ Label {
 .trail-card {
   -fx-background-color: #eef1ed;
   -fx-background-radius: 10;
+}
+
+.trail-card.hoverable {
   -fx-cursor: hand;
 }
 
-.trail-card:hover {
+.trail-card.hoverable:hover {
   -fx-opacity: 0.7;
 }
 
 .navbar-root {
   -fx-background-color: #eef1ed;
+}
+
+#mapContainer {
+  -fx-background-color: #d8e5fd;
+  -fx-background-radius: 10;
+  -fx-border-radius: 10;
 }
 
 .special-button {
@@ -282,4 +359,14 @@ Label {
 
 Button.bg-pinky:hover {
   -fx-background-color: #d8e5fd;
+}
+
+Button.bg-red {
+  -fx-background-color: #ffb3b3;
+  -fx-text-fill: #04140b;
+}
+
+Button.bg-red:hover {
+  -fx-background-color: #ff0000;
+  -fx-text-fill: #fdfffb;
 }
