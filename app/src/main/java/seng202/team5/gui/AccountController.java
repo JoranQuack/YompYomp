@@ -2,7 +2,6 @@ package seng202.team5.gui;
 
 import javafx.fxml.FXML;
 import javafx.scene.chart.PieChart;
-import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
@@ -194,7 +193,8 @@ public class AccountController extends Controller {
 
     @Override
     public void onLoadFailed(Exception e) {
-        showAlert(Alert.AlertType.ERROR, "Account Failed To Load",
-                "Account page failed to load, please close and reload the application.");
+        showAlert("Account Failed To Load",
+                "Account page failed to load, please close and reload the application.",
+                "OK", "Cancel", null, null);
     }
 }
