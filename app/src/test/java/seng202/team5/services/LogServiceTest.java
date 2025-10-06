@@ -5,9 +5,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import seng202.team5.App;
 import seng202.team5.data.ITrailLog;
-import seng202.team5.data.SqlBasedTrailLogRepo;
 import seng202.team5.data.SqlBasedTrailRepo;
 import seng202.team5.models.Trail;
 import seng202.team5.models.TrailLog;
@@ -16,7 +14,6 @@ import static org.junit.jupiter.api.Assertions.*;
 
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -30,6 +27,7 @@ public class LogServiceTest {
 
     private LogService logService;
     private List<TrailLog> mockLogs;
+    private List<Trail> mockTrails;
 
     @BeforeEach
     void setUp() {
@@ -48,7 +46,66 @@ public class LogServiceTest {
                 new TrailLog(10, 703947, LocalDate.of(2025, 10, 10), 160, "minutes", "One way", 5, "Advanced", "One of the best trails so far.")
         );
 
+        mockTrails = Arrays.asList(
+                new Trail(703975, "Port Hills Track", "Te Ara o ngā Maunga", "Canterbury", "Easiest",
+                        "One way", "Well-marked trail with gentle incline", "Great introductory hike for beginners.",
+                        "thumb_ph.jpg", "https://example.com/porthills", "https://example.com/culture/ph",
+                        4.5, -43.5850, 172.6750),
+
+                new Trail(703976, "Godley Head Loop", "Te Ara o Rāpaki", "Canterbury", "Easy",
+                        "Loop", "Gentle loop along coastal cliffs", "Ideal for casual walkers and families.",
+                        "thumb_gh.jpg", "https://example.com/godleyhead", "https://example.com/culture/gh",
+                        4.7, -43.5861, 172.7822),
+
+                new Trail(703977, "Mount Herbert Summit", "Te Tihi o Te Ahu Pātiki", "Canterbury", "Expert",
+                        "Loop", "Steep climb with exposed sections", "Longest trail on the list, for experienced hikers.",
+                        "thumb_mh.jpg", "https://example.com/mtherbert", "https://example.com/culture/mh",
+                        4.9, -43.7160, 172.6500),
+
+                new Trail(703978, "Bridle Path", "Te Ara a Hine", "Canterbury", "Advanced",
+                        "Loop", "Historic track between Lyttelton and Christchurch", "Challenging gradient, popular training route.",
+                        "thumb_bp.jpg", "https://example.com/bridlepath", "https://example.com/culture/bp",
+                        4.4, -43.6000, 172.7300),
+
+                new Trail(703979, "Rapaki Track", "Te Ara Rāpaki", "Canterbury", "Easy",
+                        "One way", "Gradual incline with open views", "Turned back due to weather conditions.",
+                        "thumb_rt.jpg", "https://example.com/rapaki", "https://example.com/culture/rt",
+                        4.3, -43.6005, 172.6602),
+
+                new Trail(703980, "Hinewai Reserve Loop", "Te Wao o Hinewai", "Banks Peninsula", "Easy",
+                        "Loop", "Regenerating native forest walk", "Scenic and relaxing with clear signage.",
+                        "thumb_hw.jpg", "https://example.com/hinewai", "https://example.com/culture/hw",
+                        4.8, -43.7800, 172.9800),
+
+                new Trail(703981, "Cass-Lagoon Saddle", "Te Ara o Kāwhiu", "Arthur’s Pass", "Expert",
+                        "Loop", "Alpine hike with steep ascents", "Multi-day option available for trampers.",
+                        "thumb_cl.jpg", "https://example.com/casslagoon", "https://example.com/culture/cl",
+                        4.6, -42.9500, 171.7100),
+
+                new Trail(703982, "Rakaia Gorge Walkway", "Te Ara o Rakaia", "Canterbury", "Advanced",
+                        "Loop", "Follows the river terraces and native bush", "Excellent day hike for fit walkers.",
+                        "thumb_rg.jpg", "https://example.com/rakaiagorge", "https://example.com/culture/rg",
+                        4.5, -43.4800, 171.8300),
+
+                new Trail(703940, "Victoria Park Track", "Te Ara o Whero", "Christchurch", "Easiest",
+                        "Loop", "Short scenic trail through forest park", "Some muddy sections after rain.",
+                        "thumb_vp.jpg", "https://example.com/victoriapark", "https://example.com/culture/vp",
+                        4.2, -43.5790, 172.6400),
+
+                new Trail(703947, "Packhorse Hut Route", "Te Ara o te Pōkai", "Canterbury", "Advanced",
+                        "One way", "Steady climb to historic hut", "Excellent views and well-maintained track.",
+                        "thumb_phr.jpg", "https://example.com/packhorse", "https://example.com/culture/phr",
+                        4.6, -43.6400, 172.6400)
+        );
+
         when(mockLogInterface.getAllTrailLogs()).thenReturn(mockLogs);
+        when(mockTrailRepo.getAllTrails()).thenReturn(mockTrails);
+
+        when(mockTrailRepo.findById(anyInt())).thenAnswer(invocation -> {
+            int id = invocation.getArgument(0);
+            return mockTrails.stream().filter(t -> t.getId() == id)
+                    .findFirst();
+        });
 
         //TODO update to use the ITrail interface when refactor has been done
         logService = new LogService(mockLogInterface, mockTrailRepo);
@@ -70,16 +127,67 @@ public class LogServiceTest {
     @Test
     @DisplayName("Should return logs independently of case")
     void testSearchLogsCaseInsensitive() {
-        logService.setCurrentQuery("trail");
+        logService.setCurrentQuery("track");
         List<TrailLog> lowerCase = logService.getPage(0);
 
-        logService.setCurrentQuery("TRAIL");
+        logService.setCurrentQuery("TRACK");
         List<TrailLog> upperCase = logService.getPage(0);
 
-        logService.setCurrentQuery("TraIl");
+        logService.setCurrentQuery("TraCk");
         List<TrailLog> mixedCase = logService.getPage(0);
 
         assertEquals(lowerCase, upperCase, "Case-insensitive search should return same results");
         assertEquals(mixedCase, upperCase, "Should not matter if there are any case differences");
     }
+
+    @Test
+    @DisplayName("Should return empty list when no logs match the search query")
+    void testSearchLogsNoMatch() {
+        logService.setCurrentQuery("doesntexist");
+        List<TrailLog> logs = logService.getPage(0);
+
+        assertNotNull(logs);
+        assertTrue(logs.isEmpty(), "Expected no logs matching the search query");
+    }
+
+    @Test
+    @DisplayName("Should return the correct number of pages")
+    void testGetNumberOfPages() {
+        logService.setMaxResults(4);
+        logService.setCurrentQuery("");
+        logService.updateLogs();
+        int pages = logService.getNumberOfPages();
+        assertEquals(3, pages, "Need 3 pages with 4 logs per page and 10 total");
+
+        logService.setCurrentQuery("track");
+        logService.updateLogs();
+        List<TrailLog> logs = logService.getPage(0);
+        int pagesFiltered = logService.getNumberOfPages();
+        assertEquals(1, pagesFiltered, "There should only be one page for 3 filtered results");
+
+        logService.setCurrentQuery("doesntexist");
+        logService.updateLogs();
+        int pagesNoMatch = logService.getNumberOfPages();
+        assertEquals(0, pagesNoMatch, "There should be no pages for no results");
+
+    }
+
+    @Test
+    @DisplayName("Should handle pagination correctly")
+    void testPagination() {
+        logService.setMaxResults(4);
+        logService.setCurrentQuery("");
+
+        List<TrailLog> page1 = logService.getPage(0);
+        assertEquals(4, page1.size(), "First page should have 4 logs");
+
+        List<TrailLog> page2 = logService.getPage(1);
+        assertEquals(4, page2.size(), "Second page should have 4 logs");
+
+        List<TrailLog> page3 = logService.getPage(2);
+        assertEquals(2, page3.size(), "Third page should have 1 log");
+
+        assertNotEquals(page1.getFirst().getId(), page2.getFirst().getId(), "Pages should not overlap");
+    }
+
 }

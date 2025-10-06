@@ -49,7 +49,7 @@ public class LogService {
         if (maxResults <= 0) {
             return 1;
         }
-        return (int) Math.ceil((double) logs.size() / maxResults);
+        return (int) Math.ceil((double) filteredLogs.size() / maxResults);
     }
 
     /**
