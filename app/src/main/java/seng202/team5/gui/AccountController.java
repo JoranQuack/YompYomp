@@ -101,7 +101,6 @@ public class AccountController extends Controller {
     @FXML
     private void initialize() {
         NavbarComponent navbar = super.getNavbarController();
-        navbar.setPage(2);
         navbarContainer.getChildren().add(navbar);
 
         welcomeLabel.setText("Kia Ora " + user.getName() + "!");
@@ -158,6 +157,7 @@ public class AccountController extends Controller {
 
     /**
      * Returns string label to be set for each user preference
+     *
      * @param preference
      * @param sliderLabels
      * @return string to be set for user preference label
@@ -189,7 +189,7 @@ public class AccountController extends Controller {
 
     @Override
     protected int getNavbarPageIndex() {
-        return 2;
+        return -1; // No navbar button active
     }
 
     @Override

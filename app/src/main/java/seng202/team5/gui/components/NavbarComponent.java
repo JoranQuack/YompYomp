@@ -82,11 +82,14 @@ public class NavbarComponent extends HBox {
     /**
      * Sets the page for the navbar.
      *
-     * @param pageIndex The index of the page button to highlight.
+     * @param pageIndex The index of the page button to highlight. Use -1 for no
+     *                  active button.
      */
     public void setPage(int pageIndex) {
         navButtons.forEach(button -> button.getStyleClass().remove("active"));
-        navButtons.get(pageIndex).getStyleClass().add("active");
+        if (pageIndex >= 0 && pageIndex < navButtons.size()) {
+            navButtons.get(pageIndex).getStyleClass().add("active");
+        }
     }
 
     @FXML
