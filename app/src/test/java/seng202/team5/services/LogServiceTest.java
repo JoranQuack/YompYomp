@@ -206,15 +206,4 @@ public class LogServiceTest {
         List<TrailLog> logs = logService.getAllLogs();
         assertEquals(10, logs.size(), "Should return all 10 logs");
     }
-
-    //test isnt working currently
-//    @Test
-//    @DisplayName("Should add the correct Trail log to the database")
-//    void testAddTrailLog() {
-//        TrailLog testLog = new TrailLog(11, 703924, LocalDate.of(2025, 10, 12), 2, "days", "One way", 5, "Expert", "Very hard trail");
-//        logService.addLog(testLog);
-//        List<TrailLog> logs = logService.getAllLogs();
-//        assertEquals(logs.get(-1), testLog, "New log should have been added");
-//    }
-
 }
