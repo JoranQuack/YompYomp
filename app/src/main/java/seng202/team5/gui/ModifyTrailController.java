@@ -8,6 +8,7 @@ import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
 import netscape.javascript.JSObject;
@@ -77,7 +78,7 @@ public class ModifyTrailController extends Controller {
     @FXML
     private TextField longitudeTextField;
     @FXML
-    private Label regionLabel;
+    private TextField regionTextField;
     @FXML
     private Label invalidNumberLabel;
     private WebView trailMapWebView;
@@ -182,6 +183,15 @@ public class ModifyTrailController extends Controller {
         trailMapWebView.setPrefWidth(-1);
         HBox.setHgrow(trailMapWebView, Priority.ALWAYS);
         mapContainer.getChildren().add(trailMapWebView);
+
+        Rectangle clip = new Rectangle();
+        clip.setArcWidth(20);
+        clip.setArcHeight(20);
+
+        clip.widthProperty().bind(mapContainer.widthProperty());
+        clip.heightProperty().bind(mapContainer.heightProperty());
+
+        trailMapWebView.setClip(clip);
 
         webEngine = trailMapWebView.getEngine();
         webEngine.setJavaScriptEnabled(true);
@@ -291,9 +301,9 @@ public class ModifyTrailController extends Controller {
 
         try {
             String region = regionFinder.findRegionForPoint(lat, lon);
-            regionLabel.setText(region != null ? region : "Unknown Region");
+            regionTextField.setText(region != null ? region : "Unknown Region");
         } catch (Exception e) {
-            regionLabel.setText("Region lookup failed");
+            regionTextField.setText("Region lookup failed");
         }
     }
 
@@ -305,7 +315,7 @@ public class ModifyTrailController extends Controller {
         double lat = Double.parseDouble(latitudeTextField.getText());
         double lon = Double.parseDouble(longitudeTextField.getText());
         String region = regionFinder.findRegionForPoint(lat, lon);
-        regionLabel.setText(region);
+        regionTextField.setText(region);
     }
 
     @FXML
@@ -316,8 +326,19 @@ public class ModifyTrailController extends Controller {
             super.getNavigator().launchScreen(
                     new ViewTrailController(super.getNavigator(), updatedTrail, sqlBasedTrailRepo));
         } else {
+            // Check if the error is specifically due to duplicate trail name
+            if (!trailNameTextField.getText().isEmpty()) {
+                String inputTrailName = trailNameTextField.getText().trim();
+                Integer excludeId = (trail != null) ? trail.getId() : null;
+                boolean nameExists = sqlBasedTrailRepo.existsByName(inputTrailName, excludeId);
+
+                if (nameExists) {
+                    emptyFieldLabel.setText("A trail with this name already exists! Please choose a different name.");
+                    return;
+                }
+            }
+
             emptyFieldLabel.setText("Please make sure all required fields are filled!");
-            emptyFieldLabel.setTextFill(Color.RED);
         }
     }
 
@@ -326,10 +347,27 @@ public class ModifyTrailController extends Controller {
         super.getNavigator().goBack();
     }
 
+    @FXML
+    private void onDeleteTrailClicked() {
+        if (trail != null) {
+            boolean confirmed = showAlert(
+                    "Confirm Deletion",
+                    "Are you sure you want to delete this trail?",
+                    "This action cannot be undone.",
+                    "Delete",
+                    "Cancel",
+                    "bg-red");
+
+            if (confirmed) {
+                sqlBasedTrailRepo.deleteById(trail.getId());
+                super.getNavigator().launchScreen(new TrailsController(super.getNavigator(), sqlBasedTrailRepo));
+            }
+        }
+    }
+
     /**
      * Prefills boxes with existing data of the trail
      */
-    @FXML
     private void initializeTextFields() {
         Trail foundTrail = sqlBasedTrailRepo.findById(trail.getId()).get();
         trailNameTextField.setText(foundTrail.getName());
@@ -347,37 +385,56 @@ public class ModifyTrailController extends Controller {
      * @return whether inputs are valid
      */
     private boolean userInputValidation() {
+        boolean isValid = true;
+
         if (latitudeTextField.getText().isEmpty()) {
-            latitudeTextField.setStyle("-fx-border-color: red; -fx-border-width: 2px;");
-            mapContainer.setStyle("-fx-border-color: red; -fx-border-width: 2px;");
+            latitudeTextField.setStyle("-fx-border-color: red;");
+            mapContainer.setStyle("-fx-border-color: red;");
+            isValid = false;
         } else {
             latitudeTextField.setStyle("");
             mapContainer.setStyle("");
         }
         if (longitudeTextField.getText().isEmpty()) {
-            longitudeTextField.setStyle("-fx-border-color: red; -fx-border-width: 2px;");
-            mapContainer.setStyle("-fx-border-color: red; -fx-border-width: 2px;");
+            longitudeTextField.setStyle("-fx-border-color: red;");
+            mapContainer.setStyle("-fx-border-color: red;");
+            isValid = false;
         } else {
             longitudeTextField.setStyle("");
             mapContainer.setStyle("");
         }
         if (trailNameTextField.getText().isEmpty()) {
-            trailNameTextField.setStyle("-fx-border-color: red; -fx-border-width: 2px;");
+            trailNameTextField.setStyle("-fx-border-color: red;");
+            isValid = false;
         } else {
             trailNameTextField.setStyle("");
         }
         if (trailDescriptionTextArea.getText().isEmpty()) {
-            trailDescriptionTextArea.setStyle("-fx-border-color: red; -fx-border-width: 2px;");
+            trailDescriptionTextArea.setStyle("-fx-border-color: red;");
+            isValid = false;
         } else {
             trailDescriptionTextArea.setStyle("");
         }
         if (trailTypeComboBox.getValue() == null) {
-            trailTypeComboBox.setStyle("-fx-border-color: red; -fx-border-width: 2px;");
+            trailTypeComboBox.setStyle("-fx-border-color: red;");
+            isValid = false;
         } else {
             trailTypeComboBox.setStyle("");
         }
-        return !latitudeTextField.getText().isEmpty() && !longitudeTextField.getText().isEmpty() && !trailNameTextField.getText().isEmpty()
-                && !trailDescriptionTextArea.getText().isEmpty() && !trailTypeComboBox.getValue().isEmpty();
+
+        // Check if trail name already exists (case and whitespace insensitive)
+        if (!trailNameTextField.getText().isEmpty()) {
+            String inputTrailName = trailNameTextField.getText().trim();
+            Integer excludeId = (trail != null) ? trail.getId() : null;
+            boolean nameExists = sqlBasedTrailRepo.existsByName(inputTrailName, excludeId);
+
+            if (nameExists) {
+                trailNameTextField.setStyle("-fx-border-color: red;");
+                isValid = false;
+            }
+        }
+
+        return isValid;
     }
 
     /**
@@ -389,9 +446,9 @@ public class ModifyTrailController extends Controller {
         // Get form values
         String trailName = trailNameTextField.getText();
         String translation = translationTextField.getText();
-        String difficulty = difficultyComboBox.getValue();
-        String trailType = trailTypeComboBox.getValue();
-        String completionTime = completionTimeTextField.getText();
+        String difficulty = difficultyComboBox.getValue().toLowerCase();
+        String trailType = trailTypeComboBox.getValue().toLowerCase();
+        String completionTime = completionTimeTextField.getText().toLowerCase();
         String trailDescription = trailDescriptionTextArea.getText();
         String cultureUrl = cultureUrlTextField.getText();
         double latitude = Double.parseDouble(latitudeTextField.getText());
@@ -413,7 +470,7 @@ public class ModifyTrailController extends Controller {
         } else {
             // Creating new trail - temp values that will be recalculated
             trailId = sqlBasedTrailRepo.getNewTrailId();
-            region = regionLabel.getText();
+            region = regionTextField.getText();
             thumbUrl = "";
             webUrl = "";
             userWeight = 0.5;

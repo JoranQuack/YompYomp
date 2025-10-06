@@ -184,6 +184,15 @@ public class SqlBasedTrailRepo implements ITrail {
      * @param id the trail identifier to delete
      */
     public void deleteById(int id) {
+        // First delete the stuff from the category table
+        try {
+            String deleteTrailCategoryQuery = "DELETE FROM trailCategory WHERE trailId = ?";
+            queryHelper.executeUpdate(deleteTrailCategoryQuery, stmt -> stmt.setInt(1, id));
+        } catch (Exception e) {
+            // Ignore if trailCategory table doesn't exist
+        }
+
+        // Then delete the trail itself
         queryHelper.executeUpdate(DELETE_SQL, stmt -> stmt.setInt(1, id));
     }
 
@@ -272,6 +281,31 @@ public class SqlBasedTrailRepo implements ITrail {
         stmt.setDouble(17, trail.getUserWeight());
         stmt.setDouble(18, trail.getLat());
         stmt.setDouble(19, trail.getLon());
+    }
+
+    /**
+     * Checks if a trail name already exists in the database (case and whitespace
+     * insensitive)
+     *
+     * @param name      the trail name to check
+     * @param excludeId optional trail ID to exclude from the check (for editing
+     *                  existing trails)
+     * @return true if the name exists, false otherwise
+     */
+    public boolean existsByName(String name, Integer excludeId) {
+        String sql = "SELECT COUNT(*) FROM trail WHERE TRIM(LOWER(name)) = TRIM(LOWER(?))";
+        if (excludeId != null) {
+            sql += " AND id != ?";
+        }
+
+        Integer count = queryHelper.executeCountQuery(sql, stmt -> {
+            stmt.setString(1, name);
+            if (excludeId != null) {
+                stmt.setInt(2, excludeId);
+            }
+        });
+
+        return count != null && count > 0;
     }
 
     /**
