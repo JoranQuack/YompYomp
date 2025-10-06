@@ -58,7 +58,34 @@ public class SqlBasedTrailRepoTest {
                           lon REAL
                         )
                     """);
+
+            stmt.execute("""
+                        CREATE TABLE IF NOT EXISTS trailCategory (
+                          id INTEGER PRIMARY KEY,
+                          trailId INTEGER,
+                          categoryId INTEGER,
+                          FOREIGN KEY (trailId) REFERENCES trail(id)
+                        )
+                    """);
+
+            stmt.execute("""
+                        CREATE TABLE IF NOT EXISTS trailLog (
+                          id INTEGER PRIMARY KEY,
+                          trailId INTEGER,
+                          startDate TEXT,
+                          completionTime INTEGER,
+                          timeUnit TEXT,
+                          completionType TEXT,
+                          rating INTEGER,
+                          perceivedDifficulty TEXT,
+                          notes TEXT,
+                          FOREIGN KEY (trailId) REFERENCES trail(id)
+                        )
+                    """);
+
             stmt.execute("DELETE FROM trail");
+            stmt.execute("DELETE FROM trailCategory");
+            stmt.execute("DELETE FROM trailLog");
             stmt.execute(
                     "INSERT INTO trail (id, name, description, difficulty) VALUES (1, 'Test1', 'Test Trail 1', 'Hard')");
             stmt.execute(
@@ -68,9 +95,11 @@ public class SqlBasedTrailRepoTest {
 
     @AfterEach
     void tearDown() throws SQLException {
-        // Get rid of table after testing
+        // Get rid of tables after testing
         try (Connection conn = databaseService.getConnection();
                 Statement stmt = conn.createStatement()) {
+            stmt.execute("DROP TABLE IF EXISTS trailCategory");
+            stmt.execute("DROP TABLE IF EXISTS trailLog");
             stmt.execute("DROP TABLE IF EXISTS trail");
         }
 

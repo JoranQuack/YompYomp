@@ -2,8 +2,11 @@ package seng202.team5.models;
 
 import java.util.List;
 
+/**
+ * The base class entity representing a user.
+ */
 public class User {
-    // Some basic variables
+
     private int id;
     private String name;
     private List<String> regions;
@@ -21,6 +24,9 @@ public class User {
     private int waterfallPreference;
     private boolean isProfileComplete;
 
+    /**
+     * Default constructor for User class.
+     */
     public User() {
         this.id = 1; // Set default ID for single user system
         this.isProfileComplete = false;
@@ -29,22 +35,22 @@ public class User {
     /**
      * Constructor for User class with all parameters.
      *
-     * @param id
-     * @param name
-     * @param regions
-     * @param isFamilyFriendly
-     * @param isAccessible
-     * @param experienceLevel
-     * @param gradientPreference
-     * @param bushPreference
-     * @param reservePreference
-     * @param lakeRiverPreference
-     * @param coastPreference
-     * @param mountainPreference
-     * @param wildlifePreference
-     * @param historicPreference
-     * @param waterfallPreference
-     * @param isProfileComplete
+     * @param id the user id
+     * @param name the user's name
+     * @param regions the user regions
+     * @param isFamilyFriendly whether the user wants family-friendly trails
+     * @param isAccessible whether the user wants accessible trails
+     * @param experienceLevel the user's experience level
+     * @param gradientPreference the user's gradient preference
+     * @param bushPreference the user's bush preference
+     * @param reservePreference the user's reserve preference
+     * @param lakeRiverPreference the user's lake/river preference
+     * @param coastPreference the user's coast preference
+     * @param mountainPreference the user's mountain preference
+     * @param wildlifePreference the user's wildlife preference
+     * @param historicPreference the user's historic preference
+     * @param waterfallPreference the user's waterfall preference
+     * @param isProfileComplete whether the user's profile is complete
      */
     public User(int id, String name, List<String> regions, boolean isFamilyFriendly, boolean isAccessible,
             int experienceLevel, int gradientPreference, int bushPreference, int reservePreference,
@@ -195,6 +201,11 @@ public class User {
         this.isProfileComplete = profileComplete;
     }
 
+    /**
+     * Returns a string representation of the user.
+     *
+     * @return a really great string representation of the user
+     */
     @Override
     public String toString() {
         return "User{" +

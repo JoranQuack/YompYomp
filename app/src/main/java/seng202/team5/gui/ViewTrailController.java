@@ -13,13 +13,19 @@ import javafx.scene.paint.Paint;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
 import netscape.javascript.JSObject;
+import seng202.team5.data.DatabaseService;
+import seng202.team5.data.SqlBasedTrailLogRepo;
 import seng202.team5.data.SqlBasedTrailRepo;
 import seng202.team5.gui.components.TrailCardComponent;
 import seng202.team5.models.Trail;
+import seng202.team5.models.TrailLog;
+import seng202.team5.services.LogService;
+import seng202.team5.services.SearchService;
 import seng202.team5.services.RegionFinder;
 import seng202.team5.services.TrailService;
 import seng202.team5.utils.StringManipulator;
-
+import java.time.LocalDate;
+import java.util.Date;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
@@ -31,6 +37,9 @@ public class ViewTrailController extends Controller {
     private final Trail trail;
     private TrailService trailService;
     private final SqlBasedTrailRepo sqlBasedTrailRepo;
+    private SearchService searchService;
+    private SqlBasedTrailLogRepo trailLogRepo;
+    private LogService logService;
     private RegionFinder regionFinder;
 
     private WebEngine webEngine;
@@ -48,6 +57,9 @@ public class ViewTrailController extends Controller {
         super(navigator);
         this.trail = trail;
         this.sqlBasedTrailRepo = sqlBasedTrailRepo;
+        this.searchService = searchService;
+        this.trailLogRepo = new SqlBasedTrailLogRepo(new DatabaseService());
+        this.logService = new LogService(new DatabaseService());
     }
 
     @FXML
@@ -170,8 +182,50 @@ public class ViewTrailController extends Controller {
      * Initialises the trail card at the top of the screen
      */
     private void initTrailCard() {
-        TrailCardComponent trailCard = new TrailCardComponent(super.getUserService().isGuest(), true);
-        trailCard.setData(trail);
+        TrailCardComponent trailCard = new TrailCardComponent(super.getUserService().isGuest(), true, false);
+        trailCard.setData(trail, null);
+        trailCard.setTrail(trail);
+
+        trailCard.setOnBookmarkClickedHandler(clickedTrail -> {
+            TrailLog newLog = new TrailLog(
+                trailLogRepo.getNewTrailLogId(),
+                clickedTrail.getId(),
+                LocalDate.now(),
+                null, null, null, null, null, null
+            );
+
+            LogTrailController logController = new LogTrailController(
+                    super.getNavigator(),
+                    clickedTrail,
+                    newLog
+            );
+            super.getNavigator().launchScreen(logController);
+        });
+
+        trailCard.setOnBookmarkFillClickedHandler(clickedTrail -> {
+            boolean confirmed = showAlert(
+                    "Delete Log",  "Are you sure you want to delete this log?",
+                    "This action cannot be undone.", "Delete",
+                    "Cancel", "danger-button"
+            );
+
+            if (confirmed) {
+                logService.deleteLog(clickedTrail.getId());
+                trailCard.setBookmarked(false);
+            } else {
+                return;
+            }
+
+            List<TrailLog> logs = logService.getAllLogs();
+            logs.stream()
+                .filter(log -> log.getTrailId() == clickedTrail.getId())
+                .findFirst()
+                .ifPresent(log -> {
+                    logService.deleteLog(log.getId());
+                    trailCard.setBookmarked(false);
+                });
+        });
+
         trailCardHBox.getChildren().add(trailCard);
     }
 

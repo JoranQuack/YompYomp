@@ -293,17 +293,6 @@ public class MatchmakingService {
     }
 
     /**
-     * Calculate the number of personalised pages based on the number of trails,
-     * given a page size.
-     *
-     * @param pageSize number of trails per page
-     * @return total page count
-     */
-    public int getNumberOfPersonalisedPages(int pageSize) {
-        return (int) Math.ceil((double) trailRepo.getAllTrails().size() / pageSize);
-    }
-
-    /**
      * Returns a copy of the user weights map.
      *
      * @return a Map containing user preference weights

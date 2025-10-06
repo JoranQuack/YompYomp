@@ -26,6 +26,7 @@
          <children>
             <Button fx:id="homeButton" mnemonicParsing="false" text="Home" />
             <Button fx:id="trailsButton" mnemonicParsing="false" text="Trails" />
+            <Button fx:id="logbookButton" mnemonicParsing="false" text="Logbook" />
          </children>
       </HBox>
       <HBox alignment="CENTER_RIGHT" prefWidth="100.0">
