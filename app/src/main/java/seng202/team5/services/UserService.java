@@ -11,6 +11,7 @@ import seng202.team5.models.User;
 
 public class UserService {
     private boolean isGuest;
+    private User cachedUser;
     private final DatabaseService databaseService;
     private final QueryHelper queryHelper;
 
@@ -54,18 +55,22 @@ public class UserService {
     }
 
     /**
-     * Get the current user from database.
+     * Get the current user from cache or database.
      *
-     * @return the current user loaded from database, or null if user is guest or no
-     *         user exists
+     * @return the current user loaded from cache or database, or null if user is
+     *         guest or no user exists
      */
     public User getUser() {
         if (isGuest) {
             return null;
         }
 
-        User existingUser = loadUserFromDatabase();
-        return existingUser;
+        if (cachedUser != null) {
+            return cachedUser;
+        }
+
+        cachedUser = loadUserFromDatabase();
+        return cachedUser;
     }
 
     /**
@@ -98,16 +103,19 @@ public class UserService {
         if (user != null && !isGuest) {
             user.setProfileComplete(true);
             saveUserToDatabase(user);
+            this.cachedUser = user;
         }
     }
 
     /**
-     * Set the current user by saving it directly to the database.
+     * Set the current user by saving it directly to the database and updating the
+     * cache.
      *
      * @param user the user to set and save
      */
     public void setUser(User user) {
         this.isGuest = false; // Setting a user means no longer a guest
+        this.cachedUser = user;
         if (user != null) {
             saveUserToDatabase(user);
         }
@@ -130,6 +138,8 @@ public class UserService {
     public void setGuest(boolean isGuest) {
         if (isGuest) {
             clearUser();
+        } else {
+            this.cachedUser = null;
         }
         this.isGuest = isGuest;
     }
@@ -150,6 +160,7 @@ public class UserService {
         SqlBasedTrailRepo trailRepo = new SqlBasedTrailRepo(databaseService);
         trailRepo.clearUserWeights();
         queryHelper.executeUpdate("DELETE FROM user", null);
+        this.cachedUser = null;
         this.isGuest = false;
     }
 
@@ -172,6 +183,7 @@ public class UserService {
      */
     public void cleanupIncompleteProfiles() {
         queryHelper.executeUpdate("DELETE FROM user WHERE isProfileComplete = 0", null);
+        this.cachedUser = null;
     }
 
     /**
@@ -179,10 +191,11 @@ public class UserService {
      * This should be called when the user finishes the quiz.
      */
     public void markProfileComplete() {
-        User user = loadUserFromDatabase();
+        User user = getUser();
         if (user != null && !isGuest) {
             user.setProfileComplete(true);
             saveUserToDatabase(user);
+            this.cachedUser = user;
         }
     }
 
