@@ -284,30 +284,25 @@ public class RegionFinder {
      * @param regionName The region to get the doc id for
      * @return The doc region id or null if not found
      */
-
     public Integer getDocRegionId(String regionName) {
         if (regionName == null) return null;
 
         switch (regionName.toLowerCase()) {
             case "northland": return 3001000;
             case "auckland": return 3002000;
-            case "coromandel": return 3003000;
             case "waikato": return 3004000;
             case "bay of plenty": return 3005000;
-            case "east coast": return 3006000;
-            case "central north island": return 3007000;
+            case "gisborne": return 3006000;
             case "taranaki": return 3008000;
-            case "manawatu-whanganui": return 3009000;
+            case "manawat?-whanganui", "manawatu-whanganui", "manawatu", "whanganui", "manawatū-whanganui": return 3009000;
             case "hawke's bay": return 3010000;
-            case "wairarapa": return 3011000;
-            case "wellington-kapiti": return 3012000;
+            case "wellington": return 3012000;
             case "chatham islands": return 3013000;
-            case "nelson-tasman": return 3014000;
+            case "nelson", "tasman": return 3014000;
             case "marlborough": return 3015000;
             case "west coast": return 3016000;
             case "canterbury": return 3017000;
             case "otago": return 3018000;
-            case "fiordland": return 3019000;
             case "southland": return 3020000;
             default: return null;
         }

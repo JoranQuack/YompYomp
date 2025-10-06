@@ -18,6 +18,7 @@ import seng202.team5.gui.components.TrailCardComponent;
 import seng202.team5.models.Trail;
 import seng202.team5.services.RegionFinder;
 import seng202.team5.services.TrailService;
+import seng202.team5.utils.StringManipulator;
 
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
@@ -294,25 +295,32 @@ public class ViewTrailController extends Controller {
     }
 
     private void setupHutLinks() {
-        // Consulted Oracle documentation for hyperlink and chatgpt for formatting of these urls
-        RegionFinder regionFinder = new RegionFinder();
-        String region = regionFinder.findRegionForTrail(trail);
+        regionFinder = new RegionFinder();
+        String region = trail.getRegion();
+        String regionLower = trail.getRegion().toLowerCase();
         String difficulty = trail.getDifficulty().toLowerCase();
 
-        String baseDocUrl = "https://www.doc.govt.nz/parks-and-recreation/places-to-stay/stay-in-a-hut/";
-        if (!region.equals("Other")) {
-            String regionParam = region.toLowerCase().replace(" ", "-");
-            docHutsLink.setText("View DOC Huts in " + region);
-            docHutsLink.setOnAction(e -> super.getNavigator().openWebPage(baseDocUrl + "?region=" + regionParam + "/"));
+        Integer docRegionId = regionFinder.getDocRegionId(regionLower);
+        if (docRegionId != null) {
+            docHutsLink.setText("View DOC Huts in " + StringManipulator.capitaliseFirstLetter(region));
+            docHutsLink.setOnAction(e ->
+                super.getNavigator().openWebPage(
+                        "https://www.doc.govt.nz/parks-and-recreation/places-to-stay/stay-in-a-hut/?region-id=" + docRegionId
+                )
+            );
             docHutsLink.setVisible(true);
         } else {
-            docHutsLink.setVisible(false);
+            docHutsLink.setText("View DOC Huts");
+            docHutsLink.setOnAction(e ->
+                    super.getNavigator().openWebPage(
+                            "https://www.doc.govt.nz/parks-and-recreation/places-to-stay/stay-in-a-hut/")
+            );
         }
 
         boolean isRemoteRegion = regionFinder.isRemoteHutRegion(region);
         if (isRemoteRegion && (difficulty.contains("advanced") || difficulty.contains("expert"))) {
             remoteHutsLink.setText("View Remote Huts");
-            remoteHutsLink.setOnAction(e -> super.getNavigator().openWebPage("\"https://www.remotehuts.co.nz/by-map.html"));
+            remoteHutsLink.setOnAction(e -> super.getNavigator().openWebPage("https://www.remotehuts.co.nz/by-map.html"));
             remoteHutsLink.setVisible(true);
         } else {
             remoteHutsLink.setVisible(false);
