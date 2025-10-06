@@ -1,21 +1,19 @@
 package seng202.team5.services;
 
-import io.cucumber.java.Before;
 import org.junit.jupiter.api.BeforeEach;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 
 import java.net.HttpURLConnection;
 
-public class WeatherAPITest {
+public class WeatherServiceTest {
     @Mock
-    private WeatherAPI weatherAPI;
+    private WeatherService weatherService;
 
     @Mock
     private HttpURLConnection mockConnection;
 
     @BeforeEach
     public void setup() {
-        WeatherAPI weatherAPI = new WeatherAPI();
+        WeatherService weatherService = new WeatherService();
     }
 }

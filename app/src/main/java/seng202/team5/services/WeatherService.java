@@ -13,7 +13,7 @@ import java.net.URI;
 import java.net.URL;
 import java.util.*;
 
-public class WeatherAPI {
+public class WeatherService {
 
     private static final String API_KEY = getApiKey();
     private static final String BASE_URL = "https://api.openweathermap.org/data/2.5/weather";
@@ -26,7 +26,7 @@ public class WeatherAPI {
     private static String getApiKey() {
         try {
             Properties props = new Properties();
-            props.load(WeatherAPI.class.getClassLoader().getResourceAsStream("config.properties"));
+            props.load(WeatherService.class.getClassLoader().getResourceAsStream("config.properties"));
             String key = props.getProperty("openweather.api.key");
             if (key != null && !key.isEmpty()) {
                 return key;

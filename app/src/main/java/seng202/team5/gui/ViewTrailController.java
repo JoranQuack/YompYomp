@@ -18,7 +18,7 @@ import seng202.team5.gui.components.TrailCardComponent;
 import seng202.team5.models.Trail;
 import seng202.team5.services.TrailService;
 import seng202.team5.models.Weather;
-import seng202.team5.services.WeatherAPI;
+import seng202.team5.services.WeatherService;
 
 import java.util.List;
 
@@ -89,7 +89,7 @@ public class ViewTrailController extends Controller {
         javafx.application.Platform.runLater(this::initMap);
 
         new Thread(() -> {
-            Weather weather = WeatherAPI.getWeatherByCoords(trail.getLat(), trail.getLon());
+            Weather weather = WeatherService.getWeatherByCoords(trail.getLat(), trail.getLon());
             if (weather != null) {
                 javafx.application.Platform.runLater(() -> WeatherLabel.setText(String.format(
                         "%.1f°C (min %.1f°C / max %.1f°C) — %s",
@@ -101,7 +101,7 @@ public class ViewTrailController extends Controller {
         }).start();
 
         new Thread(() -> {
-            List<Weather> forecast = WeatherAPI.getFourDayForecast(trail.getLat(), trail.getLon());
+            List<Weather> forecast = WeatherService.getFourDayForecast(trail.getLat(), trail.getLon());
             if (!forecast.isEmpty()) {
                 StringBuilder sb  = new StringBuilder(" ");
                 for (Weather day : forecast) {
