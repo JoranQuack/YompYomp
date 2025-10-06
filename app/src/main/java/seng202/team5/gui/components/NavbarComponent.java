@@ -6,6 +6,8 @@ import java.util.List;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Button;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import seng202.team5.data.SqlBasedTrailRepo;
 import seng202.team5.gui.*;
@@ -21,7 +23,7 @@ public class NavbarComponent extends HBox {
     @FXML
     private Button trailsButton;
     @FXML
-    private Button profileButton;
+    private ImageView profileImage;
     @FXML
     private Button takeQuizButton;
 
@@ -44,17 +46,27 @@ public class NavbarComponent extends HBox {
         }
 
         if (userService.isGuest()) {
-            takeQuizButton.setText("Take Quiz");
+            takeQuizButton.setDisable(false);
             takeQuizButton.setVisible(true);
+            profileImage.setDisable(true);
+            profileImage.setVisible(false);
+            takeQuizButton.setOnAction(e -> navigator.launchScreen(new ProfileSetupGeneralController(navigator)));
         } else {
+            profileImage.setDisable(false);
+            profileImage.setVisible(true);
+            takeQuizButton.setDisable(true);
             takeQuizButton.setVisible(false);
+            if (userService.getUser() != null) {
+                profileImage.setImage(new Image(userService.getUser().getProfilePicture()));
+            } else {
+                profileImage.setImage(new Image("./images/profiles/user.png"));
+            }
+            profileImage.setOnMouseClicked(e -> navigator.launchScreen(new AccountController(navigator)));
         }
 
-        navButtons = List.of(homeButton, trailsButton, profileButton);
+        navButtons = List.of(homeButton, trailsButton);
         homeButton.setOnAction(e -> navigator.launchScreen(new DashboardController(navigator)));
         trailsButton.setOnAction(e -> navigator.launchScreen(new TrailsController(navigator, sqlBasedTrailRepo)));
-        profileButton.setOnAction(e -> navigator.launchScreen(new AccountController(navigator)));
-        takeQuizButton.setOnAction(e -> navigator.launchScreen(new ProfileSetupGeneralController(navigator)));
     }
 
     /**
@@ -70,9 +82,5 @@ public class NavbarComponent extends HBox {
     @FXML
     private void onLogoClicked() {
         homeButton.fire();
-    }
-
-    public Button getProfileButton() {
-        return profileButton;
     }
 }

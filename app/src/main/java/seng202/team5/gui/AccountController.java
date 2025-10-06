@@ -137,6 +137,7 @@ public class AccountController extends Controller {
     @FXML
     private void onOptionImageClicked(ImageView optionImage) {
         profileImage.setImage(optionImage.getImage());
+        user.setProfilePicture(optionImage.getImage().getUrl());
     }
 
     @FXML
@@ -195,6 +196,6 @@ public class AccountController extends Controller {
     public void onLoadFailed(Exception e) {
         showAlert("Account Failed To Load",
                 "Account page failed to load, please close and reload the application.",
-                "OK", "Cancel", null, null);
+                "", "OK", null, null);
     }
 }

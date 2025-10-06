@@ -127,8 +127,7 @@ public class MatchmakingService {
      *
      * @param trail the trail to categorise
      * @return a set of categories that match the trail's description or an empty
-     *         set if no
-     *         categories match
+     *         set if no categories match
      */
     public Set<String> categoriseTrail(Trail trail) throws MatchmakingFailedException {
         Map<String, String> keywordToCategory = buildReverseIndex();

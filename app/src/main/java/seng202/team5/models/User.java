@@ -20,6 +20,7 @@ public class User {
     private int historicPreference;
     private int waterfallPreference;
     private boolean isProfileComplete;
+    private String profilePicture;
 
     public User() {
         this.id = 1; // Set default ID for single user system
@@ -66,6 +67,7 @@ public class User {
         this.historicPreference = historicPreference;
         this.waterfallPreference = waterfallPreference;
         this.isProfileComplete = isProfileComplete;
+        this.profilePicture = "./images/profiles/user.png";
     }
 
     // getters
@@ -133,6 +135,10 @@ public class User {
         return isProfileComplete;
     }
 
+    public String getProfilePicture() {
+        return profilePicture;
+    }
+
     // setters
 
     public void setName(String name) {
@@ -193,6 +199,10 @@ public class User {
 
     public void setProfileComplete(boolean profileComplete) {
         this.isProfileComplete = profileComplete;
+    }
+
+    public void setProfilePicture(String profilePicture) {
+        this.profilePicture = profilePicture;
     }
 
     @Override

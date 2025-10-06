@@ -86,12 +86,6 @@ public class DashboardController extends Controller {
             }
         });
 
-        if (userService.isGuest()) {
-            getNavbarController().getProfileButton().setDisable(true);
-        } else {
-            getNavbarController().getProfileButton().setDisable(false);
-        }
-
         DOCLink.setOnAction(e -> super.getNavigator().openWebPage("https://www.doc.govt.nz/"));
     }
 
@@ -120,7 +114,7 @@ public class DashboardController extends Controller {
         trailsContainer.getChildren().clear();
 
         for (Trail trail : trails) {
-            TrailCardComponent trailCard = new TrailCardComponent(super.getUserService().isGuest(), false);
+            TrailCardComponent trailCard = new TrailCardComponent(userService.isGuest(), false);
             trailCard.setData(trail);
 
             // Add some spacing between cards

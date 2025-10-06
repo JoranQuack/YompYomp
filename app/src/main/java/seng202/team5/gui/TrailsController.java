@@ -123,12 +123,6 @@ public class TrailsController extends Controller {
 
         // Load data asynchronously
         loadInitialDataAsync();
-
-        if (userService.isGuest()) {
-            getNavbarController().getProfileButton().setDisable(true);
-        } else {
-            getNavbarController().getProfileButton().setDisable(false);
-        }
     }
 
     @FXML
