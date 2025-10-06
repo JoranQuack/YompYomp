@@ -14,45 +14,55 @@ package "services" {
     + LogService(databaseService : DatabaseService)
     + getNumberOfPages() : int
     + updateLogs()
+    + getPage(page : int) : List<TrailLog>
     + getAllLogs() : List<TrailLog>
     + addLog(trailLog : TrailLog)
     + deleteLog(logId : int)
 }
 
   class WeatherService{
-    + WeatherService(apiKey : String, baseUrl : String, forecastUrl : String)
+    + WeatherService(baseUrl : String, forecastUrl : String)
     + getWeatherByCoords(lat : double, lon : double) : Weather
     + getFourDayForecast(lat : double, lon : double) : List<Weather>
 }
 
   class MatchMakingService {
+    + MatchMakingService(databaseService : DatabaseService)
     + generateTrailWeights(user : User) : void
+    + setUserPreferences(user : User)
     + getRecommendedTrails(user : User, limit : int) : List<Trail>
-    + categoriseTrail(trail : Trail) : Set<String>
+    + categoriseAllTrails()
     + scoreTrail(trailCategories : Set<String>) : double
-    + getPersonalisedTrails(page : int) : List<Trail>
+    + getSortedTrails() : List<Trail>
   }
 
   class SearchService {
+    + SearchService(databaseService : DatabaseService)
     + setMaxResults(n : int) : void
     + getNumberOfTrails() : int
     + getNumberOfPages(query : String) : int
-    + getPage(page : int) : List<Trail>
-    + search(query : String, page : int) : List<Trail>
+    + updateTrails()
+    + updateSearch(query : String)
+    + getFilterOptions(filterType : String) : List<String>
+    + getSortOptions() : List<String>
   }
 
   class SetupService {
-    + SetupService()
+    + SetupService(databaseService : DatabaseService)
     + setupDatabase() : void
     + scrapeTrailImage(url : String) : void
     + syncDB() : void
-    + setupApplicaiton() : void
+    + setupApplication() : void
   }
 
   class UserService {
+    + UserService(databaseService : DatabaseService)
     + getUser() : User
     + setUserParameters(stmt : PreparedStatement, user : User) : void
     - loadUserFromDatabase() : User
+    + setGuest(isGuest : boolean)
+    + clearUser()
+    + getUserAfterSkip()
   }
 
   class DatabaseService {
@@ -65,15 +75,25 @@ package "services" {
     + isSchemaUpToDate() : boolean
   }
 
+  class TrailService {
+    + getNearbyTrails(currentTrail : Trail, radiusKm : double, allTrails : List<Trail>) : List<Trail>
+  }
+
+  class RegionFinder {
+    + RegionFinder(regionalDatasetsPath : String, fileName : string)
+    + loadAllRegions() : Map<String, Geometry>
+    + loadRegionsFromShapefile(shapeFilePath : String) : Map<String, Geometry>
+    + findRegionForTrail(trail : Trail) : String
+    + findRegionForPoint(latitude : double, longitude : double) : String
+    + getAllRegions() : Map<String, Geometry>
+  }
+
 }
 
 SearchService *-- DatabaseService
 MatchMakingService *-- DatabaseService
 UserService *-- DatabaseService
 SetupService *-- DatabaseService
-TrailService *-- DatabaseService
-RegionFinder *-- DatabaseService
 WeatherService *-- DatabaseService
 LogService *-- DatabaseService
 @enduml
-//TODO connect remaining services
