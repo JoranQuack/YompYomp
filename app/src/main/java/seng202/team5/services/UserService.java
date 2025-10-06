@@ -270,5 +270,6 @@ public class UserService {
         stmt.setInt(14, user.getHistoricPreference());
         stmt.setInt(15, user.getWaterfallPreference());
         stmt.setBoolean(16, user.isProfileComplete());
+        stmt.setString(17, user.getProfilePicture());
     }
 }
