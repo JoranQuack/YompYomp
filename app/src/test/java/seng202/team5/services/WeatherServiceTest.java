@@ -1,53 +1,74 @@
 package seng202.team5.services;
 
-import org.junit.Test;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
-import org.mockito.Mock;
+import org.junit.jupiter.api.Test;
+import seng202.team5.models.Weather;
 
 import java.io.ByteArrayInputStream;
-import java.io.IOException;
 import java.net.HttpURLConnection;
+import java.net.URI;
 import java.net.URL;
 
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
+import org.mockito.MockedStatic;
 
-public class WeatherServiceTest {
-    @Mock
+class WeatherServiceTest {
+
     private WeatherService weatherService;
-
-    @Mock
     private HttpURLConnection mockConnection;
-
-    @Mock
-    private URL mockURL;
+    private URL mockUrl;
+    private URI mockUri;
 
     @BeforeEach
-    public void setup() {
-        weatherService = new WeatherService("https://fake-weather-url", "https://fake-forecast-url");
+    void setUp() throws Exception {
+        weatherService = new WeatherService("https://fake-base-url", "https://fake-forecast-url");
         mockConnection = mock(HttpURLConnection.class);
-        mockURL = mock(URL.class);
+        mockUrl = mock(URL.class);
+        mockUri = mock(URI.class);
     }
 
     @Test
-    @DisplayName("getWeatherByCoords returns correct Weather on valid JSON")
-    public void getWeatherByCoords() throws IOException {
+    @DisplayName("getWeatherByCoords should return correct Weather object on valid JSON")
+    void testGetWeatherByCoords_ValidResponse() throws Exception {
         String jsonResponse = """
-        {
-          "main": {"temp": 20.0, "temp_min": 15.0, "temp_max": 25.0},
-          "weather": [{"description": "clear sky"}]
-        } 
-        """;
+                {
+                  "main": {"temp": 21.5, "temp_min": 19.0, "temp_max": 25.0},
+                  "weather": [{"description": "clear sky"}]
+                }
+                """;
 
-        when(mockURL.openConnection()).thenReturn(mockConnection);
+        when(mockUrl.openConnection()).thenReturn(mockConnection);
         when(mockConnection.getResponseCode()).thenReturn(200);
         when(mockConnection.getInputStream()).thenReturn(new ByteArrayInputStream(jsonResponse.getBytes()));
+        when(mockUri.toURL()).thenReturn(mockUrl);
 
-        try (var uriMock = mockStatic(java.net.URI.class)) {
-            uriMock.when(() -> java.net.URI.create(anyString())).thenReturn(mock(java.net.URI.class));
+        try (MockedStatic<URI> uriMock = mockStatic(URI.class)) {
+            uriMock.when(() -> URI.create(anyString())).thenReturn(mockUri);
+
+            Weather weather = weatherService.getWeatherByCoords(-43.5320, 172.6362);
+
+            assertNotNull(weather);
+            assertEquals(21.5, weather.getTemperature());
+            assertEquals(19.0, weather.getTempMin());
+            assertEquals(25.0, weather.getTempMax());
+            assertEquals("clear sky", weather.getDescription());
         }
     }
 
+    @Test
+    @DisplayName("getWeatherByCoords should return null when response code != 200")
+    void testGetWeatherByCoords_BadResponseCode() throws Exception {
+        when(mockUrl.openConnection()).thenReturn(mockConnection);
+        when(mockConnection.getResponseCode()).thenReturn(404);
+        when(mockUri.toURL()).thenReturn(mockUrl);
 
+        try (MockedStatic<URI> uriMock = mockStatic(URI.class)) {
+            uriMock.when(() -> URI.create(anyString())).thenReturn(mockUri);
 
+            Weather weather = weatherService.getWeatherByCoords(-43.5320, 172.6362);
+            assertNull(weather);
+        }
+    }
 }
