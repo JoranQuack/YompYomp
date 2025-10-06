@@ -11,6 +11,7 @@ import java.nio.file.Path;
 import java.sql.Connection;
 import java.sql.Statement;
 import java.util.List;
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -85,9 +86,42 @@ public class SqlBasedFilterOptionsRepoTest {
     }
 
     @Test
-    @DisplayName("Should return the correct filter options")
+    @DisplayName("Should correctly identify if a filterType has options")
     void testHasFilterOptions() {
         filterOptionsRepo.refreshAllFilterOptions();
 
+        assertTrue(filterOptionsRepo.hasFilterOptions("difficulty"), "Difficulty should have options");
+        assertTrue(filterOptionsRepo.hasFilterOptions("completionType"), "CompletionType should have options");
+        assertTrue(filterOptionsRepo.hasFilterOptions("multiDay"), "MultiDay should have options");
+    }
+
+    @Test
+    @DisplayName("Should get all the available types")
+    void testGetAllFilterOptions() {
+        filterOptionsRepo.refreshAllFilterOptions();
+
+        List<String> allTypes = filterOptionsRepo.getAvailableFilterTypes();
+        assertTrue(allTypes.contains("difficulty"), "Should contain difficulty");
+        assertTrue(allTypes.contains("completionType"), "Should contain completionType");
+        assertTrue(allTypes.contains("multiDay"), "Should contain multiDay");
+        assertEquals(5, allTypes.size(), "Should only contain the 5 known types");
+    }
+
+    @Test
+    @DisplayName("Should return the correct map for filter options")
+    void testGetFilterOptionsMap() {
+        filterOptionsRepo.refreshAllFilterOptions();
+
+        Map<String, List<String>> optionsMap = filterOptionsRepo
+                .getFilterOptionsMap(List.of("difficulty", "completionType", "multiDay"));
+
+        assertTrue(optionsMap.containsKey("difficulty"), "Map should contain difficulty");
+        assertTrue(optionsMap.containsKey("completionType"), "Map should contain completionType");
+        assertTrue(optionsMap.containsKey("multiDay"), "Map should contain multiDay");
+        assertEquals(3, optionsMap.size(), "Map should only contain the three known types");
+
+        assertTrue(optionsMap.get("difficulty").contains("easy"), "Difficulty should contain easy");
+        assertTrue(optionsMap.get("completionType").contains("walk"), "CompletionType should contain walk");
+        assertTrue(optionsMap.get("multiDay").contains("Multi-day"), "MultiDay should contain Multi-day");
     }
 }
