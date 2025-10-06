@@ -1,5 +1,5 @@
 -- Remember to increment the schema version here when making changes!
--- Schema version: 2.2
+-- Schema version: 2.3
 PRAGMA foreign_keys = off;
 
 BEGIN TRANSACTION;
