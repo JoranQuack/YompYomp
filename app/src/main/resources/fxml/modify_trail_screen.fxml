@@ -1,15 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
-<?import javafx.scene.text.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
 
-<HBox minHeight="-Infinity" minWidth="-Infinity" spacing="40.0" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="seng202.team5.gui.ModifyTrailController">
+<HBox minHeight="-Infinity" minWidth="-Infinity" styleClass="root-pane" stylesheets="@../styles/global.css" xmlns="http://javafx.com/javafx/21.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="seng202.team5.gui.ModifyTrailController">
    <children>
-      <VBox prefWidth="300.0" spacing="10.0">
+      <VBox prefWidth="320.0" spacing="10.0">
          <children>
-            <Label text="Basic Trail Information">
+            <Label styleClass="heading" text="Basic Trail Information">
                <font>
                   <Font name="System Bold" size="15.0" />
                </font>
@@ -17,7 +23,12 @@
                   <Insets />
                </VBox.margin>
             </Label>
-            <Label text="Trail name (required)" />
+            <HBox>
+               <children>
+                  <Label text="Trail name" />
+                  <Label styleClass="text-red" text="*" />
+               </children>
+            </HBox>
             <TextField fx:id="trailNameTextField">
                <font>
                   <Font size="12.0" />
@@ -31,51 +42,81 @@
             </TextField>
             <HBox spacing="10.0">
                <children>
-                  <VBox spacing="10.0" HBox.hgrow="ALWAYS">
+                  <VBox maxWidth="-Infinity" prefWidth="135.0" spacing="10.0" HBox.hgrow="ALWAYS">
                      <children>
                         <Label text="Difficulty" />
-                        <ComboBox fx:id="difficultyComboBox" VBox.vgrow="ALWAYS" />
+                        <ComboBox fx:id="difficultyComboBox" maxWidth="1.7976931348623157E308" VBox.vgrow="ALWAYS" />
                      </children>
                   </VBox>
-                  <VBox spacing="10.0" HBox.hgrow="ALWAYS">
+                  <VBox maxWidth="-Infinity" prefWidth="135.0" spacing="10.0" HBox.hgrow="ALWAYS">
                      <children>
-                        <Label text="Trail type (Required)" />
-                        <ComboBox fx:id="trailTypeComboBox" VBox.vgrow="ALWAYS" />
+                        <HBox>
+                           <children>
+                              <Label text="Trail type" />
+                              <Label styleClass="text-red" text="*" />
+                           </children>
+                        </HBox>
+                        <ComboBox fx:id="trailTypeComboBox" maxWidth="1.7976931348623157E308" VBox.vgrow="ALWAYS" />
                      </children>
                   </VBox>
                </children>
             </HBox>
             <Label text="Completion time" />
             <TextField fx:id="completionTimeTextField" />
-            <Label text="Trail description (required)" />
-            <TextArea fx:id="trailDescriptionTextArea" maxHeight="100.0" wrapText="true" VBox.vgrow="ALWAYS" />
+            <HBox>
+               <children>
+                  <Label text="Trail description" />
+                  <Label styleClass="text-red" text="*" />
+               </children>
+            </HBox>
+            <TextArea fx:id="trailDescriptionTextArea" maxHeight="1.7976931348623157E308" prefHeight="100.0" wrapText="true" VBox.vgrow="ALWAYS" />
             <Label text="Cultural URL" />
             <TextField fx:id="cultureUrlTextField" />
+            <Button alignment="BOTTOM_CENTER" contentDisplay="TOP" mnemonicParsing="false" onAction="#onDeleteTrailClicked" styleClass="bg-red" text="Delete Trail">
+               <VBox.margin>
+                  <Insets top="10.0" />
+               </VBox.margin>
+            </Button>
          </children>
          <padding>
-            <Insets bottom="20.0" left="20.0" top="20.0" />
+            <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
          </padding>
       </VBox>
-      <VBox alignment="TOP_CENTER" spacing="10.0" HBox.hgrow="ALWAYS">
+      <VBox alignment="TOP_CENTER" spacing="20.0" HBox.hgrow="ALWAYS">
          <children>
             <HBox fx:id="mapContainer" VBox.vgrow="ALWAYS" />
             <HBox alignment="CENTER" spacing="20.0">
                <children>
-                  <VBox prefHeight="0.0" prefWidth="100.0">
+                  <VBox alignment="TOP_CENTER" spacing="10.0">
                      <children>
-                        <VBox prefHeight="200.0" prefWidth="100.0" />
-                        <Label fx:id="regionLabel" alignment="CENTER" text="Region" />
-                     </children></VBox>
-                  <VBox alignment="TOP_CENTER">
-                     <children>
-                        <Label fx:id="latitudeLabel" text="Latitude (Required)" />
+                        <HBox alignment="TOP_CENTER">
+                           <children>
+                              <Label fx:id="latitudeLabel" text="Latitude" />
+                              <Label styleClass="text-red" text="*" />
+                           </children>
+                        </HBox>
                         <TextField fx:id="latitudeTextField" />
                      </children>
                   </VBox>
-                  <VBox alignment="TOP_CENTER">
+                  <VBox alignment="TOP_CENTER" spacing="10.0">
                      <children>
-                        <Label fx:id="longitudeLabel" text="Longitude (Required)" />
+                        <HBox alignment="TOP_CENTER">
+                           <children>
+                              <Label fx:id="longitudeLabel" text="Longitude" />
+                              <Label styleClass="text-red" text="*" />
+                           </children>
+                        </HBox>
                         <TextField fx:id="longitudeTextField" />
+                     </children>
+                  </VBox>
+                  <VBox alignment="TOP_CENTER" spacing="10.0">
+                     <children>
+                        <HBox alignment="TOP_CENTER">
+                           <children>
+                              <Label fx:id="latitudeLabel1" text="Region" />
+                           </children>
+                        </HBox>
+                        <TextField fx:id="regionTextField" editable="false" />
                      </children>
                   </VBox>
                </children>
@@ -85,18 +126,14 @@
             </HBox>
             <HBox alignment="TOP_RIGHT">
                <children>
-                  <HBox>
+                  <VBox alignment="BOTTOM_CENTER" spacing="5.0">
                      <children>
-                        <VBox spacing="10.0">
-                           <children>
-                              <Label fx:id="invalidNumberLabel" text="Label" wrapText="true" />
-                              <Label fx:id="emptyFieldLabel" text="Label" wrapText="true" />
-                           </children>
-                        </VBox>
+                        <Label fx:id="invalidNumberLabel" styleClass="text-red" text="Label" wrapText="true" />
+                        <Label fx:id="emptyFieldLabel" styleClass="text-red" text="Label" wrapText="true" />
                      </children>
-                  </HBox>
+                  </VBox>
                   <Region HBox.hgrow="ALWAYS" />
-                  <VBox alignment="BOTTOM_RIGHT" maxWidth="1.7976931348623157E308" spacing="10.0">
+                  <VBox alignment="BOTTOM_RIGHT" spacing="10.0">
                      <children>
                         <Button fx:id="saveButton" mnemonicParsing="false" text="Save" />
                         <Button fx:id="backButton" mnemonicParsing="false" text="Back &amp; Discard Changes" />

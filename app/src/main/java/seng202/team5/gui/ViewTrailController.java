@@ -357,8 +357,8 @@ public class ViewTrailController extends Controller {
      */
     @Override
     public void onLoadFailed(Exception e) {
-        showAlert(Alert.AlertType.ERROR, "Trail Card Failed To Load",
-                "Loading selected trail failed, please close the application and try " +
-                        "again.");
+        showAlert("Trail Card Failed To Load",
+                "Loading selected trail failed, please close the application and try again.",
+                "OK", "Cancel", null, null);
     }
 }

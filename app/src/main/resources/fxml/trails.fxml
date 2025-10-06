@@ -71,9 +71,9 @@
       </HBox>
       <StackPane VBox.vgrow="ALWAYS">
          <children>
-      
+
             <!-- Trails container -->
-            <ScrollPane fitToWidth="true">
+            <ScrollPane fx:id="trailsScrollPane" fitToWidth="true">
                <content>
                   <FlowPane fx:id="trailsContainer" alignment="CENTER" columnHalignment="CENTER" hgap="15.0" prefWrapLength="0.0" vgap="15.0">
                      <padding>
