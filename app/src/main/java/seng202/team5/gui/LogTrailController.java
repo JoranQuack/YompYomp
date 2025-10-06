@@ -16,7 +16,7 @@ import java.time.ZoneId;
 import java.util.List;
 
 /**
- * Controller for the trip log screen
+ * Controller for the trail log screen
  */
 public class LogTrailController extends Controller {
 
@@ -25,7 +25,6 @@ public class LogTrailController extends Controller {
     private LogService logService;
     private DatabaseService databaseService;
     private SqlBasedTrailRepo trailRepo;
-    private SqlBasedTrailLogRepo trailLogRepo;
 
     /**
      * Launches the screen with the navigator
@@ -124,6 +123,12 @@ public class LogTrailController extends Controller {
         noteTextArea.setText(trailLog.getNotes());
     }
 
+    /**
+     * Gets a valid completion type for the trail if the trail type is unknown.
+     *
+     * @param trail the trail to get the completion type for
+     * @return the valid completion type
+     */
     private String getValidCompletionType(Trail trail) {
         String type = trail.getCompletionType();
         if (type == null || type.equalsIgnoreCase("unknown")) {
@@ -132,6 +137,9 @@ public class LogTrailController extends Controller {
         return StringManipulator.capitaliseFirstLetter(type);
     }
 
+    /**
+     * Clears any error styling on the form field
+     */
     private void clearErrors() {
         durationTextField.setStyle("");
         if (errorLabel != null) {
@@ -139,6 +147,12 @@ public class LogTrailController extends Controller {
         }
     }
 
+    /**
+     * Shows an error message on the form field.
+     *
+     * @param control  the control to show the error on
+     * @param message  the error message to show
+     */
     private void showError(Control control, String message) {
         clearErrors();
         control.setStyle("-fx-border-color: red");
@@ -148,6 +162,11 @@ public class LogTrailController extends Controller {
         }
     }
 
+    /**
+     * Validates the form field.
+     *
+     * @return true if the form field is valid, false otherwise
+     */
     private boolean validateFields() {
         String durationText = durationTextField.getText().trim();
         if (durationText.isEmpty()) {
@@ -169,6 +188,9 @@ public class LogTrailController extends Controller {
         return true;
     }
 
+    /**
+     * Handles the event when the done button is clicked.
+     */
     @FXML
     private void onDoneButtonClicked() {
         if (!validateFields()) {
@@ -187,6 +209,9 @@ public class LogTrailController extends Controller {
         super.getNavigator().goBack();
     }
 
+    /**
+     * Handles the event when the back button is clicked.
+     */
     @FXML
     private void onBackButtonClicked() {
         super.getNavigator().goBack();

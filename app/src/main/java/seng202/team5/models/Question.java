@@ -1,5 +1,8 @@
 package seng202.team5.models;
 
+/**
+ * Enum for the questions in the profile quiz.
+ */
 public enum Question {
     ONE("Your tramping experience level?", new String[]{"Beginner", "Intermediate", "Expert"}),
     TWO("Preferred gradient of tramp?", new String[]{"Gentle", "Moderate", "Steep"}),
@@ -15,6 +18,12 @@ public enum Question {
     public final String question;
     public final String[] sliderLabels;
 
+    /**
+     * Constructor for the question enum.
+     *
+     * @param question the question description
+     * @param sliderLabels the labels for the slider
+     */
     Question(String question, String[] sliderLabels) {
         this.question = question;
         this.sliderLabels = sliderLabels;

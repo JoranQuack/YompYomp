@@ -18,9 +18,9 @@ import seng202.team5.models.TrailLog;
 import seng202.team5.services.LogService;
 
 /**
- * Controller for the trails display screen.
+ * Controller for the logged trail display screen.
  * Handles trail search, pagination, and card display with performance
- * optimizations.
+ * optimisations.
  */
 public class LogBookController extends Controller {
 
@@ -215,7 +215,6 @@ public class LogBookController extends Controller {
                             System.out.println(logService.countLogs());
                             logContainer.getChildren().remove(logCard);
                             resultsLabel.setText(logContainer.getChildren().size() + "/" + logService.countLogs() + " trails showing");
-                            //updateLogsDisplay(logService.getPage(0));
                             updateLogsDisplay(logService.getAllLogs());
                             if (logService.getAllLogs().isEmpty()) {
                                 handleInitializationFailure();
@@ -227,16 +226,6 @@ public class LogBookController extends Controller {
         }
 
         updateResultsLabel(logs.size());
-    }
-
-    @FXML
-    private void onLogCardClicked(TrailLog log) {
-        Optional<Trail> trailOpt = logService.getTrail(log.getTrailId());
-        trailOpt.ifPresent(trail -> {
-            super.getNavigator().launchScreen(
-                    new LogTrailController(super.getNavigator(), trail, log)
-            );
-        });
     }
 
     /**
@@ -258,7 +247,7 @@ public class LogBookController extends Controller {
     }
 
     /**
-     * Updates the results label to show the number of trails currently displayed
+     * Updates the result label to show the number of trails currently displayed
      *
      * @param trailCount Number of trails currently displayed
      */
@@ -287,6 +276,25 @@ public class LogBookController extends Controller {
         isUpdating = false;
     }
 
+    /**
+     * Handles the event when a user clicks on a log card.
+     * Retrieves the corresponding trail associated with the log and navigates to the trail details screen.
+     *
+     * @param log The TrailLog object representing the log card that was clicked.
+     */
+    @FXML
+    private void onLogCardClicked(TrailLog log) {
+        Optional<Trail> trailOpt = logService.getTrail(log.getTrailId());
+        trailOpt.ifPresent(trail -> {
+            super.getNavigator().launchScreen(
+                    new LogTrailController(super.getNavigator(), trail, log)
+            );
+        });
+    }
+
+    /**
+     * Handles the event when the user clicks the search button and updates the displayed logs.
+     */
     @FXML
     private void onSearchButtonClicked() {
         logService.setCurrentQuery(searchBarTextField.getText());

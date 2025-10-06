@@ -2,6 +2,11 @@ package seng202.team5.models;
 
 import java.time.LocalDate;
 
+
+/**
+ * The base class entity representing a trail log.
+ */
+
 public class TrailLog {
 
     private int id;
@@ -17,13 +22,15 @@ public class TrailLog {
     /**
      * Constructor for a trail log
      *
-     * @param id
-     * @param trailId
-     * @param startDate
-     * @param timeUnit
-     * @param rating
-     * @param perceivedDifficulty
-     * @param notes
+     * @param id the trail log id
+     * @param trailId the trail id
+     * @param startDate the date the trail was started
+     * @param completionTime the completion time of the trail in minutes
+     * @param timeUnit the time unit of the completion time
+     * @param completionType the completion type of the trail
+     * @param rating the rating of the trail
+     * @param perceivedDifficulty the personal difficulty of the trail
+     * @param notes the notes for the trail log
      */
     public TrailLog(int id, int trailId, LocalDate startDate, Integer completionTime, String timeUnit, String completionType,
                     Integer rating, String perceivedDifficulty, String notes) {
