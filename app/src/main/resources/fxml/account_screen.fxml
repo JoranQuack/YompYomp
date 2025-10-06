@@ -31,10 +31,7 @@
                <children>
                   <VBox alignment="TOP_CENTER" spacing="10.0">
                      <children>
-                        <ImageView fx:id="profileImage" fitHeight="150.0" fitWidth="150.0" pickOnBounds="true" preserveRatio="true">
-                           <image>
-                              <Image url="@../images/profiles/user.png" />
-                           </image></ImageView>
+                        <ImageView fx:id="profileImage" fitHeight="150.0" fitWidth="150.0" pickOnBounds="true" preserveRatio="true" />
                         <Label text="Choose your profile photo" />
                         <HBox alignment="TOP_CENTER" spacing="10.0">
                            <children>

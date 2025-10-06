@@ -50,7 +50,7 @@ public class User {
     public User(int id, String name, List<String> regions, boolean isFamilyFriendly, boolean isAccessible,
             int experienceLevel, int gradientPreference, int bushPreference, int reservePreference,
             int lakeRiverPreference, int coastPreference, int mountainPreference, int wildlifePreference,
-            int historicPreference, int waterfallPreference, boolean isProfileComplete) {
+            int historicPreference, int waterfallPreference, boolean isProfileComplete, String profilePicture) {
         this.id = id;
         this.name = name;
         this.regions = regions;
@@ -67,7 +67,7 @@ public class User {
         this.historicPreference = historicPreference;
         this.waterfallPreference = waterfallPreference;
         this.isProfileComplete = isProfileComplete;
-        this.profilePicture = "./images/profiles/user.png";
+        this.profilePicture = profilePicture;
     }
 
     // getters
@@ -224,6 +224,7 @@ public class User {
                 ", historicPreference=" + historicPreference +
                 ", waterfallPreference=" + waterfallPreference +
                 ", isProfileComplete=" + isProfileComplete +
+                ", profilePicture='" + profilePicture +
                 '}';
     }
 }

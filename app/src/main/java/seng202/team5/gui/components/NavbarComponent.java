@@ -60,9 +60,11 @@ public class NavbarComponent extends HBox {
             takeQuizButton.setDisable(true);
             takeQuizButton.setVisible(false);
             if (userService.getUser() != null) {
-                profileImage.setImage(new Image(userService.getUser().getProfilePicture()));
-            } else {
-                profileImage.setImage(new Image("./images/profiles/user.png"));
+                String profileUrl = userService.getUser().getProfilePicture();
+                if (profileUrl == null) {
+                    profileUrl = "/images/profiles/user.png";
+                }
+                profileImage.setImage(new Image(profileUrl));
             }
             profileImage.setOnMouseClicked(e -> navigator.launchScreen(new AccountController(navigator)));
         }
@@ -95,5 +97,9 @@ public class NavbarComponent extends HBox {
     @FXML
     private void onLogoClicked() {
         homeButton.fire();
+    }
+
+    public ImageView getProfileImage() {
+        return profileImage;
     }
 }

@@ -105,6 +105,7 @@ public class AccountController extends Controller {
 
         welcomeLabel.setText("Kia Ora " + user.getName() + "!");
         setPreferenceLabels();
+        profileImage.setImage(new Image(user.getProfilePicture()));
 
         List<ImageView> optionImages = List.of(optionImage1, optionImage2, optionImage3, optionImage4,
                 optionImage5, optionImage6, optionImage7);
@@ -130,13 +131,17 @@ public class AccountController extends Controller {
 
     @FXML
     private void onClearProfileImageClicked() {
-        profileImage.setImage(new Image("./images/profiles/user.png"));
+        profileImage.setImage(new Image("/images/profiles/user.png"));
+        user.setProfilePicture("/images/profiles/user.png");
+        super.getUserService().setUser(user);
     }
 
     @FXML
     private void onOptionImageClicked(ImageView optionImage) {
         profileImage.setImage(optionImage.getImage());
         user.setProfilePicture(optionImage.getImage().getUrl());
+        super.getNavbarController().getProfileImage().setImage(new Image(user.getProfilePicture()));
+        super.getUserService().setUser(user);
     }
 
     @FXML

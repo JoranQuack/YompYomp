@@ -21,8 +21,8 @@ public class UserService {
                 experienceLevel, gradientPreference, bushPreference,
                 reservePreference, lakeRiverPreference, coastPreference,
                 mountainPreference, wildlifePreference, historicPreference,
-                waterfallPreference, isProfileComplete
-            ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
+                waterfallPreference, isProfileComplete, profilePicture
+            ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
             ON CONFLICT(id) DO UPDATE SET
                 name=excluded.name,
                 regions=excluded.regions,
@@ -38,7 +38,8 @@ public class UserService {
                 wildlifePreference=excluded.wildlifePreference,
                 historicPreference=excluded.historicPreference,
                 waterfallPreference=excluded.waterfallPreference,
-                isProfileComplete=excluded.isProfileComplete
+                isProfileComplete=excluded.isProfileComplete,
+                profilePicture=excluded.profilePicture
             """;
 
     /**
@@ -225,7 +226,8 @@ public class UserService {
                     row.getInt("wildlifePreference"),
                     row.getInt("historicPreference"),
                     row.getInt("waterfallPreference"),
-                    row.getBoolean("isProfileComplete"));
+                    row.getBoolean("isProfileComplete"),
+                    row.getString("profilePicture"));
         } catch (SQLException e) {
             e.printStackTrace();
             return null;

@@ -1,5 +1,5 @@
 -- Remember to increment the schema version here when making changes!
--- Schema version: 2.1
+-- Schema version: 2.2
 PRAGMA foreign_keys = off;
 
 BEGIN TRANSACTION;
@@ -77,7 +77,8 @@ CREATE TABLE
         wildlifePreference INTEGER,
         historicPreference INTEGER,
         waterfallPreference INTEGER,
-        isProfileComplete BOOL DEFAULT 0
+        isProfileComplete BOOL DEFAULT 0,
+        profilePicture VARCHAR(260)
     );
 
 -- Table: filterOptions
