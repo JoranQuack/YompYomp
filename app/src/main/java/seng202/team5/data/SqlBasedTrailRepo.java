@@ -56,7 +56,6 @@ public class SqlBasedTrailRepo implements ITrail {
                 lon = excluded.lon
             """;
 
-    private static final String DELETE_SQL = "DELETE FROM trail WHERE id = ?";
     private static final String COUNT_SQL = "SELECT COUNT(*) FROM trail";
 
     /**
@@ -184,16 +183,12 @@ public class SqlBasedTrailRepo implements ITrail {
      * @param id the trail identifier to delete
      */
     public void deleteById(int id) {
-        // First delete the stuff from the category table
-        try {
-            String deleteTrailCategoryQuery = "DELETE FROM trailCategory WHERE trailId = ?";
-            queryHelper.executeUpdate(deleteTrailCategoryQuery, stmt -> stmt.setInt(1, id));
-        } catch (Exception e) {
-            // Ignore if trailCategory table doesn't exist
-        }
+        List<QueryHelper.SqlStatement> statements = List.of(
+                new QueryHelper.SqlStatement("DELETE FROM trailCategory WHERE trailId = ?", stmt -> stmt.setInt(1, id)),
+                new QueryHelper.SqlStatement("DELETE FROM trailLog WHERE trailId = ?", stmt -> stmt.setInt(1, id)),
+                new QueryHelper.SqlStatement("DELETE FROM trail WHERE id = ?", stmt -> stmt.setInt(1, id)));
 
-        // Then delete the trail itself
-        queryHelper.executeUpdate(DELETE_SQL, stmt -> stmt.setInt(1, id));
+        queryHelper.executeTransaction(statements);
     }
 
     /**
