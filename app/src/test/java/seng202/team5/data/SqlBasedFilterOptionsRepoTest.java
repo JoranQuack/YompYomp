@@ -83,4 +83,11 @@ public class SqlBasedFilterOptionsRepoTest {
         List<String> options = filterOptionsRepo.getFilterOptions("nonexistent");
         assertTrue(options.isEmpty());
     }
+
+    @Test
+    @DisplayName("Should return the correct filter options")
+    void testHasFilterOptions() {
+        filterOptionsRepo.refreshAllFilterOptions();
+
+    }
 }
