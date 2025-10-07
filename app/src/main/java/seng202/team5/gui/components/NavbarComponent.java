@@ -6,8 +6,9 @@ import java.util.List;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Button;
-import javafx.scene.control.Tooltip;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.control.Tooltip;
 import javafx.scene.layout.HBox;
 import seng202.team5.data.SqlBasedTrailRepo;
 import seng202.team5.gui.*;
@@ -25,7 +26,9 @@ public class NavbarComponent extends HBox {
     @FXML
     private Button trailsButton;
     @FXML
-    private Button redoQuizButton;
+    private ImageView profileImage;
+    @FXML
+    private Button takeQuizButton;
     @FXML
     private Button logbookButton;
 
@@ -48,16 +51,30 @@ public class NavbarComponent extends HBox {
         }
 
         if (userService.isGuest()) {
-            redoQuizButton.setText("Take Quiz");
+            takeQuizButton.setDisable(false);
+            takeQuizButton.setVisible(true);
+            profileImage.setDisable(true);
+            profileImage.setVisible(false);
+            takeQuizButton.setOnAction(e -> navigator.launchScreen(new ProfileSetupGeneralController(navigator)));
         } else {
-            redoQuizButton.setText("Redo Quiz");
+            profileImage.setDisable(false);
+            profileImage.setVisible(true);
+            takeQuizButton.setDisable(true);
+            takeQuizButton.setVisible(false);
+            if (userService.getUser() != null) {
+                String profileUrl = userService.getUser().getProfilePicture();
+                if (profileUrl == null) {
+                    profileUrl = "/images/profiles/user.png";
+                }
+                profileImage.setImage(new Image(profileUrl));
+            }
+            profileImage.setOnMouseClicked(e -> navigator.launchScreen(new AccountController(navigator)));
         }
 
         navButtons = List.of(homeButton, trailsButton, logbookButton);
         homeButton.setOnAction(e -> navigator.launchScreen(new DashboardController(navigator)));
         trailsButton.setOnAction(e -> navigator.launchScreen(new TrailsController(navigator, sqlBasedTrailRepo)));
         logbookButton.setOnAction(e -> navigator.launchScreen(new LogBookController(navigator)));
-        redoQuizButton.setOnAction(e -> navigator.launchScreen(new ProfileSetupGeneralController(navigator)));
         if (navigator.hasPreviousScreen()) {
             backButton.setOnMouseClicked(e -> navigator.goBack());
             backButton.setVisible(true);
@@ -70,15 +87,22 @@ public class NavbarComponent extends HBox {
     /**
      * Sets the page for the navbar.
      *
-     * @param pageIndex The index of the page button to highlight.
+     * @param pageIndex The index of the page button to highlight. Use -1 for no
+     *                  active button.
      */
     public void setPage(int pageIndex) {
         navButtons.forEach(button -> button.getStyleClass().remove("active"));
-        navButtons.get(pageIndex).getStyleClass().add("active");
+        if (pageIndex >= 0 && pageIndex < navButtons.size()) {
+            navButtons.get(pageIndex).getStyleClass().add("active");
+        }
     }
 
     @FXML
     private void onLogoClicked() {
         homeButton.fire();
+    }
+
+    public ImageView getProfileImage() {
+        return profileImage;
     }
 }

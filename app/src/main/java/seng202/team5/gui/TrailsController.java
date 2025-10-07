@@ -25,6 +25,7 @@ import seng202.team5.models.User;
 import seng202.team5.services.LogService;
 import seng202.team5.services.RegionFinder;
 import seng202.team5.services.SearchService;
+import seng202.team5.services.UserService;
 
 /**
  * Controller for the trails display screen.
@@ -39,6 +40,7 @@ public class TrailsController extends Controller {
     private SqlBasedTrailRepo sqlBasedTrailRepo;
     private String searchText;
     private final List<TrailCardComponent> trailCardPool = new ArrayList<>();
+    private UserService userService = getUserService();
 
     private boolean isUpdating = false;
     private boolean isRestoringState = false;

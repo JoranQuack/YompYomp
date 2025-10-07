@@ -19,6 +19,7 @@ import seng202.team5.models.Trail;
 import seng202.team5.models.TrailLog;
 import seng202.team5.services.LogService;
 import seng202.team5.services.SearchService;
+import seng202.team5.services.UserService;
 
 /**
  * Controller for the dashboard screen.
@@ -29,6 +30,7 @@ public class DashboardController extends Controller {
     private SqlBasedTrailLogRepo trailLogRepo;
     private LogService logService;
     private SqlBasedTrailRepo repo;
+    private UserService userService = getUserService();
 
     @FXML
     private FlowPane trailsContainer;

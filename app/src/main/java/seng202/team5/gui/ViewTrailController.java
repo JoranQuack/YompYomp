@@ -16,6 +16,7 @@ import netscape.javascript.JSObject;
 import seng202.team5.data.DatabaseService;
 import seng202.team5.data.SqlBasedTrailLogRepo;
 import seng202.team5.data.SqlBasedTrailRepo;
+import seng202.team5.gui.components.LegendLabelComponent;
 import seng202.team5.gui.components.TrailCardComponent;
 import seng202.team5.models.Trail;
 import seng202.team5.models.TrailLog;
@@ -67,6 +68,8 @@ public class ViewTrailController extends Controller {
     @FXML
     private Label descriptionLabel;
     @FXML
+    private Hyperlink culturalUrlHyperlink;
+    @FXML
     private Button editInfoButton;
     @FXML
     private HBox mapContainer;
@@ -79,19 +82,12 @@ public class ViewTrailController extends Controller {
     @FXML
     private HBox trailCardHBox;
     @FXML
-    private Label easiestColourLabel;
-    @FXML
-    private Label easyColourLabel;
-    @FXML
-    private Label intermediateColourLabel;
-    @FXML
-    private Label advancedColourLabel;
-    @FXML
-    private Label expertColourLabel;
+    private HBox legendContainer;
     @FXML
     private Hyperlink docHutsLink;
     @FXML
     private Hyperlink remoteHutsLink;
+    @FXML
     private WebView trailMapWebView;
 
     /**
@@ -117,6 +113,12 @@ public class ViewTrailController extends Controller {
             translationLabel.setVisible(true);
         } else {
             translationLabel.setVisible(false);
+        }
+        if (!trail.getCultureUrl().isEmpty()) {
+            culturalUrlHyperlink.setText(trail.getCultureUrl());
+            culturalUrlHyperlink.setVisible(true);
+        } else {
+            culturalUrlHyperlink.setVisible(false);
         }
         setupTrailRadiusFields();
         setupHutLinks();
@@ -171,11 +173,17 @@ public class ViewTrailController extends Controller {
      * Sets up the legend for the map marker colours
      */
     private void setupLegend() {
-        easiestColourLabel.setBackground(Background.fill(Paint.valueOf("008000")));
-        easyColourLabel.setBackground(Background.fill(Paint.valueOf("8de45f")));
-        intermediateColourLabel.setBackground(Background.fill(Paint.valueOf("ffff00")));
-        advancedColourLabel.setBackground(Background.fill(Paint.valueOf("ffa500")));
-        expertColourLabel.setBackground(Background.fill(Paint.valueOf("ff0000")));
+        LegendLabelComponent easiestLegend = new LegendLabelComponent("008000", "Easiest");
+        LegendLabelComponent easyLegend = new LegendLabelComponent("8de45f", "Easy");
+        LegendLabelComponent intermediateLegend = new LegendLabelComponent("ffff00", "Intermediate");
+        LegendLabelComponent advancedLegend = new LegendLabelComponent("ffa500", "Advanced Colour");
+        LegendLabelComponent expertLegend = new LegendLabelComponent("ff0000", "Expert");
+
+        legendContainer.getChildren().add(easiestLegend);
+        legendContainer.getChildren().add(easyLegend);
+        legendContainer.getChildren().add(intermediateLegend);
+        legendContainer.getChildren().add(advancedLegend);
+        legendContainer.getChildren().add(expertLegend);
     }
 
     /**
