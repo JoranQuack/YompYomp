@@ -31,38 +31,50 @@ class WeatherServiceTest {
     }
 
 //    @Test
-//    @DisplayName("getWeatherByCoords should return correct Weather object on valid JSON")
+//    @DisplayName("getWeatherByCoords returns correct Weather object using fake JSON")
 //    void testGetWeatherByCoords_ValidResponse() throws Exception {
 //        String jsonResponse = """
-//            {
-//              "main": {"temp": 21.5, "temp_min": 19.0, "temp_max": 25.0},
-//              "weather": [{"description": "clear sky"}]
-//            }
-//            """;
+//        {
+//          "main": {
+//            "temp": 21.5,
+//            "temp_min": 20.0,
+//            "temp_max": 23.0
+//          },
+//          "weather": [
+//            {"description": "sunny"}
+//          ]
+//        }
+//        """;
 //
 //        HttpURLConnection mockConnection = mock(HttpURLConnection.class);
-//        URL mockUrl = mock(URL.class);
-//        URI mockUri = mock(URI.class);
-//
-//        when(mockUrl.openConnection()).thenReturn(mockConnection);
 //        when(mockConnection.getResponseCode()).thenReturn(200);
 //        when(mockConnection.getInputStream()).thenReturn(new ByteArrayInputStream(jsonResponse.getBytes()));
+//
+//        URL mockUrl = mock(URL.class);
+//        when(mockUrl.openConnection()).thenReturn(mockConnection);
+//
+//        URI mockUri = mock(URI.class);
 //        when(mockUri.toURL()).thenReturn(mockUrl);
 //
-//        try (var uriMock = mockStatic(URI.class)) {
+//        try (MockedStatic<URI> uriMock = mockStatic(URI.class);
+//             MockedStatic<WeatherService> wsMock = mockStatic(WeatherService.class)) {
+//
 //            uriMock.when(() -> URI.create(anyString())).thenReturn(mockUri);
 //
-//            WeatherService service = new WeatherService("https://fake-base-url", "https://fake-forecast-url");
-//            Weather weather = service.getWeatherByCoords(-43.5320, 172.6362);
+//            WeatherService weatherService =
+//                    new WeatherService("http://fake-base", "http://fake-forecast");
 //
-//            assertNotNull(weather);
-//            assertEquals(21.5, weather.getTemperature());
-//            assertEquals(19.0, weather.getTempMin());
-//            assertEquals(25.0, weather.getTempMax());
-//            assertEquals("clear sky", weather.getDescription());
+//
+//            Weather result = weatherService.getWeatherByCoords(-43.5320, 172.6362);
+//
+//            assertNotNull(result, "Weather object should not be null");
+//            assertEquals(21.5, result.getTemperature(), 0.001);
+//            assertEquals(20.0, result.getTempMin(), 0.001);
+//            assertEquals(23.0, result.getTempMax(), 0.001);
+//            assertEquals("sunny", result.getDescription());
+//            assertNull(result.getDate(), "Date should be null for getWeatherByCoords");
 //        }
 //    }
-
 
     @Test
     @DisplayName("getWeatherByCoords should return null when response code != 200")
