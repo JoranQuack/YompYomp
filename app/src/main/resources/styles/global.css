@@ -71,6 +71,11 @@ Hyperlink {
   -fx-font-size: 15px;
 }
 
+.strong-text {
+  -fx-font-family: "Quicksand SemiBold";
+  -fx-font-size: 15px;
+}
+
 /* ========================================
  * INPUT ELEMENTS
  * ======================================== */

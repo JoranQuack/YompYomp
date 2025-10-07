@@ -4,218 +4,180 @@
 <?import javafx.scene.chart.PieChart?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<HBox alignment="CENTER" xmlns="http://javafx.com/javafx/21.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="seng202.team5.gui.AccountController">
+<VBox alignment="TOP_CENTER" styleClass="root-pane" stylesheets="@../styles/global.css" xmlns="http://javafx.com/javafx/21.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="seng202.team5.gui.AccountController">
    <children>
-      <VBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0">
-         <children>
-            <VBox fx:id="navbarContainer" />
-            <VBox alignment="TOP_CENTER">
+      <ScrollPane fitToHeight="true" fitToWidth="true" VBox.vgrow="ALWAYS">
+         <content>
+            <VBox alignment="TOP_CENTER" spacing="30.0">
                <children>
-                  <Label fx:id="welcomeLabel" text="Kia Ora">
+                  <Label fx:id="welcomeLabel" styleClass="title" text="Kia Ora">
                      <font>
                         <Font name="System Bold" size="14.0" />
                      </font>
-                     <VBox.margin>
-                        <Insets top="5.0" />
-                     </VBox.margin>
                   </Label>
-               </children>
-            </VBox>
-            <HBox spacing="30.0">
-               <children>
+                  <VBox alignment="TOP_CENTER" spacing="30.0">
+                     <children>
+                        <ImageView fx:id="profileImage" fitHeight="200.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" />
+                        <VBox alignment="CENTER" spacing="10.0">
+                           <children>
+                              <Label text="Choose your avatar" />
+                              <HBox alignment="TOP_CENTER" spacing="10.0">
+                                 <children>
+                                    <ImageView fx:id="clearProfileImage" fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@../images/profiles/ban.png" />
+                                       </image>
+                                    </ImageView>
+                                    <ImageView fx:id="optionImage1" fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@../images/profiles/aztec_4607060.png" />
+                                       </image>
+                                    </ImageView>
+                                    <ImageView fx:id="optionImage2" fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@../images/profiles/sculpture_8379929.png" />
+                                       </image>
+                                    </ImageView>
+                                    <ImageView fx:id="optionImage3" fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@../images/profiles/tiki-mask_5257036.png" />
+                                       </image>
+                                    </ImageView>
+                                    <ImageView fx:id="optionImage4" fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@../images/profiles/maori_7436499.png" />
+                                       </image>
+                                    </ImageView>
+                                    <ImageView fx:id="optionImage5" fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@../images/profiles/kiwi_1452311.png" />
+                                       </image>
+                                    </ImageView>
+                                    <ImageView fx:id="optionImage6" fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@../images/profiles/boots_4218601.png" />
+                                       </image>
+                                    </ImageView>
+                                    <ImageView fx:id="optionImage7" fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@../images/profiles/tiki-mask_5257065.png" />
+                                       </image>
+                                    </ImageView>
+                                 </children>
+                              </HBox>
+                           </children>
+                        </VBox>
+                     </children>
+                  </VBox>
                   <VBox alignment="TOP_CENTER" spacing="10.0">
                      <children>
-                        <ImageView fx:id="profileImage" fitHeight="150.0" fitWidth="150.0" pickOnBounds="true" preserveRatio="true" />
-                        <Label text="Choose your profile photo" />
-                        <HBox alignment="TOP_CENTER" spacing="10.0">
+                        <Label styleClass="title" text="Your Preferences">
+                           <font>
+                              <Font name="System Bold" size="13.0" />
+                           </font>
+                        </Label>
+                        <HBox>
                            <children>
-                              <ImageView fx:id="clearProfileImage" fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
-                                 <image>
-                                    <Image url="@../images/profiles/ban.png" />
-                                 </image>
-                              </ImageView>
-                              <ImageView fx:id="optionImage1" fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
-                                 <image>
-                                    <Image url="@../images/profiles/aztec_4607060.png" />
-                                 </image>
-                              </ImageView>
-                              <ImageView fx:id="optionImage2" fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
-                                 <image>
-                                    <Image url="@../images/profiles/sculpture_8379929.png" />
-                                 </image>
-                              </ImageView>
-                              <ImageView fx:id="optionImage3" fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
-                                 <image>
-                                    <Image url="@../images/profiles/tiki-mask_5257036.png" />
-                                 </image>
-                              </ImageView>
+                              <GridPane alignment="CENTER" hgap="10.0" vgap="5.0" HBox.hgrow="ALWAYS">
+                                 <children>
+                                    <Label styleClass="strong-text" text="Family Friendly:" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+                                    <Label fx:id="familyFriendlyLabel" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+      
+                                    <Label styleClass="strong-text" text="Accessible:" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+                                    <Label fx:id="accessibleLabel" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+      
+                                    <Label styleClass="strong-text" text="Experience Level:" GridPane.columnIndex="0" GridPane.rowIndex="2" />
+                                    <Label fx:id="experienceLabel" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+      
+                                    <Label styleClass="strong-text" text="Gradient:" GridPane.columnIndex="0" GridPane.rowIndex="3" />
+                                    <Label fx:id="gradientLabel" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+      
+                                    <Label styleClass="strong-text" text="Bush/Forest:" GridPane.columnIndex="0" GridPane.rowIndex="4" />
+                                    <Label fx:id="bushLabel" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+      
+                                    <Label styleClass="strong-text" text="Reserves:" GridPane.columnIndex="0" GridPane.rowIndex="5" />
+                                    <Label fx:id="reserveLabel" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+      
+                                    <Label styleClass="strong-text" text="Lakes/Rivers:" GridPane.columnIndex="0" GridPane.rowIndex="6" />
+                                    <Label fx:id="lakeRiverLabel" GridPane.columnIndex="1" GridPane.rowIndex="6" />
+      
+                                    <Label styleClass="strong-text" text="Coast:" GridPane.columnIndex="0" GridPane.rowIndex="7" />
+                                    <Label fx:id="coastLabel" GridPane.columnIndex="1" GridPane.rowIndex="7" />
+      
+                                    <Label styleClass="strong-text" text="Mountain:" GridPane.columnIndex="0" GridPane.rowIndex="8" />
+                                    <Label fx:id="mountainLabel" GridPane.columnIndex="1" GridPane.rowIndex="8" />
+      
+                                    <Label styleClass="strong-text" text="Birdlife/Wildlife:" GridPane.columnIndex="0" GridPane.rowIndex="9" />
+                                    <Label fx:id="wildlifeLabel" GridPane.columnIndex="1" GridPane.rowIndex="9" />
+      
+                                    <Label styleClass="strong-text" text="Historic Features:" GridPane.columnIndex="0" GridPane.rowIndex="10" />
+                                    <Label fx:id="historicLabel" GridPane.columnIndex="1" GridPane.rowIndex="10" />
+      
+                                    <Label styleClass="strong-text" text="Waterfalls:" GridPane.columnIndex="0" GridPane.rowIndex="11" />
+                                    <Label fx:id="waterfallLabel" GridPane.columnIndex="1" GridPane.rowIndex="11" />
+                                 </children>
+                                 <columnConstraints>
+                                    <ColumnConstraints halignment="RIGHT" />
+                                    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="0.0" />
+                                 </columnConstraints>
+                                 <rowConstraints>
+                                    <RowConstraints />
+                                    <RowConstraints />
+                                    <RowConstraints />
+                                    <RowConstraints />
+                                    <RowConstraints />
+                                    <RowConstraints />
+                                    <RowConstraints />
+                                    <RowConstraints />
+                                    <RowConstraints />
+                                    <RowConstraints />
+                                    <RowConstraints />
+                                    <RowConstraints />
+                                 </rowConstraints>
+                              </GridPane>
+                              <HBox alignment="TOP_CENTER" HBox.hgrow="ALWAYS">
+                                 <children>
+                                    <PieChart fx:id="pieChart" labelsVisible="false" maxHeight="100.0" maxWidth="100.0" />
+                                    <VBox spacing="10.0">
+                                       <children>
+                                          <HBox fx:id="legendLabelContainer1" spacing="5.0" />
+                                          <HBox fx:id="legendLabelContainer2" spacing="5.0" />
+                                          <HBox fx:id="legendLabelContainer3" spacing="5.0" />
+                                          <HBox fx:id="legendLabelContainer4" spacing="5.0" />
+                                          <HBox fx:id="legendLabelContainer5" spacing="5.0" />
+                                       </children>
+                                    </VBox>
+                                 </children>
+                              </HBox>
                            </children>
-                        </HBox>
-                        <HBox alignment="TOP_CENTER" spacing="10.0">
-                           <children>
-                              <ImageView fx:id="optionImage4" fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
-                                 <image>
-                                    <Image url="@../images/profiles/maori_7436499.png" />
-                                 </image>
-                              </ImageView>
-                              <ImageView fx:id="optionImage5" fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
-                                 <image>
-                                    <Image url="@../images/profiles/kiwi_1452311.png" />
-                                 </image>
-                              </ImageView>
-                              <ImageView fx:id="optionImage6" fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
-                                 <image>
-                                    <Image url="@../images/profiles/boots_4218601.png" />
-                                 </image>
-                              </ImageView>
-                              <ImageView fx:id="optionImage7" fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
-                                 <image>
-                                    <Image url="@../images/profiles/tiki-mask_5257065.png" />
-                                 </image>
-                              </ImageView>
-                           </children>
-                        </HBox>
-                        <HBox alignment="CENTER" spacing="10.0">
-                           <children>
-                              <Button fx:id="redoQuizButton" mnemonicParsing="false" text="Redo Quiz" />
-                              <Button fx:id="deleteProfileButton" mnemonicParsing="false" text="Delete Profile" />
-                           </children>
-                           <padding>
-                              <Insets top="15.0" />
-                           </padding>
                         </HBox>
                      </children>
-                     <padding>
-                        <Insets left="15.0" right="10.0" top="10.0" />
-                     </padding>
                   </VBox>
-                  <VBox alignment="CENTER" spacing="30.0">
+                  <Region VBox.vgrow="ALWAYS" />
+                  <HBox alignment="CENTER">
                      <children>
-                        <HBox spacing="30.0">
-                           <children>
-                              <VBox alignment="CENTER_LEFT" spacing="5.0">
-                                 <children>
-                                    <Label text="Your Preferences">
-                                       <font>
-                                          <Font name="System Bold" size="13.0" />
-                                       </font>
-                                    </Label>
-                                    <HBox spacing="5.0">
-                                       <children>
-                                          <Label text="Family Friendly: " />
-                                          <Label fx:id="familyFriendlyLabel" />
-                                       </children>
-                                    </HBox>
-                                    <HBox spacing="5.0">
-                                       <children>
-                                          <Label text="Accessible:" />
-                                          <Label fx:id="accessibleLabel" />
-                                       </children>
-                                    </HBox>
-                                    <HBox spacing="5.0">
-                                       <children>
-                                          <Label text="Experience Level:" />
-                                          <Label fx:id="experienceLabel" />
-                                       </children>
-                                    </HBox>
-                                    <HBox spacing="5.0">
-                                       <children>
-                                          <Label text="Gradient:" />
-                                          <Label fx:id="gradientLabel" />
-                                       </children>
-                                    </HBox>
-                                    <HBox spacing="5.0">
-                                       <children>
-                                          <Label text="Bush/Forest:" />
-                                          <Label fx:id="bushLabel" />
-                                       </children>
-                                    </HBox>
-                                    <HBox spacing="5.0">
-                                       <children>
-                                          <Label text="Reserves:" />
-                                          <Label fx:id="reserveLabel" />
-                                       </children>
-                                    </HBox>
-                                 </children>
-                              </VBox>
-                              <VBox alignment="CENTER_LEFT" spacing="5.0">
-                                 <children>
-                                    <Label disable="true" text="Your Preferences" visible="false">
-                                       <font>
-                                          <Font name="System Bold" size="13.0" />
-                                       </font>
-                                    </Label>
-                                    <HBox spacing="5.0">
-                                       <children>
-                                          <Label fx:id="lakeRiverLabel1" text="Lakes/Rivers:" />
-                                          <Label fx:id="lakeRiverLabel" />
-                                       </children>
-                                    </HBox>
-                                    <HBox spacing="5.0">
-                                       <children>
-                                          <Label text="Coast:" />
-                                          <Label fx:id="coastLabel" />
-                                       </children>
-                                    </HBox>
-                                    <HBox spacing="5.0">
-                                       <children>
-                                          <Label text="Mountain:" />
-                                          <Label fx:id="mountainLabel" />
-                                       </children>
-                                    </HBox>
-                                    <HBox spacing="5.0">
-                                       <children>
-                                          <Label text="Birdlife/Wildlife:" />
-                                          <Label fx:id="wildlifeLabel" />
-                                       </children>
-                                    </HBox>
-                                    <HBox spacing="5.0">
-                                       <children>
-                                          <Label text="Historic Features:" />
-                                          <Label fx:id="historicLabel" />
-                                       </children>
-                                    </HBox>
-                                    <HBox spacing="5.0">
-                                       <children>
-                                          <Label text="Waterfalls:" />
-                                          <Label fx:id="waterfallLabel" />
-                                       </children>
-                                    </HBox>
-                                 </children>
-                              </VBox>
-                           </children>
-                        </HBox>
-                        <HBox spacing="20.0">
-                           <VBox.margin>
-                              <Insets />
-                           </VBox.margin>
-                           <children>
-                              <PieChart fx:id="pieChart" labelsVisible="false" maxHeight="100.0" maxWidth="100.0" />
-                              <VBox spacing="10.0">
-                                 <children>
-                                    <HBox fx:id="legendLabelContainer1" spacing="5.0" />
-                                    <HBox fx:id="legendLabelContainer2" spacing="5.0" />
-                                    <HBox fx:id="legendLabelContainer3" spacing="5.0" />
-                                    <HBox fx:id="legendLabelContainer4" spacing="5.0" />
-                                    <HBox fx:id="legendLabelContainer5" spacing="5.0" />
-                                 </children>
-                              </VBox>
-                           </children>
-                        </HBox>
+                        <Button fx:id="deleteProfileButton" mnemonicParsing="false" styleClass="bg-red" text="Delete Profile" />
+                        <Region HBox.hgrow="ALWAYS" />
+                        <Button fx:id="redoQuizButton" mnemonicParsing="false" text="Redo Quiz" />
                      </children>
-                     <HBox.margin>
-                        <Insets top="10.0" />
-                     </HBox.margin>
-                  </VBox>
+                  </HBox>
                </children>
-            </HBox>
-         </children>
-      </VBox>
+               <padding>
+                  <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+               </padding>
+            </VBox>
+         </content>
+      </ScrollPane>
    </children>
-</HBox>
+</VBox>

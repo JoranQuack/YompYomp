@@ -9,9 +9,7 @@ import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
 import seng202.team5.gui.components.LegendLabelComponent;
-import seng202.team5.gui.components.NavbarComponent;
 import seng202.team5.models.Question;
 import seng202.team5.models.User;
 
@@ -21,8 +19,6 @@ import java.util.stream.Collectors;
 
 public class AccountController extends Controller {
 
-    @FXML
-    private VBox navbarContainer;
     @FXML
     private ImageView profileImage;
     @FXML
@@ -105,9 +101,6 @@ public class AccountController extends Controller {
 
     @FXML
     private void initialize() {
-        NavbarComponent navbar = super.getNavbarController();
-        navbarContainer.getChildren().add(navbar);
-
         welcomeLabel.setText("Kia Ora " + user.getName() + "!");
         setPreferenceLabels();
         if (user.getProfilePicture() == null) {
