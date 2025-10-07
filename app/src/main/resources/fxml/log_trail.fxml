@@ -16,8 +16,12 @@
    <children>
       <VBox alignment="CENTER" prefWidth="500.0" spacing="10.0">
          <children>
-            <Label styleClass="heading" text="Log Trail" />
-            <Label fx:id="trailNameLabel" text="&lt;Trail name&gt;" />
+            <HBox alignment="CENTER">
+               <children>
+                  <Label styleClass="heading" text="Log " />
+                  <Label fx:id="trailNameLabel" styleClass="heading" text="&lt;Trail name&gt;" />
+               </children>
+            </HBox>
             <VBox alignment="CENTER" spacing="5.0">
                <children>
                   <Label alignment="CENTER" text="Start date" />
