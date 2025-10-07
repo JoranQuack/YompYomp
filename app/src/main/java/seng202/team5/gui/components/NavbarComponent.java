@@ -29,6 +29,8 @@ public class NavbarComponent extends HBox {
     private ImageView profileImage;
     @FXML
     private Button takeQuizButton;
+    @FXML
+    private Button logbookButton;
 
     /**
      * Initialise the NavbarController and put the buttons into the list to easily
@@ -69,9 +71,10 @@ public class NavbarComponent extends HBox {
             profileImage.setOnMouseClicked(e -> navigator.launchScreen(new AccountController(navigator)));
         }
 
-        navButtons = List.of(homeButton, trailsButton);
+        navButtons = List.of(homeButton, trailsButton, logbookButton);
         homeButton.setOnAction(e -> navigator.launchScreen(new DashboardController(navigator)));
         trailsButton.setOnAction(e -> navigator.launchScreen(new TrailsController(navigator, sqlBasedTrailRepo)));
+        logbookButton.setOnAction(e -> navigator.launchScreen(new LogBookController(navigator)));
         if (navigator.hasPreviousScreen()) {
             backButton.setOnMouseClicked(e -> navigator.goBack());
             backButton.setVisible(true);

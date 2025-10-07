@@ -37,7 +37,7 @@ public class ModifyTrailController extends Controller {
     private JSObject javaScriptConnector;
 
     /**
-     * Launches the screen with navigator
+     * Launches the screen with the navigator
      *
      * @param navigator         screen navigator
      * @param trail             the selected trail

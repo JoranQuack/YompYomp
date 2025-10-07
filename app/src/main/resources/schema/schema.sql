@@ -92,6 +92,23 @@ CREATE TABLE
         PRIMARY KEY (filterType, optionValue)
     );
 
+-- Table: trail log
+DROP TABLE IF EXISTS trailLog;
+
+CREATE TABLE
+    IF NOT EXISTS trailLog (
+        id INTEGER PRIMARY KEY,
+        trailId INTEGER NOT NULL REFERENCES trail (id),
+        startDate TEXT NOT NULL,
+        completionTime INTEGER,
+        timeUnit TEXT,
+        completionType TEXT,
+        rating INTEGER CHECK(rating BETWEEN 1 AND 5),
+        perceivedDifficulty TEXT,
+        notes TEXT
+    );
+
+
 COMMIT TRANSACTION;
 
 PRAGMA foreign_keys = ON;

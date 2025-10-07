@@ -74,4 +74,44 @@ public class CompletionTimeParserTest {
         String result = CompletionTimeParser.formatTimeRange(60, 120);
         assertEquals("1 - 2 hrs", result);
     }
+
+    @Test
+    @DisplayName("Should convert minutes less than 60 correctly")
+    public void testConvertFromMinutesBasicMinutes() {
+        CompletionTimeParser.TimeValue result = CompletionTimeParser.convertFromMinutes(45);
+        assertEquals(45, result.value());
+        assertEquals("minutes", result.unit());
+    }
+
+    @Test
+    @DisplayName("Should convert whole hours correctly")
+    public void testConvertFromMinutesWholeHours() {
+        CompletionTimeParser.TimeValue result = CompletionTimeParser.convertFromMinutes(120);
+        assertEquals(2, result.value());
+        assertEquals("hours", result.unit());
+    }
+
+    @Test
+    @DisplayName("Should convert mixed hours and minutes correctly")
+    public void testConvertFromMinutesMixedHoursAndMinutes() {
+        CompletionTimeParser.TimeValue result = CompletionTimeParser.convertFromMinutes(150);
+        assertEquals(2.5, result.value());
+        assertEquals("hours", result.unit());
+    }
+
+    @Test
+    @DisplayName("Should convert full days correctly")
+    public void testConvertFromMinutesFullDays() {
+        CompletionTimeParser.TimeValue result = CompletionTimeParser.convertFromMinutes(2880);
+        assertEquals(2.0, result.value());
+        assertEquals("days", result.unit());
+    }
+
+    @Test
+    @DisplayName("Should convert partial days correctly")
+    public void testConvertFromMinutesHalfDays() {
+        CompletionTimeParser.TimeValue result = CompletionTimeParser.convertFromMinutes(1980);
+        assertEquals(1.375, result.value());
+        assertEquals("days", result.unit());
+    }
 }
