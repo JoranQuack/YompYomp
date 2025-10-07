@@ -13,6 +13,7 @@ import javafx.concurrent.Task;
 import javafx.application.Platform;
 import org.controlsfx.control.CheckComboBox;
 import seng202.team5.App;
+import seng202.team5.data.SqlBasedTrailLogRepo;
 import seng202.team5.data.SqlBasedTrailRepo;
 import seng202.team5.gui.components.TrailCardComponent;
 import seng202.team5.models.Trail;
@@ -440,7 +441,8 @@ public class TrailsController extends Controller {
 
     @FXML
     private void onTrailCardClicked(Trail trail) {
-        super.getNavigator().launchScreen(new ViewTrailController(super.getNavigator(), trail, sqlBasedTrailRepo));
+        super.getNavigator().launchScreen(new ViewTrailController(super.getNavigator(), trail, sqlBasedTrailRepo,
+                new SqlBasedTrailLogRepo(App.getDatabaseService())));
     }
 
     /**

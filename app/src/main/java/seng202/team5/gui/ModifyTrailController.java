@@ -13,6 +13,7 @@ import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
 import netscape.javascript.JSObject;
 import seng202.team5.App;
+import seng202.team5.data.SqlBasedTrailLogRepo;
 import seng202.team5.data.SqlBasedTrailRepo;
 import seng202.team5.models.Trail;
 import seng202.team5.models.User;
@@ -324,7 +325,8 @@ public class ModifyTrailController extends Controller {
             Trail updatedTrail = getUpdatedTrail();
             sqlBasedTrailRepo.upsert(updatedTrail);
             super.getNavigator().launchScreen(
-                    new ViewTrailController(super.getNavigator(), updatedTrail, sqlBasedTrailRepo));
+                    new ViewTrailController(super.getNavigator(), updatedTrail, sqlBasedTrailRepo,
+                            new SqlBasedTrailLogRepo(App.getDatabaseService())));
         } else {
             // Check if the error is specifically due to duplicate trail name
             if (!trailNameTextField.getText().isEmpty()) {

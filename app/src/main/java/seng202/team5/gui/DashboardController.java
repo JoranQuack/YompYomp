@@ -9,7 +9,9 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.VBox;
+import seng202.team5.App;
 import seng202.team5.data.DatabaseService;
+import seng202.team5.data.SqlBasedTrailLogRepo;
 import seng202.team5.data.SqlBasedTrailRepo;
 import seng202.team5.gui.components.TrailCardComponent;
 import seng202.team5.models.Trail;
@@ -146,7 +148,8 @@ public class DashboardController extends Controller {
 
     @FXML
     private void onTrailCardClicked(Trail trail) {
-        super.getNavigator().launchScreen(new ViewTrailController(super.getNavigator(), trail, repo));
+        super.getNavigator().launchScreen(new ViewTrailController(super.getNavigator(), trail, repo,
+                new SqlBasedTrailLogRepo(App.getDatabaseService())));
     }
 
     @Override
