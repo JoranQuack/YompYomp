@@ -127,8 +127,7 @@ public class MatchmakingService {
      *
      * @param trail the trail to categorise
      * @return a set of categories that match the trail's description or an empty
-     *         set if no
-     *         categories match
+     *         set if no categories match
      */
     public Set<String> categoriseTrail(Trail trail) throws MatchmakingFailedException {
         Map<String, String> keywordToCategory = buildReverseIndex();
@@ -290,17 +289,6 @@ public class MatchmakingService {
      */
     public List<Trail> getTrailsSortedByWeight() {
         return getSortedTrails();
-    }
-
-    /**
-     * Calculate the number of personalised pages based on the number of trails,
-     * given a page size.
-     *
-     * @param pageSize number of trails per page
-     * @return total page count
-     */
-    public int getNumberOfPersonalisedPages(int pageSize) {
-        return (int) Math.ceil((double) trailRepo.getAllTrails().size() / pageSize);
     }
 
     /**

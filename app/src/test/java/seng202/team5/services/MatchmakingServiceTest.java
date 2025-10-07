@@ -135,8 +135,6 @@ class MatchmakingServiceTest {
     void testCategoriseTrail() throws MatchmakingFailedException {
         Trail trail = mockTrails.getFirst();
         Set<String> categories = matchmakingService.categoriseTrail(trail);
-        System.out.println(categories);
-        System.out.println(trail.getDescription());
         assertTrue(categories.contains("Alpine"));
         assertFalse(categories.contains("Wet"));
         assertFalse(categories.contains("Forest"));

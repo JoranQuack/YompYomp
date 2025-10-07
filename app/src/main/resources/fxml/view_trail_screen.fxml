@@ -5,7 +5,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<HBox alignment="CENTER_LEFT" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="400.0" minWidth="600.0" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="seng202.team5.gui.ViewTrailController">
+<HBox alignment="CENTER_LEFT" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="400.0" minWidth="600.0" xmlns="http://javafx.com/javafx/21.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="seng202.team5.gui.ViewTrailController">
    <children>
       <VBox prefWidth="200.0" spacing="10.0">
          <children>
@@ -28,11 +28,18 @@
                   <Insets />
                </VBox.margin>
             </Label>
+            <Hyperlink fx:id="culturalUrlHyperlink" text="Hyperlink">
+               <font>
+                  <Font size="11.0" />
+               </font>
+            </Hyperlink>
             <HBox alignment="BOTTOM_LEFT" spacing="10.0">
                <children>
                   <Button fx:id="editInfoButton" mnemonicParsing="false" text="Edit Info" />
                </children>
             </HBox>
+            <Hyperlink fx:id="docHutsLink" text="Hyperlink" />
+            <Hyperlink fx:id="remoteHutsLink" text="Hyperlink" />
          </children>
          <padding>
             <Insets left="10.0" right="10.0" />
@@ -48,40 +55,7 @@
                   <Label prefHeight="25.0" prefWidth="40.0" text="km" wrapText="true" />
                </children>
             </HBox>
-            <HBox spacing="10.0">
-               <children>
-                  <HBox spacing="5.0">
-                     <children>
-                        <Label fx:id="easiestColourLabel" text="     " />
-                        <Label text="Easiest" />
-                     </children>
-                  </HBox>
-                  <HBox spacing="5.0">
-                     <children>
-                        <Label fx:id="easyColourLabel" text="     " />
-                        <Label text="Easy" />
-                     </children>
-                  </HBox>
-                  <HBox spacing="5.0">
-                     <children>
-                        <Label fx:id="intermediateColourLabel" text="     " />
-                        <Label text="Intermediate" />
-                     </children>
-                  </HBox>
-                  <HBox spacing="5.0">
-                     <children>
-                        <Label fx:id="advancedColourLabel" text="     " />
-                        <Label text="Advanced" />
-                     </children>
-                  </HBox>
-                  <HBox spacing="5.0">
-                     <children>
-                        <Label fx:id="expertColourLabel" text="     " />
-                        <Label text="Expert" />
-                     </children>
-                  </HBox>
-               </children>
-            </HBox>
+            <HBox fx:id="legendContainer" spacing="10.0" />
             <HBox>
                <VBox.margin>
                   <Insets />

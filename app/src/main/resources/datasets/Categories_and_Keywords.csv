@@ -1,19 +1,14 @@
-FamilyFriendly,Children,Easy,Abilities
-Accessible,Abilities
-Difficult,Challenging
-Rocky,Gorge,Rock,Debris,Steep
-Forest,Forest,Bush,Trees,Nature,Beech,Native,Dense
-Wet,River,Stream,Lake,Saltmarsh,Harbour
-Beach,Sand,Beach,Bay,Inlet,Coast,Sea,Ocean,Shores
-Alpine,Alpine,Mountain,Range,Summit
-Wildlife,Animal,Wildlife,Lion,Bird
-Historical,Dam,Hist,Mining,Settlement
-Waterfall,Falls
-Reserve,Park
-Cold,Frozen,Snow,Glaciers,Ice
-Loop,Loop,Round
-Hunting,Hunting
-Biking,Biking
-Overnight,Campsite,Weekend
-Cultural,Pa Site,Maori
+FamilyFriendly,children,easy,buggy,pram,wheelchair,loop,picnic,swimming,swim,paddle,family
+Accessible,sealed,paved,boardwalk,flat,gentle,accessible,wheelchair
+Difficult,challenging,strenuous,experienced,fitness,equipped,skills,difficult,demanding
+Rocky,rocky,gorge,rock,debris,steep,limestone,bluff,cliff,boulder,scree,pinnacle,outcrop,crater,lava,volcanic
+Forest,forest,bush,trees,nature,beech,native,dense,podocarp,kahikatea,rimu,tōtara,kamahi,rata,nikau,palm,kauri,fern,moss,hardwood,vegetation,regenerat
+Wet,river,stream,lake,saltmarsh,harbour,waterfall,falls,pool,lagoon,wetland,estuary,swamp,tarn,glacier,creek,burn
+Beach,sand,beach,bay,inlet,coast,sea,ocean,shores,dune,spit,peninsula,headland,coastal
+Alpine,alpine,mountain,range,summit,saddle,pass,ridge,peak,trig,bushline,tussock,ice,snow,glacier,view,panoramic,spectacular,vantage,overlook,vista,lookout,crater,lava,volcanic
+Wildlife,animal,wildlife,lion,bird,seal,penguin,kiwi,kaka,bellbird,weta,dolphin,fauna,kākā,hoiho
+Historical,cultural,dam,hist,mining,settlement,pa site,maori,gold,battery,mine,tramway,tramline,hut,bridge,tunnel,railway,mill,pā,redoubt,heritage,historic,crater,lava,volcanic,eruption
+Waterfall,falls,cascade,waterfall
+Reserve,park,reserve,scenic,conservation,sanctuary,historic
+
 
