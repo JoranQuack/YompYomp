@@ -37,7 +37,7 @@ public class ModifyTrailController extends Controller {
     private JSObject javaScriptConnector;
 
     /**
-     * Launches the screen with navigator
+     * Launches the screen with the navigator
      *
      * @param navigator         screen navigator
      * @param trail             the selected trail
@@ -362,6 +362,8 @@ public class ModifyTrailController extends Controller {
                 sqlBasedTrailRepo.deleteById(trail.getId());
                 super.getNavigator().launchScreen(new TrailsController(super.getNavigator(), sqlBasedTrailRepo));
             }
+        } else {
+            super.getNavigator().goBack();
         }
     }
 

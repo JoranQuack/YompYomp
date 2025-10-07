@@ -1,5 +1,5 @@
 -- Remember to increment the schema version here when making changes!
--- Schema version: 2.1
+-- Schema version: 2.3
 PRAGMA foreign_keys = off;
 
 BEGIN TRANSACTION;
@@ -77,7 +77,8 @@ CREATE TABLE
         wildlifePreference INTEGER,
         historicPreference INTEGER,
         waterfallPreference INTEGER,
-        isProfileComplete BOOL DEFAULT 0
+        isProfileComplete BOOL DEFAULT 0,
+        profilePicture VARCHAR(260)
     );
 
 -- Table: filterOptions
@@ -90,6 +91,23 @@ CREATE TABLE
         displayOrder INTEGER DEFAULT 0,
         PRIMARY KEY (filterType, optionValue)
     );
+
+-- Table: trail log
+DROP TABLE IF EXISTS trailLog;
+
+CREATE TABLE
+    IF NOT EXISTS trailLog (
+        id INTEGER PRIMARY KEY,
+        trailId INTEGER NOT NULL REFERENCES trail (id),
+        startDate TEXT NOT NULL,
+        completionTime INTEGER,
+        timeUnit TEXT,
+        completionType TEXT,
+        rating INTEGER CHECK(rating BETWEEN 1 AND 5),
+        perceivedDifficulty TEXT,
+        notes TEXT
+    );
+
 
 COMMIT TRANSACTION;
 

@@ -151,6 +151,47 @@ public class QueryHelper {
     }
 
     /**
+     * Execute multiple SQL statements in a single transaction because the lab
+     * computers are super duper slow
+     *
+     * @param statements List of SQL statements with their parameter setters
+     */
+    public void executeTransaction(List<SqlStatement> statements) {
+        if (statements.isEmpty()) {
+            return;
+        }
+
+        try (Connection conn = databaseService.getConnection()) {
+            conn.setAutoCommit(false);
+
+            try {
+                for (SqlStatement statement : statements) {
+                    try (PreparedStatement stmt = conn.prepareStatement(statement.sql())) {
+                        if (statement.paramSetter() != null) {
+                            statement.paramSetter().setParameters(stmt);
+                        }
+                        stmt.executeUpdate();
+                    }
+                }
+                conn.commit();
+            } catch (SQLException e) {
+                conn.rollback();
+                throw e;
+            } finally {
+                conn.setAutoCommit(true);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Transaction execution failed", e);
+        }
+    }
+
+    /**
+     * Record to hold SQL statement and its parameter setter
+     */
+    public record SqlStatement(String sql, ParameterSetter paramSetter) {
+    }
+
+    /**
      * Functional interface for setting parameters on a PreparedStatement.
      */
     @FunctionalInterface
