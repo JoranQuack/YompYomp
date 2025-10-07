@@ -68,7 +68,7 @@ public class DashboardController extends Controller {
      */
     private void initializeSearchService() {
         this.repo = new SqlBasedTrailRepo(new DatabaseService());
-        this.searchService = new SearchService(repo);
+        this.searchService = new SearchService(new DatabaseService());
         searchService.setMaxResults(8);
     }
 
