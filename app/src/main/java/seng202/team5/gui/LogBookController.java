@@ -180,10 +180,6 @@ public class LogBookController extends Controller {
     private void updateLogsDisplay(List<TrailLog> logs) {
         logContainer.getChildren().clear();
 
-        if (logs.isEmpty()) {
-            // showNoResultsMessage();
-            return;
-        }
         Insets cardMargin = new Insets(10);
 
         for (int i = 0; i < logs.size(); i++) {
