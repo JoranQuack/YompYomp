@@ -92,7 +92,8 @@ public class LogTrailController extends Controller {
     }
 
     /**
-     * Populates the form fields with the data from the trailLog or prefills it with trail info that can be edited.
+     * Populates the form fields with the data from the trailLog or prefills it with
+     * trail info that can be edited.
      */
     private void populateFields() {
         trailNameLabel.setText(trail.getName());
@@ -104,21 +105,25 @@ public class LogTrailController extends Controller {
             durationTextField.setText(trailLog.getCompletionTime().toString());
             timeUnitSelector.setValue(StringManipulator.capitaliseFirstLetter(trailLog.getTimeUnit()));
         } else {
-            var avg = CompletionTimeParser.convertFromMinutes(trail.getAvgCompletionTimeMinutes());
-            durationTextField.setText(String.valueOf((int) avg.value()));
-            timeUnitSelector.setValue(StringManipulator.capitaliseFirstLetter(avg.unit()));
+            int avgMinutes = trail.getAvgCompletionTimeMinutes();
+            if (avgMinutes >= 60) {
+                int hours = avgMinutes / 60;
+                durationTextField.setText(String.valueOf(hours));
+                timeUnitSelector.setValue("Hours");
+            } else {
+                durationTextField.setText(String.valueOf(avgMinutes));
+                timeUnitSelector.setValue("Minutes");
+            }
         }
 
         trailTypeSelector.setValue(
                 trailLog.getCompletionType() != null
                         ? StringManipulator.capitaliseFirstLetter(trailLog.getCompletionType())
-                        : getValidCompletionType(trail)
-        );
+                        : getValidCompletionType(trail));
         perceivedDifficultySelector.setValue(
                 trailLog.getPerceivedDifficulty() != null
                         ? StringManipulator.capitaliseFirstLetter(trailLog.getPerceivedDifficulty())
-                        : StringManipulator.capitaliseFirstLetter(trail.getDifficulty())
-        );
+                        : StringManipulator.capitaliseFirstLetter(trail.getDifficulty()));
         rateSlider.setValue(trailLog.getRating() != null ? trailLog.getRating() : 3);
         noteTextArea.setText(trailLog.getNotes());
     }
@@ -150,8 +155,8 @@ public class LogTrailController extends Controller {
     /**
      * Shows an error message on the form field.
      *
-     * @param control  the control to show the error on
-     * @param message  the error message to show
+     * @param control the control to show the error on
+     * @param message the error message to show
      */
     private void showError(Control control, String message) {
         clearErrors();
@@ -197,8 +202,8 @@ public class LogTrailController extends Controller {
             return;
         }
         trailLog.setStartDate(startDatePicker.getValue());
-        trailLog.setCompletionTime(!durationTextField.getText().isEmpty() ?
-                Integer.parseInt(durationTextField.getText()) : null);
+        trailLog.setCompletionTime(
+                !durationTextField.getText().isEmpty() ? Integer.parseInt(durationTextField.getText()) : null);
         trailLog.setTimeUnit(timeUnitSelector.getValue());
         trailLog.setCompletionType(trailTypeSelector.getValue());
         trailLog.setRating((int) rateSlider.getValue());
