@@ -228,4 +228,44 @@ class MatchmakingServiceTest {
         assertEquals(0, emptyScore, 0.0001);
 
     }
+
+    @Test
+    @DisplayName("setUserPreferences should throw if user is null")
+    void testSetUserPreferencesThrowsWhenNull() {
+        assertThrows(MatchmakingFailedException.class, () -> matchmakingService.setUserPreferences(null));
+    }
+
+    @Test
+    @DisplayName("assignWeightsToTrails should throw if trail list is empty")
+    void testAssignWeightsToTrailsThrowsWhenEmpty() throws MatchmakingFailedException {
+        when(mockTrailRepo.getAllTrails()).thenReturn(Collections.emptyList());
+        MatchmakingService service = new MatchmakingService(mockKeywordRepo, mockTrailRepo);
+        assertThrows(MatchmakingFailedException.class, service::assignWeightsToTrails);
+    }
+
+    @Test
+    @DisplayName("scoreTrail returns 0 if maxScore <= 0")
+    void testScoreTrailMaxScoreZero() throws MatchmakingFailedException {
+        User user = makeTestUser();
+        // Override all preferences to 0
+        user.setIsFamilyFriendly(false);
+        user.setIsAccessible(false);
+        user.setExperienceLevel(0);
+        user.setGradientPreference(0);
+        user.setBushPreference(0);
+        user.setReservePreference(0);
+        user.setLakeRiverPreference(0);
+        user.setCoastPreference(0);
+        user.setMountainPreference(0);
+        user.setWildlifePreference(0);
+        user.setHistoricPreference(0);
+        user.setWaterfallPreference(0);
+
+        matchmakingService.setUserPreferences(user);
+
+        Set<String> trailCategories = new HashSet<>(Arrays.asList("FamilyFriendly", "Accessible"));
+        double score = matchmakingService.scoreTrail(trailCategories);
+
+        assertEquals(0.0, score, 0.0001);
+    }
 }
