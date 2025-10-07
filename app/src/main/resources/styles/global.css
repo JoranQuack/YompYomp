@@ -289,7 +289,7 @@ DatePicker {
   -fx-text-fill: #7b7b7b;
 }
 
-.selected {
+.date-picker-popup .selected {
   -fx-background-color: #447055;
   -fx-text-fill: #fdfffb;
 }
