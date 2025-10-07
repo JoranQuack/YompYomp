@@ -32,8 +32,6 @@ public class LogBookController extends Controller {
 
     // FXML components
     @FXML
-    private Button searchButton;
-    @FXML
     private TextField searchBarTextField;
     @FXML
     private FlowPane logContainer;
@@ -120,7 +118,7 @@ public class LogBookController extends Controller {
      */
     private void showLoadingState() {
         logContainer.getChildren().clear();
-        Label loadingLabel = new Label("Loading trails...");
+        Label loadingLabel = new Label("Loading logs...");
         logContainer.getChildren().add(loadingLabel);
         resultsLabel.setText("Loading...");
     }
@@ -151,9 +149,9 @@ public class LogBookController extends Controller {
             protected void failed() {
                 Platform.runLater(() -> {
                     logContainer.getChildren().clear();
-                    Label errorLabel = new Label("Failed to load trails. Please try again.");
+                    Label errorLabel = new Label("Failed to load logs. Please try again.");
                     logContainer.getChildren().add(errorLabel);
-                    resultsLabel.setText("Error loading trails");
+                    resultsLabel.setText("Error loading logs");
                 });
             }
         };
@@ -225,12 +223,12 @@ public class LogBookController extends Controller {
     }
 
     /**
-     * Updates the result label to show the number of trails currently displayed
+     * Updates the result label to show the number of logs currently displayed
      *
-     * @param trailCount Number of trails currently displayed
+     * @param logCount Number of logs currently displayed
      */
-    private void updateResultsLabel(int trailCount) {
-        resultsLabel.setText(trailCount + "/" + logService.countLogs() + " trails showing");
+    private void updateResultsLabel(int logCount) {
+        resultsLabel.setText(logCount + "/" + logService.countLogs() + " logs displayed");
     }
 
     /**
