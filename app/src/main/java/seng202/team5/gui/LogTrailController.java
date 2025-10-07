@@ -36,8 +36,6 @@ public class LogTrailController extends Controller {
     }
 
     @FXML
-    private Button backButton;
-    @FXML
     private Label trailNameLabel;
     @FXML
     private DatePicker startDatePicker;
@@ -54,8 +52,6 @@ public class LogTrailController extends Controller {
     @FXML
     private TextArea noteTextArea;
     @FXML
-    private Button doneButton;
-    @FXML
     private Label errorLabel;
 
     /**
@@ -70,8 +66,6 @@ public class LogTrailController extends Controller {
         if (trail != null && trailLog != null) {
             populateFields();
         }
-        backButton.setOnAction(event -> onBackButtonClicked());
-        doneButton.setOnAction(event -> onDoneButtonClicked());
 
         durationTextField.textProperty().addListener((obs, oldVal, newVal) -> clearErrors());
     }
@@ -208,11 +202,9 @@ public class LogTrailController extends Controller {
         super.getNavigator().goBack();
     }
 
-    /**
-     * Handles the event when the back button is clicked.
-     */
     @FXML
-    private void onBackButtonClicked() {
+    private void onDeleteButtonClicked() {
+        logService.deleteLog(trailLog.getId());
         super.getNavigator().goBack();
     }
 

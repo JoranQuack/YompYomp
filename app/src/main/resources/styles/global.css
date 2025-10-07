@@ -195,7 +195,7 @@ ChoiceBox .menu-item:focused {
 }
 
 .arrow {
-  -fx-background-color: #04140b;
+  -fx-background-color: #7b7b7b;
   -fx-background-radius: 10;
 }
 
