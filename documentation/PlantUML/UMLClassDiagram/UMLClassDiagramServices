@@ -75,10 +75,6 @@ package "services" {
     + isSchemaUpToDate() : boolean
   }
 
-  class TrailService {
-    + getNearbyTrails(currentTrail : Trail, radiusKm : double, allTrails : List<Trail>) : List<Trail>
-  }
-
   class RegionFinder {
     + RegionFinder(regionalDatasetsPath : String, fileName : string)
     + loadAllRegions() : Map<String, Geometry>
