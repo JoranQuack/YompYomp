@@ -16,6 +16,14 @@ package "data" {
     + getKeywords() : Map<String, List<String>>
   }
 
+  interface ITrailLog {
+    + getAllTrailLogs() : List<TrailLog>
+    + findById(id : int) : Optional<TrailLog>
+    + countTrailLogs() : int
+    + deleteById(id : int)
+    + getNewTrailLogId() : int
+  }
+
   ' File-based classes next
   class FileBasedTrailRepo {
     + FileBasedTrailRepo(csvFilePath : String)
@@ -51,8 +59,8 @@ package "data" {
     + getKeywords() : Map<String, List<String>>
   }
 
-  class SqlBasedLogRepo {
-    + SqlBasedLogRepo(databaseService : DatabaseService)
+  class SqlBasedTrailLogRepo {
+    + SqlBasedTrailLogRepo(databaseService : DatabaseService)
     + getAllTrailLogs() : List<TrailLog>
     + findById(id : int) : Optional<TrailLog>
     + deleteById(id : int) : void
@@ -72,10 +80,11 @@ FileBasedTrailRepo    ..|> ITrail
 SqlBasedTrailRepo     ..|> ITrail
 FileBasedKeywordRepo  ..|> IKeyword
 SqlBasedKeywordRepo   ..|> IKeyword
+SqlBasedTrailLogRepo  ..|> ITrailLog
 
 ' Dependencies to QueryHelper
 SqlBasedTrailRepo     *-- QueryHelper
 SqlBasedKeywordRepo   *-- QueryHelper
-SqlBasedLogRepo     *-- QueryHelper
+SqlBasedTrailLogRepo     *-- QueryHelper
 SqlBasedFilterOptionsRepo *-- QueryHelper
 @enduml
