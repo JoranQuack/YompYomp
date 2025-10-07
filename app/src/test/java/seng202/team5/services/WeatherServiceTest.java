@@ -30,51 +30,39 @@ class WeatherServiceTest {
         mockUri = mock(URI.class);
     }
 
-//    @Test
-//    @DisplayName("getWeatherByCoords returns correct Weather object using fake JSON")
-//    void testGetWeatherByCoords_ValidResponse() throws Exception {
-//        String jsonResponse = """
-//        {
-//          "main": {
-//            "temp": 21.5,
-//            "temp_min": 20.0,
-//            "temp_max": 23.0
-//          },
-//          "weather": [
-//            {"description": "sunny"}
-//          ]
-//        }
-//        """;
-//
-//        HttpURLConnection mockConnection = mock(HttpURLConnection.class);
-//        when(mockConnection.getResponseCode()).thenReturn(200);
-//        when(mockConnection.getInputStream()).thenReturn(new ByteArrayInputStream(jsonResponse.getBytes()));
-//
-//        URL mockUrl = mock(URL.class);
-//        when(mockUrl.openConnection()).thenReturn(mockConnection);
-//
-//        URI mockUri = mock(URI.class);
-//        when(mockUri.toURL()).thenReturn(mockUrl);
-//
-//        try (MockedStatic<URI> uriMock = mockStatic(URI.class);
-//             MockedStatic<WeatherService> wsMock = mockStatic(WeatherService.class)) {
-//
-//            uriMock.when(() -> URI.create(anyString())).thenReturn(mockUri);
-//
-//            WeatherService weatherService =
-//                    new WeatherService("http://fake-base", "http://fake-forecast");
-//
-//
-//            Weather result = weatherService.getWeatherByCoords(-43.5320, 172.6362);
-//
-//            assertNotNull(result, "Weather object should not be null");
-//            assertEquals(21.5, result.getTemperature(), 0.001);
-//            assertEquals(20.0, result.getTempMin(), 0.001);
-//            assertEquals(23.0, result.getTempMax(), 0.001);
-//            assertEquals("sunny", result.getDescription());
-//            assertNull(result.getDate(), "Date should be null for getWeatherByCoords");
-//        }
-//    }
+
+    @Test
+    @DisplayName("getWeatherByCoords returns correct Weather object using fake JSON")
+    void testGetWeatherByCoords_ValidResponse() throws Exception {
+        String fakeJson = """
+        {
+          "main": { "temp": 15.0, "temp_min": 15.0, "temp_max": 15.0 },
+          "weather": [ { "description": "clear sky" } ]
+        }
+        """;
+
+        when(mockUrl.openConnection()).thenReturn(mockConnection);
+        when(mockConnection.getResponseCode()).thenReturn(200);
+        when(mockConnection.getInputStream()).thenReturn(
+                new ByteArrayInputStream(fakeJson.getBytes())
+        );
+
+        URI mockUri = mock(URI.class);
+        when(mockUri.toURL()).thenReturn(mockUrl);
+
+        try (MockedStatic<URI> uriMock = mockStatic(URI.class)) {
+            uriMock.when(() -> URI.create(anyString())).thenReturn(mockUri);
+
+            Weather result = weatherService.getWeatherByCoords(-43.5320, 172.6362);
+
+            assertNotNull(result);
+            assertEquals(15.0, result.getTemperature());
+            assertEquals(15.0, result.getTempMin());
+            assertEquals(15.0, result.getTempMax());
+            assertEquals("clear sky", result.getDescription());
+        }
+    }
+
 
     @Test
     @DisplayName("getWeatherByCoords should return null when response code != 200")
