@@ -339,8 +339,7 @@ public class ViewTrailController extends Controller {
     }
 
     private void onLogTrailClicked() {
-        super.getNavigator().launchScreen(new LogTrailController(super.getNavigator(), trail,
-                sqlBasedTrailLogRepo.findByTrailId(trail.getId()).orElse(null)));
+        super.getNavigator().launchScreen(new LogTrailController(super.getNavigator(), trail));
     }
 
     @FXML
@@ -384,6 +383,6 @@ public class ViewTrailController extends Controller {
     public void onLoadFailed(Exception e) {
         showAlert("Trail Card Failed To Load",
                 "Loading selected trail failed, please close the application and try again.",
-                "OK", "Cancel", null, null);
+                "", "OK", null, null);
     }
 }
