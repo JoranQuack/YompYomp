@@ -3,16 +3,11 @@ package seng202.team5.gui;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import seng202.team5.data.DatabaseService;
-import seng202.team5.data.SqlBasedTrailLogRepo;
-import seng202.team5.data.SqlBasedTrailRepo;
 import seng202.team5.models.Trail;
 import seng202.team5.models.TrailLog;
 import seng202.team5.services.LogService;
-import seng202.team5.utils.CompletionTimeParser;
 import seng202.team5.utils.StringManipulator;
 
-import java.sql.Date;
-import java.time.ZoneId;
 import java.util.List;
 
 /**
@@ -24,7 +19,6 @@ public class LogTrailController extends Controller {
     private Trail trail;
     private LogService logService;
     private DatabaseService databaseService;
-    private SqlBasedTrailRepo trailRepo;
 
     /**
      * Launches the screen with the navigator
@@ -37,7 +31,6 @@ public class LogTrailController extends Controller {
         this.trail = trail;
         this.trailLog = trailLog;
         this.databaseService = new DatabaseService();
-        this.trailRepo = new SqlBasedTrailRepo(databaseService);
         this.logService = new LogService(databaseService);
     }
 

@@ -13,21 +13,12 @@ import javafx.scene.paint.Paint;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
 import netscape.javascript.JSObject;
-import seng202.team5.data.DatabaseService;
-import seng202.team5.data.SqlBasedTrailLogRepo;
 import seng202.team5.data.SqlBasedTrailRepo;
 import seng202.team5.gui.components.TrailCardComponent;
 import seng202.team5.models.Trail;
-import seng202.team5.models.TrailLog;
-import seng202.team5.services.LogService;
-import seng202.team5.services.SearchService;
 import seng202.team5.services.RegionFinder;
 import seng202.team5.services.TrailService;
 import seng202.team5.utils.StringManipulator;
-import java.time.LocalDate;
-import java.util.Date;
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 /**
@@ -37,9 +28,6 @@ public class ViewTrailController extends Controller {
     private final Trail trail;
     private TrailService trailService;
     private final SqlBasedTrailRepo sqlBasedTrailRepo;
-    private SearchService searchService;
-    private SqlBasedTrailLogRepo trailLogRepo;
-    private LogService logService;
     private RegionFinder regionFinder;
 
     private WebEngine webEngine;
@@ -57,9 +45,6 @@ public class ViewTrailController extends Controller {
         super(navigator);
         this.trail = trail;
         this.sqlBasedTrailRepo = sqlBasedTrailRepo;
-        this.searchService = searchService;
-        this.trailLogRepo = new SqlBasedTrailLogRepo(new DatabaseService());
-        this.logService = new LogService(new DatabaseService());
     }
 
     @FXML
@@ -184,48 +169,6 @@ public class ViewTrailController extends Controller {
     private void initTrailCard() {
         TrailCardComponent trailCard = new TrailCardComponent(super.getUserService().isGuest(), true, false);
         trailCard.setData(trail, null);
-        trailCard.setTrail(trail);
-
-        trailCard.setOnBookmarkClickedHandler(clickedTrail -> {
-            TrailLog newLog = new TrailLog(
-                trailLogRepo.getNewTrailLogId(),
-                clickedTrail.getId(),
-                LocalDate.now(),
-                null, null, null, null, null, null
-            );
-
-            LogTrailController logController = new LogTrailController(
-                    super.getNavigator(),
-                    clickedTrail,
-                    newLog
-            );
-            super.getNavigator().launchScreen(logController);
-        });
-
-        trailCard.setOnBookmarkFillClickedHandler(clickedTrail -> {
-            boolean confirmed = showAlert(
-                    "Delete Log",  "Are you sure you want to delete this log?",
-                    "This action cannot be undone.", "Delete",
-                    "Cancel", "danger-button"
-            );
-
-            if (confirmed) {
-                logService.deleteLog(clickedTrail.getId());
-                trailCard.setBookmarked(false);
-            } else {
-                return;
-            }
-
-            List<TrailLog> logs = logService.getAllLogs();
-            logs.stream()
-                .filter(log -> log.getTrailId() == clickedTrail.getId())
-                .findFirst()
-                .ifPresent(log -> {
-                    logService.deleteLog(log.getId());
-                    trailCard.setBookmarked(false);
-                });
-        });
-
         trailCardHBox.getChildren().add(trailCard);
     }
 
@@ -357,24 +300,21 @@ public class ViewTrailController extends Controller {
         Integer docRegionId = regionFinder.getDocRegionId(regionLower);
         if (docRegionId != null) {
             docHutsLink.setText("View DOC Huts in " + StringManipulator.capitaliseFirstLetter(region));
-            docHutsLink.setOnAction(e ->
-                super.getNavigator().openWebPage(
-                        "https://www.doc.govt.nz/parks-and-recreation/places-to-stay/stay-in-a-hut/?region-id=" + docRegionId
-                )
-            );
+            docHutsLink.setOnAction(e -> super.getNavigator().openWebPage(
+                    "https://www.doc.govt.nz/parks-and-recreation/places-to-stay/stay-in-a-hut/?region-id="
+                            + docRegionId));
             docHutsLink.setVisible(true);
         } else {
             docHutsLink.setText("View DOC Huts");
-            docHutsLink.setOnAction(e ->
-                    super.getNavigator().openWebPage(
-                            "https://www.doc.govt.nz/parks-and-recreation/places-to-stay/stay-in-a-hut/")
-            );
+            docHutsLink.setOnAction(e -> super.getNavigator().openWebPage(
+                    "https://www.doc.govt.nz/parks-and-recreation/places-to-stay/stay-in-a-hut/"));
         }
 
         boolean isRemoteRegion = regionFinder.isRemoteHutRegion(region);
         if (isRemoteRegion && (difficulty.contains("advanced") || difficulty.contains("expert"))) {
             remoteHutsLink.setText("View Remote Huts");
-            remoteHutsLink.setOnAction(e -> super.getNavigator().openWebPage("https://www.remotehuts.co.nz/by-map.html"));
+            remoteHutsLink
+                    .setOnAction(e -> super.getNavigator().openWebPage("https://www.remotehuts.co.nz/by-map.html"));
             remoteHutsLink.setVisible(true);
         } else {
             remoteHutsLink.setVisible(false);
