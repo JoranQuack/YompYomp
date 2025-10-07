@@ -2,15 +2,18 @@ package seng202.team5.services;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.List;
+import java.util.*;
 
 import seng202.team5.data.DatabaseService;
 import seng202.team5.data.QueryHelper;
 import seng202.team5.data.SqlBasedTrailRepo;
+import seng202.team5.exceptions.MatchmakingFailedException;
+import seng202.team5.models.Trail;
 import seng202.team5.models.User;
 
 public class UserService {
     private boolean isGuest;
+    private User cachedUser;
     private final DatabaseService databaseService;
     private final QueryHelper queryHelper;
 
@@ -21,8 +24,8 @@ public class UserService {
                 experienceLevel, gradientPreference, bushPreference,
                 reservePreference, lakeRiverPreference, coastPreference,
                 mountainPreference, wildlifePreference, historicPreference,
-                waterfallPreference, isProfileComplete
-            ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
+                waterfallPreference, isProfileComplete, profilePicture
+            ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
             ON CONFLICT(id) DO UPDATE SET
                 name=excluded.name,
                 regions=excluded.regions,
@@ -38,7 +41,8 @@ public class UserService {
                 wildlifePreference=excluded.wildlifePreference,
                 historicPreference=excluded.historicPreference,
                 waterfallPreference=excluded.waterfallPreference,
-                isProfileComplete=excluded.isProfileComplete
+                isProfileComplete=excluded.isProfileComplete,
+                profilePicture=excluded.profilePicture
             """;
 
     /**
@@ -53,18 +57,22 @@ public class UserService {
     }
 
     /**
-     * Get the current user from database.
+     * Get the current user from cache or database.
      *
-     * @return the current user loaded from database, or null if user is guest or no
-     *         user exists
+     * @return the current user loaded from cache or database, or null if user is
+     *         guest or no user exists
      */
     public User getUser() {
         if (isGuest) {
             return null;
         }
 
-        User existingUser = loadUserFromDatabase();
-        return existingUser;
+        if (cachedUser != null) {
+            return cachedUser;
+        }
+
+        cachedUser = loadUserFromDatabase();
+        return cachedUser;
     }
 
     /**
@@ -97,16 +105,19 @@ public class UserService {
         if (user != null && !isGuest) {
             user.setProfileComplete(true);
             saveUserToDatabase(user);
+            this.cachedUser = user;
         }
     }
 
     /**
-     * Set the current user by saving it directly to the database.
+     * Set the current user by saving it directly to the database and updating the
+     * cache.
      *
      * @param user the user to set and save
      */
     public void setUser(User user) {
         this.isGuest = false; // Setting a user means no longer a guest
+        this.cachedUser = user;
         if (user != null) {
             saveUserToDatabase(user);
         }
@@ -129,6 +140,8 @@ public class UserService {
     public void setGuest(boolean isGuest) {
         if (isGuest) {
             clearUser();
+        } else {
+            this.cachedUser = null;
         }
         this.isGuest = isGuest;
     }
@@ -149,6 +162,7 @@ public class UserService {
         SqlBasedTrailRepo trailRepo = new SqlBasedTrailRepo(databaseService);
         trailRepo.clearUserWeights();
         queryHelper.executeUpdate("DELETE FROM user", null);
+        this.cachedUser = null;
         this.isGuest = false;
     }
 
@@ -171,6 +185,7 @@ public class UserService {
      */
     public void cleanupIncompleteProfiles() {
         queryHelper.executeUpdate("DELETE FROM user WHERE isProfileComplete = 0", null);
+        this.cachedUser = null;
     }
 
     /**
@@ -178,10 +193,11 @@ public class UserService {
      * This should be called when the user finishes the quiz.
      */
     public void markProfileComplete() {
-        User user = loadUserFromDatabase();
+        User user = getUser();
         if (user != null && !isGuest) {
             user.setProfileComplete(true);
             saveUserToDatabase(user);
+            this.cachedUser = user;
         }
     }
 
@@ -225,7 +241,8 @@ public class UserService {
                     row.getInt("wildlifePreference"),
                     row.getInt("historicPreference"),
                     row.getInt("waterfallPreference"),
-                    row.getBoolean("isProfileComplete"));
+                    row.getBoolean("isProfileComplete"),
+                    row.getString("profilePicture"));
         } catch (SQLException e) {
             e.printStackTrace();
             return null;
@@ -255,5 +272,33 @@ public class UserService {
         stmt.setInt(14, user.getHistoricPreference());
         stmt.setInt(15, user.getWaterfallPreference());
         stmt.setBoolean(16, user.isProfileComplete());
+        stmt.setString(17, user.getProfilePicture());
+    }
+
+    /**
+     * Returns a map of pairs category : count
+     * To be used for pie chart
+     * Will be updated later after trip logging is merged
+     */
+    public Map<String, Integer> getTrailStats() {
+        SqlBasedTrailRepo trailRepo = new SqlBasedTrailRepo(databaseService);
+        MatchmakingService matchmakingService = new MatchmakingService(databaseService);
+        List<Trail> recommendedTrails = trailRepo.getRecommendedTrails();
+        Map<String, Integer> trailStats = new HashMap<>();
+        for (Trail trail : recommendedTrails) {
+            try {
+                Set<String> categories = matchmakingService.categoriseTrail(trail);
+                for (String category : categories) {
+                    if (trailStats.containsKey(category)) {
+                        trailStats.put(category, trailStats.get(category) + 1);
+                    } else {
+                        trailStats.put(category, 1);
+                    }
+                }
+            } catch (MatchmakingFailedException e) {
+                System.out.println(e);
+            }
+        }
+        return trailStats;
     }
 }

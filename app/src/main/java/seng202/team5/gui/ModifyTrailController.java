@@ -364,6 +364,8 @@ public class ModifyTrailController extends Controller {
                 sqlBasedTrailRepo.deleteById(trail.getId());
                 super.getNavigator().launchScreen(new TrailsController(super.getNavigator(), sqlBasedTrailRepo));
             }
+        } else {
+            super.getNavigator().goBack();
         }
     }
 

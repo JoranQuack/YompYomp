@@ -16,6 +16,7 @@ import seng202.team5.data.SqlBasedTrailRepo;
 import seng202.team5.gui.components.TrailCardComponent;
 import seng202.team5.models.Trail;
 import seng202.team5.services.SearchService;
+import seng202.team5.services.UserService;
 
 /**
  * Controller for the dashboard screen.
@@ -24,6 +25,7 @@ public class DashboardController extends Controller {
     /** Service for searching and filtering trails */
     private SearchService searchService;
     private SqlBasedTrailRepo repo;
+    private UserService userService = getUserService();
 
     @FXML
     private FlowPane trailsContainer;
