@@ -10,7 +10,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<HBox alignment="CENTER_LEFT" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="400.0" minWidth="600.0" xmlns="http://javafx.com/javafx/null" xmlns:fx="http://javafx.com/fxml/1" fx:controller="seng202.team5.gui.ViewTrailController">
+<HBox alignment="CENTER_LEFT" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="400.0" minWidth="600.0" xmlns="http://javafx.com/javafx/21.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="seng202.team5.gui.ViewTrailController">
    <children>
       <VBox prefWidth="200.0" spacing="10.0">
          <children>
@@ -36,6 +36,7 @@
             <HBox alignment="BOTTOM_LEFT" spacing="10.0">
                <children>
                   <Button fx:id="editInfoButton" mnemonicParsing="false" text="Edit Info" />
+                  <Button fx:id="logTrailButton" mnemonicParsing="false" onAction="#onLogTrailClicked" text="Log Trail" />
                </children>
             </HBox>
             <Hyperlink fx:id="docHutsLink" text="Hyperlink" />

@@ -13,6 +13,7 @@ import javafx.scene.paint.Paint;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
 import netscape.javascript.JSObject;
+import seng202.team5.data.SqlBasedTrailLogRepo;
 import seng202.team5.data.SqlBasedTrailRepo;
 import seng202.team5.gui.components.TrailCardComponent;
 import seng202.team5.models.Trail;
@@ -28,6 +29,7 @@ public class ViewTrailController extends Controller {
     private final Trail trail;
     private TrailService trailService;
     private final SqlBasedTrailRepo sqlBasedTrailRepo;
+    private final SqlBasedTrailLogRepo sqlBasedTrailLogRepo;
     private RegionFinder regionFinder;
 
     private WebEngine webEngine;
@@ -41,10 +43,12 @@ public class ViewTrailController extends Controller {
      * @param trail             trail object to be displayed on screen
      * @param sqlBasedTrailRepo sqlBasedTrailRepo
      */
-    public ViewTrailController(ScreenNavigator navigator, Trail trail, SqlBasedTrailRepo sqlBasedTrailRepo) {
+    public ViewTrailController(ScreenNavigator navigator, Trail trail, SqlBasedTrailRepo sqlBasedTrailRepo,
+            SqlBasedTrailLogRepo sqlBasedTrailLogRepo) {
         super(navigator);
         this.trail = trail;
         this.sqlBasedTrailRepo = sqlBasedTrailRepo;
+        this.sqlBasedTrailLogRepo = sqlBasedTrailLogRepo;
     }
 
     @FXML
@@ -77,6 +81,8 @@ public class ViewTrailController extends Controller {
     private Hyperlink docHutsLink;
     @FXML
     private Hyperlink remoteHutsLink;
+    @FXML
+    private Button logTrailButton;
     private WebView trailMapWebView;
 
     /**
@@ -128,6 +134,12 @@ public class ViewTrailController extends Controller {
     private void setupEventHandlers() {
         backButton.setOnAction(e -> onBackButtonClicked());
         editInfoButton.setOnAction(e -> onEditInfoButtonClicked());
+        logTrailButton.setOnAction(e -> onLogTrailClicked());
+        if (isTrailLogged(trail)) {
+            logTrailButton.setText("View Log");
+        } else {
+            logTrailButton.setText("Log Trail");
+        }
 
         nearbyTrailsCheckbox.setOnAction(e -> refreshNearbyTrails());
         trailsRadiusTextField.textProperty().addListener((obs, oldVal, newVal) -> {
@@ -288,7 +300,8 @@ public class ViewTrailController extends Controller {
      * @param trail the trail whose page will be opened
      */
     public void openTrailInfo(Trail trail) {
-        super.getNavigator().launchScreen(new ViewTrailController(super.getNavigator(), trail, sqlBasedTrailRepo));
+        super.getNavigator().launchScreen(
+                new ViewTrailController(super.getNavigator(), trail, sqlBasedTrailRepo, sqlBasedTrailLogRepo));
     }
 
     private void setupHutLinks() {
@@ -319,6 +332,15 @@ public class ViewTrailController extends Controller {
         } else {
             remoteHutsLink.setVisible(false);
         }
+    }
+
+    private boolean isTrailLogged(Trail trail) {
+        return sqlBasedTrailLogRepo.findByTrailId(trail.getId()).isPresent();
+    }
+
+    private void onLogTrailClicked() {
+        super.getNavigator().launchScreen(new LogTrailController(super.getNavigator(), trail,
+                sqlBasedTrailLogRepo.findByTrailId(trail.getId()).orElse(null)));
     }
 
     @FXML
