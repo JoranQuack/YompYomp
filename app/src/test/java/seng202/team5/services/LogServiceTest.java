@@ -16,6 +16,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 public class LogServiceTest {
 
@@ -33,7 +34,7 @@ public class LogServiceTest {
     void setUp() {
         MockitoAnnotations.openMocks(this);
 
-        mockLogs = Arrays.asList(
+        mockLogs = new java.util.ArrayList<>(Arrays.asList(
                 new TrailLog(1, 703975, LocalDate.of(2025, 10, 1), 120, "minutes", "One way", 4, "Easiest", "Nice trail, steady incline."),
                 new TrailLog(2, 703976, LocalDate.of(2025, 10, 2), 90, "minutes", "Loop", 5, "Easy", "Great for beginners."),
                 new TrailLog(3, 703977, LocalDate.of(2025, 10, 3), 200, "minutes", "Loop", 3, "Expert", "Challenging terrain."),
@@ -44,7 +45,7 @@ public class LogServiceTest {
                 new TrailLog(8, 703982, LocalDate.of(2025, 10, 8), 1, "day", "Loop", 4, "Advanced", "Perfect morning hike."),
                 new TrailLog(9, 703940, LocalDate.of(2025, 10, 9), 130, "minutes", "Loop", 3, "Easiest", "Some muddy sections."),
                 new TrailLog(10, 703947, LocalDate.of(2025, 10, 10), 160, "minutes", "One way", 5, "Advanced", "One of the best trails so far.")
-        );
+        ));
 
         mockTrails = Arrays.asList(
                 new Trail(703975, "Port Hills Track", "Te Ara o ngā Maunga", "Canterbury", "Easiest",
@@ -114,6 +115,14 @@ public class LogServiceTest {
             mockLogs.add(newLog);
             return null;
         }).when(mockLogInterface).upsert(any(TrailLog.class));
+
+        doAnswer(invocationOnMock -> {
+            int logId = invocationOnMock.getArgument(0);
+            mockLogs.removeIf(t -> t.getId() == logId);
+            return null;
+        }).when(mockLogInterface).deleteById(anyInt());
+
+        when(mockLogInterface.countTrailLogs()).thenAnswer(invocationOnMock -> mockLogs.size());
 
         //TODO update to use the ITrail interface when refactor has been done
         logService = new LogService(mockLogInterface, mockTrailRepo);
@@ -206,4 +215,85 @@ public class LogServiceTest {
         List<TrailLog> logs = logService.getAllLogs();
         assertEquals(10, logs.size(), "Should return all 10 logs");
     }
+
+    @Test
+    @DisplayName("Should return log when trailId exists")
+    void testGetLogByTrailIdFound() {
+        Optional<TrailLog> result = logService.getLogByTrailId(703975);
+
+        assertTrue(result.isPresent(), "Expected to find a log for trailId 703975");
+        assertEquals(703975, result.get().getTrailId(), "Should return correct trial id");
+        assertEquals(1, result.get().getId(), "Should return correct log id");
+    }
+
+    @Test
+    @DisplayName("Should return empty when trailId does not exist")
+    void testGetLogByTrailIdNotFound() {
+        Optional<TrailLog> result = logService.getLogByTrailId(999999);
+
+        assertFalse(result.isPresent(), "Expected no log for non-existing trailId");
+    }
+
+    @Test
+    @DisplayName("addLog should call upsert and increase log count")
+    void testAddLog() {
+        int initialCount = logService.getAllLogs().size();
+        TrailLog newLog = new TrailLog(99, 703876, LocalDate.now(), 60, "minutes", "Loop", 4, "Moderate", "Fun short hike");
+
+        logService.addLog(newLog);
+
+        assertEquals(initialCount + 1, logService.getAllLogs().size(), "Log list size should increase by one");
+        assertTrue(mockLogs.contains(newLog), "New log should be present in mockLogs");
+    }
+
+    @Test
+    @DisplayName("getTrail should return correct trail when id exists")
+    void testGetTrailFound() {
+        Optional<Trail> result = logService.getTrail(703975);
+
+        assertTrue(result.isPresent(), "Expected to find trail 703975");
+        assertEquals("Port Hills Track", result.get().getName());
+        verify(mockTrailRepo).findById(703975);
+    }
+
+    @Test
+    @DisplayName("getTrail should return empty when id does not exist")
+    void testGetTrailNotFound() {
+        Optional<Trail> result = logService.getTrail(999999);
+
+        assertFalse(result.isPresent(), "Expected no trail for invalid id");
+    }
+
+    @Test
+    @DisplayName("deleteLog should remove log and call deleteById")
+    void testDeleteLog() {
+        int initialCount = logService.getAllLogs().size();
+
+        logService.deleteLog(2);
+
+        assertEquals(initialCount - 1, logService.getAllLogs().size(), "Log list should decrease by one");
+        assertTrue(logService.getAllLogs().stream().noneMatch(l -> l.getId() == 2), "Deleted log should no longer exist");
+    }
+
+    @Test
+    @DisplayName("count logs should return current number of logs")
+    void testCountLogs() {
+        int count = logService.countLogs();
+        assertEquals(mockLogs.size(), count, "Count should match size of logs list");
+    }
+
+    @Test
+    @DisplayName("isTrailLogged should return true if trail has a log record")
+    void testIsTrailLoggedTrue() {
+        boolean result = logService.isTrailLogged(703975);
+        assertTrue(result, "Trail 703975 should be logged");
+    }
+
+    @Test
+    @DisplayName("isTrailLogged should return false if trail has no record of a log")
+    void testIsTrailLoggedFalse() {
+        boolean result = logService.isTrailLogged(999999);
+        assertFalse(result, "Trail 999999 should not be logged");
+    }
+
 }
