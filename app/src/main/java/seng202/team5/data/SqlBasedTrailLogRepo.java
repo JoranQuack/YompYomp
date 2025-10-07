@@ -124,6 +124,20 @@ public class SqlBasedTrailLogRepo implements ITrailLog {
     }
 
     /**
+     * Finds the trail log for the given trail id
+     *
+     * @param trailId the id of the trail
+     * @return an Optional containing the trail log if found; otherwise empty
+     */
+    @Override
+    public Optional<TrailLog> findByTrailId(int trailId) {
+        return queryHelper.executeQuerySingle(
+                "SELECT * FROM trailLog WHERE trailId = ? LIMIT 1",
+                stmt -> stmt.setInt(1, trailId),
+                this::mapRowToTrailLog);
+    }
+
+    /**
      * Maps the current result set row to a trailLog
      *
      * @param rs result set positioned at a row from a trailLog
