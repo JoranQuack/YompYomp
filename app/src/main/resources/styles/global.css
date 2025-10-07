@@ -284,14 +284,14 @@ DatePicker {
   -fx-background-color: #e9d8ed;
 }
 
-.selected {
-  -fx-background-color: #447055;
-  -fx-text-fill: #fdfffb;
-}
-
 .previous-month,
 .next-month {
   -fx-text-fill: #7b7b7b;
+}
+
+.selected {
+  -fx-background-color: #447055;
+  -fx-text-fill: #fdfffb;
 }
 
 .date-picker-popup > * > .spinner > .button > .left-arrow {
@@ -315,7 +315,7 @@ DatePicker {
 
 .date-picker-popup > * > .spinner > .button:hover > .left-arrow,
 .date-picker-popup > * > .spinner > .button:hover > .right-arrow {
-  -fx-background-color: #d5e6d4;
+  -fx-opacity: 0.7;
 }
 
 /* ========================================
