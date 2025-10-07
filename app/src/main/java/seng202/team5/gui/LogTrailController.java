@@ -204,6 +204,11 @@ public class LogTrailController extends Controller {
 
     @FXML
     private void onDeleteButtonClicked() {
+        boolean confirmed = super.showAlert("Log deletion", "Are you sure you want to delete this log?",
+                "This action cannot be undone.",
+                "Delete", "Cancel", "bg-red");
+        if (!confirmed)
+            return;
         logService.deleteLog(trailLog.getId());
         super.getNavigator().goBack();
     }
