@@ -26,9 +26,16 @@ public class WeatherService {
     }
 
     /**
-     * Fetches the API key from the properties file (very secure stuff)
+     * Fetches the API key from environment variable or properties file
      */
     private static String getApiKey() {
+        // environment variable (for CI/CD)
+        String envKey = System.getenv("OPENWEATHER_API_KEY");
+        if (envKey != null && !envKey.isEmpty()) {
+            return envKey;
+        }
+
+        // properties file (for local dev)
         try {
             Properties props = new Properties();
             props.load(WeatherService.class.getClassLoader().getResourceAsStream("config.properties"));
@@ -41,7 +48,7 @@ public class WeatherService {
         }
 
         throw new RuntimeException(
-                "OpenWeather API key not found. Please add to config.properties in the resources folder.");
+                "OpenWeather API key not found. Please add OPENWEATHER_API_KEY environment variable or config.properties in the resources folder.");
     }
 
     /**
@@ -136,7 +143,8 @@ public class WeatherService {
             List<Weather> forecast = new ArrayList<>();
             int count = 0;
             for (var entry : tempsByDate.entrySet()) {
-                if (count >= 4) break;
+                if (count >= 4)
+                    break;
 
                 String date = entry.getKey();
                 List<Double> temps = entry.getValue();
