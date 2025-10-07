@@ -23,8 +23,9 @@ import seng202.team5.models.TrailLog;
 import seng202.team5.services.LogService;
 import seng202.team5.services.SearchService;
 import seng202.team5.services.RegionFinder;
-import seng202.team5.services.TrailService;
 import seng202.team5.utils.StringManipulator;
+import seng202.team5.utils.TrailsProcessor;
+
 import java.time.LocalDate;
 import java.util.Date;
 import java.net.URLEncoder;
@@ -36,7 +37,6 @@ import java.util.List;
  */
 public class ViewTrailController extends Controller {
     private final Trail trail;
-    private TrailService trailService;
     private final SqlBasedTrailRepo sqlBasedTrailRepo;
     private SearchService searchService;
     private SqlBasedTrailLogRepo trailLogRepo;
@@ -105,7 +105,6 @@ public class ViewTrailController extends Controller {
      * Sets up all form fields and their initial values
      */
     private void setupFormFields() {
-        trailService = new TrailService();
         initTrailCard();
         descriptionLabel.setText(trail.getDescription());
         if (!trail.getTranslation().isEmpty()) {
@@ -243,7 +242,7 @@ public class ViewTrailController extends Controller {
      * @param radius the radius in km of nearby trails to be viewed
      */
     private void updateNearbyTrails(int radius) {
-        List<Trail> nearby = trailService.getNearbyTrails(trail, radius, sqlBasedTrailRepo.getAllTrails());
+        List<Trail> nearby = TrailsProcessor.getNearbyTrails(trail, radius, sqlBasedTrailRepo.getAllTrails());
         displayTrailsOnMap(nearby);
     }
 
