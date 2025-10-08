@@ -76,7 +76,6 @@
             initMap: initMap,
             enableClick: enableClick,
             clearMarkers: clearMarkers,
-            getColorByDifficulty: getColorByDifficulty,
             displayTrails: displayTrails,
             buildPopupContent: buildPopupContent,
             openTrailInfo: openTrailInfo,
@@ -145,22 +144,6 @@
         }
 
         /**
-         * Returns a colour string corresponding to the difficulty level of a trail
-         * @param difficulty the difficulty level of a trail
-         * @returns {string} a colour string representing the difficulty
-         */
-        function getColorByDifficulty(difficulty) {
-            switch (difficulty.toLowerCase()) {
-                case "easiest": return "green";
-                case "easy": return "#8de45f";
-                case "intermediate": return "yellow";
-                case "advanced": return "orange";
-                case "expert": return "red";
-                default: return "gray";
-            }
-        }
-
-        /**
          * Displays a list of trails on the map as coloured custom icons.
          * Each trail is represented by an icon whose colour is determined by
          * the trail's difficulty. The currently active marker is not modified
@@ -178,12 +161,11 @@
                     activeMarker.getLatLng().lng === trail.lon) {
                     return;
                 }
-                const color = getColorByDifficulty(trail.difficulty);
 
                 const customIcon = L.divIcon({
                     className: 'custom-div-icon',
                     html: `
-                    <div class="marker-pin" style="background:${color};"></div>
+                    <div class="marker-pin legend-${trail.difficulty.toLowerCase()}"></div>
                     <div class="marker-img" style="background-image:url('../images/trail.png');"></div>
                 `,
                     iconSize: [32, 42],
@@ -242,7 +224,7 @@
                 ${trailCompletionTime && trailCompletionTime != "Unknown" ?
                 `<div class = "pill bg-bluey">${trailCompletionTime}</div>` : ""}
                 ${trail.completionType && trail.completionType !== "unknown" ?
-                `<div class = "pill bg-greeny">${trail.completionType}</div>` : ""}
+                    `<div class = "pill bg-greeny">${trail.completionType}</div>` : ""}
             </div>
             ${!isActive ? `<a href="#" onclick="openTrailInfo(${trail.id}); return false;">View details</a>` : ""}
         `;

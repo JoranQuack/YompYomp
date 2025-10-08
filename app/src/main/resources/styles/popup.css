@@ -3,49 +3,64 @@
  * ======================================== */
 
 .heading {
-    font-family: "Quicksand SemiBold", sans-serif;
-    font-size: 18px;
+  font-family: "Quicksand SemiBold", sans-serif;
+  font-size: 18px;
 }
 
 .pill {
-    border-radius: 20px;
-    padding: 5px 10px;
-    font-size: 12px;
-    text-transform: capitalize;
+  border-radius: 20px;
+  padding: 5px 10px;
+  font-size: 12px;
+  text-transform: capitalize;
 }
 
 .label {
-    font-family: "Quicksand Medium", sans-serif;
-    font-size: 15px;
-    color: #04140b;
+  font-family: "Quicksand Medium", sans-serif;
+  font-size: 15px;
+  color: #04140b;
 }
 
 /* ========================================
  * INPUT ELEMENTS
  * ======================================== */
 
-
 /* ========================================
  * GENERAL CLASSES
  * ======================================== */
 
 .bg-pinky {
-    background-color: #e9d8ed;
+  background-color: #e9d8ed;
 }
 
 .bg-bluey {
-    background-color: #d8e5fd;
+  background-color: #d8e5fd;
 }
 
 .bg-greeny {
-    background-color: #d5e6d4;
+  background-color: #d5e6d4;
 }
 
 .round-corners {
-    border-radius: 10px;
+  border-radius: 10px;
 }
 
 .container {
-    display: flex;
-    gap: 5px;
+  display: flex;
+  gap: 5px;
+}
+
+.legend-expert {
+  background-color: #f44336;
+}
+.legend-advanced {
+  background-color: #ff9800;
+}
+.legend-intermediate {
+  background-color: #ffc107;
+}
+.legend-easy {
+  background-color: #a1d11c;
+}
+.legend-easiest {
+  background-color: #4caf50;
 }
