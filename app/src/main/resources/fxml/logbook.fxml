@@ -14,7 +14,13 @@
       <!-- Search section -->
       <HBox alignment="CENTER_LEFT" spacing="10.0">
          <children>
-            <Label fx:id="resultsLabel" prefWidth="200.0" text="Loading trails..." />
+            <Label fx:id="resultsLabel" prefWidth="200.0" text="Loading trails...">
+               <HBox.margin>
+                  <Insets />
+               </HBox.margin>
+               <padding>
+                  <Insets left="5.0" />
+               </padding></Label>
             <TextField fx:id="searchBarTextField" maxWidth="1.7976931348623157E308" onKeyTyped="#onSearchButtonClicked" promptText="Search trails..." HBox.hgrow="ALWAYS" />
             <HBox alignment="CENTER_RIGHT" prefWidth="200.0" spacing="5.0">
                <children>

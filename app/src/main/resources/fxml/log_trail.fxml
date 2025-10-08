@@ -81,7 +81,7 @@
             <VBox alignment="CENTER" spacing="5.0">
                <children>
                   <Label text="Notes" />
-                  <TextArea fx:id="noteTextArea" maxHeight="150.0" />
+                  <TextArea fx:id="noteTextArea" maxHeight="150.0" wrapText="true" />
                </children>
             </VBox>
             <Label fx:id="errorLabel" alignment="CENTER" styleClass="text-red" text="&lt;error label&gt;" textAlignment="CENTER" textFill="RED" wrapText="true">
