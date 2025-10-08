@@ -7,31 +7,21 @@ import javafx.concurrent.Worker;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.Background;
 import javafx.scene.layout.Priority;
-import javafx.scene.paint.Paint;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
 import netscape.javascript.JSObject;
-import seng202.team5.data.DatabaseService;
 import seng202.team5.data.SqlBasedTrailLogRepo;
 import seng202.team5.data.SqlBasedTrailRepo;
 import seng202.team5.gui.components.LegendLabelComponent;
 import seng202.team5.gui.components.TrailCardComponent;
 import seng202.team5.models.Trail;
-import seng202.team5.models.TrailLog;
-import seng202.team5.services.LogService;
-import seng202.team5.services.SearchService;
 import seng202.team5.services.RegionFinder;
 import seng202.team5.utils.StringManipulator;
 import seng202.team5.utils.TrailsProcessor;
 import seng202.team5.models.Weather;
 import seng202.team5.services.WeatherService;
 
-import java.time.LocalDate;
-import java.util.Date;
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 /**
@@ -41,9 +31,7 @@ public class ViewTrailController extends Controller {
     private final Trail trail;
     private final SqlBasedTrailRepo sqlBasedTrailRepo;
     private WeatherService weatherService;
-    private SearchService searchService;
-    private SqlBasedTrailLogRepo trailLogRepo;
-    private LogService logService;
+    private final SqlBasedTrailLogRepo sqlBasedTrailLogRepo;
     private RegionFinder regionFinder;
 
     private WebEngine webEngine;
@@ -57,13 +45,12 @@ public class ViewTrailController extends Controller {
      * @param trail             trail object to be displayed on screen
      * @param sqlBasedTrailRepo sqlBasedTrailRepo
      */
-    public ViewTrailController(ScreenNavigator navigator, Trail trail, SqlBasedTrailRepo sqlBasedTrailRepo) {
+    public ViewTrailController(ScreenNavigator navigator, Trail trail, SqlBasedTrailRepo sqlBasedTrailRepo,
+            SqlBasedTrailLogRepo sqlBasedTrailLogRepo) {
         super(navigator);
         this.trail = trail;
         this.sqlBasedTrailRepo = sqlBasedTrailRepo;
-        this.searchService = searchService;
-        this.trailLogRepo = new SqlBasedTrailLogRepo(new DatabaseService());
-        this.logService = new LogService(new DatabaseService());
+        this.sqlBasedTrailLogRepo = sqlBasedTrailLogRepo;
     }
 
     @FXML
@@ -91,6 +78,7 @@ public class ViewTrailController extends Controller {
     @FXML
     private Hyperlink remoteHutsLink;
     @FXML
+    private Button logTrailButton;
     private WebView trailMapWebView;
     @FXML
     private Label WeatherLabel;
@@ -106,15 +94,16 @@ public class ViewTrailController extends Controller {
         setupEventHandlers();
         setupLegend();
         javafx.application.Platform.runLater(this::initMap);
-        weatherService = new WeatherService("https://api.openweathermap.org/data/2.5/weather", "https://api.openweathermap.org/data/2.5/forecast");
+        weatherService = new WeatherService("https://api.openweathermap.org/data/2.5/weather",
+                "https://api.openweathermap.org/data/2.5/forecast");
 
         new Thread(() -> {
             Weather weather = weatherService.getWeatherByCoords(trail.getLat(), trail.getLon());
             if (weather != null) {
                 javafx.application.Platform.runLater(() -> WeatherLabel.setText(String.format(
                         "%.1f°C (min %.1f°C / max %.1f°C) — %s",
-                        weather.getTemperature(), weather.getTempMin(), weather.getTempMax(), weather.getDescription()
-                )));
+                        weather.getTemperature(), weather.getTempMin(), weather.getTempMax(),
+                        weather.getDescription())));
             } else {
                 javafx.application.Platform.runLater(() -> WeatherLabel.setText("Weather unavailable"));
             }
@@ -123,14 +112,14 @@ public class ViewTrailController extends Controller {
         new Thread(() -> {
             List<Weather> forecast = weatherService.getFourDayForecast(trail.getLat(), trail.getLon());
             if (!forecast.isEmpty()) {
-                StringBuilder sb  = new StringBuilder(" ");
+                StringBuilder sb = new StringBuilder(" ");
                 for (Weather day : forecast) {
                     sb.append(String.format(
                             "%s: %.1f°C (min %.1f°C / max %.1f°C) — %s ",
-                            day.getDate(), day.getTemperature(), day.getTempMin(), day.getTempMax(), day.getDescription()
-                    ));
+                            day.getDate(), day.getTemperature(), day.getTempMin(), day.getTempMax(),
+                            day.getDescription()));
                 }
-                    javafx.application.Platform.runLater(() -> forecastLabel.setText(sb.toString()));
+                javafx.application.Platform.runLater(() -> forecastLabel.setText(sb.toString()));
             } else {
                 javafx.application.Platform.runLater(() -> forecastLabel.setText("Forecast unavailable"));
             }
@@ -181,6 +170,12 @@ public class ViewTrailController extends Controller {
     private void setupEventHandlers() {
         backButton.setOnAction(e -> onBackButtonClicked());
         editInfoButton.setOnAction(e -> onEditInfoButtonClicked());
+        logTrailButton.setOnAction(e -> onLogTrailClicked());
+        if (isTrailLogged(trail)) {
+            logTrailButton.setText("View Log");
+        } else {
+            logTrailButton.setText("Log Trail");
+        }
 
         nearbyTrailsCheckbox.setOnAction(e -> refreshNearbyTrails());
         trailsRadiusTextField.textProperty().addListener((obs, oldVal, newVal) -> {
@@ -228,48 +223,6 @@ public class ViewTrailController extends Controller {
     private void initTrailCard() {
         TrailCardComponent trailCard = new TrailCardComponent(super.getUserService().isGuest(), true, false);
         trailCard.setData(trail, null);
-        trailCard.setTrail(trail);
-
-        trailCard.setOnBookmarkClickedHandler(clickedTrail -> {
-            TrailLog newLog = new TrailLog(
-                trailLogRepo.getNewTrailLogId(),
-                clickedTrail.getId(),
-                LocalDate.now(),
-                null, null, null, null, null, null
-            );
-
-            LogTrailController logController = new LogTrailController(
-                    super.getNavigator(),
-                    clickedTrail,
-                    newLog
-            );
-            super.getNavigator().launchScreen(logController);
-        });
-
-        trailCard.setOnBookmarkFillClickedHandler(clickedTrail -> {
-            boolean confirmed = showAlert(
-                    "Delete Log",  "Are you sure you want to delete this log?",
-                    "This action cannot be undone.", "Delete",
-                    "Cancel", "danger-button"
-            );
-
-            if (confirmed) {
-                logService.deleteLog(clickedTrail.getId());
-                trailCard.setBookmarked(false);
-            } else {
-                return;
-            }
-
-            List<TrailLog> logs = logService.getAllLogs();
-            logs.stream()
-                .filter(log -> log.getTrailId() == clickedTrail.getId())
-                .findFirst()
-                .ifPresent(log -> {
-                    logService.deleteLog(log.getId());
-                    trailCard.setBookmarked(false);
-                });
-        });
-
         trailCardHBox.getChildren().add(trailCard);
     }
 
@@ -389,7 +342,8 @@ public class ViewTrailController extends Controller {
      * @param trail the trail whose page will be opened
      */
     public void openTrailInfo(Trail trail) {
-        super.getNavigator().launchScreen(new ViewTrailController(super.getNavigator(), trail, sqlBasedTrailRepo));
+        super.getNavigator().launchScreen(
+                new ViewTrailController(super.getNavigator(), trail, sqlBasedTrailRepo, sqlBasedTrailLogRepo));
     }
 
     private void setupHutLinks() {
@@ -401,28 +355,33 @@ public class ViewTrailController extends Controller {
         Integer docRegionId = regionFinder.getDocRegionId(regionLower);
         if (docRegionId != null) {
             docHutsLink.setText("View DOC Huts in " + StringManipulator.capitaliseFirstLetter(region));
-            docHutsLink.setOnAction(e ->
-                super.getNavigator().openWebPage(
-                        "https://www.doc.govt.nz/parks-and-recreation/places-to-stay/stay-in-a-hut/?region-id=" + docRegionId
-                )
-            );
+            docHutsLink.setOnAction(e -> super.getNavigator().openWebPage(
+                    "https://www.doc.govt.nz/parks-and-recreation/places-to-stay/stay-in-a-hut/?region-id="
+                            + docRegionId));
             docHutsLink.setVisible(true);
         } else {
             docHutsLink.setText("View DOC Huts");
-            docHutsLink.setOnAction(e ->
-                    super.getNavigator().openWebPage(
-                            "https://www.doc.govt.nz/parks-and-recreation/places-to-stay/stay-in-a-hut/")
-            );
+            docHutsLink.setOnAction(e -> super.getNavigator().openWebPage(
+                    "https://www.doc.govt.nz/parks-and-recreation/places-to-stay/stay-in-a-hut/"));
         }
 
         boolean isRemoteRegion = regionFinder.isRemoteHutRegion(region);
         if (isRemoteRegion && (difficulty.contains("advanced") || difficulty.contains("expert"))) {
             remoteHutsLink.setText("View Remote Huts");
-            remoteHutsLink.setOnAction(e -> super.getNavigator().openWebPage("https://www.remotehuts.co.nz/by-map.html"));
+            remoteHutsLink
+                    .setOnAction(e -> super.getNavigator().openWebPage("https://www.remotehuts.co.nz/by-map.html"));
             remoteHutsLink.setVisible(true);
         } else {
             remoteHutsLink.setVisible(false);
         }
+    }
+
+    private boolean isTrailLogged(Trail trail) {
+        return sqlBasedTrailLogRepo.findByTrailId(trail.getId()).isPresent();
+    }
+
+    private void onLogTrailClicked() {
+        super.getNavigator().launchScreen(new LogTrailController(super.getNavigator(), trail));
     }
 
     @FXML
@@ -467,6 +426,6 @@ public class ViewTrailController extends Controller {
         e.printStackTrace();
         showAlert("Trail Card Failed To Load",
                 "Loading selected trail failed, please close the application and try again.",
-                "OK", "Cancel", null, null);
+                "", "OK", null, null);
     }
 }

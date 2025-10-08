@@ -42,6 +42,7 @@
             <HBox alignment="BOTTOM_LEFT" spacing="10.0">
                <children>
                   <Button fx:id="editInfoButton" mnemonicParsing="false" text="Edit Info" />
+                  <Button fx:id="logTrailButton" mnemonicParsing="false" text="Log Trail" />
                </children>
             </HBox>
             <Hyperlink fx:id="docHutsLink" text="Hyperlink" />

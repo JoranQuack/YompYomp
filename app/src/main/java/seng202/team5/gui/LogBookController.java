@@ -32,8 +32,6 @@ public class LogBookController extends Controller {
 
     // FXML components
     @FXML
-    private Button searchButton;
-    @FXML
     private TextField searchBarTextField;
     @FXML
     private FlowPane logContainer;
@@ -120,7 +118,7 @@ public class LogBookController extends Controller {
      */
     private void showLoadingState() {
         logContainer.getChildren().clear();
-        Label loadingLabel = new Label("Loading trails...");
+        Label loadingLabel = new Label("Loading logs...");
         logContainer.getChildren().add(loadingLabel);
         resultsLabel.setText("Loading...");
     }
@@ -151,9 +149,9 @@ public class LogBookController extends Controller {
             protected void failed() {
                 Platform.runLater(() -> {
                     logContainer.getChildren().clear();
-                    Label errorLabel = new Label("Failed to load trails. Please try again.");
+                    Label errorLabel = new Label("Failed to load logs. Please try again.");
                     logContainer.getChildren().add(errorLabel);
-                    resultsLabel.setText("Error loading trails");
+                    resultsLabel.setText("Error loading logs");
                 });
             }
         };
@@ -182,10 +180,6 @@ public class LogBookController extends Controller {
     private void updateLogsDisplay(List<TrailLog> logs) {
         logContainer.getChildren().clear();
 
-        if (logs.isEmpty()) {
-            //showNoResultsMessage();
-            return;
-        }
         Insets cardMargin = new Insets(10);
 
         for (int i = 0; i < logs.size(); i++) {
@@ -197,37 +191,9 @@ public class LogBookController extends Controller {
 
                 logCard.setData(trail, log);
                 logCard.setOnMouseClicked(e -> {
-                    if (!e.isConsumed() && e.getTarget() != logCard.getTrashIcon()) {
-                        onLogCardClicked(log);
-                    }
+                    onLogCardClicked(log);
                 });
                 logContainer.getChildren().add(logCard);
-
-                logCard.setOnTrashClickedHandler(logTrail -> {
-                    boolean confirmed = showAlert(
-                            "Delete Log", "Are you sure you want to delete this log?",
-                            "This action cannot be undone.", "Delete", "Cancel",
-                            "danger-button"
-                    );
-
-                    if (!confirmed) {
-                        return;
-                    }
-
-                    logService.deleteLog(logTrail.getId());
-                    System.out.println(logService.countLogs());
-
-                    logContainer.getChildren().remove(logCard);
-
-                    resultsLabel.setText(
-                            logContainer.getChildren().size() + "/" + logService.countLogs() + " trails showing");
-
-                    updateLogsDisplay(logService.getAllLogs());
-
-                    if (logService.getAllLogs().isEmpty()) {
-                        handleInitializationFailure();
-                    }
-                });
             }
         }
 
@@ -253,12 +219,12 @@ public class LogBookController extends Controller {
     }
 
     /**
-     * Updates the result label to show the number of trails currently displayed
+     * Updates the result label to show the number of logs currently displayed
      *
-     * @param trailCount Number of trails currently displayed
+     * @param logCount Number of logs currently displayed
      */
-    private void updateResultsLabel(int trailCount) {
-        resultsLabel.setText(trailCount + "/" + logService.countLogs() + " trails showing");
+    private void updateResultsLabel(int logCount) {
+        resultsLabel.setText(logCount + "/" + logService.countLogs() + " logs displayed");
     }
 
     /**
@@ -284,7 +250,8 @@ public class LogBookController extends Controller {
 
     /**
      * Handles the event when a user clicks on a log card.
-     * Retrieves the corresponding trail associated with the log and navigates to the trail details screen.
+     * Retrieves the corresponding trail associated with the log and navigates to
+     * the trail details screen.
      *
      * @param log The TrailLog object representing the log card that was clicked.
      */
@@ -293,13 +260,13 @@ public class LogBookController extends Controller {
         Optional<Trail> trailOpt = logService.getTrail(log.getTrailId());
         trailOpt.ifPresent(trail -> {
             super.getNavigator().launchScreen(
-                    new LogTrailController(super.getNavigator(), trail, log)
-            );
+                    new LogTrailController(super.getNavigator(), trail));
         });
     }
 
     /**
-     * Handles the event when the user clicks the search button and updates the displayed logs.
+     * Handles the event when the user clicks the search button and updates the
+     * displayed logs.
      */
     @FXML
     private void onSearchButtonClicked() {
@@ -318,7 +285,7 @@ public class LogBookController extends Controller {
     }
 
     @Override
-    protected boolean shouldShowNavbar(){
+    protected boolean shouldShowNavbar() {
         return true;
     }
 
@@ -335,8 +302,7 @@ public class LogBookController extends Controller {
                 "Logbook failed to load, please close and reload the application.",
                 "OK",
                 null,
-                "error-button"
-        );
+                "error-button");
 
     }
 }

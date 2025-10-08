@@ -1,7 +1,5 @@
 package seng202.team5.gui;
 
-import java.time.LocalDate;
-import java.util.Date;
 import java.util.List;
 
 import javafx.fxml.FXML;
@@ -11,15 +9,13 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.VBox;
+import seng202.team5.App;
 import seng202.team5.data.DatabaseService;
 import seng202.team5.data.SqlBasedTrailLogRepo;
 import seng202.team5.data.SqlBasedTrailRepo;
 import seng202.team5.gui.components.TrailCardComponent;
 import seng202.team5.models.Trail;
-import seng202.team5.models.TrailLog;
-import seng202.team5.services.LogService;
 import seng202.team5.services.SearchService;
-import seng202.team5.services.UserService;
 
 /**
  * Controller for the dashboard screen.
@@ -27,10 +23,7 @@ import seng202.team5.services.UserService;
 public class DashboardController extends Controller {
     /** Service for searching and filtering trails */
     private SearchService searchService;
-    private SqlBasedTrailLogRepo trailLogRepo;
-    private LogService logService;
     private SqlBasedTrailRepo repo;
-    private UserService userService = getUserService();
 
     @FXML
     private FlowPane trailsContainer;
@@ -59,8 +52,6 @@ public class DashboardController extends Controller {
     public DashboardController(ScreenNavigator navigator) {
         super(navigator);
         initializeSearchService();
-        this.logService = new LogService(new DatabaseService());
-        this.trailLogRepo = new SqlBasedTrailLogRepo(new DatabaseService());
     }
 
     /**
@@ -140,10 +131,8 @@ public class DashboardController extends Controller {
      */
     private TrailCardComponent createTrailCard(Trail trail) {
         TrailCardComponent trailCard = new TrailCardComponent(
-                super.getUserService().isGuest(), false, false
-        );
+                super.getUserService().isGuest(), false, false);
         trailCard.setData(trail, null);
-        trailCard.setTrail(trail);
         return trailCard;
     }
 
@@ -151,74 +140,16 @@ public class DashboardController extends Controller {
      * Sets up all the events for a given trail card
      *
      * @param trailCard The card that needs to be set up
-     * @param trail The respective trail
+     * @param trail     The respective trail
      */
     private void setupTrailCardHandlers(TrailCardComponent trailCard, Trail trail) {
         trailCard.setOnMouseClicked(e -> onTrailCardClicked(trail));
-        trailCard.setOnBookmarkClickedHandler(clickedTrail -> handleBookmarkClick(clickedTrail));
-        trailCard.setOnBookmarkFillClickedHandler(clickedTrail -> handleBookmarkFillClick(clickedTrail, trailCard));
-        trailCard.setOnTrashClickedHandler(clickedLog -> handleTrashClick(clickedLog, trailCard));
-    }
-
-    /**
-     * Handles when a user bookmarks a trail
-     *
-     * @param clickedTrail the trail that the user wants to bookmark
-     */
-    private void handleBookmarkClick(Trail clickedTrail) {
-        TrailLog newLog = new TrailLog(
-                trailLogRepo.getNewTrailLogId(),
-                clickedTrail.getId(),
-                LocalDate.now(),
-                null, null, null, null, null, null
-        );
-
-        LogTrailController logController = new LogTrailController(
-                super.getNavigator(),
-                clickedTrail,
-                newLog
-        );
-        super.getNavigator().launchScreen(logController);
-    }
-
-    /**
-     * Handles when a user clicks on the filled bookmark icon (to unfill)
-     *
-     * @param clickedTrail The trail that was clicked on
-     * @param trailCard The respective card that was clicked on
-     */
-    private void handleBookmarkFillClick(Trail clickedTrail, TrailCardComponent trailCard) {
-        boolean confirmed = showAlert(
-                "Delete Log",
-                "Are you sure you want to delete this log?",
-                "This action cannot be undone.",
-                "Delete",
-                "Cancel",
-                "danger-button"
-        );
-
-        if (confirmed) {
-            logService.getLogByTrailId(clickedTrail.getId()).ifPresent(log -> {
-                logService.deleteLog(log.getId());
-                trailCard.setBookmarked(false);
-            });
-        }
-    }
-
-    /**
-     * Handles when a user clicks on the trash button, on a log card
-     *
-     * @param clickedLog The log that was clicked on
-     * @param trailCard The respective card
-     */
-    private void handleTrashClick(TrailLog clickedLog, TrailCardComponent trailCard) {
-        logService.deleteLog(clickedLog.getId());
-        trailsContainer.getChildren().remove(trailCard);
     }
 
     @FXML
     private void onTrailCardClicked(Trail trail) {
-        super.getNavigator().launchScreen(new ViewTrailController(super.getNavigator(), trail, repo));
+        super.getNavigator().launchScreen(new ViewTrailController(super.getNavigator(), trail, repo,
+                new SqlBasedTrailLogRepo(App.getDatabaseService())));
     }
 
     @Override
