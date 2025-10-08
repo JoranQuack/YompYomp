@@ -237,9 +237,10 @@
             <div class = "heading">${trail.name}</div>
             <div class = "label">${trail.region}</div>
             <div class = "container">
-
-                <div class = "pill bg-pinky">${trail.difficulty}</div>
-                <div class = "pill bg-bluey">${trailCompletionTime}</div>
+                ${trail.difficulty && trail.difficulty != "" ?
+                `<div class = "pill bg-pinky">${trail.difficulty}</div>` : ""}
+                ${trailCompletionTime && trailCompletionTime != "Unknown" ?
+                `<div class = "pill bg-bluey">${trailCompletionTime}</div>` : ""}
                 ${trail.completionType && trail.completionType !== "unknown" ?
                 `<div class = "pill bg-greeny">${trail.completionType}</div>` : ""}
             </div>
