@@ -220,6 +220,10 @@ ChoiceBox .menu-item:focused {
   -fx-cursor: hand;
 }
 
+.root-pane .check-box {
+  -fx-text-fill: #04140b;
+}
+
 .check-box .box {
   -fx-background-color: #eef1ed;
   -fx-padding: 5px;
@@ -616,4 +620,20 @@ Button.bg-red:hover {
 }
 .default-color9 {
   -fx-bar-fill: #9c27b0;
+}
+
+.legend-expert {
+  -fx-background-color: #f44336;
+}
+.legend-advanced {
+  -fx-background-color: #ff9800;
+}
+.legend-intermediate {
+  -fx-background-color: #ffc107;
+}
+.legend-easy {
+  -fx-background-color: #a1d11c;
+}
+.legend-easiest {
+  -fx-background-color: #4caf50;
 }

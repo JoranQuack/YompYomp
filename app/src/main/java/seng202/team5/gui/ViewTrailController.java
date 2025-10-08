@@ -200,11 +200,11 @@ public class ViewTrailController extends Controller {
      * Sets up the legend for the map marker colours
      */
     private void setupLegend() {
-        LegendLabelComponent easiestLegend = new LegendLabelComponent("008000", "Easiest");
-        LegendLabelComponent easyLegend = new LegendLabelComponent("8de45f", "Easy");
-        LegendLabelComponent intermediateLegend = new LegendLabelComponent("ffff00", "Intermediate");
-        LegendLabelComponent advancedLegend = new LegendLabelComponent("ffa500", "Advanced Colour");
-        LegendLabelComponent expertLegend = new LegendLabelComponent("ff0000", "Expert");
+        LegendLabelComponent easiestLegend = new LegendLabelComponent("Easiest");
+        LegendLabelComponent easyLegend = new LegendLabelComponent("Easy");
+        LegendLabelComponent intermediateLegend = new LegendLabelComponent("Intermediate");
+        LegendLabelComponent advancedLegend = new LegendLabelComponent("Advanced");
+        LegendLabelComponent expertLegend = new LegendLabelComponent("Expert");
 
         legendContainer.getChildren().add(easiestLegend);
         legendContainer.getChildren().add(easyLegend);

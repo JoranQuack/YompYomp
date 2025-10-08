@@ -6,8 +6,8 @@
 <?import javafx.scene.control.Hyperlink?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.FlowPane?>
 <?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
@@ -46,15 +46,21 @@
       <VBox spacing="10.0" HBox.hgrow="ALWAYS">
          <children>
             <HBox fx:id="mapContainer" prefHeight="243.0" prefWidth="464.0" VBox.vgrow="ALWAYS" />
-            <HBox alignment="CENTER_LEFT">
+            <FlowPane columnHalignment="CENTER" hgap="30.0" vgap="10.0">
                <children>
                   <CheckBox fx:id="nearbyTrailsCheckbox" mnemonicParsing="false" text="View nearby trails" wrapText="true" />
-                  <Region HBox.hgrow="ALWAYS" />
-                  <TextField fx:id="trailsRadiusTextField" prefHeight="25.0" prefWidth="59.0" />
-                  <Label prefHeight="25.0" prefWidth="40.0" text="km" wrapText="true" />
+                  <HBox alignment="CENTER_LEFT" spacing="5.0">
+                     <children>
+                        <TextField fx:id="trailsRadiusTextField" maxWidth="80.0" />
+                        <Label text="km" wrapText="true" />
+                     </children>
+                  </HBox>
+                  <HBox fx:id="legendContainer" alignment="CENTER_LEFT" spacing="10.0" />
                </children>
-            </HBox>
-            <HBox fx:id="legendContainer" spacing="10.0" />
+               <padding>
+                  <Insets bottom="5.0" />
+               </padding>
+            </FlowPane>
             <HBox fx:id="weatherContainer" minHeight="175.0" spacing="10.0">
                <VBox.margin>
                   <Insets />
