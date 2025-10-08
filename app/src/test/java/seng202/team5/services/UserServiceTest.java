@@ -66,7 +66,8 @@ public class UserServiceTest {
                 3,
                 2,
                 1,
-                true); // isProfileComplete = true
+                true, // isProfileComplete = true
+                "");
     }
 
     @Test

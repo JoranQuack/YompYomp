@@ -1,15 +1,16 @@
 package seng202.team5.models;
 
-// import java.util.Date;
-
 import seng202.team5.data.DatabaseService;
 import seng202.team5.data.SqlBasedTrailRepo;
 
 import java.util.HashSet;
 import java.util.Set;
 
+/**
+ * The base class entity representing a trail.
+ */
 public class Trail {
-    // base variables from DOC dataset (some may be irrelevant)
+
     private int id;
     private String name;
     private String translation;
@@ -34,25 +35,25 @@ public class Trail {
     /**
      * Constructor for Trail class with userWeight and enhanced time fields
      *
-     * @param id
-     * @param name
-     * @param translation
-     * @param region
-     * @param difficulty
-     * @param description
-     * @param completionInfo
-     * @param minCompletionTimeMinutes
-     * @param maxCompletionTimeMinutes
-     * @param completionType
-     * @param timeUnit
-     * @param isMultiDay
-     * @param hasVariableTime
-     * @param thumbnailURL
-     * @param webpageURL
-     * @param cultureUrl
-     * @param userWeight
-     * @param lat
-     * @param lon
+     * @param id the trail id
+     * @param name the trail name
+     * @param translation the trail translation
+     * @param region the trail region
+     * @param difficulty the trail difficulty
+     * @param description the trail description
+     * @param completionInfo the trail completion info
+     * @param minCompletionTimeMinutes the minimum completion time in minutes
+     * @param maxCompletionTimeMinutes the maximum completion time in minutes
+     * @param completionType the completion type of the trail
+     * @param timeUnit the time unit of the completion time
+     * @param isMultiDay whether the trail is a multi-day trail
+     * @param hasVariableTime whether the trail has variable time
+     * @param thumbnailURL the URL of the thumbnail image
+     * @param webpageURL the URL of the trail's webpage
+     * @param cultureUrl the URL the user can contribute about the trail's culture
+     * @param userWeight the user's weighting for the trail
+     * @param lat the latitude of the trail's location
+     * @param lon the longitude of the trail's location
      */
     public Trail(int id, String name, String translation, String region, String difficulty, String description,
             String completionInfo, int minCompletionTimeMinutes, int maxCompletionTimeMinutes,
@@ -85,15 +86,15 @@ public class Trail {
      * Sets the completionTime to default value of 0
      * Sets enhanced time fields to default values
      *
-     * @param id
-     * @param name
-     * @param difficulty
-     * @param description
-     * @param completionInfo
-     * @param thumbnailURL
-     * @param webpageURL
-     * @param lat
-     * @param lon
+     * @param id the trail id
+     * @param name the trail name
+     * @param difficulty the trail difficulty
+     * @param description the trail description
+     * @param completionInfo the trail completion info
+     * @param thumbnailURL the URL of the thumbnail image
+     * @param webpageURL the URL of the trail's webpage
+     * @param lat the latitude of the trail's location
+     * @param lon the longitude of the trail's location
      */
     public Trail(int id, String name, String difficulty, String description, String completionInfo,
             String thumbnailURL, String webpageURL, double lat, double lon) {
@@ -110,20 +111,20 @@ public class Trail {
     /**
      * Constructor for Trail class for user input data
      * Calls SqlBasedTrailRepo to get new trail id
-     * @param id
-     * @param name
-     * @param translation
-     * @param region
-     * @param difficulty
-     * @param completionType
-     * @param completionInfo
-     * @param description
-     * @param thumbUrl
-     * @param webUrl
-     * @param cultureUrl
-     * @param userWeight
-     * @param lat
-     * @param lon
+     * @param id the trail id
+     * @param name the trail name
+     * @param translation the trail translation
+     * @param region the trail region
+     * @param difficulty the trail difficulty
+     * @param completionType the completion type of the trail
+     * @param completionInfo the trail completion info
+     * @param description the trail description
+     * @param thumbUrl the URL of the thumbnail image
+     * @param webUrl the URL of the trail's webpage
+     * @param cultureUrl the URL the user can contribute about the trail's culture
+     * @param userWeight the user's weighting for the trail
+     * @param lat the latitude of the trail's location
+     * @param lon the longitude of the trail's location
      */
     public Trail(int id, String name, String translation, String region, String difficulty, String completionType,
             String completionInfo, String description, String thumbUrl, String webUrl, String cultureUrl,

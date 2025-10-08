@@ -101,8 +101,7 @@ public class SqlBasedKeywordRepo implements IKeyword {
     /**
      * Assigns categories to a trail in the database.
      *
-     * @param trailId    The trail ID
-     * @param categories Set of category names to assign
+     * @param trails List of trails to assign categories to
      */
     public void assignTrailCategories(List<Trail> trails) {
         if (trails.isEmpty())
@@ -128,7 +127,7 @@ public class SqlBasedKeywordRepo implements IKeyword {
     /**
      * Gets all categories for a given trail.
      *
-     * @param trailId
+     * @param trailId the trail identifier
      * @return set of category names
      */
     public Set<String> getCategoriesForTrail(int trailId) {

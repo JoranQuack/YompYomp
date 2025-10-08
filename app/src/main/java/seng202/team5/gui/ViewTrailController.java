@@ -13,13 +13,25 @@ import javafx.scene.paint.Paint;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
 import netscape.javascript.JSObject;
+import seng202.team5.data.DatabaseService;
+import seng202.team5.data.SqlBasedTrailLogRepo;
 import seng202.team5.data.SqlBasedTrailRepo;
+import seng202.team5.gui.components.LegendLabelComponent;
 import seng202.team5.gui.components.TrailCardComponent;
 import seng202.team5.models.Trail;
-import seng202.team5.services.TrailService;
+import seng202.team5.models.TrailLog;
+import seng202.team5.services.LogService;
+import seng202.team5.services.SearchService;
+import seng202.team5.services.RegionFinder;
+import seng202.team5.utils.StringManipulator;
+import seng202.team5.utils.TrailsProcessor;
 import seng202.team5.models.Weather;
 import seng202.team5.services.WeatherService;
 
+import java.time.LocalDate;
+import java.util.Date;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 /**
@@ -27,9 +39,12 @@ import java.util.List;
  */
 public class ViewTrailController extends Controller {
     private final Trail trail;
-    private TrailService trailService;
     private final SqlBasedTrailRepo sqlBasedTrailRepo;
     private WeatherService weatherService;
+    private SearchService searchService;
+    private SqlBasedTrailLogRepo trailLogRepo;
+    private LogService logService;
+    private RegionFinder regionFinder;
 
     private WebEngine webEngine;
     private JavaScriptBridge javaScriptBridge;
@@ -46,12 +61,17 @@ public class ViewTrailController extends Controller {
         super(navigator);
         this.trail = trail;
         this.sqlBasedTrailRepo = sqlBasedTrailRepo;
+        this.searchService = searchService;
+        this.trailLogRepo = new SqlBasedTrailLogRepo(new DatabaseService());
+        this.logService = new LogService(new DatabaseService());
     }
 
     @FXML
     private Label translationLabel;
     @FXML
     private Label descriptionLabel;
+    @FXML
+    private Hyperlink culturalUrlHyperlink;
     @FXML
     private Button editInfoButton;
     @FXML
@@ -65,15 +85,13 @@ public class ViewTrailController extends Controller {
     @FXML
     private HBox trailCardHBox;
     @FXML
-    private Label easiestColourLabel;
+    private HBox legendContainer;
     @FXML
-    private Label easyColourLabel;
+    private Hyperlink docHutsLink;
     @FXML
-    private Label intermediateColourLabel;
+    private Hyperlink remoteHutsLink;
     @FXML
-    private Label advancedColourLabel;
-    @FXML
-    private Label expertColourLabel;
+    private WebView trailMapWebView;
     @FXML
     private Label WeatherLabel;
     @FXML
@@ -124,7 +142,6 @@ public class ViewTrailController extends Controller {
      * Sets up all form fields and their initial values
      */
     private void setupFormFields() {
-        trailService = new TrailService();
         initTrailCard();
         descriptionLabel.setText(trail.getDescription());
         if (!trail.getTranslation().isEmpty()) {
@@ -133,7 +150,14 @@ public class ViewTrailController extends Controller {
         } else {
             translationLabel.setVisible(false);
         }
+        if (!trail.getCultureUrl().isEmpty()) {
+            culturalUrlHyperlink.setText(trail.getCultureUrl());
+            culturalUrlHyperlink.setVisible(true);
+        } else {
+            culturalUrlHyperlink.setVisible(false);
+        }
         setupTrailRadiusFields();
+        setupHutLinks();
     }
 
     private void setupTrailRadiusFields() {
@@ -185,19 +209,67 @@ public class ViewTrailController extends Controller {
      * Sets up the legend for the map marker colours
      */
     private void setupLegend() {
-        easiestColourLabel.setBackground(Background.fill(Paint.valueOf("008000")));
-        easyColourLabel.setBackground(Background.fill(Paint.valueOf("8de45f")));
-        intermediateColourLabel.setBackground(Background.fill(Paint.valueOf("ffff00")));
-        advancedColourLabel.setBackground(Background.fill(Paint.valueOf("ffa500")));
-        expertColourLabel.setBackground(Background.fill(Paint.valueOf("ff0000")));
+        LegendLabelComponent easiestLegend = new LegendLabelComponent("008000", "Easiest");
+        LegendLabelComponent easyLegend = new LegendLabelComponent("8de45f", "Easy");
+        LegendLabelComponent intermediateLegend = new LegendLabelComponent("ffff00", "Intermediate");
+        LegendLabelComponent advancedLegend = new LegendLabelComponent("ffa500", "Advanced Colour");
+        LegendLabelComponent expertLegend = new LegendLabelComponent("ff0000", "Expert");
+
+        legendContainer.getChildren().add(easiestLegend);
+        legendContainer.getChildren().add(easyLegend);
+        legendContainer.getChildren().add(intermediateLegend);
+        legendContainer.getChildren().add(advancedLegend);
+        legendContainer.getChildren().add(expertLegend);
     }
 
     /**
      * Initialises the trail card at the top of the screen
      */
     private void initTrailCard() {
-        TrailCardComponent trailCard = new TrailCardComponent(super.getUserService().isGuest(), true);
-        trailCard.setData(trail);
+        TrailCardComponent trailCard = new TrailCardComponent(super.getUserService().isGuest(), true, false);
+        trailCard.setData(trail, null);
+        trailCard.setTrail(trail);
+
+        trailCard.setOnBookmarkClickedHandler(clickedTrail -> {
+            TrailLog newLog = new TrailLog(
+                trailLogRepo.getNewTrailLogId(),
+                clickedTrail.getId(),
+                LocalDate.now(),
+                null, null, null, null, null, null
+            );
+
+            LogTrailController logController = new LogTrailController(
+                    super.getNavigator(),
+                    clickedTrail,
+                    newLog
+            );
+            super.getNavigator().launchScreen(logController);
+        });
+
+        trailCard.setOnBookmarkFillClickedHandler(clickedTrail -> {
+            boolean confirmed = showAlert(
+                    "Delete Log",  "Are you sure you want to delete this log?",
+                    "This action cannot be undone.", "Delete",
+                    "Cancel", "danger-button"
+            );
+
+            if (confirmed) {
+                logService.deleteLog(clickedTrail.getId());
+                trailCard.setBookmarked(false);
+            } else {
+                return;
+            }
+
+            List<TrailLog> logs = logService.getAllLogs();
+            logs.stream()
+                .filter(log -> log.getTrailId() == clickedTrail.getId())
+                .findFirst()
+                .ifPresent(log -> {
+                    logService.deleteLog(log.getId());
+                    trailCard.setBookmarked(false);
+                });
+        });
+
         trailCardHBox.getChildren().add(trailCard);
     }
 
@@ -207,7 +279,7 @@ public class ViewTrailController extends Controller {
      * @param radius the radius in km of nearby trails to be viewed
      */
     private void updateNearbyTrails(int radius) {
-        List<Trail> nearby = trailService.getNearbyTrails(trail, radius, sqlBasedTrailRepo.getAllTrails());
+        List<Trail> nearby = TrailsProcessor.getNearbyTrails(trail, radius, sqlBasedTrailRepo.getAllTrails());
         displayTrailsOnMap(nearby);
     }
 
@@ -312,12 +384,45 @@ public class ViewTrailController extends Controller {
     }
 
     /**
-     * opens a page for a given trail
+     * Opens a page for a given trail
      *
      * @param trail the trail whose page will be opened
      */
     public void openTrailInfo(Trail trail) {
         super.getNavigator().launchScreen(new ViewTrailController(super.getNavigator(), trail, sqlBasedTrailRepo));
+    }
+
+    private void setupHutLinks() {
+        regionFinder = new RegionFinder();
+        String region = trail.getRegion();
+        String regionLower = trail.getRegion().toLowerCase();
+        String difficulty = trail.getDifficulty().toLowerCase();
+
+        Integer docRegionId = regionFinder.getDocRegionId(regionLower);
+        if (docRegionId != null) {
+            docHutsLink.setText("View DOC Huts in " + StringManipulator.capitaliseFirstLetter(region));
+            docHutsLink.setOnAction(e ->
+                super.getNavigator().openWebPage(
+                        "https://www.doc.govt.nz/parks-and-recreation/places-to-stay/stay-in-a-hut/?region-id=" + docRegionId
+                )
+            );
+            docHutsLink.setVisible(true);
+        } else {
+            docHutsLink.setText("View DOC Huts");
+            docHutsLink.setOnAction(e ->
+                    super.getNavigator().openWebPage(
+                            "https://www.doc.govt.nz/parks-and-recreation/places-to-stay/stay-in-a-hut/")
+            );
+        }
+
+        boolean isRemoteRegion = regionFinder.isRemoteHutRegion(region);
+        if (isRemoteRegion && (difficulty.contains("advanced") || difficulty.contains("expert"))) {
+            remoteHutsLink.setText("View Remote Huts");
+            remoteHutsLink.setOnAction(e -> super.getNavigator().openWebPage("https://www.remotehuts.co.nz/by-map.html"));
+            remoteHutsLink.setVisible(true);
+        } else {
+            remoteHutsLink.setVisible(false);
+        }
     }
 
     @FXML

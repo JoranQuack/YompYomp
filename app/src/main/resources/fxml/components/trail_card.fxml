@@ -28,6 +28,26 @@
 
                             <!-- Title -->
           <Label fx:id="title" styleClass="heading" text="Trail Name" />
+          <StackPane alignment="TOP_RIGHT">
+              <children>
+                  <ImageView fx:id="bookmark" fitHeight="20.0" fitWidth="20.0" onMousePressed="#onBookmarkClicked" pickOnBounds="true" preserveRatio="true">
+                      <image>
+                          <Image url="@../../images/bookmark.png" />
+                      </image>
+                  </ImageView>
+                  <ImageView fx:id="bookmarkFill" fitHeight="29.0" fitWidth="21.0" onMousePressed="#onBookmarkFillClicked" pickOnBounds="true" preserveRatio="true">
+                      <image>
+                          <Image url="@../../images/bookmark_filled.png" />
+                      </image>
+                  </ImageView>
+                  <ImageView fx:id="trashIcon" fitHeight="29.0" fitWidth="21.0" onMousePressed="#onTrashIconClicked" pickOnBounds="true" preserveRatio="true">
+                      <image>
+                          <Image url="@../../images/trash.png" />
+                      </image>
+                  </ImageView>
+              </children>
+          </StackPane>
+
          <Label fx:id="regionLabel" text="Region" />
          <FlowPane fx:id="attributesFlowPane" hgap="5.0" vgap="5.0">
             <children>
@@ -54,19 +74,28 @@
                <Insets bottom="10.0" top="5.0" />
             </padding>
          </FlowPane>
-
           <StackPane fx:id="matchContainer" alignment="BOTTOM_CENTER">
               <ProgressBar fx:id="matchBar" maxWidth="Infinity" progress="0.0" />
               <Label fx:id="matchLabel" styleClass="text-light" text="0% Match" />
-          </StackPane>
+            <FlowPane fx:id="attributesFlowPane1" hgap="5.0" vgap="5.0">
+                <children>
+                    <ImageView fx:id="starIcon" fitHeight="68.0" fitWidth="23.0" pickOnBounds="true" preserveRatio="true">
+                        <image>
+                            <Image url="@../../images/star_icon.png" />
+                        </image>
+                    </ImageView>
+                    <Label fx:id="starLabel" style="-fx-font-size: 12px; -fx-text-fill: black; -fx-font-weight: bold;" text="0 Stars" />
+                </children>
+            </FlowPane>
+        </StackPane>
       </children>
       <padding>
          <Insets bottom="10.0" left="15.0" right="15.0" />
       </padding>
-   </VBox>
-   <styleClass>
+    </VBox>
+    <styleClass>
       <String fx:value="round-corners" />
       <String fx:value="trail-card" />
-   </styleClass>
+    </styleClass>
 
 </fx:root>

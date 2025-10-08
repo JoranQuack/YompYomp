@@ -5,14 +5,20 @@
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
 
-<fx:root alignment="CENTER_LEFT" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minWidth="600.0" spacing="10.0" styleClass="navbar-root" stylesheets="@../../styles/global.css" type="HBox" xmlns="http://javafx.com/javafx/21.0.2" xmlns:fx="http://javafx.com/fxml/1">
+<fx:root fx:id="rootPane" alignment="CENTER_LEFT" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minWidth="600.0" spacing="10.0" styleClass="navbar-root" stylesheets="@../../styles/global.css" type="HBox" xmlns="http://javafx.com/javafx/21.0.2" xmlns:fx="http://javafx.com/fxml/1">
    <children>
-      <HBox prefWidth="100.0">
+      <HBox alignment="CENTER_LEFT" prefWidth="100.0" spacing="10.0">
          <children>
             <ImageView fitHeight="40.0" fitWidth="40.0" onMousePressed="#onLogoClicked" pickOnBounds="true" preserveRatio="true" styleClass="special-button">
                <image>
                   <Image url="@../../images/YompYompIcon.png" />
+               </image>
+            </ImageView>
+            <ImageView fx:id="backButton" fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true" styleClass="special-button">
+               <image>
+                  <Image url="@../../images/back.png" />
                </image>
             </ImageView>
          </children>
@@ -21,17 +27,18 @@
          <children>
             <Button fx:id="homeButton" mnemonicParsing="false" text="Home" />
             <Button fx:id="trailsButton" mnemonicParsing="false" text="Trails" />
+            <Button fx:id="logbookButton" mnemonicParsing="false" text="Logbook" />
          </children>
       </HBox>
-      <HBox alignment="CENTER_RIGHT" prefWidth="100.0">
+      <HBox>
          <children>
-            <Button fx:id="redoQuizButton" alignment="CENTER" mnemonicParsing="false" text="Redo Quiz" HBox.hgrow="ALWAYS">
-               <HBox.margin>
-                  <Insets />
-               </HBox.margin>
-            </Button>
-         </children>
-      </HBox>
+            <StackPane alignment="CENTER_RIGHT" minWidth="100.0">
+               <children>
+                  <Button fx:id="takeQuizButton" mnemonicParsing="false" text="Take Quiz" />
+                  <ImageView fx:id="profileImage" fitHeight="40.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true" />
+               </children>
+            </StackPane>
+         </children></HBox>
    </children>
    <padding>
       <Insets bottom="10.0" left="15.0" right="15.0" top="10.0" />
