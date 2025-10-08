@@ -30,21 +30,10 @@ public class WeatherFormatter {
     /**
      * Returns a weather icon based on the weather description
      */
-    public static Image getWeatherIcon(String description) {
-        if (description == null || description.isEmpty()) {
-            return null;
+    public static Image getWeatherIcon(String iconType) {
+        if (iconType == null || iconType.isEmpty()) {
+            return new Image(WEATHER_DIR + "02.png");
         }
-        switch (description.toLowerCase()) {
-            case "clear":
-                return new Image(WEATHER_DIR + "clear.png");
-            case "rain":
-                return new Image(WEATHER_DIR + "rain.png");
-            case "snow":
-                return new Image(WEATHER_DIR + "snow.png");
-            case "cloudy":
-                return new Image(WEATHER_DIR + "cloudy.png");
-            default:
-                return new Image(WEATHER_DIR + "cloudy.png");
-        }
+        return new Image(WEATHER_DIR + iconType.substring(0, iconType.length() - 1) + ".png");
     }
 }

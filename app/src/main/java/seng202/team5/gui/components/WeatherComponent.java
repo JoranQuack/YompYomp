@@ -41,7 +41,7 @@ public class WeatherComponent extends VBox {
     private void populateWeatherData(Weather weather) {
         maxTempLabel.setText(String.format("%.1f°C", weather.getTempMax()));
         minTempLabel.setText(String.format("%.1f°C", weather.getTempMin()));
-        weatherIcon.setImage(WeatherFormatter.getWeatherIcon(weather.getDescription()));
+        weatherIcon.setImage(WeatherFormatter.getWeatherIcon(weather.getIconType()));
         dayLabel.setText(WeatherFormatter.getDayOfWeek(weather.getDate()));
         dateLabel.setText(weather.getDate());
     }
