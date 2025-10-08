@@ -55,18 +55,10 @@
                </children>
             </HBox>
             <HBox fx:id="legendContainer" spacing="10.0" />
-            <HBox>
+            <HBox fx:id="weatherContainer">
                <VBox.margin>
                   <Insets />
                </VBox.margin>
-               <children>
-                  <Label fx:id="WeatherLabel" prefHeight="66.0" prefWidth="222.0" text="Current Weather data loading..." />
-                  <VBox prefHeight="29.0" prefWidth="200.0">
-                     <children>
-                        <Label fx:id="forecastLabel" alignment="CENTER_RIGHT" prefHeight="66.0" prefWidth="259.0" text="Forecast data loading..." />
-                     </children>
-                  </VBox>
-               </children>
             </HBox>
          </children>
          <padding>

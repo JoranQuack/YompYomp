@@ -17,6 +17,7 @@ import seng202.team5.data.SqlBasedTrailLogRepo;
 import seng202.team5.data.SqlBasedTrailRepo;
 import seng202.team5.gui.components.LegendLabelComponent;
 import seng202.team5.gui.components.TrailCardComponent;
+import seng202.team5.gui.components.WeatherComponent;
 import seng202.team5.models.Trail;
 import seng202.team5.services.RegionFinder;
 import seng202.team5.utils.StringManipulator;
@@ -80,9 +81,7 @@ public class ViewTrailController extends Controller {
     @FXML
     private Button logTrailButton;
     @FXML
-    private Label WeatherLabel;
-    @FXML
-    private Label forecastLabel;
+    private HBox weatherContainer;
 
     /**
      * Initialises the view trail screen with data retrieved from database
@@ -106,28 +105,21 @@ public class ViewTrailController extends Controller {
         new Thread(() -> {
             Weather weather = weatherService.getWeatherByCoords(trail.getLat(), trail.getLon());
             if (weather != null) {
-                Platform.runLater(() -> WeatherLabel.setText(String.format(
-                        "%.1f°C (min %.1f°C / max %.1f°C) — %s",
-                        weather.getTemperature(), weather.getTempMin(), weather.getTempMax(),
-                        weather.getDescription())));
+                Platform.runLater(() -> weatherContainer.getChildren().add(new WeatherComponent(weather)));
             } else {
-                Platform.runLater(() -> WeatherLabel.setText("Weather unavailable"));
+                Platform.runLater(() -> weatherContainer.getChildren().add(new Label("Weather unavailable")));
             }
         }).start();
 
         new Thread(() -> {
             List<Weather> forecast = weatherService.getFourDayForecast(trail.getLat(), trail.getLon());
             if (!forecast.isEmpty()) {
-                StringBuilder sb = new StringBuilder(" ");
                 for (Weather day : forecast) {
-                    sb.append(String.format(
-                            "%s: %.1f°C (min %.1f°C / max %.1f°C) — %s ",
-                            day.getDate(), day.getTemperature(), day.getTempMin(), day.getTempMax(),
-                            day.getDescription()));
+                    Platform.runLater(() -> weatherContainer.getChildren().add(new WeatherComponent(day)));
                 }
-                Platform.runLater(() -> forecastLabel.setText(sb.toString()));
+
             } else {
-                Platform.runLater(() -> forecastLabel.setText("Forecast unavailable"));
+                Platform.runLater(() -> weatherContainer.getChildren().add(new Label("Forecast unavailable")));
             }
         }).start();
     }
