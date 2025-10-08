@@ -34,42 +34,42 @@
                               <Label text="Choose your avatar" />
                               <HBox alignment="TOP_CENTER" spacing="10.0">
                                  <children>
-                                    <ImageView fx:id="clearProfileImage" fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true">
+                                    <ImageView fx:id="clearProfileImage" fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true" styleClass="special-button">
                                        <image>
                                           <Image url="@../images/profiles/ban.png" />
                                        </image>
                                     </ImageView>
-                                    <ImageView fx:id="optionImage1" fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true">
+                                    <ImageView fx:id="optionImage1" fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true" styleClass="special-button">
                                        <image>
                                           <Image url="@../images/profiles/aztec_4607060.png" />
                                        </image>
                                     </ImageView>
-                                    <ImageView fx:id="optionImage2" fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true">
+                                    <ImageView fx:id="optionImage2" fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true" styleClass="special-button">
                                        <image>
                                           <Image url="@../images/profiles/sculpture_8379929.png" />
                                        </image>
                                     </ImageView>
-                                    <ImageView fx:id="optionImage3" fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true">
+                                    <ImageView fx:id="optionImage3" fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true" styleClass="special-button">
                                        <image>
                                           <Image url="@../images/profiles/tiki-mask_5257036.png" />
                                        </image>
                                     </ImageView>
-                                    <ImageView fx:id="optionImage4" fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true">
+                                    <ImageView fx:id="optionImage4" fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true" styleClass="special-button">
                                        <image>
                                           <Image url="@../images/profiles/maori_7436499.png" />
                                        </image>
                                     </ImageView>
-                                    <ImageView fx:id="optionImage5" fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true">
+                                    <ImageView fx:id="optionImage5" fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true" styleClass="special-button">
                                        <image>
                                           <Image url="@../images/profiles/kiwi_1452311.png" />
                                        </image>
                                     </ImageView>
-                                    <ImageView fx:id="optionImage6" fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true">
+                                    <ImageView fx:id="optionImage6" fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true" styleClass="special-button">
                                        <image>
                                           <Image url="@../images/profiles/boots_4218601.png" />
                                        </image>
                                     </ImageView>
-                                    <ImageView fx:id="optionImage7" fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true">
+                                    <ImageView fx:id="optionImage7" fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true" styleClass="special-button">
                                        <image>
                                           <Image url="@../images/profiles/tiki-mask_5257065.png" />
                                        </image>
