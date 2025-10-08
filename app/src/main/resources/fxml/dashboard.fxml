@@ -2,6 +2,7 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
 <?import javafx.scene.control.Hyperlink?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ScrollPane?>
@@ -21,6 +22,7 @@
             <Region HBox.hgrow="ALWAYS" />
             <TextField fx:id="searchBarTextField" maxWidth="1.7976931348623157E308" promptText="Search trails..." HBox.hgrow="ALWAYS" />
             <Button fx:id="searchButton" onAction="#onSearchButtonClicked" styleClass="search-button" text="Search" />
+            <CheckBox mnemonicParsing="false" text="Region" />
             <Region HBox.hgrow="ALWAYS" />
          </children>
          <padding>
