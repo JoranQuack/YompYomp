@@ -130,8 +130,8 @@ public class UserService {
      * @return true if the name is not null, not empty, and not "Guest User"
      */
     public boolean isValidName(String name) {
-        return name != null && !name.trim().isEmpty() && !name.equalsIgnoreCase("Guest User")
-                && !name.equalsIgnoreCase("null");
+        return name != null && !name.trim().isEmpty() && name.trim().length() <= 30 &&
+               !name.equalsIgnoreCase("Guest User") && !name.equalsIgnoreCase("null");
     }
 
     /**
