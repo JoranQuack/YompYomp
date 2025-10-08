@@ -66,8 +66,6 @@ public class ViewTrailController extends Controller {
     @FXML
     private HBox mapContainer;
     @FXML
-    private Button backButton;
-    @FXML
     private CheckBox nearbyTrailsCheckbox;
     @FXML
     private TextField trailsRadiusTextField;
@@ -175,7 +173,6 @@ public class ViewTrailController extends Controller {
      * Sets up event handlers for form controls
      */
     private void setupEventHandlers() {
-        backButton.setOnAction(e -> onBackButtonClicked());
         editInfoButton.setOnAction(e -> onEditInfoButtonClicked());
         logTrailButton.setOnAction(e -> onLogTrailClicked());
         if (isTrailLogged(trail)) {
@@ -389,11 +386,6 @@ public class ViewTrailController extends Controller {
 
     private void onLogTrailClicked() {
         super.getNavigator().launchScreen(new LogTrailController(super.getNavigator(), trail));
-    }
-
-    @FXML
-    private void onBackButtonClicked() {
-        super.getNavigator().goBack();
     }
 
     @FXML
