@@ -1,21 +1,27 @@
 package seng202.team5.gui;
 
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.scene.chart.BarChart;
 import javafx.scene.chart.PieChart;
+import javafx.scene.chart.XYChart;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.HBox;
-import seng202.team5.gui.components.LegendLabelComponent;
+import seng202.team5.App;
+import seng202.team5.data.DatabaseService;
+import seng202.team5.data.SqlBasedTrailLogRepo;
+import seng202.team5.data.SqlBasedTrailRepo;
 import seng202.team5.models.Question;
 import seng202.team5.models.User;
+import seng202.team5.services.AccountStatisticsService;
+import seng202.team5.services.MatchmakingService;
 
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 public class AccountController extends Controller {
 
@@ -68,9 +74,20 @@ public class AccountController extends Controller {
     @FXML
     private Button deleteProfileButton;
     @FXML
-    private PieChart pieChart;
+    private BarChart<String, Number> preferencesBarChart;
+    @FXML
+    private PieChart difficultyPieChart;
+    @FXML
+    private BarChart<String, Number> regionBarChart;
+    @FXML
+    private Label avgMatchScoreLabel;
+    @FXML
+    private Label topCategoryLabel;
+    @FXML
+    private Label totalTrailsLabel;
 
     User user;
+    private AccountStatisticsService statisticsService;
 
     /**
      * Default constructor required by JavaFX FXML loading.
@@ -87,18 +104,24 @@ public class AccountController extends Controller {
     public AccountController(ScreenNavigator navigator) {
         super(navigator);
         this.user = getUserService().getUser();
+
+        DatabaseService databaseService = App.getDatabaseService();
+        SqlBasedTrailRepo trailRepo = new SqlBasedTrailRepo(databaseService);
+        SqlBasedTrailLogRepo trailLogRepo = new SqlBasedTrailLogRepo(databaseService);
+        MatchmakingService matchmakingService = new MatchmakingService(databaseService);
+        this.statisticsService = new AccountStatisticsService(trailLogRepo, trailRepo, matchmakingService, user);
     }
 
     @FXML
     private void initialize() {
         welcomeLabel.setText("Kia Ora " + user.getName() + "!");
-        setPreferenceLabels();
         if (user.getProfilePicture() == null) {
             profileImage.setImage(new Image("/images/profiles/user.png"));
         } else {
             profileImage.setImage(new Image(user.getProfilePicture()));
         }
-        setPieChart();
+
+        Platform.runLater(this::setUpChartsAndStats);
 
         List<ImageView> optionImages = List.of(optionImage1, optionImage2, optionImage3, optionImage4,
                 optionImage5, optionImage6, optionImage7);
@@ -137,7 +160,20 @@ public class AccountController extends Controller {
         super.getUserService().saveUser(user);
     }
 
-    @FXML
+    /**
+     * Sets up charts and statistics labels
+     */
+    private void setUpChartsAndStats() {
+        setPreferenceLabels();
+        setPreferencesBarChart();
+        setDifficultyPieChart();
+        setRegionBarChart();
+        setStatisticsLabels();
+    }
+
+    /**
+     * Sets user preference labels based on their saved preferences
+     */
     private void setPreferenceLabels() {
         familyFriendlyLabel.setText(user.isFamilyFriendly() ? "Yes" : "No");
         accessibleLabel.setText(user.isAccessible() ? "Yes" : "No");
@@ -153,28 +189,189 @@ public class AccountController extends Controller {
         waterfallLabel.setText(getPreferenceLabel(user.getWaterfallPreference(), Question.TEN.sliderLabels));
     }
 
-    @FXML
-    private void setPieChart() {
-        List<String> legendColours = List.of("008000", "8de45f", "ffff00", "ffa500", "ff0000");
-        Map<String, Integer> trailStats = getUserService().getTrailStats();
-        System.out.println(trailStats.size());
-        Map<String, Integer> sortedTrailStats = trailStats.entrySet().stream()
-                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
-        ObservableList<PieChart.Data> pieChartData = FXCollections.observableArrayList();
-        int count = 0;
-        int otherCategoryCount = 0;
-        for (Map.Entry<String, Integer> entry : sortedTrailStats.entrySet()) {
-            if (count < 4) {
-                PieChart.Data slice = new PieChart.Data(entry.getKey(), entry.getValue());
-                pieChartData.add(slice);
-            } else {
-                otherCategoryCount += entry.getValue();
+    /**
+     * Sets up the preferences bar chart with user data
+     */
+    private void setPreferencesBarChart() {
+        if (preferencesBarChart == null || statisticsService == null)
+            return;
+
+        try {
+            Map<String, Integer> preferences = statisticsService.getUserPreferencesData();
+
+            if (preferences == null)
+                return;
+
+            XYChart.Series<String, Number> series = new XYChart.Series<>();
+            series.setName("Your Preferences");
+
+            for (Map.Entry<String, Integer> entry : preferences.entrySet()) {
+                series.getData().add(new XYChart.Data<>(entry.getKey(), entry.getValue()));
             }
-            count++;
+
+            preferencesBarChart.getData().clear();
+            preferencesBarChart.getData().add(series);
+            preferencesBarChart.setTitle("Your Preference Strength (1-5 scale)");
+            preferencesBarChart.setLegendVisible(false);
+
+            applyBarChartColors(preferencesBarChart);
+
+        } catch (Exception e) {
+            // Clear chart if there's an error
+            preferencesBarChart.getData().clear();
         }
-        PieChart.Data otherSlice = new PieChart.Data("Other", otherCategoryCount);
-        pieChartData.add(otherSlice);
-        pieChart.setData(pieChartData);
+    }
+
+    /**
+     * Sets up the difficulty pie chart with user data
+     */
+    private void setDifficultyPieChart() {
+        if (difficultyPieChart == null || statisticsService == null)
+            return;
+
+        try {
+            Map<String, Object> difficultyStats = statisticsService.getDifficultyStatistics();
+
+            if (difficultyStats == null)
+                return;
+
+            @SuppressWarnings("unchecked")
+            Map<String, Integer> perceivedDifficulties = (Map<String, Integer>) difficultyStats.get("perceived");
+
+            if (perceivedDifficulties != null && !perceivedDifficulties.isEmpty()) {
+                ObservableList<PieChart.Data> difficultyData = FXCollections.observableArrayList();
+                for (Map.Entry<String, Integer> entry : perceivedDifficulties.entrySet()) {
+                    difficultyData.add(new PieChart.Data(entry.getKey(), entry.getValue()));
+                }
+
+                difficultyPieChart.setData(difficultyData);
+                difficultyPieChart.setTitle("Your Perceived Difficulty Levels");
+
+                // Apply colors based on difficulty (green for easy, red for hard)
+                applyPieChartColors(difficultyPieChart, new String[] {
+                        "#4CAF50", "#FFC107", "#FF9800", "#F44336", "#9C27B0"
+                });
+            } else {
+                PieChart.Data noDataSlice = new PieChart.Data("No difficulty data available", 1);
+                difficultyPieChart.setData(FXCollections.observableArrayList(noDataSlice));
+            }
+
+        } catch (Exception e) {
+            PieChart.Data errorSlice = new PieChart.Data("Error loading data", 1);
+            difficultyPieChart.setData(FXCollections.observableArrayList(errorSlice));
+        }
+    }
+
+    /**
+     * Sets statistics labels with user data
+     */
+    private void setStatisticsLabels() {
+        if (statisticsService == null) {
+            setDefaultStatistics();
+            return;
+        }
+
+        try {
+            // Total trails in logbook
+            Integer totalTrails = statisticsService.getTotalLoggedTrails();
+            totalTrailsLabel.setText(totalTrails != null ? totalTrails.toString() : "0");
+
+            // Average match score from logged trails
+            Double avgScore = statisticsService.getAverageMatchScore();
+            avgMatchScoreLabel.setText(avgScore != null ? String.format("%.1f%%", avgScore) : "0.0%");
+
+            // Top category from logged trails
+            String topCategory = statisticsService.getTopCategory();
+            topCategoryLabel.setText(topCategory != null ? topCategory : "None");
+
+        } catch (Exception e) {
+            setDefaultStatistics();
+        }
+    }
+
+    /**
+     * Sets default statistics values when no data is available
+     */
+    private void setDefaultStatistics() {
+        totalTrailsLabel.setText("0");
+        avgMatchScoreLabel.setText("0.0%");
+        topCategoryLabel.setText("None");
+    }
+
+    /**
+     * Sets up the region bar chart with user data
+     */
+    private void setRegionBarChart() {
+        if (regionBarChart == null || statisticsService == null)
+            return;
+
+        try {
+            Map<String, Integer> regionStats = statisticsService.getRegionalStatistics();
+
+            if (regionStats != null && !regionStats.isEmpty()) {
+                XYChart.Series<String, Number> series = new XYChart.Series<>();
+                series.setName("Logged by Region");
+
+                for (Map.Entry<String, Integer> entry : regionStats.entrySet()) {
+                    series.getData().add(new XYChart.Data<>(entry.getKey(), entry.getValue()));
+                }
+
+                regionBarChart.getData().clear();
+                regionBarChart.getData().add(series);
+                regionBarChart.setTitle("Top Regions in Your Logged Trails");
+                regionBarChart.setLegendVisible(false);
+
+                // Apply colors to bar chart
+                applyBarChartColors(regionBarChart);
+            } else {
+                regionBarChart.getData().clear();
+            }
+
+        } catch (Exception e) {
+            // Clear chart if there's an error
+            regionBarChart.getData().clear();
+        }
+    }
+
+    /**
+     * Applies colors to pie chart slices
+     *
+     * @param categoryPieChart
+     * @param colors
+     */
+    private void applyPieChartColors(PieChart categoryPieChart, String[] colors) {
+        // Apply colors after the chart is rendered using Platform.runLater
+        javafx.application.Platform.runLater(() -> {
+            int index = 0;
+            for (PieChart.Data data : categoryPieChart.getData()) {
+                if (index < colors.length && data.getNode() != null) {
+                    data.getNode().setStyle("-fx-pie-color: " + colors[index] + ";");
+                }
+                index++;
+            }
+        });
+    }
+
+    /**
+     * Applies colors to bar chart bars
+     *
+     * @param barChart
+     */
+    private void applyBarChartColors(BarChart<String, Number> barChart) {
+        // Apply gradient colors to bar chart using Platform.runLater
+        javafx.application.Platform.runLater(() -> {
+            String[] colors = { "#1f77b4", "#ff7f0e", "#2ca02c", "#d62728", "#9467bd", "#8c564b" };
+
+            for (XYChart.Series<String, Number> series : barChart.getData()) {
+                int index = 0;
+                for (XYChart.Data<String, Number> data : series.getData()) {
+                    if (index < colors.length && data.getNode() != null) {
+                        data.getNode().setStyle("-fx-bar-fill: " + colors[index] + ";");
+                    }
+                    index++;
+                }
+            }
+        });
     }
 
     /**

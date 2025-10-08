@@ -375,3 +375,113 @@ Button.bg-red:hover {
   -fx-background-color: #ff0000;
   -fx-text-fill: #fdfffb;
 }
+
+/* ========================================
+ * STATISTICS STYLES
+ * ======================================== */
+
+.stat-number {
+  -fx-font-family: "Quicksand Bold";
+  -fx-text-fill: #447055;
+}
+
+.stat-label {
+  -fx-font-family: "Quicksand Medium";
+  -fx-font-size: 12px;
+  -fx-text-fill: #7b7b7b;
+  -fx-text-alignment: center;
+}
+
+.legend-text {
+  -fx-font-family: "Quicksand Medium";
+  -fx-font-size: 12px;
+  -fx-text-fill: #04140b;
+}
+
+/* ========================================
+ * CHART STYLES
+ * ======================================== */
+
+.chart {
+  -fx-background-color: #fdfffb;
+  -fx-border-color: #eef1ed;
+  -fx-border-width: 1;
+  -fx-border-radius: 10;
+}
+
+.chart-title {
+  -fx-font-family: "Quicksand SemiBold";
+  -fx-font-size: 14px;
+  -fx-text-fill: #04140b;
+}
+
+.chart-legend {
+  -fx-background-color: transparent;
+}
+
+.chart-pie {
+  -fx-pie-color: CHART_COLOR_1;
+  -fx-background-color: radial-gradient(
+    radius 100%,
+    derive(-fx-pie-color, 20%),
+    derive(-fx-pie-color, -10%)
+  );
+  -fx-background-insets: 1;
+  -fx-border-color: -fx-background;
+}
+.chart-pie-label {
+  -fx-padding: 3px;
+  -fx-fill: -fx-text-base-color;
+}
+.chart-pie-label-line {
+  -fx-stroke: derive(-fx-background, -20%);
+}
+.pie-legend-symbol.chart-pie {
+  -fx-background-radius: 8px;
+  -fx-padding: 8px;
+  -fx-border-color: null;
+}
+
+.chart-bar {
+  -fx-bar-fill: CHART_COLOR_1;
+  -fx-background-color: linear-gradient(
+    to right,
+    derive(-fx-bar-fill, -4%),
+    derive(-fx-bar-fill, -1%),
+    derive(-fx-bar-fill, 0%),
+    derive(-fx-bar-fill, -1%),
+    derive(-fx-bar-fill, -6%)
+  );
+  -fx-background-insets: 0;
+}
+.chart-bar.negative {
+  -fx-background-insets: 1 0 0 0;
+}
+
+.chart-pie-label {
+  -fx-font-family: "Quicksand Medium";
+  -fx-font-size: 11px;
+  -fx-text-fill: #04140b;
+}
+
+/* Chart axis styling */
+.chart .axis {
+  -fx-tick-label-font-family: "Quicksand Medium";
+  -fx-tick-label-font-size: 10px;
+  -fx-tick-label-fill: #04140b;
+}
+
+.chart .axis-label {
+  -fx-font-family: "Quicksand SemiBold";
+  -fx-font-size: 12px;
+  -fx-text-fill: #04140b;
+}
+
+/* Chart specific colours for better distinction */
+.chart-plot-background {
+  -fx-background-color: transparent;
+}
+
+.chart-content {
+  -fx-padding: 10px;
+}

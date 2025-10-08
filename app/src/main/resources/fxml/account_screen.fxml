@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
+<?import javafx.scene.chart.BarChart?>
+<?import javafx.scene.chart.CategoryAxis?>
+<?import javafx.scene.chart.NumberAxis?>
 <?import javafx.scene.chart.PieChart?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
@@ -80,50 +83,50 @@
                         </VBox>
                      </children>
                   </VBox>
-                  <VBox alignment="TOP_CENTER" spacing="10.0">
+                  <VBox alignment="TOP_CENTER" spacing="20.0">
                      <children>
                         <Label styleClass="title" text="Your Preferences">
                            <font>
                               <Font name="System Bold" size="13.0" />
                            </font>
                         </Label>
-                        <HBox alignment="TOP_CENTER">
+                        <HBox alignment="TOP_CENTER" spacing="20.0">
                            <children>
                               <GridPane alignment="CENTER" hgap="10.0" vgap="5.0">
                                  <children>
                                     <Label styleClass="strong-text" text="Family Friendly:" GridPane.columnIndex="0" GridPane.rowIndex="0" />
                                     <Label fx:id="familyFriendlyLabel" GridPane.columnIndex="1" GridPane.rowIndex="0" />
-      
+
                                     <Label styleClass="strong-text" text="Accessible:" GridPane.columnIndex="0" GridPane.rowIndex="1" />
                                     <Label fx:id="accessibleLabel" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-      
+
                                     <Label styleClass="strong-text" text="Experience Level:" GridPane.columnIndex="0" GridPane.rowIndex="2" />
                                     <Label fx:id="experienceLabel" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-      
+
                                     <Label styleClass="strong-text" text="Gradient:" GridPane.columnIndex="0" GridPane.rowIndex="3" />
                                     <Label fx:id="gradientLabel" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-      
+
                                     <Label styleClass="strong-text" text="Bush/Forest:" GridPane.columnIndex="0" GridPane.rowIndex="4" />
                                     <Label fx:id="bushLabel" GridPane.columnIndex="1" GridPane.rowIndex="4" />
-      
+
                                     <Label styleClass="strong-text" text="Reserves:" GridPane.columnIndex="0" GridPane.rowIndex="5" />
                                     <Label fx:id="reserveLabel" GridPane.columnIndex="1" GridPane.rowIndex="5" />
-      
+
                                     <Label styleClass="strong-text" text="Lakes/Rivers:" GridPane.columnIndex="0" GridPane.rowIndex="6" />
                                     <Label fx:id="lakeRiverLabel" GridPane.columnIndex="1" GridPane.rowIndex="6" />
-      
+
                                     <Label styleClass="strong-text" text="Coast:" GridPane.columnIndex="0" GridPane.rowIndex="7" />
                                     <Label fx:id="coastLabel" GridPane.columnIndex="1" GridPane.rowIndex="7" />
-      
+
                                     <Label styleClass="strong-text" text="Mountain:" GridPane.columnIndex="0" GridPane.rowIndex="8" />
                                     <Label fx:id="mountainLabel" GridPane.columnIndex="1" GridPane.rowIndex="8" />
-      
+
                                     <Label styleClass="strong-text" text="Birdlife/Wildlife:" GridPane.columnIndex="0" GridPane.rowIndex="9" />
                                     <Label fx:id="wildlifeLabel" GridPane.columnIndex="1" GridPane.rowIndex="9" />
-      
+
                                     <Label styleClass="strong-text" text="Historic Features:" GridPane.columnIndex="0" GridPane.rowIndex="10" />
                                     <Label fx:id="historicLabel" GridPane.columnIndex="1" GridPane.rowIndex="10" />
-      
+
                                     <Label styleClass="strong-text" text="Waterfalls:" GridPane.columnIndex="0" GridPane.rowIndex="11" />
                                     <Label fx:id="waterfallLabel" GridPane.columnIndex="1" GridPane.rowIndex="11" />
                                  </children>
@@ -146,22 +149,86 @@
                                     <RowConstraints />
                                  </rowConstraints>
                               </GridPane>
-                              <HBox alignment="CENTER_LEFT">
+                              <BarChart fx:id="preferencesBarChart" animated="false" maxHeight="308.0" maxWidth="455.0" minHeight="200.0" minWidth="300.0" prefHeight="308.0" prefWidth="455.0">
+                                 <xAxis>
+                                    <CategoryAxis side="BOTTOM" />
+                                 </xAxis>
+                                 <yAxis>
+                                    <NumberAxis side="LEFT" />
+                                 </yAxis>
+                              </BarChart>
+                           </children>
+                        </HBox>
+                     </children>
+                  </VBox>
+
+                  <VBox alignment="TOP_CENTER" spacing="20.0">
+                     <children>
+                        <Label styleClass="title" text="Your Logbook Statistics">
+                           <font>
+                              <Font name="System Bold" size="13.0" />
+                           </font>
+                        </Label>
+
+                        <!-- Statistics Summary -->
+                        <HBox alignment="CENTER" spacing="30.0">
+                           <children>
+                              <VBox alignment="CENTER" spacing="5.0">
                                  <children>
-                                    <PieChart fx:id="pieChart" maxHeight="200.0" maxWidth="200.0" />
-                                    <VBox alignment="CENTER_LEFT" spacing="10.0">
+                                    <Label fx:id="totalTrailsLabel" styleClass="stat-number" text="0">
+                                       <font>
+                                          <Font name="System Bold" size="20.0" />
+                                       </font>
+                                    </Label>
+                                    <Label styleClass="stat-label" text="Trails Logged" />
+                                 </children>
+                              </VBox>
+                              <VBox alignment="CENTER" spacing="5.0">
+                                 <children>
+                                    <Label fx:id="avgMatchScoreLabel" styleClass="stat-number" text="0.0%">
+                                       <font>
+                                          <Font name="System Bold" size="24.0" />
+                                       </font>
+                                    </Label>
+                                    <Label styleClass="stat-label" text="Avg Match Score" />
+                                 </children>
+                              </VBox>
+                              <VBox alignment="CENTER" spacing="5.0">
+                                 <children>
+                                    <Label fx:id="topCategoryLabel" styleClass="stat-number" text="None">
+                                       <font>
+                                          <Font name="System Bold" size="16.0" />
+                                       </font>
+                                    </Label>
+                                    <Label styleClass="stat-label" text="Most Common Category" />
+                                 </children>
+                              </VBox>
+                           </children>
+                        </HBox>
+
+                        <!-- Charts Grid -->
+                        <VBox alignment="CENTER" spacing="20.0">
+                           <children>
+                              <HBox alignment="CENTER" spacing="30.0">
+                                 <children>
+                                    <VBox alignment="CENTER" spacing="10.0">
                                        <children>
-                                          <HBox fx:id="legendLabelContainer1" spacing="5.0" />
-                                          <HBox fx:id="legendLabelContainer2" spacing="5.0" />
-                                          <HBox fx:id="legendLabelContainer3" spacing="5.0" />
-                                          <HBox fx:id="legendLabelContainer4" spacing="5.0" />
-                                          <HBox fx:id="legendLabelContainer5" spacing="5.0" />
+                                          <VBox fx:id="legendContainer" alignment="CENTER_LEFT" spacing="5.0" />
                                        </children>
                                     </VBox>
+                                    <PieChart fx:id="difficultyPieChart" animated="false" maxHeight="250.0" maxWidth="250.0" minHeight="200.0" minWidth="200.0" />
+                                    <BarChart fx:id="regionBarChart" animated="false" maxHeight="250.0" maxWidth="350.0" minHeight="200.0" minWidth="300.0">
+                                       <xAxis>
+                                          <CategoryAxis side="BOTTOM" />
+                                       </xAxis>
+                                       <yAxis>
+                                          <NumberAxis side="LEFT" />
+                                       </yAxis>
+                                    </BarChart>
                                  </children>
                               </HBox>
                            </children>
-                        </HBox>
+                        </VBox>
                      </children>
                   </VBox>
                   <Region VBox.vgrow="ALWAYS" />
