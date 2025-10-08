@@ -8,36 +8,27 @@
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.FlowPane?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.VBox?>
-<?import javafx.scene.text.Font?>
 
 <HBox alignment="CENTER_LEFT" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="400.0" minWidth="600.0" styleClass="root-pane" stylesheets="@../styles/global.css" xmlns="http://javafx.com/javafx/21.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="seng202.team5.gui.ViewTrailController">
    <children>
-      <VBox prefWidth="200.0" spacing="10.0">
+      <VBox prefWidth="200.0" spacing="20.0">
          <children>
             <HBox fx:id="trailCardHBox" />
-            <Label fx:id="translationLabel" text="Translation" />
-            <Label fx:id="descriptionLabel" alignment="TOP_LEFT" text="Description" wrapText="true">
-               <font>
-                  <Font size="11.0" />
-               </font>
-               <VBox.margin>
-                  <Insets />
-               </VBox.margin>
-            </Label>
-            <Hyperlink fx:id="culturalUrlHyperlink" text="Hyperlink">
-               <font>
-                  <Font size="11.0" />
-               </font>
-            </Hyperlink>
+            <VBox>
+               <children>
+                  <Hyperlink fx:id="docHutsLink" text="Hyperlink" />
+                  <Hyperlink fx:id="remoteHutsLink" text="Hyperlink" />
+               </children>
+            </VBox>
+            <Region VBox.vgrow="ALWAYS" />
             <HBox alignment="BOTTOM_LEFT" spacing="10.0">
                <children>
                   <Button fx:id="editInfoButton" mnemonicParsing="false" text="Edit Info" />
                   <Button fx:id="logTrailButton" mnemonicParsing="false" text="Log Trail" />
                </children>
             </HBox>
-            <Hyperlink fx:id="docHutsLink" text="Hyperlink" />
-            <Hyperlink fx:id="remoteHutsLink" text="Hyperlink" />
          </children>
          <padding>
             <Insets bottom="20.0" left="20.0" right="10.0" top="20.0" />

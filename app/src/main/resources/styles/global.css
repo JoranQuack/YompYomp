@@ -430,6 +430,10 @@ ProgressIndicator {
   -fx-opacity: 0.7;
 }
 
+.trail-card.single {
+  -fx-background-color: #fdfffb;
+}
+
 .navbar-root {
   -fx-background-color: #eef1ed;
 }

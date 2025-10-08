@@ -58,12 +58,6 @@ public class ViewTrailController extends Controller {
     }
 
     @FXML
-    private Label translationLabel;
-    @FXML
-    private Label descriptionLabel;
-    @FXML
-    private Hyperlink culturalUrlHyperlink;
-    @FXML
     private Button editInfoButton;
     @FXML
     private HBox mapContainer;
@@ -130,19 +124,6 @@ public class ViewTrailController extends Controller {
      */
     private void setupFormFields() {
         initTrailCard();
-        descriptionLabel.setText(trail.getDescription());
-        if (!trail.getTranslation().isEmpty()) {
-            translationLabel.setText(trail.getTranslation());
-            translationLabel.setVisible(true);
-        } else {
-            translationLabel.setVisible(false);
-        }
-        if (!trail.getCultureUrl().isEmpty()) {
-            culturalUrlHyperlink.setText(trail.getCultureUrl());
-            culturalUrlHyperlink.setVisible(true);
-        } else {
-            culturalUrlHyperlink.setVisible(false);
-        }
         setupTrailRadiusFields();
         setupHutLinks();
     }
@@ -218,7 +199,8 @@ public class ViewTrailController extends Controller {
      * Initialises the trail card at the top of the screen
      */
     private void initTrailCard() {
-        TrailCardComponent trailCard = new TrailCardComponent(super.getUserService().isGuest(), true, false);
+        TrailCardComponent trailCard = new TrailCardComponent(super.getUserService().isGuest(), true, false,
+                super.getNavigator());
         trailCard.setData(trail, null);
         trailCardHBox.getChildren().add(trailCard);
     }
