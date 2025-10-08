@@ -1,14 +1,35 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import java.util.*?>
-<?import javafx.scene.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
 
-<AnchorPane xmlns="http://javafx.com/javafx"
-            xmlns:fx="http://javafx.com/fxml"
-            fx:controller="seng202.team5.gui.SafetyInfoController"
-            prefHeight="400.0" prefWidth="600.0">
 
-</AnchorPane>
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/null" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0">
+         <children>
+            <Label text="Emergency Information" />
+         </children>
+      </HBox>
+      <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0">
+         <children>
+            <HBox alignment="CENTER">
+               <children>
+                  <TextArea editable="false" prefHeight="175.0" prefWidth="395.0" text="In the event of an emergency, call 111 and request Police.&#10;Be prepared to tell them:&#10;- WHAT: Urgency + situation (is someone lost, or injured?).&#10;- WHERE: Location/terrain. Map grid reference or GPS coordinates are preferable.&#10;- WHO: Your name and phone number.&#10;- ACCESSIBLE: Weather, are you close to a road? Open enough area for a helicopter to land or hover?&#10;- SUPPLIES: What you have available to you.&#10;" wrapText="true" />
+               </children>
+            </HBox>
+         </children>
+      </VBox>
+      <VBox prefHeight="176.0" prefWidth="600.0">
+         <children>
+            <HBox alignment="CENTER" prefHeight="100.0" prefWidth="600.0">
+               <children>
+                  <Label text="Safety Tips" />
+               </children>
+            </HBox>
+         </children>
+      </VBox>
+   </children>
+</VBox>
