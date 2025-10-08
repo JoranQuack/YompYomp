@@ -263,6 +263,9 @@ public class AccountController extends Controller {
                 difficultyPieChart.setData(FXCollections.observableArrayList(noDataSlice));
             }
 
+            // Apply CSS classes to pie slices for styling
+            applyPieChartColors(difficultyPieChart);
+
         } catch (Exception e) {
             PieChart.Data errorSlice = new PieChart.Data("Error loading data", 1);
             difficultyPieChart.setData(FXCollections.observableArrayList(errorSlice));
@@ -355,19 +358,30 @@ public class AccountController extends Controller {
      */
     private void applyBarChartColors(BarChart<String, Number> barChart) {
         Platform.runLater(() -> {
-            // Small delay to ensure chart nodes are created
-            Platform.runLater(() -> {
-                for (XYChart.Series<String, Number> series : barChart.getData()) {
-                    int index = 0;
-                    for (XYChart.Data<String, Number> data : series.getData()) {
-                        if (data.getNode() != null) {
-                            // Apply the default-colorX CSS class to each bar
-                            data.getNode().getStyleClass().add("default-color" + index);
-                        }
-                        index++;
+            for (XYChart.Series<String, Number> series : barChart.getData()) {
+                int index = 0;
+                for (XYChart.Data<String, Number> data : series.getData()) {
+                    if (data.getNode() != null) {
+                        data.getNode().getStyleClass().add("default-color" + index);
                     }
+                    index++;
                 }
-            });
+            }
+        });
+    }
+
+    /**
+     * Applies CSS classes to pie chart slices for proper styling
+     *
+     * @param pieChart the pie chart to apply CSS classes to
+     */
+    private void applyPieChartColors(PieChart pieChart) {
+        Platform.runLater(() -> {
+            for (PieChart.Data data : pieChart.getData()) {
+                if (data.getNode() != null) {
+                    data.getNode().getStyleClass().add("difficulty-" + data.getName().toLowerCase());
+                }
+            }
         });
     }
 

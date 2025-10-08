@@ -486,43 +486,43 @@ Button.bg-red:hover {
   -fx-padding: 10px;
 }
 
-.default-color0 {
+.default-color0,
+.difficulty-expert {
   -fx-pie-color: #f44336;
   -fx-bar-fill: #f44336;
 }
-.default-color1 {
+.default-color1,
+.difficulty-advanced {
   -fx-pie-color: #ff9800;
   -fx-bar-fill: #ff9800;
 }
-.default-color2 {
+.default-color2,
+.difficulty-intermediate {
   -fx-pie-color: #ffc107;
   -fx-bar-fill: #ffc107;
 }
-.default-color3 {
+.default-color3,
+.difficulty-easy {
   -fx-pie-color: #a1d11c;
   -fx-bar-fill: #a1d11c;
 }
-.default-color4 {
+.default-color4,
+.difficulty-easiest {
   -fx-pie-color: #4caf50;
   -fx-bar-fill: #4caf50;
 }
 .default-color5 {
-  -fx-pie-color: #00bcd4;
   -fx-bar-fill: #00bcd4;
 }
 .default-color6 {
-  -fx-pie-color: #2196f3;
   -fx-bar-fill: #2196f3;
 }
 .default-color7 {
-  -fx-pie-color: #3f51b5;
   -fx-bar-fill: #3f51b5;
 }
 .default-color8 {
-  -fx-pie-color: #673ab7;
   -fx-bar-fill: #673ab7;
 }
 .default-color9 {
-  -fx-pie-color: #9c27b0;
   -fx-bar-fill: #9c27b0;
 }
