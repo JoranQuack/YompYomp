@@ -1,28 +1,31 @@
 package seng202.team5.gui;
 
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.scene.chart.BarChart;
+import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.PieChart;
+import javafx.scene.chart.XYChart;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
-import seng202.team5.gui.components.LegendLabelComponent;
-import seng202.team5.gui.components.NavbarComponent;
+import seng202.team5.App;
+import seng202.team5.data.DatabaseService;
+import seng202.team5.data.SqlBasedTrailLogRepo;
+import seng202.team5.data.SqlBasedTrailRepo;
 import seng202.team5.models.Question;
 import seng202.team5.models.User;
+import seng202.team5.services.AccountStatisticsService;
+import seng202.team5.services.MatchmakingService;
 
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 public class AccountController extends Controller {
 
-    @FXML
-    private VBox navbarContainer;
     @FXML
     private ImageView profileImage;
     @FXML
@@ -72,19 +75,20 @@ public class AccountController extends Controller {
     @FXML
     private Button deleteProfileButton;
     @FXML
-    private PieChart pieChart;
+    private BarChart<String, Number> preferencesBarChart;
     @FXML
-    private HBox legendLabelContainer1;
+    private PieChart difficultyPieChart;
     @FXML
-    private HBox legendLabelContainer2;
+    private BarChart<String, Number> regionBarChart;
     @FXML
-    private HBox legendLabelContainer3;
+    private Label avgMatchScoreLabel;
     @FXML
-    private HBox legendLabelContainer4;
+    private Label topCategoryLabel;
     @FXML
-    private HBox legendLabelContainer5;
+    private Label totalTrailsLabel;
 
     User user;
+    private AccountStatisticsService statisticsService;
 
     /**
      * Default constructor required by JavaFX FXML loading.
@@ -101,24 +105,24 @@ public class AccountController extends Controller {
     public AccountController(ScreenNavigator navigator) {
         super(navigator);
         this.user = getUserService().getUser();
+
+        DatabaseService databaseService = App.getDatabaseService();
+        SqlBasedTrailRepo trailRepo = new SqlBasedTrailRepo(databaseService);
+        SqlBasedTrailLogRepo trailLogRepo = new SqlBasedTrailLogRepo(databaseService);
+        MatchmakingService matchmakingService = new MatchmakingService(databaseService);
+        this.statisticsService = new AccountStatisticsService(trailLogRepo, trailRepo, matchmakingService, user);
     }
 
     @FXML
     private void initialize() {
-        NavbarComponent navbar = super.getNavbarController();
-        navbarContainer.getChildren().add(navbar);
-
         welcomeLabel.setText("Kia Ora " + user.getName() + "!");
-        setPreferenceLabels();
         if (user.getProfilePicture() == null) {
             profileImage.setImage(new Image("/images/profiles/user.png"));
         } else {
             profileImage.setImage(new Image(user.getProfilePicture()));
         }
 
-        List<HBox> legendLabelContainers = List.of(legendLabelContainer1, legendLabelContainer2, legendLabelContainer3,
-                legendLabelContainer4, legendLabelContainer5);
-        setPieChart(legendLabelContainers);
+        Platform.runLater(this::setUpChartsAndStats);
 
         List<ImageView> optionImages = List.of(optionImage1, optionImage2, optionImage3, optionImage4,
                 optionImage5, optionImage6, optionImage7);
@@ -157,7 +161,20 @@ public class AccountController extends Controller {
         super.getUserService().saveUser(user);
     }
 
-    @FXML
+    /**
+     * Sets up charts and statistics labels
+     */
+    private void setUpChartsAndStats() {
+        setPreferenceLabels();
+        setPreferencesBarChart();
+        setDifficultyPieChart();
+        setRegionBarChart();
+        setStatisticsLabels();
+    }
+
+    /**
+     * Sets user preference labels based on their saved preferences
+     */
     private void setPreferenceLabels() {
         familyFriendlyLabel.setText(user.isFamilyFriendly() ? "Yes" : "No");
         accessibleLabel.setText(user.isAccessible() ? "Yes" : "No");
@@ -173,32 +190,199 @@ public class AccountController extends Controller {
         waterfallLabel.setText(getPreferenceLabel(user.getWaterfallPreference(), Question.TEN.sliderLabels));
     }
 
-    @FXML
-    private void setPieChart(List<HBox> legendLabelContainers) {
-        List<String> legendColours = List.of("008000", "8de45f", "ffff00", "ffa500", "ff0000");
-        Map<String, Integer> trailStats = getUserService().getTrailStats();
-        System.out.println(trailStats.size());
-        Map<String, Integer> sortedTrailStats = trailStats.entrySet().stream()
-                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
-        ObservableList<PieChart.Data> pieChartData = FXCollections.observableArrayList();
-        int count = 0;
-        int otherCategoryCount = 0;
-        for (Map.Entry<String, Integer> entry : sortedTrailStats.entrySet()) {
-            if (count < 4) {
-                PieChart.Data slice = new PieChart.Data(entry.getKey(), entry.getValue());
-                pieChartData.add(slice);
-                LegendLabelComponent legendLabel = new LegendLabelComponent(legendColours.get(count), entry.getKey());
-                legendLabelContainers.get(count).getChildren().add(legendLabel);
-            } else {
-                otherCategoryCount += entry.getValue();
+    /**
+     * Sets up the preferences bar chart with user data
+     */
+    private void setPreferencesBarChart() {
+        if (preferencesBarChart == null || statisticsService == null)
+            return;
+
+        try {
+            Map<String, Integer> preferences = statisticsService.getUserPreferencesData();
+
+            if (preferences == null)
+                return;
+
+            XYChart.Series<String, Number> series = new XYChart.Series<>();
+            series.setName("Your Preferences");
+
+            for (Map.Entry<String, Integer> entry : preferences.entrySet()) {
+                series.getData().add(new XYChart.Data<>(entry.getKey(), entry.getValue()));
             }
-            count++;
+
+            preferencesBarChart.getData().clear();
+            preferencesBarChart.getData().add(series);
+            preferencesBarChart.setTitle("Your Preference Strength (1-5 scale)");
+            preferencesBarChart.setLegendVisible(false);
+
+            // Configure Y-axis for integer ticks and max value of 5
+            if (preferencesBarChart.getYAxis() instanceof NumberAxis) {
+                NumberAxis yAxis = (NumberAxis) preferencesBarChart.getYAxis();
+                yAxis.setLowerBound(0);
+                yAxis.setUpperBound(5);
+                yAxis.setTickUnit(1);
+                yAxis.setMinorTickVisible(false);
+                yAxis.setAutoRanging(false);
+            }
+
+            // Apply CSS classes to bars for styling
+            applyBarChartColors(preferencesBarChart);
+
+        } catch (Exception e) {
+            // Clear chart if there's an error
+            preferencesBarChart.getData().clear();
         }
-        PieChart.Data otherSlice = new PieChart.Data("Other", otherCategoryCount);
-        pieChartData.add(otherSlice);
-        LegendLabelComponent otherLegendLabel = new LegendLabelComponent(legendColours.get(4), "Other");
-        legendLabelContainers.get(4).getChildren().add(otherLegendLabel);
-        pieChart.setData(pieChartData);
+    }
+
+    /**
+     * Sets up the difficulty pie chart with user data
+     */
+    private void setDifficultyPieChart() {
+        if (difficultyPieChart == null || statisticsService == null)
+            return;
+
+        try {
+            Map<String, Object> difficultyStats = statisticsService.getDifficultyStatistics();
+
+            if (difficultyStats == null)
+                return;
+
+            @SuppressWarnings("unchecked")
+            Map<String, Integer> perceivedDifficulties = (Map<String, Integer>) difficultyStats.get("perceived");
+
+            if (perceivedDifficulties != null && !perceivedDifficulties.isEmpty()) {
+                ObservableList<PieChart.Data> difficultyData = FXCollections.observableArrayList();
+                for (Map.Entry<String, Integer> entry : perceivedDifficulties.entrySet()) {
+                    difficultyData.add(new PieChart.Data(entry.getKey(), entry.getValue()));
+                }
+
+                difficultyPieChart.setData(difficultyData);
+                difficultyPieChart.setTitle("Your Perceived Difficulty Levels");
+            } else {
+                PieChart.Data noDataSlice = new PieChart.Data("No difficulty data available", 1);
+                difficultyPieChart.setData(FXCollections.observableArrayList(noDataSlice));
+            }
+
+            // Apply CSS classes to pie slices for styling
+            applyPieChartColors(difficultyPieChart);
+
+        } catch (Exception e) {
+            PieChart.Data errorSlice = new PieChart.Data("Error loading data", 1);
+            difficultyPieChart.setData(FXCollections.observableArrayList(errorSlice));
+        }
+    }
+
+    /**
+     * Sets statistics labels with user data
+     */
+    private void setStatisticsLabels() {
+        if (statisticsService == null) {
+            setDefaultStatistics();
+            return;
+        }
+
+        try {
+            // Total trails in logbook
+            Integer totalTrails = statisticsService.getTotalLoggedTrails();
+            totalTrailsLabel.setText(totalTrails != null ? totalTrails.toString() : "0");
+
+            // Average match score from logged trails
+            Double avgScore = statisticsService.getAverageMatchScore();
+            avgMatchScoreLabel.setText(avgScore != null ? String.format("%.1f%%", avgScore) : "0.0%");
+
+            // Top category from logged trails
+            String topCategory = statisticsService.getTopCategory();
+            topCategoryLabel.setText(topCategory != null ? topCategory : "None");
+
+        } catch (Exception e) {
+            setDefaultStatistics();
+        }
+    }
+
+    /**
+     * Sets default statistics values when no data is available
+     */
+    private void setDefaultStatistics() {
+        totalTrailsLabel.setText("0");
+        avgMatchScoreLabel.setText("0.0%");
+        topCategoryLabel.setText("None");
+    }
+
+    /**
+     * Sets up the region bar chart with user data
+     */
+    private void setRegionBarChart() {
+        if (regionBarChart == null || statisticsService == null)
+            return;
+
+        try {
+            Map<String, Integer> regionStats = statisticsService.getRegionalStatistics();
+
+            if (regionStats != null && !regionStats.isEmpty()) {
+                XYChart.Series<String, Number> series = new XYChart.Series<>();
+                series.setName("Logged by Region");
+
+                for (Map.Entry<String, Integer> entry : regionStats.entrySet()) {
+                    series.getData().add(new XYChart.Data<>(entry.getKey(), entry.getValue()));
+                }
+
+                regionBarChart.getData().clear();
+                regionBarChart.getData().add(series);
+                regionBarChart.setTitle("Top Regions in Your Logged Trails");
+                regionBarChart.setLegendVisible(false);
+
+                // Configure Y-axis for integer ticks only
+                if (regionBarChart.getYAxis() instanceof NumberAxis) {
+                    NumberAxis yAxis = (NumberAxis) regionBarChart.getYAxis();
+                    yAxis.setLowerBound(0);
+                    yAxis.setTickUnit(1);
+                    yAxis.setMinorTickVisible(false);
+                }
+
+                // Apply CSS classes to bars for styling
+                applyBarChartColors(regionBarChart);
+            } else {
+                regionBarChart.getData().clear();
+            }
+
+        } catch (Exception e) {
+            // Clear chart if there's an error
+            regionBarChart.getData().clear();
+        }
+    }
+
+    /**
+     * Applies CSS classes to bar chart bars for proper styling
+     *
+     * @param barChart the bar chart to apply CSS classes to
+     */
+    private void applyBarChartColors(BarChart<String, Number> barChart) {
+        Platform.runLater(() -> {
+            for (XYChart.Series<String, Number> series : barChart.getData()) {
+                int index = 0;
+                for (XYChart.Data<String, Number> data : series.getData()) {
+                    if (data.getNode() != null) {
+                        data.getNode().getStyleClass().add("default-color" + index);
+                    }
+                    index++;
+                }
+            }
+        });
+    }
+
+    /**
+     * Applies CSS classes to pie chart slices for proper styling
+     *
+     * @param pieChart the pie chart to apply CSS classes to
+     */
+    private void applyPieChartColors(PieChart pieChart) {
+        Platform.runLater(() -> {
+            for (PieChart.Data data : pieChart.getData()) {
+                if (data.getNode() != null) {
+                    data.getNode().getStyleClass().add("difficulty-" + data.getName().toLowerCase());
+                }
+            }
+        });
     }
 
     /**

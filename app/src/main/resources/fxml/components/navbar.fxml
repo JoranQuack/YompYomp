@@ -35,7 +35,7 @@
             <StackPane alignment="CENTER_RIGHT" minWidth="100.0">
                <children>
                   <Button fx:id="takeQuizButton" mnemonicParsing="false" text="Take Quiz" />
-                  <ImageView fx:id="profileImage" fitHeight="40.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true" />
+                  <ImageView fx:id="profileImage" fitHeight="40.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true" styleClass="special-button" />
                </children>
             </StackPane>
          </children></HBox>
