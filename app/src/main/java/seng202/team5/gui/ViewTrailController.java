@@ -17,8 +17,11 @@ import seng202.team5.gui.components.LegendLabelComponent;
 import seng202.team5.gui.components.TrailCardComponent;
 import seng202.team5.models.Trail;
 import seng202.team5.services.RegionFinder;
-import seng202.team5.services.TrailService;
 import seng202.team5.utils.StringManipulator;
+import seng202.team5.utils.TrailsProcessor;
+import seng202.team5.models.Weather;
+import seng202.team5.services.WeatherService;
+
 import java.util.List;
 
 /**
@@ -26,8 +29,8 @@ import java.util.List;
  */
 public class ViewTrailController extends Controller {
     private final Trail trail;
-    private TrailService trailService;
     private final SqlBasedTrailRepo sqlBasedTrailRepo;
+    private WeatherService weatherService;
     private final SqlBasedTrailLogRepo sqlBasedTrailLogRepo;
     private RegionFinder regionFinder;
 
@@ -77,6 +80,10 @@ public class ViewTrailController extends Controller {
     @FXML
     private Button logTrailButton;
     private WebView trailMapWebView;
+    @FXML
+    private Label WeatherLabel;
+    @FXML
+    private Label forecastLabel;
 
     /**
      * Initialises the view trail screen with data retrieved from database
@@ -87,13 +94,43 @@ public class ViewTrailController extends Controller {
         setupEventHandlers();
         setupLegend();
         javafx.application.Platform.runLater(this::initMap);
+        weatherService = new WeatherService("https://api.openweathermap.org/data/2.5/weather",
+                "https://api.openweathermap.org/data/2.5/forecast");
+
+        new Thread(() -> {
+            Weather weather = weatherService.getWeatherByCoords(trail.getLat(), trail.getLon());
+            if (weather != null) {
+                javafx.application.Platform.runLater(() -> WeatherLabel.setText(String.format(
+                        "%.1f°C (min %.1f°C / max %.1f°C) — %s",
+                        weather.getTemperature(), weather.getTempMin(), weather.getTempMax(),
+                        weather.getDescription())));
+            } else {
+                javafx.application.Platform.runLater(() -> WeatherLabel.setText("Weather unavailable"));
+            }
+        }).start();
+
+        new Thread(() -> {
+            List<Weather> forecast = weatherService.getFourDayForecast(trail.getLat(), trail.getLon());
+            if (!forecast.isEmpty()) {
+                StringBuilder sb = new StringBuilder(" ");
+                for (Weather day : forecast) {
+                    sb.append(String.format(
+                            "%s: %.1f°C (min %.1f°C / max %.1f°C) — %s ",
+                            day.getDate(), day.getTemperature(), day.getTempMin(), day.getTempMax(),
+                            day.getDescription()));
+                }
+                javafx.application.Platform.runLater(() -> forecastLabel.setText(sb.toString()));
+            } else {
+                javafx.application.Platform.runLater(() -> forecastLabel.setText("Forecast unavailable"));
+            }
+        }).start();
+
     }
 
     /**
      * Sets up all form fields and their initial values
      */
     private void setupFormFields() {
-        trailService = new TrailService();
         initTrailCard();
         descriptionLabel.setText(trail.getDescription());
         if (!trail.getTranslation().isEmpty()) {
@@ -195,7 +232,7 @@ public class ViewTrailController extends Controller {
      * @param radius the radius in km of nearby trails to be viewed
      */
     private void updateNearbyTrails(int radius) {
-        List<Trail> nearby = trailService.getNearbyTrails(trail, radius, sqlBasedTrailRepo.getAllTrails());
+        List<Trail> nearby = TrailsProcessor.getNearbyTrails(trail, radius, sqlBasedTrailRepo.getAllTrails());
         displayTrailsOnMap(nearby);
     }
 
@@ -207,7 +244,7 @@ public class ViewTrailController extends Controller {
     private void initMap() {
         javaScriptBridge = new JavaScriptBridge(this, sqlBasedTrailRepo);
         mapContainer.getChildren().clear();
-        trailMapWebView = new WebView();
+        WebView trailMapWebView = new WebView();
         trailMapWebView.setPrefHeight(-1);
         trailMapWebView.setPrefWidth(-1);
         HBox.setHgrow(trailMapWebView, Priority.ALWAYS);
@@ -386,6 +423,7 @@ public class ViewTrailController extends Controller {
      */
     @Override
     public void onLoadFailed(Exception e) {
+        e.printStackTrace();
         showAlert("Trail Card Failed To Load",
                 "Loading selected trail failed, please close the application and try again.",
                 "", "OK", null, null);

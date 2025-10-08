@@ -47,3 +47,11 @@ bin/
 data/
 test.db
 *.db*
+
+### Environment Variables ###
+.env
+**/.env
+
+### Configuration Files ###
+config.properties
+**/config.properties
