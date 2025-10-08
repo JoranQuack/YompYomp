@@ -238,7 +238,8 @@
             <div class = "container">
                 <div class = "pill bg-pinky">${trail.difficulty}</div>
                 <div class = "pill bg-bluey">${trail.completionInfo}</div>
-                <div class = "pill bg-greeny">${trail.completionType}</div>
+                ${trail.completionType && trail.completionType !== "unknown" ?
+                `<div class = "pill bg-greeny">${trail.completionType}</div>` : ""}
             </div>
             ${!isActive ? `<a href="#" onclick="openTrailInfo(${trail.id}); return false;">View details</a>` : ""}
         `;
