@@ -199,7 +199,7 @@ public class LogTrailController extends Controller {
         trailLog.setNotes(noteTextArea.getText());
 
         logService.addLog(trailLog);
-        super.getNavigator().goBack();
+        super.getNavigator().launchScreen(new LogBookController(getNavigator()));
     }
 
     @FXML
@@ -220,7 +220,7 @@ public class LogTrailController extends Controller {
 
     @Override
     protected String getTitle() {
-        return "Trip Log Screen";
+        return "Log Trail";
     }
 
     @Override
@@ -230,6 +230,6 @@ public class LogTrailController extends Controller {
 
     @Override
     protected int getNavbarPageIndex() {
-        return 1; // Trails section
+        return 2; // Logbook page
     }
 }
