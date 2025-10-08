@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.css" />
     <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.Default.css" />
     <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.css" />
-    <link rel="stylesheet" href="../styles/global.css">
+    <link rel="stylesheet" href="../styles/popup.css">
     <meta name="viewport" content="initial-scale=1.0">
     <meta charset="utf-8">
     <style>
@@ -233,12 +233,13 @@
                 activeMarker.getLatLng().lng === trail.lon;
 
             return `
-            <b>${trail.name}</b><br>
-            Difficulty: ${trail.difficulty}<br>
-            ${trail.completionInfo && trail.completionInfo.trim() !== ""
-                    ? `Completion Time: ${trail.completionInfo}<br>`
-                    : ""}
-            ${trail.description}
+            <div class = "heading">${trail.name}</div>
+            <div class = "label">${trail.region}</div>
+            <div class = "container">
+                <div class = "pill bg-pinky">${trail.difficulty}</div>
+                <div class = "pill bg-bluey">${trail.completionInfo}</div>
+                <div class = "pill bg-greeny">${trail.completionType}</div>
+            </div>
             ${!isActive ? `<a href="#" onclick="openTrailInfo(${trail.id}); return false;">View details</a>` : ""}
         `;
         }

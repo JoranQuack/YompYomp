@@ -43,3 +43,8 @@
 .round-corners {
     border-radius: 10px;
 }
+
+.container {
+    display: flex;
+    gap: 5px;
+}
