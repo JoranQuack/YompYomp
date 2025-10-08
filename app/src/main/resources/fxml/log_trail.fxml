@@ -24,6 +24,12 @@
             </HBox>
             <VBox alignment="CENTER" spacing="5.0">
                <children>
+                  <Label text="How enjoyable was this trail?" />
+                  <Slider fx:id="rateSlider" majorTickUnit="1.0" max="5.0" min="1.0" minorTickCount="0" showTickLabels="true" showTickMarks="true" snapToTicks="true" />
+               </children>
+            </VBox>
+            <VBox alignment="CENTER" spacing="5.0">
+               <children>
                   <Label alignment="CENTER" text="Start date" />
                   <DatePicker fx:id="startDatePicker" />
                </children>
@@ -66,12 +72,6 @@
                   </VBox>
                </children>
             </HBox>
-            <VBox alignment="CENTER" spacing="5.0">
-               <children>
-                  <Label text="How enjoyable was this trail?" />
-                  <Slider fx:id="rateSlider" majorTickUnit="1.0" max="5.0" min="1.0" minorTickCount="0" showTickLabels="true" showTickMarks="true" snapToTicks="true" />
-               </children>
-            </VBox>
             <VBox alignment="CENTER" spacing="5.0">
                <children>
                   <Label text="Perceived difficulty" />
