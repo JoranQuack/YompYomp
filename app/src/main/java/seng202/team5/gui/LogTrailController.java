@@ -7,6 +7,7 @@ import seng202.team5.data.DatabaseService;
 import seng202.team5.models.Trail;
 import seng202.team5.models.TrailLog;
 import seng202.team5.services.LogService;
+import seng202.team5.utils.CompletionTimeParser;
 import seng202.team5.utils.StringManipulator;
 
 import java.util.List;
@@ -93,15 +94,9 @@ public class LogTrailController extends Controller {
             durationTextField.setText(trailLog.getCompletionTime().toString());
             timeUnitSelector.setValue(StringManipulator.capitaliseFirstLetter(trailLog.getTimeUnit()));
         } else {
-            int avgMinutes = trail.getAvgCompletionTimeMinutes();
-            if (avgMinutes >= 60) {
-                int hours = avgMinutes / 60;
-                durationTextField.setText(String.valueOf(hours));
-                timeUnitSelector.setValue("Hours");
-            } else {
-                durationTextField.setText(String.valueOf(avgMinutes));
-                timeUnitSelector.setValue("Minutes");
-            }
+            var avg = CompletionTimeParser.convertFromMinutes(trail.getAvgCompletionTimeMinutes());
+            durationTextField.setText(String.valueOf((int) avg.value()));
+            timeUnitSelector.setValue(StringManipulator.capitaliseFirstLetter(avg.unit()));
         }
 
         trailTypeSelector.setValue(
