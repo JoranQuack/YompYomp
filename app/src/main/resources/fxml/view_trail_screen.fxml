@@ -40,12 +40,12 @@
             <Hyperlink fx:id="remoteHutsLink" text="Hyperlink" />
          </children>
          <padding>
-            <Insets left="10.0" right="10.0" />
+            <Insets bottom="20.0" left="20.0" right="10.0" top="20.0" />
          </padding>
       </VBox>
       <VBox spacing="10.0" HBox.hgrow="ALWAYS">
          <children>
-            <HBox fx:id="mapContainer" prefHeight="243.0" prefWidth="464.0" VBox.vgrow="ALWAYS" />
+            <HBox fx:id="mapContainer" VBox.vgrow="ALWAYS" />
             <FlowPane columnHalignment="CENTER" hgap="30.0" vgap="10.0">
                <children>
                   <CheckBox fx:id="nearbyTrailsCheckbox" mnemonicParsing="false" text="View nearby trails" wrapText="true" />
@@ -68,7 +68,7 @@
             </HBox>
          </children>
          <padding>
-            <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+            <Insets bottom="20.0" left="10.0" right="20.0" top="20.0" />
          </padding></VBox>
    </children>
 </HBox>
