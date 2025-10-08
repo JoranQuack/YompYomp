@@ -105,7 +105,7 @@
          * @param lng longitude to place marker at
          * @param trailJson the trail that the marker will be displayed for
          */
-        function addMarker(lat, lng, trailJson) {
+        function addMarker(lat, lng, trailJson, trailCompletionTime) {
             let trail = null;
             if (trailJson) {
                 trail = JSON.parse(trailJson);
@@ -120,7 +120,7 @@
                 map.setView([lat, lng], 13);
             }
             if (trail) {
-                activeMarker.bindPopup(buildPopupContent(trail));
+                activeMarker.bindPopup(buildPopupContent(trail, trailCompletionTime));
             }
         }
 
@@ -226,7 +226,7 @@
          * @param trail the trail object
          * @returns {string} HTML string for the popup
          */
-        function buildPopupContent(trail) {
+        function buildPopupContent(trail, trailCompletionTime) {
             const isActive =
                 activeMarker &&
                 activeMarker.getLatLng().lat === trail.lat &&
@@ -237,7 +237,7 @@
             <div class = "label">${trail.region}</div>
             <div class = "container">
                 <div class = "pill bg-pinky">${trail.difficulty}</div>
-                <div class = "pill bg-bluey">${trail.completionInfo}</div>
+                <div class = "pill bg-bluey">${trailCompletionTime}</div>
                 ${trail.completionType && trail.completionType !== "unknown" ?
                 `<div class = "pill bg-greeny">${trail.completionType}</div>` : ""}
             </div>

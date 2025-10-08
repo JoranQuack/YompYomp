@@ -17,6 +17,7 @@ import seng202.team5.gui.components.LegendLabelComponent;
 import seng202.team5.gui.components.TrailCardComponent;
 import seng202.team5.models.Trail;
 import seng202.team5.services.RegionFinder;
+import seng202.team5.utils.CompletionTimeParser;
 import seng202.team5.utils.StringManipulator;
 import seng202.team5.utils.TrailsProcessor;
 import seng202.team5.models.Weather;
@@ -289,7 +290,9 @@ public class ViewTrailController extends Controller {
     private void addLocation() {
         Gson gson = new Gson();
         String trailJson = gson.toJson(trail); // convert Trail object to JSON string
-        javaScriptConnector.call("addMarker", trail.getLat(), trail.getLon(), trailJson);
+        String trailCompletionTime = CompletionTimeParser.formatTimeRange(trail.getMinCompletionTimeMinutes(),
+                trail.getMaxCompletionTimeMinutes());
+        javaScriptConnector.call("addMarker", trail.getLat(), trail.getLon(), trailJson, trailCompletionTime);
     }
 
     /**
