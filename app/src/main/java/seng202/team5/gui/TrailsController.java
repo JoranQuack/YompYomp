@@ -1,8 +1,6 @@
 package seng202.team5.gui;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -15,17 +13,11 @@ import javafx.concurrent.Task;
 import javafx.application.Platform;
 import org.controlsfx.control.CheckComboBox;
 import seng202.team5.App;
-import seng202.team5.data.DatabaseService;
 import seng202.team5.data.SqlBasedTrailLogRepo;
 import seng202.team5.data.SqlBasedTrailRepo;
 import seng202.team5.gui.components.TrailCardComponent;
 import seng202.team5.models.Trail;
-import seng202.team5.models.TrailLog;
-import seng202.team5.models.User;
-import seng202.team5.services.LogService;
-import seng202.team5.services.RegionFinder;
 import seng202.team5.services.SearchService;
-import seng202.team5.services.UserService;
 
 /**
  * Controller for the trails display screen.
@@ -33,14 +25,10 @@ import seng202.team5.services.UserService;
  * optimizations.
  */
 public class TrailsController extends Controller {
-
-    private SqlBasedTrailLogRepo trailLogRepo;
-    private LogService logService;
     private SearchService searchService;
     private SqlBasedTrailRepo sqlBasedTrailRepo;
     private String searchText;
     private final List<TrailCardComponent> trailCardPool = new ArrayList<>();
-    private UserService userService = getUserService();
 
     private boolean isUpdating = false;
     private boolean isRestoringState = false;
@@ -93,15 +81,13 @@ public class TrailsController extends Controller {
     public TrailsController(ScreenNavigator navigator, SqlBasedTrailRepo sqlBasedTrailRepo) {
         super(navigator);
         this.sqlBasedTrailRepo = sqlBasedTrailRepo;
-        this.logService = new LogService(new DatabaseService());
-        this.trailLogRepo = new SqlBasedTrailLogRepo(new DatabaseService());
     }
 
     /**
      * Creates controller with navigator and initial search text.
      *
-     * @param navigator  Screen navigator
-     * @param searchText Initial search text
+     * @param navigator         Screen navigator
+     * @param searchText        Initial search text
      * @param sqlBasedTrailRepo The trail repo
      */
     public TrailsController(ScreenNavigator navigator, String searchText, SqlBasedTrailRepo sqlBasedTrailRepo) {
@@ -455,7 +441,8 @@ public class TrailsController extends Controller {
 
     @FXML
     private void onTrailCardClicked(Trail trail) {
-        super.getNavigator().launchScreen(new ViewTrailController(super.getNavigator(), trail, sqlBasedTrailRepo));
+        super.getNavigator().launchScreen(new ViewTrailController(super.getNavigator(), trail, sqlBasedTrailRepo,
+                new SqlBasedTrailLogRepo(App.getDatabaseService())));
     }
 
     /**
@@ -492,51 +479,6 @@ public class TrailsController extends Controller {
 
             trailCard.setOnMouseClicked(e -> onTrailCardClicked(trail));
             trailsContainer.getChildren().add(trailCard);
-
-            trailCard.setOnBookmarkClickedHandler(clickedTrail -> {
-                TrailLog newLog = new TrailLog(
-                        trailLogRepo.getNewTrailLogId(),
-                        clickedTrail.getId(),
-                        LocalDate.now(),
-                        null, null, null, null, null, null
-                );
-
-                LogTrailController logController = new LogTrailController(
-                        super.getNavigator(),
-                        clickedTrail,
-                        newLog
-                );
-                super.getNavigator().launchScreen(logController);
-            });
-
-            trailCard.setOnBookmarkFillClickedHandler(clickedTrail -> {
-                // TODO confirmation dialog
-                boolean confirmed = showAlert(
-                        "Delete Log",  "Are you sure you want to delete this log?",
-                        "This action cannot be undone.", "Delete",
-                        "Cancel", "danger-button"
-                );
-
-                if (confirmed) {
-                    logService.deleteLog(clickedTrail.getId());
-                    trailCard.setBookmarked(false);
-                } else {
-                    return;
-                }
-                List<TrailLog> logs = logService.getAllLogs();
-                logs.stream()
-                    .filter(log -> log.getTrailId() == clickedTrail.getId())
-                    .findFirst()
-                    .ifPresent(log -> {
-                        logService.deleteLog(log.getId());
-                        trailCard.setBookmarked(false);
-                    });
-            });
-
-            trailCard.setOnTrashClickedHandler(clickedTrail -> {
-                logService.deleteLog(clickedTrail.getId());
-                trailsContainer.getChildren().remove(trailCard);
-            });
         }
 
         updateResultsLabel(trails.size());
@@ -573,7 +515,7 @@ public class TrailsController extends Controller {
         if (index < trailCardPool.size()) {
             return trailCardPool.get(index);
         } else {
-            TrailCardComponent trailCard = new TrailCardComponent(isGuest, false, false);
+            TrailCardComponent trailCard = new TrailCardComponent(isGuest, false, false, super.getNavigator());
             trailCardPool.add(trailCard);
             VBox.setMargin(trailCard, cardMargin);
             return trailCard;

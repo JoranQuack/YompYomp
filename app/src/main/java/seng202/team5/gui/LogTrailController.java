@@ -2,17 +2,13 @@ package seng202.team5.gui;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import seng202.team5.App;
 import seng202.team5.data.DatabaseService;
-import seng202.team5.data.SqlBasedTrailLogRepo;
-import seng202.team5.data.SqlBasedTrailRepo;
 import seng202.team5.models.Trail;
 import seng202.team5.models.TrailLog;
 import seng202.team5.services.LogService;
-import seng202.team5.utils.CompletionTimeParser;
 import seng202.team5.utils.StringManipulator;
 
-import java.sql.Date;
-import java.time.ZoneId;
 import java.util.List;
 
 /**
@@ -24,7 +20,8 @@ public class LogTrailController extends Controller {
     private Trail trail;
     private LogService logService;
     private DatabaseService databaseService;
-    private SqlBasedTrailRepo trailRepo;
+
+    private boolean isNewLog = false;
 
     /**
      * Launches the screen with the navigator
@@ -32,17 +29,20 @@ public class LogTrailController extends Controller {
      * @param navigator screen navigator
      * @param trailLog  the trail log to be logged
      */
-    public LogTrailController(ScreenNavigator navigator, Trail trail, TrailLog trailLog) {
+    public LogTrailController(ScreenNavigator navigator, Trail trail) {
         super(navigator);
         this.trail = trail;
-        this.trailLog = trailLog;
-        this.databaseService = new DatabaseService();
-        this.trailRepo = new SqlBasedTrailRepo(databaseService);
+        this.databaseService = App.getDatabaseService();
         this.logService = new LogService(databaseService);
+        TrailLog trailLog = logService.getLogByTrailId(trail.getId()).orElse(null);
+        if (trailLog == null) {
+            this.trailLog = logService.createLogFromTrail(trail);
+            isNewLog = true;
+        } else {
+            this.trailLog = trailLog;
+        }
     }
 
-    @FXML
-    private Button backButton;
     @FXML
     private Label trailNameLabel;
     @FXML
@@ -60,8 +60,6 @@ public class LogTrailController extends Controller {
     @FXML
     private TextArea noteTextArea;
     @FXML
-    private Button doneButton;
-    @FXML
     private Label errorLabel;
 
     /**
@@ -73,11 +71,7 @@ public class LogTrailController extends Controller {
         if (errorLabel != null) {
             errorLabel.setVisible(false);
         }
-        if (trail != null && trailLog != null) {
-            populateFields();
-        }
-        backButton.setOnAction(event -> onBackButtonClicked());
-        doneButton.setOnAction(event -> onDoneButtonClicked());
+        populateFields();
 
         durationTextField.textProperty().addListener((obs, oldVal, newVal) -> clearErrors());
     }
@@ -92,49 +86,20 @@ public class LogTrailController extends Controller {
     }
 
     /**
-     * Populates the form fields with the data from the trailLog or prefills it with trail info that can be edited.
+     * Populates the form fields with the data from the trailLog or prefills it with
+     * trail info that can be edited.
      */
     private void populateFields() {
         trailNameLabel.setText(trail.getName());
-        if (trailLog.getStartDate() != null) {
-            startDatePicker.setValue(trailLog.getStartDate());
-        }
+        startDatePicker.setValue(trailLog.getStartDate());
+        durationTextField.setText(trailLog.getCompletionTime().toString());
+        timeUnitSelector.setValue(StringManipulator.capitaliseFirstLetter(trailLog.getTimeUnit()));
 
-        if (trailLog.getCompletionTime() != null) {
-            durationTextField.setText(trailLog.getCompletionTime().toString());
-            timeUnitSelector.setValue(StringManipulator.capitaliseFirstLetter(trailLog.getTimeUnit()));
-        } else {
-            var avg = CompletionTimeParser.convertFromMinutes(trail.getAvgCompletionTimeMinutes());
-            durationTextField.setText(String.valueOf((int) avg.value()));
-            timeUnitSelector.setValue(StringManipulator.capitaliseFirstLetter(avg.unit()));
-        }
-
-        trailTypeSelector.setValue(
-                trailLog.getCompletionType() != null
-                        ? StringManipulator.capitaliseFirstLetter(trailLog.getCompletionType())
-                        : getValidCompletionType(trail)
-        );
-        perceivedDifficultySelector.setValue(
-                trailLog.getPerceivedDifficulty() != null
-                        ? StringManipulator.capitaliseFirstLetter(trailLog.getPerceivedDifficulty())
-                        : StringManipulator.capitaliseFirstLetter(trail.getDifficulty())
-        );
-        rateSlider.setValue(trailLog.getRating() != null ? trailLog.getRating() : 3);
+        trailTypeSelector.setValue(StringManipulator.capitaliseFirstLetter(trailLog.getCompletionType()));
+        perceivedDifficultySelector
+                .setValue(StringManipulator.capitaliseFirstLetter(trailLog.getPerceivedDifficulty()));
+        rateSlider.setValue(trailLog.getRating());
         noteTextArea.setText(trailLog.getNotes());
-    }
-
-    /**
-     * Gets a valid completion type for the trail if the trail type is unknown.
-     *
-     * @param trail the trail to get the completion type for
-     * @return the valid completion type
-     */
-    private String getValidCompletionType(Trail trail) {
-        String type = trail.getCompletionType();
-        if (type == null || type.equalsIgnoreCase("unknown")) {
-            return "One way";
-        }
-        return StringManipulator.capitaliseFirstLetter(type);
     }
 
     /**
@@ -150,8 +115,8 @@ public class LogTrailController extends Controller {
     /**
      * Shows an error message on the form field.
      *
-     * @param control  the control to show the error on
-     * @param message  the error message to show
+     * @param control the control to show the error on
+     * @param message the error message to show
      */
     private void showError(Control control, String message) {
         clearErrors();
@@ -197,8 +162,8 @@ public class LogTrailController extends Controller {
             return;
         }
         trailLog.setStartDate(startDatePicker.getValue());
-        trailLog.setCompletionTime(!durationTextField.getText().isEmpty() ?
-                Integer.parseInt(durationTextField.getText()) : null);
+        trailLog.setCompletionTime(
+                !durationTextField.getText().isEmpty() ? Integer.parseInt(durationTextField.getText()) : null);
         trailLog.setTimeUnit(timeUnitSelector.getValue());
         trailLog.setCompletionType(trailTypeSelector.getValue());
         trailLog.setRating((int) rateSlider.getValue());
@@ -206,14 +171,21 @@ public class LogTrailController extends Controller {
         trailLog.setNotes(noteTextArea.getText());
 
         logService.addLog(trailLog);
-        super.getNavigator().goBack();
+        super.getNavigator().launchScreen(new LogBookController(getNavigator()));
     }
 
-    /**
-     * Handles the event when the back button is clicked.
-     */
     @FXML
-    private void onBackButtonClicked() {
+    private void onDeleteButtonClicked() {
+        if (isNewLog) {
+            super.getNavigator().goBack();
+            return;
+        }
+        boolean confirmed = super.showAlert("Log deletion", "Are you sure you want to delete this log?",
+                "This action cannot be undone.",
+                "Delete", "Cancel", "bg-red");
+        if (!confirmed)
+            return;
+        logService.deleteLog(trailLog.getId());
         super.getNavigator().goBack();
     }
 
@@ -224,7 +196,7 @@ public class LogTrailController extends Controller {
 
     @Override
     protected String getTitle() {
-        return "Trip Log Screen";
+        return "Log Trail";
     }
 
     @Override
@@ -234,6 +206,6 @@ public class LogTrailController extends Controller {
 
     @Override
     protected int getNavbarPageIndex() {
-        return 1; // Trails section
+        return 2; // Logbook page
     }
 }
