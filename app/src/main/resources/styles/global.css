@@ -55,9 +55,17 @@ Hyperlink {
   -fx-text-fill: #ff0000;
 }
 
+.text-darkish {
+  -fx-text-fill: #7b7b7b;
+}
+
 .small-text {
   -fx-font-size: 12px;
   -fx-font-family: "Quicksand Regular";
+}
+
+.strong-text {
+  -fx-font-family: "Quicksand SemiBold";
 }
 
 .pill {
@@ -415,6 +423,11 @@ ProgressIndicator {
 
 .navbar-root {
   -fx-background-color: #eef1ed;
+}
+
+.weather-card {
+  -fx-background-color: #eef1ed;
+  -fx-background-radius: 10;
 }
 
 #mapContainer {
