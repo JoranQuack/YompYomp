@@ -6,6 +6,7 @@ import seng202.team5.data.SqlBasedTrailLogRepo;
 import seng202.team5.data.SqlBasedTrailRepo;
 import seng202.team5.models.Trail;
 import seng202.team5.models.TrailLog;
+import seng202.team5.utils.CompletionTimeParser;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -129,8 +130,9 @@ public class LogService {
 
     public TrailLog createLogFromTrail(Trail trail) {
         return new TrailLog(logInterface.getNewTrailLogId(), trail.getId(), LocalDate.now(),
-                trail.getAvgCompletionTimeMinutes(),
-                trail.getTimeUnit(), trail.getCompletionType(), 3,
+                (int) CompletionTimeParser.convertFromMinutes(trail.getAvgCompletionTimeMinutes()).value(),
+                CompletionTimeParser.convertFromMinutes(trail.getAvgCompletionTimeMinutes()).unit(),
+                trail.getCompletionType(), 3,
                 trail.getDifficulty(), "");
     }
 

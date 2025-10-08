@@ -7,7 +7,6 @@ import seng202.team5.data.DatabaseService;
 import seng202.team5.models.Trail;
 import seng202.team5.models.TrailLog;
 import seng202.team5.services.LogService;
-import seng202.team5.utils.CompletionTimeParser;
 import seng202.team5.utils.StringManipulator;
 
 import java.util.List;
@@ -64,9 +63,7 @@ public class LogTrailController extends Controller {
         if (errorLabel != null) {
             errorLabel.setVisible(false);
         }
-        if (trail != null && trailLog != null) {
-            populateFields();
-        }
+        populateFields();
 
         durationTextField.textProperty().addListener((obs, oldVal, newVal) -> clearErrors());
     }
@@ -86,43 +83,15 @@ public class LogTrailController extends Controller {
      */
     private void populateFields() {
         trailNameLabel.setText(trail.getName());
-        if (trailLog.getStartDate() != null) {
-            startDatePicker.setValue(trailLog.getStartDate());
-        }
+        startDatePicker.setValue(trailLog.getStartDate());
+        durationTextField.setText(trailLog.getCompletionTime().toString());
+        timeUnitSelector.setValue(StringManipulator.capitaliseFirstLetter(trailLog.getTimeUnit()));
 
-        if (trailLog.getCompletionTime() != null) {
-            durationTextField.setText(trailLog.getCompletionTime().toString());
-            timeUnitSelector.setValue(StringManipulator.capitaliseFirstLetter(trailLog.getTimeUnit()));
-        } else {
-            var avg = CompletionTimeParser.convertFromMinutes(trail.getAvgCompletionTimeMinutes());
-            durationTextField.setText(String.valueOf((int) avg.value()));
-            timeUnitSelector.setValue(StringManipulator.capitaliseFirstLetter(avg.unit()));
-        }
-
-        trailTypeSelector.setValue(
-                trailLog.getCompletionType() != null
-                        ? StringManipulator.capitaliseFirstLetter(trailLog.getCompletionType())
-                        : getValidCompletionType(trail));
-        perceivedDifficultySelector.setValue(
-                trailLog.getPerceivedDifficulty() != null
-                        ? StringManipulator.capitaliseFirstLetter(trailLog.getPerceivedDifficulty())
-                        : StringManipulator.capitaliseFirstLetter(trail.getDifficulty()));
-        rateSlider.setValue(trailLog.getRating() != null ? trailLog.getRating() : 3);
+        trailTypeSelector.setValue(StringManipulator.capitaliseFirstLetter(trailLog.getCompletionType()));
+        perceivedDifficultySelector
+                .setValue(StringManipulator.capitaliseFirstLetter(trailLog.getPerceivedDifficulty()));
+        rateSlider.setValue(trailLog.getRating());
         noteTextArea.setText(trailLog.getNotes());
-    }
-
-    /**
-     * Gets a valid completion type for the trail if the trail type is unknown.
-     *
-     * @param trail the trail to get the completion type for
-     * @return the valid completion type
-     */
-    private String getValidCompletionType(Trail trail) {
-        String type = trail.getCompletionType();
-        if (type == null || type.equalsIgnoreCase("unknown")) {
-            return "One way";
-        }
-        return StringManipulator.capitaliseFirstLetter(type);
     }
 
     /**
