@@ -21,6 +21,8 @@ public class LogTrailController extends Controller {
     private LogService logService;
     private DatabaseService databaseService;
 
+    private boolean isNewLog = false;
+
     /**
      * Launches the screen with the navigator
      *
@@ -32,7 +34,13 @@ public class LogTrailController extends Controller {
         this.trail = trail;
         this.databaseService = App.getDatabaseService();
         this.logService = new LogService(databaseService);
-        this.trailLog = logService.getLogByTrailId(trail.getId()).orElse(logService.createLogFromTrail(trail));
+        TrailLog trailLog = logService.getLogByTrailId(trail.getId()).orElse(null);
+        if (trailLog == null) {
+            this.trailLog = logService.createLogFromTrail(trail);
+            isNewLog = true;
+        } else {
+            this.trailLog = trailLog;
+        }
     }
 
     @FXML
@@ -168,6 +176,10 @@ public class LogTrailController extends Controller {
 
     @FXML
     private void onDeleteButtonClicked() {
+        if (isNewLog) {
+            super.getNavigator().goBack();
+            return;
+        }
         boolean confirmed = super.showAlert("Log deletion", "Are you sure you want to delete this log?",
                 "This action cannot be undone.",
                 "Delete", "Cancel", "bg-red");
