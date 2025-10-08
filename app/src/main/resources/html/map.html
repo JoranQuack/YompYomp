@@ -224,6 +224,7 @@
         /**
          * Builds the popup content for a given trail. No link is shown for the marker that the user is viewing a trail for
          * @param trail the trail object
+         * @param trailCompletionTime the trail completion time that has been formatted
          * @returns {string} HTML string for the popup
          */
         function buildPopupContent(trail, trailCompletionTime) {
@@ -236,6 +237,7 @@
             <div class = "heading">${trail.name}</div>
             <div class = "label">${trail.region}</div>
             <div class = "container">
+
                 <div class = "pill bg-pinky">${trail.difficulty}</div>
                 <div class = "pill bg-bluey">${trailCompletionTime}</div>
                 ${trail.completionType && trail.completionType !== "unknown" ?
