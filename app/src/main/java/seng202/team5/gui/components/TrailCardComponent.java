@@ -4,6 +4,8 @@ import java.io.IOException;
 
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Insets;
+import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.image.Image;
@@ -13,6 +15,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.Rectangle;
+import seng202.team5.gui.ScreenNavigator;
 import seng202.team5.models.Trail;
 import seng202.team5.models.TrailLog;
 import seng202.team5.services.ImageService;
@@ -52,36 +55,18 @@ public class TrailCardComponent extends VBox {
     private StackPane matchContainer;
 
     private final ImageService imageService;
+    private final ScreenNavigator navigator;
 
     private boolean isUnmatched;
     private boolean logMode;
     private boolean isSingle;
 
-    public TrailCardComponent(boolean isUnmatched, boolean isSingle, boolean logMode) {
+    public TrailCardComponent(boolean isUnmatched, boolean isSingle, boolean logMode, ScreenNavigator navigator) {
         this.isUnmatched = isUnmatched;
         this.isSingle = isSingle;
         this.logMode = logMode;
         this.imageService = new ImageService();
-
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/components/trail_card.fxml"));
-        fxmlLoader.setRoot(this);
-        fxmlLoader.setController(this); // FXML elements
-
-        try {
-            fxmlLoader.load();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        } // If not work, crash?
-    }
-
-    /**
-     * Log trail card constructor.
-     *
-     */
-    public TrailCardComponent() {
-        this.isUnmatched = false;
-        this.logMode = true;
-        this.imageService = new ImageService();
+        this.navigator = navigator;
 
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/components/trail_card.fxml"));
         fxmlLoader.setRoot(this);
@@ -196,6 +181,33 @@ public class TrailCardComponent extends VBox {
             fillStarRating(log);
         }
 
+        if (isSingle)
+            setSingleProperties(trail);
+
+    }
+
+    /**
+     * Sets properties specific to single trail card view.
+     */
+    private void setSingleProperties(Trail trail) {
+        trailCardContainer.getStyleClass().add("single");
+        infoContainer.setPadding(new Insets(0, 0, 0, 0));
+        Label description = new Label(trail.getDescription());
+        description.setWrapText(true);
+        infoContainer.getChildren().add(3, description);
+        VBox.setMargin(description, new Insets(0, 0, 10, 0));
+        if (trail.getCultureUrl() != null && !trail.getCultureUrl().isEmpty()) {
+            Hyperlink culturalUrl = new Hyperlink("Cultural Information");
+            culturalUrl.setOnAction(e -> {
+                navigator.openWebPage((trail.getCultureUrl()));
+            });
+            infoContainer.getChildren().add(4, culturalUrl);
+            VBox.setMargin(culturalUrl, new Insets(0, 0, 10, 0));
+        }
+
+        if (trail.getTranslation() != null && !trail.getTranslation().isEmpty()) {
+            infoContainer.getChildren().add(1, new Label(trail.getTranslation()));
+        }
     }
 
     /**

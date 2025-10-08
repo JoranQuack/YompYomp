@@ -131,7 +131,7 @@ public class DashboardController extends Controller {
      */
     private TrailCardComponent createTrailCard(Trail trail) {
         TrailCardComponent trailCard = new TrailCardComponent(
-                super.getUserService().isGuest(), false, false);
+                super.getUserService().isGuest(), false, false, super.getNavigator());
         trailCard.setData(trail, null);
         return trailCard;
     }

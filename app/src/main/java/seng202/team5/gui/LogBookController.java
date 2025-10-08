@@ -211,7 +211,8 @@ public class LogBookController extends Controller {
         if (index < logCardPool.size()) {
             return logCardPool.get(index);
         } else {
-            TrailCardComponent logCard = new TrailCardComponent();
+            TrailCardComponent logCard = new TrailCardComponent(super.getUserService().isGuest(), false, true,
+                    super.getNavigator());
             logCardPool.add(logCard);
             VBox.setMargin(logCard, cardMargin);
             return logCard;

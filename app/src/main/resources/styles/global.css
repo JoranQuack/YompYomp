@@ -55,9 +55,17 @@ Hyperlink {
   -fx-text-fill: #ff0000;
 }
 
+.text-darkish {
+  -fx-text-fill: #7b7b7b;
+}
+
 .small-text {
   -fx-font-size: 12px;
   -fx-font-family: "Quicksand Regular";
+}
+
+.strong-text {
+  -fx-font-family: "Quicksand SemiBold";
 }
 
 .pill {
@@ -210,6 +218,10 @@ ChoiceBox .menu-item:focused {
   -fx-font-size: 15px;
   -fx-text-fill: #fdfffb;
   -fx-cursor: hand;
+}
+
+.root-pane .check-box {
+  -fx-text-fill: #04140b;
 }
 
 .check-box .box {
@@ -418,8 +430,17 @@ ProgressIndicator {
   -fx-opacity: 0.7;
 }
 
+.trail-card.single {
+  -fx-background-color: #fdfffb;
+}
+
 .navbar-root {
   -fx-background-color: #eef1ed;
+}
+
+.weather-card {
+  -fx-background-color: #eef1ed;
+  -fx-background-radius: 10;
 }
 
 #mapContainer {
@@ -603,4 +624,20 @@ Button.bg-red:hover {
 }
 .default-color9 {
   -fx-bar-fill: #9c27b0;
+}
+
+.legend-expert {
+  -fx-background-color: #f44336;
+}
+.legend-advanced {
+  -fx-background-color: #ff9800;
+}
+.legend-intermediate {
+  -fx-background-color: #ffc107;
+}
+.legend-easy {
+  -fx-background-color: #a1d11c;
+}
+.legend-easiest {
+  -fx-background-color: #4caf50;
 }

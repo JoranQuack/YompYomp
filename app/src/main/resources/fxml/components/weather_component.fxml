@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.String?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.VBox?>
+
+
+<fx:root alignment="TOP_CENTER" minWidth="100.0" spacing="5.0" styleClass="weather-card" stylesheets="@../../styles/global.css" type="VBox" xmlns="http://javafx.com/javafx/21.0.2" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <Label fx:id="maxTempLabel" styleClass="strong-text" text="Max Temp" />
+      <Label fx:id="minTempLabel" text="Min Temp">
+         <styleClass>
+            <String fx:value="strong-text" />
+            <String fx:value="text-darkish" />
+         </styleClass>
+      </Label>
+      <ImageView fx:id="weatherIcon" fitHeight="60.0" fitWidth="60.0" pickOnBounds="true" preserveRatio="true" />
+      <Label fx:id="dayLabel" text="Day" />
+      <Label fx:id="dateLabel" styleClass="text-darkish" text="Date" />
+   </children>
+   <padding>
+      <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+   </padding>
+</fx:root>
