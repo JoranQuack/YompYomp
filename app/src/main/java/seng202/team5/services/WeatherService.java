@@ -27,6 +27,8 @@ public class WeatherService {
 
     /**
      * Fetches the API key from environment variable or properties file
+     *
+     * @return API key string
      */
     private static String getApiKey() {
         // environment variable (for CI/CD)
@@ -47,8 +49,9 @@ public class WeatherService {
             System.err.println("Please make sure your properties file is set up correctly.");
         }
 
-        throw new RuntimeException(
+        System.err.println(
                 "OpenWeather API key not found. Please add OPENWEATHER_API_KEY environment variable or config.properties in the resources folder.");
+        return "";
     }
 
     /**
@@ -99,6 +102,13 @@ public class WeatherService {
         }
     }
 
+    /**
+     * Fetches a 4-day weather forecast for a given latitude and longitude
+     *
+     * @param lat Latitude of location
+     * @param lon Longitude of location
+     * @return List of Weather objects containing forecast data
+     */
     public List<Weather> getFourDayForecast(double lat, double lon) {
         try {
             String urlStr = String.format(

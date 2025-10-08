@@ -3,6 +3,8 @@ package seng202.team5.gui;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.sun.javafx.webkit.WebConsoleListener;
+
+import javafx.application.Platform;
 import javafx.concurrent.Worker;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
@@ -79,7 +81,6 @@ public class ViewTrailController extends Controller {
     private Hyperlink remoteHutsLink;
     @FXML
     private Button logTrailButton;
-    private WebView trailMapWebView;
     @FXML
     private Label WeatherLabel;
     @FXML
@@ -93,19 +94,26 @@ public class ViewTrailController extends Controller {
         setupFormFields();
         setupEventHandlers();
         setupLegend();
-        javafx.application.Platform.runLater(this::initMap);
+        Platform.runLater(this::initMap);
+        setupWeather();
+    }
+
+    /**
+     * Sets up the weather service and fetches weather data for the trail location
+     */
+    private void setupWeather() {
         weatherService = new WeatherService("https://api.openweathermap.org/data/2.5/weather",
                 "https://api.openweathermap.org/data/2.5/forecast");
 
         new Thread(() -> {
             Weather weather = weatherService.getWeatherByCoords(trail.getLat(), trail.getLon());
             if (weather != null) {
-                javafx.application.Platform.runLater(() -> WeatherLabel.setText(String.format(
+                Platform.runLater(() -> WeatherLabel.setText(String.format(
                         "%.1f°C (min %.1f°C / max %.1f°C) — %s",
                         weather.getTemperature(), weather.getTempMin(), weather.getTempMax(),
                         weather.getDescription())));
             } else {
-                javafx.application.Platform.runLater(() -> WeatherLabel.setText("Weather unavailable"));
+                Platform.runLater(() -> WeatherLabel.setText("Weather unavailable"));
             }
         }).start();
 
@@ -119,12 +127,11 @@ public class ViewTrailController extends Controller {
                             day.getDate(), day.getTemperature(), day.getTempMin(), day.getTempMax(),
                             day.getDescription()));
                 }
-                javafx.application.Platform.runLater(() -> forecastLabel.setText(sb.toString()));
+                Platform.runLater(() -> forecastLabel.setText(sb.toString()));
             } else {
-                javafx.application.Platform.runLater(() -> forecastLabel.setText("Forecast unavailable"));
+                Platform.runLater(() -> forecastLabel.setText("Forecast unavailable"));
             }
         }).start();
-
     }
 
     /**
