@@ -173,6 +173,9 @@ public class TrailCardComponent extends VBox {
             } else {
                 updateMatchBar(trail);
             }
+
+            ratingFlowPane.getStyleClass().clear();
+
         } else if (logMode) {
             matchBar.setVisible(false);
             matchLabel.setVisible(false);
@@ -224,12 +227,17 @@ public class TrailCardComponent extends VBox {
 
     /** Fills the star rating content */
     private void fillStarRating(TrailLog log) {
+        infoContainer.getChildren().remove(matchContainer);
         ratingFlowPane.getChildren().clear();
+        ratingFlowPane.getStyleClass().add("darken");
         ImageView star = new ImageView(new Image(getClass().getResourceAsStream("/images/star_icon.png")));
         star.setFitWidth(20);
         star.setFitHeight(20);
         ratingFlowPane.getChildren().add(star);
         int rating = log.getRating();
-        ratingFlowPane.getChildren().add(new Label(String.valueOf(rating)));
+        Label label = new Label(String.valueOf(rating));
+        label.getStyleClass().add("text-light");
+        label.getStyleClass().add("heading");
+        ratingFlowPane.getChildren().add(label);
     }
 }

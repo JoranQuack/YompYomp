@@ -391,6 +391,10 @@ ProgressIndicator {
   -fx-background-color: #d5e6d4;
 }
 
+.darken {
+  -fx-background-color: rgba(0, 0, 0, 0.5);
+}
+
 .round-corners {
   -fx-background-radius: 10;
 }
