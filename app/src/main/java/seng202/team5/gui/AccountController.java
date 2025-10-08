@@ -69,16 +69,6 @@ public class AccountController extends Controller {
     private Button deleteProfileButton;
     @FXML
     private PieChart pieChart;
-    @FXML
-    private HBox legendLabelContainer1;
-    @FXML
-    private HBox legendLabelContainer2;
-    @FXML
-    private HBox legendLabelContainer3;
-    @FXML
-    private HBox legendLabelContainer4;
-    @FXML
-    private HBox legendLabelContainer5;
 
     User user;
 
@@ -108,10 +98,7 @@ public class AccountController extends Controller {
         } else {
             profileImage.setImage(new Image(user.getProfilePicture()));
         }
-
-        List<HBox> legendLabelContainers = List.of(legendLabelContainer1, legendLabelContainer2, legendLabelContainer3,
-                legendLabelContainer4, legendLabelContainer5);
-        setPieChart(legendLabelContainers);
+        setPieChart();
 
         List<ImageView> optionImages = List.of(optionImage1, optionImage2, optionImage3, optionImage4,
                 optionImage5, optionImage6, optionImage7);
@@ -167,7 +154,7 @@ public class AccountController extends Controller {
     }
 
     @FXML
-    private void setPieChart(List<HBox> legendLabelContainers) {
+    private void setPieChart() {
         List<String> legendColours = List.of("008000", "8de45f", "ffff00", "ffa500", "ff0000");
         Map<String, Integer> trailStats = getUserService().getTrailStats();
         System.out.println(trailStats.size());
@@ -180,8 +167,6 @@ public class AccountController extends Controller {
             if (count < 4) {
                 PieChart.Data slice = new PieChart.Data(entry.getKey(), entry.getValue());
                 pieChartData.add(slice);
-                LegendLabelComponent legendLabel = new LegendLabelComponent(legendColours.get(count), entry.getKey());
-                legendLabelContainers.get(count).getChildren().add(legendLabel);
             } else {
                 otherCategoryCount += entry.getValue();
             }
@@ -189,8 +174,6 @@ public class AccountController extends Controller {
         }
         PieChart.Data otherSlice = new PieChart.Data("Other", otherCategoryCount);
         pieChartData.add(otherSlice);
-        LegendLabelComponent otherLegendLabel = new LegendLabelComponent(legendColours.get(4), "Other");
-        legendLabelContainers.get(4).getChildren().add(otherLegendLabel);
         pieChart.setData(pieChartData);
     }
 

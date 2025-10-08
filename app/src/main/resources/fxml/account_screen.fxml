@@ -39,19 +39,24 @@
                                           <Image url="@../images/profiles/ban.png" />
                                        </image>
                                     </ImageView>
-                                    <ImageView fx:id="optionImage1" fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true" styleClass="special-button">
-                                       <image>
-                                          <Image url="@../images/profiles/aztec_4607060.png" />
-                                       </image>
-                                    </ImageView>
                                     <ImageView fx:id="optionImage2" fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true" styleClass="special-button">
                                        <image>
                                           <Image url="@../images/profiles/sculpture_8379929.png" />
                                        </image>
                                     </ImageView>
+                                    <ImageView fx:id="optionImage7" fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true" styleClass="special-button">
+                                       <image>
+                                          <Image url="@../images/profiles/tiki-mask_5257065.png" />
+                                       </image>
+                                    </ImageView>
                                     <ImageView fx:id="optionImage3" fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true" styleClass="special-button">
                                        <image>
                                           <Image url="@../images/profiles/tiki-mask_5257036.png" />
+                                       </image>
+                                    </ImageView>
+                                    <ImageView fx:id="optionImage1" fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true" styleClass="special-button">
+                                       <image>
+                                          <Image url="@../images/profiles/aztec_4607060.png" />
                                        </image>
                                     </ImageView>
                                     <ImageView fx:id="optionImage4" fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true" styleClass="special-button">
@@ -69,11 +74,6 @@
                                           <Image url="@../images/profiles/boots_4218601.png" />
                                        </image>
                                     </ImageView>
-                                    <ImageView fx:id="optionImage7" fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true" styleClass="special-button">
-                                       <image>
-                                          <Image url="@../images/profiles/tiki-mask_5257065.png" />
-                                       </image>
-                                    </ImageView>
                                  </children>
                               </HBox>
                            </children>
@@ -87,9 +87,9 @@
                               <Font name="System Bold" size="13.0" />
                            </font>
                         </Label>
-                        <HBox>
+                        <HBox alignment="TOP_CENTER">
                            <children>
-                              <GridPane alignment="CENTER" hgap="10.0" vgap="5.0" HBox.hgrow="ALWAYS">
+                              <GridPane alignment="CENTER" hgap="10.0" vgap="5.0">
                                  <children>
                                     <Label styleClass="strong-text" text="Family Friendly:" GridPane.columnIndex="0" GridPane.rowIndex="0" />
                                     <Label fx:id="familyFriendlyLabel" GridPane.columnIndex="1" GridPane.rowIndex="0" />
@@ -146,10 +146,10 @@
                                     <RowConstraints />
                                  </rowConstraints>
                               </GridPane>
-                              <HBox alignment="TOP_CENTER" HBox.hgrow="ALWAYS">
+                              <HBox alignment="CENTER_LEFT">
                                  <children>
-                                    <PieChart fx:id="pieChart" labelsVisible="false" maxHeight="100.0" maxWidth="100.0" />
-                                    <VBox spacing="10.0">
+                                    <PieChart fx:id="pieChart" maxHeight="200.0" maxWidth="200.0" />
+                                    <VBox alignment="CENTER_LEFT" spacing="10.0">
                                        <children>
                                           <HBox fx:id="legendLabelContainer1" spacing="5.0" />
                                           <HBox fx:id="legendLabelContainer2" spacing="5.0" />
