@@ -132,7 +132,7 @@ public class LogService {
         return new TrailLog(logInterface.getNewTrailLogId(), trail.getId(), LocalDate.now(),
                 (int) CompletionTimeParser.convertFromMinutes(trail.getAvgCompletionTimeMinutes()).value(),
                 CompletionTimeParser.convertFromMinutes(trail.getAvgCompletionTimeMinutes()).unit(),
-                trail.getCompletionType(), 3,
+                trail.getCompletionType().contains("unknown") ? "one way" : trail.getCompletionType(), 3,
                 trail.getDifficulty(), "");
     }
 
