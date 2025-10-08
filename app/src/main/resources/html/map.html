@@ -193,7 +193,7 @@
 
                 const [lat, lng] = normalizeLng(trail.lat, trail.lon);
                 const marker = L.marker([lat, lng], { icon: customIcon });
-                marker.bindPopup(buildPopupContent(trail));
+                marker.bindPopup(buildPopupContent(trail, trail.completionTime));
                 markers.addLayer(marker);
             });
 

@@ -23,7 +23,9 @@ import seng202.team5.utils.TrailsProcessor;
 import seng202.team5.models.Weather;
 import seng202.team5.services.WeatherService;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Controller for the view trail screen
@@ -302,8 +304,18 @@ public class ViewTrailController extends Controller {
      */
     private void displayTrailsOnMap(List<Trail> trails) {
         if (javaScriptConnector != null) {
-            Gson gson = new GsonBuilder().create();
-            String trailsJson = gson.toJson(trails);
+            List<Map<String, Object>> trailsWithTime = new ArrayList<>();
+
+            for (Trail trail: trails) {
+                Map<String, Object> trailMap = new Gson().fromJson(new Gson().toJson(trail), Map.class);
+
+                String completionTime = CompletionTimeParser.formatTimeRange(
+                        trail.getMinCompletionTimeMinutes(), trail.getMaxCompletionTimeMinutes()
+                );
+                trailMap.put("completionTime", completionTime);
+                trailsWithTime.add(trailMap);
+            }
+            String trailsJson = new Gson().toJson(trailsWithTime);
             javaScriptConnector.call("displayTrails", trailsJson);
         }
     }
