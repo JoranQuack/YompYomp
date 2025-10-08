@@ -43,6 +43,6 @@ public class WeatherComponent extends VBox {
         minTempLabel.setText(String.format("%.1f°C", weather.getTempMin()));
         weatherIcon.setImage(WeatherFormatter.getWeatherIcon(weather.getIconType()));
         dayLabel.setText(WeatherFormatter.getDayOfWeek(weather.getDate()));
-        dateLabel.setText(weather.getDate());
+        dateLabel.setText(WeatherFormatter.formatDate(weather.getDate()));
     }
 }

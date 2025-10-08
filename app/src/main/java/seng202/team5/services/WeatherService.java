@@ -105,6 +105,7 @@ public class WeatherService {
 
     /**
      * Fetches a 4-day weather forecast for a given latitude and longitude
+     * Returns forecast data starting from tomorrow for the next 4 days
      *
      * @param lat Latitude of location
      * @param lon Longitude of location
@@ -139,6 +140,8 @@ public class WeatherService {
             Map<String, String> descByDate = new LinkedHashMap<>();
             Map<String, String> iconByDate = new LinkedHashMap<>();
 
+            String tomorrow = java.time.LocalDate.now().plusDays(1).toString();
+
             for (JsonElement elem : list) {
                 JsonObject entry = elem.getAsJsonObject();
                 JsonObject main = entry.getAsJsonObject("main");
@@ -149,9 +152,12 @@ public class WeatherService {
                 String iconType = weatherObj.get("icon").getAsString();
                 String date = entry.get("dt_txt").getAsString().split(" ")[0]; // yyyy-MM-dd
 
-                tempsByDate.computeIfAbsent(date, k -> new ArrayList<>()).add(temp);
-                descByDate.putIfAbsent(date, description);
-                iconByDate.putIfAbsent(date, iconType);
+                // Only include dates from tomorrow onwards
+                if (date.compareTo(tomorrow) >= 0) {
+                    tempsByDate.computeIfAbsent(date, k -> new ArrayList<>()).add(temp);
+                    descByDate.putIfAbsent(date, description);
+                    iconByDate.putIfAbsent(date, iconType);
+                }
             }
 
             List<Weather> forecast = new ArrayList<>();

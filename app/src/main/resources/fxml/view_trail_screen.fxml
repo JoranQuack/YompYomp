@@ -55,7 +55,7 @@
                </children>
             </HBox>
             <HBox fx:id="legendContainer" spacing="10.0" />
-            <HBox fx:id="weatherContainer">
+            <HBox fx:id="weatherContainer" minHeight="175.0" spacing="10.0">
                <VBox.margin>
                   <Insets />
                </VBox.margin>
