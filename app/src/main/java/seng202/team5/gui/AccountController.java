@@ -5,6 +5,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.chart.BarChart;
+import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.PieChart;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.Button;
@@ -214,6 +215,17 @@ public class AccountController extends Controller {
             preferencesBarChart.setTitle("Your Preference Strength (1-5 scale)");
             preferencesBarChart.setLegendVisible(false);
 
+            // Configure Y-axis for integer ticks and max value of 5
+            if (preferencesBarChart.getYAxis() instanceof NumberAxis) {
+                NumberAxis yAxis = (NumberAxis) preferencesBarChart.getYAxis();
+                yAxis.setLowerBound(0);
+                yAxis.setUpperBound(5);
+                yAxis.setTickUnit(1);
+                yAxis.setMinorTickVisible(false);
+                yAxis.setAutoRanging(false);
+            }
+
+            // Apply CSS classes to bars for styling
             applyBarChartColors(preferencesBarChart);
 
         } catch (Exception e) {
@@ -246,11 +258,6 @@ public class AccountController extends Controller {
 
                 difficultyPieChart.setData(difficultyData);
                 difficultyPieChart.setTitle("Your Perceived Difficulty Levels");
-
-                // Apply colors based on difficulty (green for easy, red for hard)
-                applyPieChartColors(difficultyPieChart, new String[] {
-                        "#4CAF50", "#FFC107", "#FF9800", "#F44336", "#9C27B0"
-                });
             } else {
                 PieChart.Data noDataSlice = new PieChart.Data("No difficulty data available", 1);
                 difficultyPieChart.setData(FXCollections.observableArrayList(noDataSlice));
@@ -321,7 +328,15 @@ public class AccountController extends Controller {
                 regionBarChart.setTitle("Top Regions in Your Logged Trails");
                 regionBarChart.setLegendVisible(false);
 
-                // Apply colors to bar chart
+                // Configure Y-axis for integer ticks only
+                if (regionBarChart.getYAxis() instanceof NumberAxis) {
+                    NumberAxis yAxis = (NumberAxis) regionBarChart.getYAxis();
+                    yAxis.setLowerBound(0);
+                    yAxis.setTickUnit(1);
+                    yAxis.setMinorTickVisible(false);
+                }
+
+                // Apply CSS classes to bars for styling
                 applyBarChartColors(regionBarChart);
             } else {
                 regionBarChart.getData().clear();
@@ -334,43 +349,25 @@ public class AccountController extends Controller {
     }
 
     /**
-     * Applies colors to pie chart slices
+     * Applies CSS classes to bar chart bars for proper styling
      *
-     * @param categoryPieChart
-     * @param colors
-     */
-    private void applyPieChartColors(PieChart categoryPieChart, String[] colors) {
-        // Apply colors after the chart is rendered using Platform.runLater
-        javafx.application.Platform.runLater(() -> {
-            int index = 0;
-            for (PieChart.Data data : categoryPieChart.getData()) {
-                if (index < colors.length && data.getNode() != null) {
-                    data.getNode().setStyle("-fx-pie-color: " + colors[index] + ";");
-                }
-                index++;
-            }
-        });
-    }
-
-    /**
-     * Applies colors to bar chart bars
-     *
-     * @param barChart
+     * @param barChart the bar chart to apply CSS classes to
      */
     private void applyBarChartColors(BarChart<String, Number> barChart) {
-        // Apply gradient colors to bar chart using Platform.runLater
-        javafx.application.Platform.runLater(() -> {
-            String[] colors = { "#1f77b4", "#ff7f0e", "#2ca02c", "#d62728", "#9467bd", "#8c564b" };
-
-            for (XYChart.Series<String, Number> series : barChart.getData()) {
-                int index = 0;
-                for (XYChart.Data<String, Number> data : series.getData()) {
-                    if (index < colors.length && data.getNode() != null) {
-                        data.getNode().setStyle("-fx-bar-fill: " + colors[index] + ";");
+        Platform.runLater(() -> {
+            // Small delay to ensure chart nodes are created
+            Platform.runLater(() -> {
+                for (XYChart.Series<String, Number> series : barChart.getData()) {
+                    int index = 0;
+                    for (XYChart.Data<String, Number> data : series.getData()) {
+                        if (data.getNode() != null) {
+                            // Apply the default-colorX CSS class to each bar
+                            data.getNode().getStyleClass().add("default-color" + index);
+                        }
+                        index++;
                     }
-                    index++;
                 }
-            }
+            });
         });
     }
 
