@@ -2,8 +2,9 @@ package seng202.team5.gui;
 
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
-import seng202.team5.data.SqlBasedTrailRepo;
+import seng202.team5.App;
 import seng202.team5.models.Trail;
+import seng202.team5.services.TrailService;
 
 /**
  * A bridge that handles communication between the JavaScript code
@@ -13,20 +14,18 @@ import seng202.team5.models.Trail;
 public class JavaScriptBridge {
 
     private final Controller controller;
-    private final SqlBasedTrailRepo sqlBasedTrailRepo;
+    private final TrailService trailService;
 
     /**
      * Creates a new JavaScriptBridge that will update the given controller
      * when the user interacts with the map
      *
-     * @param controller         the controller responsible for handling updates
-     *                           to latitude/longitude fields when a marker is added
-     * @param sqlBasedTrailRepo the sqlBasedTrailRepo containing methods to
-     *                          get all trails stored in the database
+     * @param controller the controller responsible for handling updates
+     *                   to latitude/longitude fields when a marker is added
      */
-    public JavaScriptBridge(Controller controller, SqlBasedTrailRepo sqlBasedTrailRepo) {
+    public JavaScriptBridge(Controller controller) {
         this.controller = controller;
-        this.sqlBasedTrailRepo = sqlBasedTrailRepo;
+        this.trailService = new TrailService(App.getTrailRepo());
     }
 
     /**
@@ -60,7 +59,7 @@ public class JavaScriptBridge {
      */
     public void openTrailInfo(int trailId) {
         if (controller instanceof ViewTrailController viewTrailController) {
-            Trail trail = sqlBasedTrailRepo.findById(trailId).get();
+            Trail trail = trailService.findTrailById(trailId);
             if (trail != null) {
                 viewTrailController.openTrailInfo(trail);
             }

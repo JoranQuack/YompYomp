@@ -109,17 +109,4 @@ public class FileBasedTrailRepoTest {
             assertFalse(Double.isInfinite(lon), "Longitude should not be infinite");
         }
     }
-
-    @Test
-    @DisplayName("Repository should implement ITrail interface correctly")
-    void testInterfaceImplementation() {
-        assertTrue(validRepo instanceof ITrail, "FileBasedTrailRepo should implement ITrail interface");
-
-        assertDoesNotThrow(() -> {
-            ITrail iTrail = validRepo;
-            iTrail.getAllTrails();
-            iTrail.findById(1);
-            iTrail.countTrails();
-        });
-    }
 }

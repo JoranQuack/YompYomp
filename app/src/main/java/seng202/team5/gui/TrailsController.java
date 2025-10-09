@@ -13,8 +13,6 @@ import javafx.concurrent.Task;
 import javafx.application.Platform;
 import org.controlsfx.control.CheckComboBox;
 import seng202.team5.App;
-import seng202.team5.data.SqlBasedTrailLogRepo;
-import seng202.team5.data.SqlBasedTrailRepo;
 import seng202.team5.gui.components.TrailCardComponent;
 import seng202.team5.models.Trail;
 import seng202.team5.services.SearchService;
@@ -26,7 +24,6 @@ import seng202.team5.services.SearchService;
  */
 public class TrailsController extends Controller {
     private SearchService searchService;
-    private SqlBasedTrailRepo sqlBasedTrailRepo;
     private String searchText;
     private final List<TrailCardComponent> trailCardPool = new ArrayList<>();
 
@@ -75,25 +72,21 @@ public class TrailsController extends Controller {
     /**
      * Creates a controller with navigator.
      *
-     * @param navigator         Screen navigator
-     * @param sqlBasedTrailRepo the trail repo
+     * @param navigator Screen navigator
      */
-    public TrailsController(ScreenNavigator navigator, SqlBasedTrailRepo sqlBasedTrailRepo) {
+    public TrailsController(ScreenNavigator navigator) {
         super(navigator);
-        this.sqlBasedTrailRepo = sqlBasedTrailRepo;
     }
 
     /**
      * Creates controller with navigator and initial search text.
      *
-     * @param navigator         Screen navigator
-     * @param searchText        Initial search text
-     * @param sqlBasedTrailRepo The trail repo
+     * @param navigator  Screen navigator
+     * @param searchText Initial search text
      */
-    public TrailsController(ScreenNavigator navigator, String searchText, SqlBasedTrailRepo sqlBasedTrailRepo) {
+    public TrailsController(ScreenNavigator navigator, String searchText) {
         super(navigator);
         this.searchText = searchText;
-        this.sqlBasedTrailRepo = sqlBasedTrailRepo;
     }
 
     /**
@@ -121,7 +114,7 @@ public class TrailsController extends Controller {
 
     @FXML
     private void onAddTrailButtonClicked() {
-        super.getNavigator().launchScreen(new ModifyTrailController(super.getNavigator(), null, sqlBasedTrailRepo));
+        super.getNavigator().launchScreen(new ModifyTrailController(super.getNavigator(), null));
     }
 
     @FXML
@@ -210,7 +203,7 @@ public class TrailsController extends Controller {
      * Initializes the search service.
      */
     private void initializeSearchService() {
-        this.searchService = new SearchService(App.getDatabaseService());
+        this.searchService = new SearchService(App.getTrailRepo(), App.getFilterOptionsRepo());
     }
 
     /**
@@ -288,8 +281,8 @@ public class TrailsController extends Controller {
         isUpdating = true;
 
         // Default: select user's preferred regions if not guest, else select all
-        if (!super.getUserService().isGuest()) {
-            List<String> preferredRegions = super.getUserService().getUser().getRegion();
+        if (!App.getUserService().isGuest()) {
+            List<String> preferredRegions = App.getUserService().getUser().getRegion();
             boolean anyMatched = false;
             for (String region : preferredRegions) {
                 if (regionList.contains(region)) {
@@ -349,7 +342,7 @@ public class TrailsController extends Controller {
         List<String> sortOptions = searchService.getSortOptions();
         sortChoiceBox.getItems().addAll(sortOptions);
 
-        if (super.getUserService().isGuest()) {
+        if (App.getUserService().isGuest()) {
             sortChoiceBox.getItems().remove("Match");
             sortChoiceBox.setValue("Name");
             searchService.setSortBy("name");
@@ -441,8 +434,7 @@ public class TrailsController extends Controller {
 
     @FXML
     private void onTrailCardClicked(Trail trail) {
-        super.getNavigator().launchScreen(new ViewTrailController(super.getNavigator(), trail, sqlBasedTrailRepo,
-                new SqlBasedTrailLogRepo(App.getDatabaseService())));
+        super.getNavigator().launchScreen(new ViewTrailController(super.getNavigator(), trail));
     }
 
     /**
@@ -469,7 +461,7 @@ public class TrailsController extends Controller {
             return;
         }
 
-        boolean isGuest = super.getUserService().isGuest();
+        boolean isGuest = App.getUserService().isGuest();
         Insets cardMargin = new Insets(10);
 
         for (int i = 0; i < trails.size(); i++) {

@@ -14,18 +14,19 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
 import netscape.javascript.JSObject;
-import seng202.team5.data.SqlBasedTrailLogRepo;
-import seng202.team5.data.SqlBasedTrailRepo;
+import seng202.team5.App;
 import seng202.team5.gui.components.LegendLabelComponent;
 import seng202.team5.gui.components.TrailCardComponent;
 import seng202.team5.gui.components.WeatherComponent;
 import seng202.team5.models.Trail;
+import seng202.team5.services.LogService;
 import seng202.team5.services.RegionFinder;
 import seng202.team5.utils.CompletionTimeParser;
+import seng202.team5.services.TrailService;
 import seng202.team5.utils.StringManipulator;
 import seng202.team5.utils.TrailsProcessor;
-import seng202.team5.models.Weather;
 import seng202.team5.services.WeatherService;
+import seng202.team5.models.Weather;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,10 +37,10 @@ import java.util.Map;
  */
 public class ViewTrailController extends Controller {
     private final Trail trail;
-    private final SqlBasedTrailRepo sqlBasedTrailRepo;
     private WeatherService weatherService;
-    private final SqlBasedTrailLogRepo sqlBasedTrailLogRepo;
     private RegionFinder regionFinder;
+    private TrailService trailService;
+    private LogService logService;
 
     private WebEngine webEngine;
     private JavaScriptBridge javaScriptBridge;
@@ -48,16 +49,14 @@ public class ViewTrailController extends Controller {
     /**
      * Launches the screen with navigator
      *
-     * @param navigator         screen navigator
-     * @param trail             trail object to be displayed on screen
-     * @param sqlBasedTrailRepo sqlBasedTrailRepo
+     * @param navigator screen navigator
+     * @param trail     trail object to be displayed on screen
      */
-    public ViewTrailController(ScreenNavigator navigator, Trail trail, SqlBasedTrailRepo sqlBasedTrailRepo,
-            SqlBasedTrailLogRepo sqlBasedTrailLogRepo) {
+    public ViewTrailController(ScreenNavigator navigator, Trail trail) {
         super(navigator);
         this.trail = trail;
-        this.sqlBasedTrailRepo = sqlBasedTrailRepo;
-        this.sqlBasedTrailLogRepo = sqlBasedTrailLogRepo;
+        this.trailService = new TrailService(App.getTrailRepo());
+        this.logService = new LogService(App.getTrailLogRepo(), App.getTrailRepo());
     }
 
     @FXML
@@ -202,7 +201,7 @@ public class ViewTrailController extends Controller {
      * Initialises the trail card at the top of the screen
      */
     private void initTrailCard() {
-        TrailCardComponent trailCard = new TrailCardComponent(super.getUserService().isGuest(), true, false,
+        TrailCardComponent trailCard = new TrailCardComponent(App.getUserService().isGuest(), true, false,
                 super.getNavigator());
         trailCard.setData(trail, null);
         trailCardHBox.getChildren().add(trailCard);
@@ -214,7 +213,7 @@ public class ViewTrailController extends Controller {
      * @param radius the radius in km of nearby trails to be viewed
      */
     private void updateNearbyTrails(int radius) {
-        List<Trail> nearby = TrailsProcessor.getNearbyTrails(trail, radius, sqlBasedTrailRepo.getAllTrails());
+        List<Trail> nearby = TrailsProcessor.getNearbyTrails(trail, radius, trailService.getAllTrails());
         displayTrailsOnMap(nearby);
     }
 
@@ -224,7 +223,7 @@ public class ViewTrailController extends Controller {
      * objects between Java and Javascript
      */
     private void initMap() {
-        javaScriptBridge = new JavaScriptBridge(this, sqlBasedTrailRepo);
+        javaScriptBridge = new JavaScriptBridge(this);
         mapContainer.getChildren().clear();
         WebView trailMapWebView = new WebView();
         trailMapWebView.setPrefHeight(-1);
@@ -294,12 +293,11 @@ public class ViewTrailController extends Controller {
         if (javaScriptConnector != null) {
             List<Map<String, Object>> trailsWithTime = new ArrayList<>();
 
-            for (Trail trail: trails) {
+            for (Trail trail : trails) {
                 Map<String, Object> trailMap = new Gson().fromJson(new Gson().toJson(trail), Map.class);
 
                 String completionTime = CompletionTimeParser.formatTimeRange(
-                        trail.getMinCompletionTimeMinutes(), trail.getMaxCompletionTimeMinutes()
-                );
+                        trail.getMinCompletionTimeMinutes(), trail.getMaxCompletionTimeMinutes());
                 trailMap.put("completionTime", completionTime);
                 trailsWithTime.add(trailMap);
             }
@@ -346,7 +344,7 @@ public class ViewTrailController extends Controller {
      */
     public void openTrailInfo(Trail trail) {
         super.getNavigator().launchScreen(
-                new ViewTrailController(super.getNavigator(), trail, sqlBasedTrailRepo, sqlBasedTrailLogRepo));
+                new ViewTrailController(super.getNavigator(), trail));
     }
 
     private void setupHutLinks() {
@@ -380,7 +378,7 @@ public class ViewTrailController extends Controller {
     }
 
     private boolean isTrailLogged(Trail trail) {
-        return sqlBasedTrailLogRepo.findByTrailId(trail.getId()).isPresent();
+        return logService.isTrailLogged(trail.getId());
     }
 
     private void onLogTrailClicked() {
@@ -389,8 +387,7 @@ public class ViewTrailController extends Controller {
 
     @FXML
     private void onEditInfoButtonClicked() {
-        super.getNavigator().launchScreen(new ModifyTrailController(super.getNavigator(), trail,
-                sqlBasedTrailRepo));
+        super.getNavigator().launchScreen(new ModifyTrailController(super.getNavigator(), trail));
     }
 
     @Override
