@@ -9,9 +9,7 @@ import javafx.scene.control.DialogPane;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import seng202.team5.App;
-import seng202.team5.data.SqlBasedTrailRepo;
 import seng202.team5.gui.components.NavbarComponent;
-import seng202.team5.services.UserService;
 
 /**
  * Abstract parent class for all UI controller classes.
@@ -20,16 +18,6 @@ public abstract class Controller {
 
     private final ScreenNavigator navigator;
     private final NavbarComponent navbarController;
-    private final SqlBasedTrailRepo sqlBasedTrailRepo;
-
-    /**
-     * No-argument constructor for FXML compatibility
-     */
-    protected Controller() {
-        this.navigator = null; // Will be set later via setter
-        this.navbarController = null; // Will be set later via setter
-        this.sqlBasedTrailRepo = new SqlBasedTrailRepo(App.getDatabaseService());
-    }
 
     /**
      * Creates an instance of a ScreenController with the given ScreenNavigator
@@ -38,8 +26,7 @@ public abstract class Controller {
      */
     protected Controller(final ScreenNavigator navigator) {
         this.navigator = navigator;
-        this.sqlBasedTrailRepo = new SqlBasedTrailRepo(App.getDatabaseService());
-        this.navbarController = new NavbarComponent(navigator, App.getUserService(), sqlBasedTrailRepo);
+        this.navbarController = new NavbarComponent(navigator, App.getUserService());
     }
 
     /**
@@ -118,15 +105,6 @@ public abstract class Controller {
      * @return The title to be displayed for this screen
      */
     protected abstract String getTitle();
-
-    /**
-     * Gets the user service associated with this screen controller.
-     *
-     * @return The user service for this controller
-     */
-    protected UserService getUserService() {
-        return App.getUserService();
-    }
 
     /**
      * Gets the screen navigator associated with this screen controller.

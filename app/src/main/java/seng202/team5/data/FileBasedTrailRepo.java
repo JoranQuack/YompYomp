@@ -6,6 +6,7 @@ import com.opencsv.CSVReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.io.InputStreamReader;
 import java.io.InputStream;
 
@@ -14,7 +15,7 @@ import java.io.InputStream;
  * trail CSV
  * It stores the trails in a list as trail object
  */
-public class FileBasedTrailRepo implements ITrail {
+public class FileBasedTrailRepo {
 
     // List containing all the trails from the CSV
     private final List<Trail> trails = new ArrayList<>();
@@ -93,7 +94,6 @@ public class FileBasedTrailRepo implements ITrail {
      *
      * @return list of trail objects
      */
-    @Override
     public List<Trail> getAllTrails() {
         return trails;
     }
@@ -105,12 +105,12 @@ public class FileBasedTrailRepo implements ITrail {
      * @return a java.util.Optional containing the Trail if found,
      *         or an empty Optional if no trail with the given id exists
      */
-    public java.util.Optional<Trail> findById(int id) {
-        return java.util.Optional.empty();
+    public Optional<Trail> findById(int id) {
+        return Optional.empty();
     }
 
     /**
-     *Return the total number of trails currently stored in the repository
+     * Return the total number of trails currently stored in the repository
      *
      * @return the number of trails
      */

@@ -10,7 +10,6 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.control.Tooltip;
 import javafx.scene.layout.HBox;
-import seng202.team5.data.SqlBasedTrailRepo;
 import seng202.team5.gui.*;
 import seng202.team5.services.UserService;
 
@@ -36,11 +35,10 @@ public class NavbarComponent extends HBox {
      * Initialise the NavbarController and put the buttons into the list to easily
      * switch between them.
      *
-     * @param navigator         the screen navigator
-     * @param userService       the userService
-     * @param sqlBasedTrailRepo the trail repo
+     * @param navigator   the screen navigator
+     * @param userService the userService
      */
-    public NavbarComponent(ScreenNavigator navigator, UserService userService, SqlBasedTrailRepo sqlBasedTrailRepo) {
+    public NavbarComponent(ScreenNavigator navigator, UserService userService) {
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/components/navbar.fxml"));
         fxmlLoader.setRoot(this);
         fxmlLoader.setController(this);
@@ -73,7 +71,7 @@ public class NavbarComponent extends HBox {
 
         navButtons = List.of(homeButton, trailsButton, logbookButton);
         homeButton.setOnAction(e -> navigator.launchScreen(new DashboardController(navigator)));
-        trailsButton.setOnAction(e -> navigator.launchScreen(new TrailsController(navigator, sqlBasedTrailRepo)));
+        trailsButton.setOnAction(e -> navigator.launchScreen(new TrailsController(navigator)));
         logbookButton.setOnAction(e -> navigator.launchScreen(new LogBookController(navigator)));
         if (navigator.hasPreviousScreen()) {
             backButton.setOnMouseClicked(e -> navigator.goBack());

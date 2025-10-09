@@ -11,7 +11,7 @@ import java.util.*;
  * Class is responsible for holding and executing all SQL queries related to
  * 'Trail Logs'
  */
-public class SqlBasedTrailLogRepo implements ITrailLog {
+public class SqlBasedTrailLogRepo {
 
     private final QueryHelper queryHelper;
 
@@ -47,7 +47,6 @@ public class SqlBasedTrailLogRepo implements ITrailLog {
      *
      * @return a list of all rows in the trailLog table
      */
-    @Override
     public List<TrailLog> getAllTrailLogs() {
         return queryHelper.executeQuery(SELECT_ALL, null, this::mapRowToTrailLog);
     }
@@ -58,7 +57,6 @@ public class SqlBasedTrailLogRepo implements ITrailLog {
      * @param id id of the object
      * @return an Optional containing the trailLog if found; otherwise empty
      */
-    @Override
     public Optional<TrailLog> findById(int id) {
         return queryHelper.executeQuerySingle(
                 SELECT_BY_ID,
@@ -71,7 +69,6 @@ public class SqlBasedTrailLogRepo implements ITrailLog {
      *
      * @return number of trailLogs as an integer
      */
-    @Override
     public int countTrailLogs() {
         return queryHelper.executeCountQuery(COUNT_SQL, null);
     }
@@ -83,7 +80,6 @@ public class SqlBasedTrailLogRepo implements ITrailLog {
      *
      * @param trailLog trailLog that needs to be updated
      */
-    @Override
     public void upsert(TrailLog trailLog) {
         queryHelper.executeUpdate(UPSERT_SQL, stmt -> setTrailLogParameters(stmt, trailLog));
     }
@@ -94,7 +90,6 @@ public class SqlBasedTrailLogRepo implements ITrailLog {
      * @param trailLogs List of trailLogs to insert into the database
      * @throws MatchmakingFailedException if trailLogs is empty
      */
-    @Override
     public void upsertAll(List<TrailLog> trailLogs) throws MatchmakingFailedException {
         if (trailLogs.isEmpty())
             throw new MatchmakingFailedException("trailLogs is empty.");
@@ -107,7 +102,6 @@ public class SqlBasedTrailLogRepo implements ITrailLog {
      *
      * @param id the trailLog identifier to delete
      */
-    @Override
     public void deleteById(int id) {
         queryHelper.executeUpdate(DELETE_SQL, stmt -> stmt.setInt(1, id));
     }
@@ -117,7 +111,6 @@ public class SqlBasedTrailLogRepo implements ITrailLog {
      *
      * @return new trailLog id
      */
-    @Override
     public int getNewTrailLogId() {
         String maxIdQuery = "SELECT MAX(id) FROM trailLog";
         return queryHelper.executeQuerySingle(maxIdQuery, null, rs -> rs.getInt(1)).orElse(0) + 1;
@@ -129,7 +122,6 @@ public class SqlBasedTrailLogRepo implements ITrailLog {
      * @param trailId the id of the trail
      * @return an Optional containing the trail log if found; otherwise empty
      */
-    @Override
     public Optional<TrailLog> findByTrailId(int trailId) {
         return queryHelper.executeQuerySingle(
                 "SELECT * FROM trailLog WHERE trailId = ? LIMIT 1",
@@ -144,7 +136,6 @@ public class SqlBasedTrailLogRepo implements ITrailLog {
      * @return mapped trailLog
      * @throws SQLException if the column cannot be read
      */
-    @Override
     public TrailLog mapRowToTrailLog(ResultSet rs) throws SQLException {
         String dateString = rs.getString("startDate");
         LocalDate startDate = null;
@@ -169,7 +160,6 @@ public class SqlBasedTrailLogRepo implements ITrailLog {
      * @param trailLog source of values
      * @throws SQLException if a parameter cannot be set
      */
-    @Override
     public void setTrailLogParameters(PreparedStatement stmt, TrailLog trailLog) throws SQLException {
         stmt.setInt(1, trailLog.getId());
         stmt.setInt(2, trailLog.getTrailId());
