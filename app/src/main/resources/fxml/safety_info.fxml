@@ -42,7 +42,7 @@
                                                 <Insets bottom="5.0" left="50.0" right="62.0" top="10.0" />
                                              </HBox.margin>
                                           </Label>
-                                          <Label text=" Urgency + situation (Is someone lost, or injured?)" wrapText="true">
+                                          <Label text=" Urgency + situation (Is someone lost, or injured?)." wrapText="true">
                                              <HBox.margin>
                                                 <Insets bottom="5.0" top="10.0" />
                                              </HBox.margin>
@@ -56,7 +56,7 @@
                                                 <Insets left="50.0" right="28.0" />
                                              </HBox.margin>
                                           </Label>
-                                          <Label text="Location/terrain. Map grid reference or GPS coordinates are preferable" wrapText="true" />
+                                          <Label text="Location/terrain. Map grid reference or GPS coordinates are preferable." wrapText="true" />
                                        </children>
                                     </HBox>
                                     <HBox alignment="CENTER_LEFT">
@@ -66,7 +66,7 @@
                                                 <Insets left="50.0" right="73.0" top="5.0" />
                                              </HBox.margin>
                                           </Label>
-                                          <Label text="Your name and phone number" wrapText="true">
+                                          <Label text="Your name and phone number. How many in your group?" wrapText="true">
                                              <HBox.margin>
                                                 <Insets top="5.0" />
                                              </HBox.margin>
@@ -108,7 +108,7 @@
                      </children>
                   </VBox>
 
-                         <!-- Safety Tips Section -->
+                   <!-- Safety Tips Section -->
                   <VBox alignment="CENTER">
                      <children>
                         <HBox alignment="CENTER">
