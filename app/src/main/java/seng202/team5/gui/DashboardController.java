@@ -33,6 +33,9 @@ public class DashboardController extends Controller {
     @FXML
     private Hyperlink DOCLink;
 
+    @FXML
+    private CheckBox regionCheckBox;
+
     /**
      * Creates controller with navigator.
      *
@@ -50,7 +53,7 @@ public class DashboardController extends Controller {
     private void initialize() {
 
         List<Trail> trails = dashboardService.getRecommendedTrails();
-        initializeRecommendedTrails(trails);
+        initializeTrails(trails);
 
         searchBarTextField.addEventHandler(KeyEvent.KEY_PRESSED, event -> {
             if (event.getCode() == KeyCode.ENTER) {
@@ -83,7 +86,7 @@ public class DashboardController extends Controller {
      *
      * @param trails List of trails to display
      */
-    private void initializeRecommendedTrails(List<Trail> trails) {
+    private void initializeTrails(List<Trail> trails) {
         trailsContainer.getChildren().clear();
         trails.forEach(this::createAndAddTrailCard);
     }
@@ -124,6 +127,21 @@ public class DashboardController extends Controller {
     @FXML
     private void onTrailCardClicked(Trail trail) {
         super.getNavigator().launchScreen(new ViewTrailController(super.getNavigator(), trail));
+    }
+
+    /**
+     * When the regions checkbox is toggled change the trails that are being shown
+     */
+    @FXML
+    private void onRegionCheckBoxToggle() {
+        List<Trail> trailsToPopulateWith;
+        if (regionCheckBox.isSelected()) {
+            trailsToPopulateWith = dashboardService.getPopularTrailsByRegions(App.getUserService().getUser().getRegion());
+        }
+        else {
+            trailsToPopulateWith = dashboardService.getRecommendedTrails();
+        }
+        initializeTrails(trailsToPopulateWith);
     }
 
     @Override

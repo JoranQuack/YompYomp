@@ -15,14 +15,14 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox alignment="CENTER" minHeight="350.0" minWidth="500.0" styleClass="root-pane" stylesheets="@../styles/global.css" xmlns="http://javafx.com/javafx/21.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="seng202.team5.gui.DashboardController">
+<VBox alignment="CENTER" minHeight="350.0" minWidth="500.0" styleClass="root-pane" stylesheets="@../styles/global.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="seng202.team5.gui.DashboardController">
    <children>
       <HBox alignment="CENTER_LEFT" spacing="10.0">
          <children>
             <Region HBox.hgrow="ALWAYS" />
             <TextField fx:id="searchBarTextField" maxWidth="1.7976931348623157E308" promptText="Search trails..." HBox.hgrow="ALWAYS" />
             <Button fx:id="searchButton" onAction="#onSearchButtonClicked" styleClass="search-button" text="Search" />
-            <CheckBox mnemonicParsing="false" text="Region" />
+            <CheckBox fx:id="regionCheckBox" mnemonicParsing="false" onAction="#onRegionCheckBoxToggle" text="Only trails in your regions" />
             <Region HBox.hgrow="ALWAYS" />
          </children>
          <padding>
