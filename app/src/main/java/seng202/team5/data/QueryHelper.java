@@ -10,18 +10,29 @@ import java.util.Optional;
 
 /**
  * Query helper for executing SQL
+ *
+ * Supports single/multiple result queries, update/insert/delete operations, count queries,
+ * and batch operations. Uses functional interfaces for parameter setting and row mapping.
  */
 public class QueryHelper {
     private final DatabaseService databaseService;
 
+    /**
+     * Constructor for QueryHelper class
+     *
+     * @param databaseService the databaseService instance
+     */
     public QueryHelper(DatabaseService databaseService) {
         this.databaseService = databaseService;
     }
 
     /**
      * Execute a query for result list
-     *
+     * @param sql          the SQL query string
+     * @param paramSetter  functional interface to set query parameters
+     * @param rowMapper    functional interface to map each ResultSet row to a type T
      * @return a list of results
+     * @param <T>          the type of results
      */
     public <T> List<T> executeQuery(String sql, ParameterSetter paramSetter, RowMapper<T> rowMapper) {
         List<T> results = new ArrayList<>();
@@ -45,17 +56,21 @@ public class QueryHelper {
 
     /**
      * Execute a query for single result
-     *
-     * @return a single optional result
+     * @param sql          the SQL query string
+     * @param paramSetter  functional interface to set query parameters
+     * @param rowMapper    functional interface to map each ResultSet row to a type T
+     * @return             an optional containing the result if found or empty if no rows
+     * @param <T>          the type of the result
      */
     public <T> Optional<T> executeQuerySingle(String sql, ParameterSetter paramSetter, RowMapper<T> rowMapper) {
         List<T> results = executeQuery(sql, paramSetter, rowMapper);
-        return results.isEmpty() ? Optional.empty() : Optional.of(results.get(0));
+        return results.isEmpty() ? Optional.empty() : Optional.of(results.getFirst());
     }
 
     /**
      * Execute an update/insert/delete operation
-     *
+     * @param sql          the SQL statement
+     * @param paramSetter  functional interface to set statement parameters
      * @return the number of affected rows
      */
     public int executeUpdate(String sql, ParameterSetter paramSetter) {
@@ -75,6 +90,8 @@ public class QueryHelper {
     /**
      * Execute a query that returns a single integer (like COUNT)
      *
+     * @param sql          the SQL query string
+     * @param paramSetter  functional interface to set query parameters
      * @return the integer result
      */
     public int executeCountQuery(String sql, ParameterSetter paramSetter) {
@@ -174,18 +191,51 @@ public class QueryHelper {
     public record SqlStatement(String sql, ParameterSetter paramSetter) {
     }
 
+    /**
+     * Functional interface for setting parameters on a PreparedStatement.
+     */
     @FunctionalInterface
     public interface ParameterSetter {
+        /**
+         * Set parameters on a PreparedStatement before execution
+         *
+         * @param stmt the PreparedStatement
+         * @throws SQLException if setting parameters fails
+         */
         void setParameters(PreparedStatement stmt) throws SQLException;
     }
 
+    /**
+     * Functional interface for mapping a single ResultSet row to an object of type T.
+     *
+     * @param <T> the type of the mapped object
+     */
     @FunctionalInterface
     public interface RowMapper<T> {
+        /**
+         * Maps a single row of the ResultSet to an object.
+         *
+         * @param rs the ResultSet, positions at the current row
+         * @return the mapped object
+         * @throws SQLException if reading from ResultSet fails
+         */
         T mapRow(ResultSet rs) throws SQLException;
     }
 
+    /**
+     * Functional interface for setting parameters for a batch update on a PreparedStatement.
+     *
+     * @param <T> the type of the items in the batch
+     */
     @FunctionalInterface
     public interface BatchParameterSetter<T> {
+        /**
+         * Sets parameters for a single item in a batch.
+         *
+         * @param stmt the PreparedStatement
+         * @param item the item to set parameters for
+         * @throws SQLException if setting parameters fails
+         */
         void setParameters(PreparedStatement stmt, T item) throws SQLException;
     }
 }

@@ -1,6 +1,7 @@
 package seng202.team5.services;
 
 import seng202.team5.utils.AppDataManager;
+import seng202.team5.App;
 import seng202.team5.data.DatabaseService;
 import seng202.team5.data.FileBasedKeywordRepo;
 import seng202.team5.data.FileBasedTrailRepo;
@@ -36,9 +37,9 @@ public class SetupService {
      *
      * @param databaseService
      */
-    public SetupService(DatabaseService databaseService) {
+    public SetupService(SqlBasedTrailRepo sqlTrailRepo, DatabaseService databaseService) {
         this.databaseService = databaseService;
-        this.sqlTrailRepo = new SqlBasedTrailRepo(databaseService);
+        this.sqlTrailRepo = sqlTrailRepo;
         this.fileTrailRepo = new FileBasedTrailRepo("/datasets/DOC_Walking_Experiences_-2195374600472221140.csv");
     }
 
@@ -167,11 +168,11 @@ public class SetupService {
      * Syncs keywords in the database.
      */
     public void syncKeywords() {
-        SqlBasedKeywordRepo sqlBasedKeywordRepo = new SqlBasedKeywordRepo(databaseService);
+        SqlBasedKeywordRepo sqlBasedKeywordRepo = App.getKeywordRepo();
         FileBasedKeywordRepo fileBasedKeywordRepo = new FileBasedKeywordRepo(
                 "/datasets/Categories_and_Keywords.csv");
         sqlBasedKeywordRepo.insertCategoriesAndKeywords(fileBasedKeywordRepo.getKeywords());
-        MatchmakingService matchmakingService = new MatchmakingService(databaseService);
+        MatchmakingService matchmakingService = new MatchmakingService(sqlBasedKeywordRepo, sqlTrailRepo);
         try {
             matchmakingService.categoriseAllTrails();
         } catch (MatchmakingFailedException e) {
