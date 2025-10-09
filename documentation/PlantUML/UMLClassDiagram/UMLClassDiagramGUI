@@ -139,16 +139,13 @@ package "GUI" {
      }
     }
 
-  NavbarComponent --> DashboardController
-  NavbarComponent --> TrailsController
-
-  DashboardController -- TrailCardComponent
-  TrailsController -- TrailCardComponent
-
+  DashboardController "1" -- "0..*" TrailCardComponent
+  TrailsController "1" -- "0..*" TrailCardComponent
+  LogBookController "1" -- "0..*" TrailCardComponent
+  ViewTrailController "1" -- "0..*" TrailCardComponent
   ScreenNavigator o-- Controller
   Controller *-- NavbarComponent
-  ViewTrailController *-- LegendLabelComponent
-  ViewTrailController --> TrailCardComponent
+  ViewTrailController --> LegendLabelComponent
   ViewTrailController --> WeatherComponent
   LoadingController --> BackgroundImageUtil
   ProfileSetupGeneralController --> BackgroundImageUtil
