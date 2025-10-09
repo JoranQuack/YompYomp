@@ -2,6 +2,7 @@ package seng202.team5.gui;
 
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
+import seng202.team5.App;
 import seng202.team5.data.SqlBasedTrailRepo;
 import seng202.team5.models.Trail;
 
@@ -21,12 +22,10 @@ public class JavaScriptBridge {
      *
      * @param controller         the controller responsible for handling updates
      *                           to latitude/longitude fields when a marker is added
-     * @param sqlBasedTrailRepo the sqlBasedTrailRepo containing methods to
-     *                          get all trails stored in the database
      */
-    public JavaScriptBridge(Controller controller, SqlBasedTrailRepo sqlBasedTrailRepo) {
+    public JavaScriptBridge(Controller controller) {
         this.controller = controller;
-        this.sqlBasedTrailRepo = sqlBasedTrailRepo;
+        this.sqlBasedTrailRepo = App.getTrailRepo();
     }
 
     /**
