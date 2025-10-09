@@ -183,6 +183,8 @@ public class TrailsController extends Controller {
                         restorePageAndScrollPosition();
                         isRestoringState = false;
                     }
+
+                    nextPageButton.setVisible(searchService.getNumberOfPages() > 1);
                 });
             }
 
