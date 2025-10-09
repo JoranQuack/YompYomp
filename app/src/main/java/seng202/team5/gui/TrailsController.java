@@ -281,8 +281,8 @@ public class TrailsController extends Controller {
         isUpdating = true;
 
         // Default: select user's preferred regions if not guest, else select all
-        if (!super.getUserService().isGuest()) {
-            List<String> preferredRegions = super.getUserService().getUser().getRegion();
+        if (!App.getUserService().isGuest()) {
+            List<String> preferredRegions = App.getUserService().getUser().getRegion();
             boolean anyMatched = false;
             for (String region : preferredRegions) {
                 if (regionList.contains(region)) {
@@ -342,7 +342,7 @@ public class TrailsController extends Controller {
         List<String> sortOptions = searchService.getSortOptions();
         sortChoiceBox.getItems().addAll(sortOptions);
 
-        if (super.getUserService().isGuest()) {
+        if (App.getUserService().isGuest()) {
             sortChoiceBox.getItems().remove("Match");
             sortChoiceBox.setValue("Name");
             searchService.setSortBy("name");
@@ -461,7 +461,7 @@ public class TrailsController extends Controller {
             return;
         }
 
-        boolean isGuest = super.getUserService().isGuest();
+        boolean isGuest = App.getUserService().isGuest();
         Insets cardMargin = new Insets(10);
 
         for (int i = 0; i < trails.size(); i++) {

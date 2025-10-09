@@ -1,6 +1,7 @@
 package seng202.team5.gui;
 
 import javafx.fxml.FXML;
+import seng202.team5.App;
 import seng202.team5.gui.util.BackgroundImageUtil;
 import seng202.team5.models.Question;
 import seng202.team5.models.User;
@@ -66,7 +67,7 @@ public class ProfileQuizController extends Controller {
      */
     @FXML
     private void initialize() {
-        User user = super.getUserService().getUser();
+        User user = App.getUserService().getUser();
         int[] sliderValues = getUserPreferences(user);
 
         BackgroundImageUtil.setupCoverBehavior(bgImage, rootPane);
@@ -149,21 +150,21 @@ public class ProfileQuizController extends Controller {
 
     private int[] getUserPreferences(User user) {
         if (user == null) {
-            return new int[] {3, 3};
+            return new int[] { 3, 3 };
         }
 
         return switch (quizId) {
-            case 1 -> new int[]{user.getExperienceLevel() == 0 ? 3 : user.getExperienceLevel(),
-                                user.getGradientPreference() == 0 ? 3 : user.getGradientPreference()};
-            case 3 -> new int[]{user.getBushPreference() == 0 ? 3 : user.getBushPreference(),
-                                user.getReservePreference() == 0 ? 3 : user.getReservePreference()};
-            case 5 -> new int[]{user.getLakeRiverPreference() == 0 ? 3 : user.getLakeRiverPreference(),
-                                user.getCoastPreference() == 0 ? 3 : user.getCoastPreference()};
-            case 7 -> new int[]{user.getMountainPreference() == 0 ? 3 : user.getMountainPreference(),
-                                user.getWildlifePreference() == 0 ? 3 : user.getWildlifePreference()};
-            case 9 -> new int[]{user.getHistoricPreference() == 0 ? 3 : user.getHistoricPreference(),
-                                user.getWaterfallPreference() == 0 ? 3 : user.getWaterfallPreference()};
-            default -> new int[]{3, 3};
+            case 1 -> new int[] { user.getExperienceLevel() == 0 ? 3 : user.getExperienceLevel(),
+                    user.getGradientPreference() == 0 ? 3 : user.getGradientPreference() };
+            case 3 -> new int[] { user.getBushPreference() == 0 ? 3 : user.getBushPreference(),
+                    user.getReservePreference() == 0 ? 3 : user.getReservePreference() };
+            case 5 -> new int[] { user.getLakeRiverPreference() == 0 ? 3 : user.getLakeRiverPreference(),
+                    user.getCoastPreference() == 0 ? 3 : user.getCoastPreference() };
+            case 7 -> new int[] { user.getMountainPreference() == 0 ? 3 : user.getMountainPreference(),
+                    user.getWildlifePreference() == 0 ? 3 : user.getWildlifePreference() };
+            case 9 -> new int[] { user.getHistoricPreference() == 0 ? 3 : user.getHistoricPreference(),
+                    user.getWaterfallPreference() == 0 ? 3 : user.getWaterfallPreference() };
+            default -> new int[] { 3, 3 };
         };
     }
 
@@ -192,7 +193,7 @@ public class ProfileQuizController extends Controller {
      */
     @FXML
     private void onSkipQuizButtonClicked() {
-        user = super.getUserService().getUserAfterSkip();
+        user = App.getUserService().getUserAfterSkip();
         super.getNavigator().launchScreen(new LoadingController(super.getNavigator(), null));
     }
 

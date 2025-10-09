@@ -1,7 +1,6 @@
 package seng202.team5.gui;
 
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.sun.javafx.webkit.WebConsoleListener;
 
 import javafx.application.Platform;
@@ -21,13 +20,16 @@ import seng202.team5.gui.components.WeatherComponent;
 import seng202.team5.models.Trail;
 import seng202.team5.services.LogService;
 import seng202.team5.services.RegionFinder;
+import seng202.team5.utils.CompletionTimeParser;
 import seng202.team5.services.TrailService;
 import seng202.team5.utils.StringManipulator;
 import seng202.team5.utils.TrailsProcessor;
 import seng202.team5.services.WeatherService;
 import seng202.team5.models.Weather;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Controller for the view trail screen
@@ -46,8 +48,8 @@ public class ViewTrailController extends Controller {
     /**
      * Launches the screen with navigator
      *
-     * @param navigator         screen navigator
-     * @param trail             trail object to be displayed on screen
+     * @param navigator screen navigator
+     * @param trail     trail object to be displayed on screen
      */
     public ViewTrailController(ScreenNavigator navigator, Trail trail) {
         super(navigator);
@@ -198,7 +200,7 @@ public class ViewTrailController extends Controller {
      * Initialises the trail card at the top of the screen
      */
     private void initTrailCard() {
-        TrailCardComponent trailCard = new TrailCardComponent(super.getUserService().isGuest(), true, false,
+        TrailCardComponent trailCard = new TrailCardComponent(App.getUserService().isGuest(), true, false,
                 super.getNavigator());
         trailCard.setData(trail, null);
         trailCardHBox.getChildren().add(trailCard);
@@ -276,7 +278,9 @@ public class ViewTrailController extends Controller {
     private void addLocation() {
         Gson gson = new Gson();
         String trailJson = gson.toJson(trail); // convert Trail object to JSON string
-        javaScriptConnector.call("addMarker", trail.getLat(), trail.getLon(), trailJson);
+        String trailCompletionTime = CompletionTimeParser.formatTimeRange(trail.getMinCompletionTimeMinutes(),
+                trail.getMaxCompletionTimeMinutes());
+        javaScriptConnector.call("addMarker", trail.getLat(), trail.getLon(), trailJson, trailCompletionTime);
     }
 
     /**
@@ -286,8 +290,17 @@ public class ViewTrailController extends Controller {
      */
     private void displayTrailsOnMap(List<Trail> trails) {
         if (javaScriptConnector != null) {
-            Gson gson = new GsonBuilder().create();
-            String trailsJson = gson.toJson(trails);
+            List<Map<String, Object>> trailsWithTime = new ArrayList<>();
+
+            for (Trail trail : trails) {
+                Map<String, Object> trailMap = new Gson().fromJson(new Gson().toJson(trail), Map.class);
+
+                String completionTime = CompletionTimeParser.formatTimeRange(
+                        trail.getMinCompletionTimeMinutes(), trail.getMaxCompletionTimeMinutes());
+                trailMap.put("completionTime", completionTime);
+                trailsWithTime.add(trailMap);
+            }
+            String trailsJson = new Gson().toJson(trailsWithTime);
             javaScriptConnector.call("displayTrails", trailsJson);
         }
     }

@@ -44,17 +44,6 @@ public class SetupService {
     }
 
     /**
-     * Checks if the category table is populated.
-     *
-     * @param sqlBasedKeywordRepo keyword repo to be used
-     * @return true if the category table is populated, false otherwise.
-     */
-    boolean isCategoryTablePopulated(SqlBasedKeywordRepo sqlBasedKeywordRepo) {
-        System.out.println(sqlBasedKeywordRepo.countCategories());
-        return sqlBasedKeywordRepo.countCategories() > 0;
-    }
-
-    /**
      * Sets up the database by creating it if it doesn't exist.
      */
     public void setupDatabase() {
@@ -145,11 +134,13 @@ public class SetupService {
      * Syncs the database from the trail file if trail doesn't exist
      */
     public void syncDbFromTrailFile() {
+        if (sqlTrailRepo.countTrails() > 0) {
+            return;
+        }
         try {
             List<Trail> source = fileTrailRepo.getAllTrails();
             List<Trail> trails = TrailsProcessor.processTrails(source);
             sqlTrailRepo.insertOrIgnoreAll(trails);
-            System.out.println("Sync trails complete, " + sqlTrailRepo.countTrails() + " trails.");
         } catch (Exception e) {
             System.err.println("Error syncing database from trail file: " + e.getMessage());
             e.printStackTrace();
@@ -160,7 +151,7 @@ public class SetupService {
      * Syncs filter options in the database.
      */
     public void syncFilterOptions() {
-        SqlBasedFilterOptionsRepo filterOptionsRepo = new SqlBasedFilterOptionsRepo(databaseService);
+        SqlBasedFilterOptionsRepo filterOptionsRepo = App.getFilterOptionsRepo();
         filterOptionsRepo.refreshAllFilterOptions();
     }
 
@@ -168,6 +159,9 @@ public class SetupService {
      * Syncs keywords in the database.
      */
     public void syncKeywords() {
+        if (sqlTrailRepo.countTrails() > 0) {
+            return;
+        }
         SqlBasedKeywordRepo sqlBasedKeywordRepo = App.getKeywordRepo();
         FileBasedKeywordRepo fileBasedKeywordRepo = new FileBasedKeywordRepo(
                 "/datasets/Categories_and_Keywords.csv");
