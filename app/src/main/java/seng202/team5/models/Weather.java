@@ -6,13 +6,16 @@ public class Weather {
     private double tempMin;
     private String description;
     private String date;
+    private String iconType;
 
-    public Weather(double temperature, double tempMax, double tempMin, String description, String date) {
+    public Weather(double temperature, double tempMax, double tempMin, String description, String date,
+            String iconType) {
         this.temperature = temperature;
         this.tempMax = tempMax;
         this.tempMin = tempMin;
         this.description = description;
         this.date = date;
+        this.iconType = iconType;
     }
 
     public double getTemperature() {
@@ -31,7 +34,13 @@ public class Weather {
         return description;
     }
 
-    public String getDate() {return date;}
+    public String getDate() {
+        return date;
+    }
+
+    public String getIconType() {
+        return iconType;
+    }
 
     @Override
     public String toString() {
@@ -44,4 +53,3 @@ public class Weather {
         }
     }
 }
-
