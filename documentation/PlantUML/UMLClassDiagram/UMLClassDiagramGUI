@@ -6,119 +6,155 @@ title GUI Package
 package "GUI" {
 
   abstract class Controller {
-    + setNavigator(n : ScreenNavigator) : void
-    + showError(message : String) : void
+    - Controller(navigator : ScreenNavigator)
+    + showAlert(title : String, headerText : String, contentText : String, confirmText : String, cancelText : String, confirmCssClass : String) : boolean
+    + onLoadFailed(e : Exception) : void
+    + saveState() : void
+    + restoreState() : void
   }
 
   class ScreenNavigator {
+    + ScreenNavigator(stage : Stage)
     + launch(controller : Controller) : void
   }
 
   class FXAppEntry {
-    + start(stage : Stage) : void
-    + main(args : String[]) : void
+    + start(primaryStage : Stage) : void
   }
   FXAppEntry -up-|> Application
   FXAppEntry *-- ScreenNavigator
   hide Application
 
   class AccountController {
+    + AccountController(navigator : ScreenNavigator)
+    - initialize() : void
+    - setUpChartsAndStats() : void
+    + onLoadFailed(e : Exception) : void
+  }
 
+  class LoadingController {
+    + LoadingController(navigator : ScreenNavigator, user : User)
+    - initialize() : void
+    - startMatchmaking() : void
   }
 
   class TrailsController {
-    + TrailsController()
-    + TrailsController(n : ScreenNavigator)
-    + initialize() : void
-    - updateDisplay(trails : List<Trail>) : void
-  }
-
-  class DashboardController {
-    + DashboardController()
-    + DashboardController(n : ScreenNavigator)
-    + initialize() : void
+    + TrailsController(navigator : ScreenNavigator)
+    - initialize() : void
     - updateTrailsDisplay(trails : List<Trail>) : void
   }
 
-  class WelcomeController {
-    + WelcomeController(n : ScreenNavigator)
-    + initialize() : void
-    - onSetup() : void
-    - onSkip() : void
+  class ViewTrailController {
+    + ViewTrailController(navigator : ScreenNavigator, trail : Trail)
+    - initialize() : void
+    - setupEventHandlers() : void
   }
 
-  class LogBookController <<to be implemented>>{
-    + LogBookController(n : ScreenNavigator)
-    + initialize() : void
-    - showLogBook() : void
-    - highlightTrailLog() : bool
+  class DashboardController {
+    + DashboardController(navigator : ScreenNavigator)
+    - initialize() : void
+    - createAndAddTrailCard(trail : Trail) : void
+      }
+
+  class WelcomeController {
+    + WelcomeController(navigator : ScreenNavigator)
+    - initialize() : void
+  }
+
+  class LogBookController {
+    + LogBookController(navigator : ScreenNavigator)
+    - initialize() : void
+    - updateLogsDisplay(logs : List<TrailLog>) : void
+  }
+
+  class LogTrailController {
+    + LogTrailController(navigator : ScreenNavigator, trail : Trail)
+    - initialize() : void
+    - setupFormFields() : void
+    - populateFields() : void
+    - clearErrors() : void
+  }
+
+  class ModifyTrailController {
+     + ModifyTrailController(navigator : ScreenNavigator, trail : Trail)
+     - initialize() : void
+     - setupFormFields() : void
+     - setupEventHandlers() : void
+     - userInputValidation : boolean
   }
 
   class SafetyInfoController {
-
+    +SafetyInfoController(navigator : ScreenNavigator)
   }
 
   class ProfileQuizController {
-    + ProfileQuizController(n : ScreenNavigator)
-    + initialize() : void
-    - updateQuestionView() : void
-    - next() : void
-    - previous() : void
-    - submit() : void
+    + ProfileQuizController(navigator : ScreenNavigator, quizId : int, user User)
+    - initialize() : void
+    - setProgressBar() : void
+    - setQuestionLabel() : void
   }
 
   class ProfileSetupGeneralController {
-    + ProfileSetupGeneralController(n : ScreenNavigator)
-    + initialize() : void
-    - saveUserPreferences() : void
-    - onContinue() : void
+    + ProfileSetupGeneralController(navigator : ScreenNavigator)
+    - initialize() : void
+    - setUserPreferences() : boolean
   }
 
   Controller <|-- DashboardController
   Controller <|-- TrailsController
   Controller <|-- WelcomeController
-  Controller <|-- MatchmakingController
   Controller <|-- ProfileQuizController
   Controller <|-- ProfileSetupGeneralController
   Controller <|-- LogBookController
+  Controller <|-- ViewTrailController
+  Controller <|-- LoadingController
+  Controller <|-- AccountController
+  Controller <|-- SafetyInfoController
+  Controller <|-- ModifyTrailController
+  Controller <|-- LogTrailController
 
   package "components" {
     class TrailCardComponent {
-      + setTrail(trail : Trail) : void
-      + setMatchScore(score : double) : void
-      + onOpenDetails() : void
+      + TrailCardComponent(isUnmatched boolean, isSingle boolean, logMode boolean, navigator ScreenNavigator)
+      + setData(trail : Trail, log TrailLog) : void
     }
 
     class NavbarComponent {
-      + setPage(index : int) : void
-      + onHome() : void
-      + onTrails() : void
-      + onProfile() : void
-      + onSettings() : void
+      + NavbarComponent(navigator : ScreenNavigator, userService : UserService)
+      + setPage(pageIndex : int) : void
     }
 
     class LegendLabelComponent {
-
+      +LegendLabelComponent(tag : String)
     }
 
     class WeatherComponent {
-
+      + WeatherComponent(weather : Weather)
+      - populateWeatherData(weather : Weather)
     }
   }
 
   package "utils" {
      class BackgroundImageUtil {
-
      }
     }
 
   NavbarComponent --> DashboardController
   NavbarComponent --> TrailsController
 
-  DashboardController -- components.TrailCardComponent
-  TrailsController -- components.TrailCardComponent
+  DashboardController -- TrailCardComponent
+  TrailsController -- TrailCardComponent
 
-  Controller --> ScreenNavigator
-  ScreenNavigator ..> Controller
+  ScreenNavigator o-- Controller
+  Controller *-- NavbarComponent
+  ViewTrailController *-- LegendLabelComponent
+  ViewTrailController --> TrailCardComponent
+  ViewTrailController --> WeatherComponent
+  LoadingController --> BackgroundImageUtil
+  ProfileSetupGeneralController --> BackgroundImageUtil
+  ProfileQuizController --> BackgroundImageUtil
+  WelcomeController --> BackgroundImageUtil
+
+
 }
 @enduml
