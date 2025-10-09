@@ -10,7 +10,6 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.control.Tooltip;
 import javafx.scene.layout.HBox;
-import seng202.team5.data.SqlBasedTrailRepo;
 import seng202.team5.gui.*;
 import seng202.team5.services.UserService;
 
@@ -36,8 +35,8 @@ public class NavbarComponent extends HBox {
      * Initialise the NavbarController and put the buttons into the list to easily
      * switch between them.
      *
-     * @param navigator         the screen navigator
-     * @param userService       the userService
+     * @param navigator   the screen navigator
+     * @param userService the userService
      */
     public NavbarComponent(ScreenNavigator navigator, UserService userService) {
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/components/navbar.fxml"));

@@ -9,7 +9,6 @@ import javafx.scene.control.DialogPane;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import seng202.team5.App;
-import seng202.team5.data.SqlBasedTrailRepo;
 import seng202.team5.gui.components.NavbarComponent;
 import seng202.team5.services.UserService;
 

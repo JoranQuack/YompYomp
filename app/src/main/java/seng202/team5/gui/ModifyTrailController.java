@@ -13,8 +13,6 @@ import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
 import netscape.javascript.JSObject;
 import seng202.team5.App;
-import seng202.team5.data.SqlBasedTrailLogRepo;
-import seng202.team5.data.SqlBasedTrailRepo;
 import seng202.team5.models.Trail;
 import seng202.team5.models.User;
 import seng202.team5.services.MatchmakingService;
@@ -41,8 +39,8 @@ public class ModifyTrailController extends Controller {
     /**
      * Launches the screen with the navigator
      *
-     * @param navigator         screen navigator
-     * @param trail             the selected trail
+     * @param navigator screen navigator
+     * @param trail     the selected trail
      */
     public ModifyTrailController(ScreenNavigator navigator, Trail trail) {
         super(navigator);

@@ -3,7 +3,6 @@ package seng202.team5.gui;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import seng202.team5.App;
-import seng202.team5.data.SqlBasedTrailRepo;
 import seng202.team5.models.Trail;
 import seng202.team5.services.TrailService;
 
@@ -21,8 +20,8 @@ public class JavaScriptBridge {
      * Creates a new JavaScriptBridge that will update the given controller
      * when the user interacts with the map
      *
-     * @param controller         the controller responsible for handling updates
-     *                           to latitude/longitude fields when a marker is added
+     * @param controller the controller responsible for handling updates
+     *                   to latitude/longitude fields when a marker is added
      */
     public JavaScriptBridge(Controller controller) {
         this.controller = controller;

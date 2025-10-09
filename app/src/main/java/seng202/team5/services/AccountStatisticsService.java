@@ -1,7 +1,6 @@
 package seng202.team5.services;
 
 import seng202.team5.App;
-import seng202.team5.data.SqlBasedTrailLogRepo;
 import seng202.team5.data.SqlBasedTrailRepo;
 import seng202.team5.exceptions.MatchmakingFailedException;
 import seng202.team5.models.Trail;
