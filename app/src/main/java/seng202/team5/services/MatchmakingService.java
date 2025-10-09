@@ -154,7 +154,7 @@ public class MatchmakingService {
                             .categories(categories)
                             .build();
                 })
-                .toList(); // Java 16+; for older versions, use collect(Collectors.toList())
+                .toList();
 
         keywordRepo.assignTrailCategories(updatedTrails);
     }
