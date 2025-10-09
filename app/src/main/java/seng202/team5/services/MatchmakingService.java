@@ -1,6 +1,5 @@
 package seng202.team5.services;
 
-import seng202.team5.data.DatabaseService;
 import seng202.team5.data.SqlBasedKeywordRepo;
 import seng202.team5.data.SqlBasedTrailRepo;
 import seng202.team5.exceptions.MatchmakingFailedException;
@@ -23,17 +22,6 @@ public class MatchmakingService {
     private final Map<Integer, Double> trailWeights = new HashMap<>(); // Identified by trail ID
     private SqlBasedKeywordRepo keywordRepo;
     private SqlBasedTrailRepo trailRepo;
-
-    /**
-     * Creates a MatchmakingService instance.
-     *
-     * @param databaseService the database service to use for data access
-     */
-    public MatchmakingService(DatabaseService databaseService) {
-        this.keywordRepo = new SqlBasedKeywordRepo(databaseService);
-        this.trailRepo = new SqlBasedTrailRepo(databaseService);
-        this.categoryToKeywords = keywordRepo.getKeywords();
-    }
 
     /**
      * Creates a MatchmakingService instance for testing with custom repos

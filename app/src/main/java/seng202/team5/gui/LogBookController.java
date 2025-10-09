@@ -76,7 +76,7 @@ public class LogBookController extends Controller {
      * Initialises the log service.
      */
     private void initializeLogService() {
-        this.logService = new LogService(App.getDatabaseService());
+        this.logService = new LogService(App.getTrailLogRepo(), App.getTrailRepo());
     }
 
     /**

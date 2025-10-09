@@ -5,6 +5,7 @@ import java.sql.SQLException;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import seng202.team5.App;
 import seng202.team5.data.DatabaseService;
 import seng202.team5.data.QueryHelper;
 import seng202.team5.data.SqlBasedTrailRepo;
@@ -15,7 +16,7 @@ import seng202.team5.models.User;
 public class UserService {
     private boolean isGuest;
     private User cachedUser;
-    private final DatabaseService databaseService;
+    private final SqlBasedTrailRepo trailRepo;
     private final QueryHelper queryHelper;
 
     // SQL Constants
@@ -51,9 +52,9 @@ public class UserService {
      *
      * @param databaseService the database service to use
      */
-    public UserService(DatabaseService databaseService) {
+    public UserService(SqlBasedTrailRepo trailRepo, DatabaseService databaseService) {
         this.isGuest = false;
-        this.databaseService = databaseService;
+        this.trailRepo = trailRepo;
         this.queryHelper = new QueryHelper(databaseService);
     }
 
@@ -132,7 +133,7 @@ public class UserService {
      */
     public boolean isValidName(String name) {
         return name != null && !name.trim().isEmpty() && name.trim().length() <= 30 &&
-               !name.equalsIgnoreCase("Guest User") && !name.equalsIgnoreCase("null");
+                !name.equalsIgnoreCase("Guest User") && !name.equalsIgnoreCase("null");
     }
 
     /**
@@ -160,7 +161,7 @@ public class UserService {
      * Removes last user if exists and resets to clean state.
      */
     public void clearUser() {
-        SqlBasedTrailRepo trailRepo = new SqlBasedTrailRepo(databaseService);
+        SqlBasedTrailRepo trailRepo = this.trailRepo;
         trailRepo.clearUserWeights();
         queryHelper.executeUpdate("DELETE FROM user", null);
         this.cachedUser = null;
@@ -282,15 +283,15 @@ public class UserService {
      * Will be updated later after trip logging is merged
      */
     public Map<String, Integer> getTrailStats() {
-        SqlBasedTrailRepo trailRepo = new SqlBasedTrailRepo(databaseService);
-        MatchmakingService matchmakingService = new MatchmakingService(databaseService);
-        //get all the trails
+        SqlBasedTrailRepo trailRepo = this.trailRepo;
+        MatchmakingService matchmakingService = new MatchmakingService(App.getKeywordRepo(),
+                trailRepo);
+        // get all the trails
         List<Trail> allTrails = trailRepo.getAllTrails();
-        //sort to get the recommened ones
+        // sort to get the recommended ones
         List<Trail> recommendedTrails = allTrails.stream()
                 .sorted(Comparator.comparing(Trail::getUserWeight).reversed())
-                .limit(8).
-                collect(Collectors.toList());
+                .limit(8).collect(Collectors.toList());
 
         Map<String, Integer> trailStats = new HashMap<>();
         for (Trail trail : recommendedTrails) {

@@ -72,7 +72,7 @@ public class TrailsController extends Controller {
     /**
      * Creates a controller with navigator.
      *
-     * @param navigator         Screen navigator
+     * @param navigator Screen navigator
      */
     public TrailsController(ScreenNavigator navigator) {
         super(navigator);
@@ -81,8 +81,8 @@ public class TrailsController extends Controller {
     /**
      * Creates controller with navigator and initial search text.
      *
-     * @param navigator         Screen navigator
-     * @param searchText        Initial search text
+     * @param navigator  Screen navigator
+     * @param searchText Initial search text
      */
     public TrailsController(ScreenNavigator navigator, String searchText) {
         super(navigator);
@@ -203,7 +203,7 @@ public class TrailsController extends Controller {
      * Initializes the search service.
      */
     private void initializeSearchService() {
-        this.searchService = new SearchService(App.getDatabaseService());
+        this.searchService = new SearchService(App.getTrailRepo());
     }
 
     /**

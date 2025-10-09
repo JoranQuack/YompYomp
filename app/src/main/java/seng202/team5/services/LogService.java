@@ -1,6 +1,5 @@
 package seng202.team5.services;
 
-import seng202.team5.data.DatabaseService;
 import seng202.team5.data.SqlBasedTrailLogRepo;
 import seng202.team5.data.SqlBasedTrailRepo;
 import seng202.team5.models.Trail;
@@ -20,16 +19,6 @@ public class LogService {
     private int maxResults = 50;
     private String currentSearchValue;
     private SqlBasedTrailRepo trailRepo;
-
-    /**
-     * Creates LogService with database-backed searching and pagination.
-     */
-    public LogService(DatabaseService databaseService) {
-        this.trailLogRepo = new SqlBasedTrailLogRepo(databaseService);
-        this.logs = trailLogRepo.getAllTrailLogs();
-        this.filteredLogs = logs;
-        this.trailRepo = new SqlBasedTrailRepo(databaseService);
-    }
 
     public LogService(SqlBasedTrailLogRepo trailLogRepo, SqlBasedTrailRepo trailRepo) {
         this.trailLogRepo = trailLogRepo;

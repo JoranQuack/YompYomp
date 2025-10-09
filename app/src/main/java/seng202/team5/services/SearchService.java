@@ -1,6 +1,5 @@
 package seng202.team5.services;
 
-import seng202.team5.data.DatabaseService;
 import seng202.team5.data.SqlBasedFilterOptionsRepo;
 import seng202.team5.data.SqlBasedTrailRepo;
 import seng202.team5.models.Trail;
@@ -31,16 +30,6 @@ public class SearchService {
     private int maxResults = 50;
     private String currentSortBy = "name";
     private boolean isAscending = true;
-
-    /**
-     * Creates SearchService with database-backed filter options.
-     */
-    public SearchService(DatabaseService databaseService) {
-        this.filterOptionsRepo = new SqlBasedFilterOptionsRepo(databaseService);
-        this.trails = new SqlBasedTrailRepo(databaseService).getAllTrails();
-        this.filteredTrails = trails;
-        this.filters = new HashMap<>();
-    }
 
     /**
      * Legacy constructor for testing (fallback without filter options repo).

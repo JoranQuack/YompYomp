@@ -13,7 +13,6 @@ import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import seng202.team5.App;
-import seng202.team5.data.DatabaseService;
 import seng202.team5.models.Question;
 import seng202.team5.models.User;
 import seng202.team5.services.AccountStatisticsService;
@@ -104,9 +103,9 @@ public class AccountController extends Controller {
         super(navigator);
         this.user = getUserService().getUser();
 
-        DatabaseService databaseService = App.getDatabaseService();
-        MatchmakingService matchmakingService = new MatchmakingService(databaseService);
-        this.statisticsService = new AccountStatisticsService(matchmakingService, user);
+        MatchmakingService matchmakingService = new MatchmakingService(App.getKeywordRepo(), App.getTrailRepo());
+        this.statisticsService = new AccountStatisticsService(App.getTrailRepo(), App.getTrailLogRepo(),
+                matchmakingService, user);
     }
 
     @FXML
