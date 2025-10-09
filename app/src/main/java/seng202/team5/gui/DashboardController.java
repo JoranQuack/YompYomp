@@ -59,7 +59,7 @@ public class DashboardController extends Controller {
      */
     private void initializeSearchService() {
         this.repo = new SqlBasedTrailRepo(new DatabaseService());
-        this.searchService = new SearchService(repo);
+        this.searchService = new SearchService(new DatabaseService());
         searchService.setMaxResults(8);
     }
 
@@ -131,7 +131,7 @@ public class DashboardController extends Controller {
      */
     private TrailCardComponent createTrailCard(Trail trail) {
         TrailCardComponent trailCard = new TrailCardComponent(
-                super.getUserService().isGuest(), false, false);
+                super.getUserService().isGuest(), false, false, super.getNavigator());
         trailCard.setData(trail, null);
         return trailCard;
     }

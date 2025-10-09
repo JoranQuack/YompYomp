@@ -55,9 +55,17 @@ Hyperlink {
   -fx-text-fill: #ff0000;
 }
 
+.text-darkish {
+  -fx-text-fill: #7b7b7b;
+}
+
 .small-text {
   -fx-font-size: 12px;
   -fx-font-family: "Quicksand Regular";
+}
+
+.strong-text {
+  -fx-font-family: "Quicksand SemiBold";
 }
 
 .pill {
@@ -68,6 +76,11 @@ Hyperlink {
 
 .regular-text {
   -fx-font-family: "Quicksand Regular";
+  -fx-font-size: 15px;
+}
+
+.strong-text {
+  -fx-font-family: "Quicksand SemiBold";
   -fx-font-size: 15px;
 }
 
@@ -205,6 +218,10 @@ ChoiceBox .menu-item:focused {
   -fx-font-size: 15px;
   -fx-text-fill: #fdfffb;
   -fx-cursor: hand;
+}
+
+.root-pane .check-box {
+  -fx-text-fill: #04140b;
 }
 
 .check-box .box {
@@ -413,8 +430,17 @@ ProgressIndicator {
   -fx-opacity: 0.7;
 }
 
+.trail-card.single {
+  -fx-background-color: #fdfffb;
+}
+
 .navbar-root {
   -fx-background-color: #eef1ed;
+}
+
+.weather-card {
+  -fx-background-color: #eef1ed;
+  -fx-background-radius: 10;
 }
 
 #mapContainer {
@@ -447,4 +473,171 @@ Button.bg-red {
 Button.bg-red:hover {
   -fx-background-color: #ff0000;
   -fx-text-fill: #fdfffb;
+}
+
+/* ========================================
+ * STATISTICS STYLES
+ * ======================================== */
+
+.stat-number {
+  -fx-font-family: "Quicksand Bold";
+  -fx-text-fill: #447055;
+}
+
+.stat-label {
+  -fx-font-family: "Quicksand Medium";
+  -fx-font-size: 12px;
+  -fx-text-fill: #7b7b7b;
+  -fx-text-alignment: center;
+}
+
+.legend-text {
+  -fx-font-family: "Quicksand Medium";
+  -fx-font-size: 12px;
+  -fx-text-fill: #04140b;
+}
+
+/* ========================================
+ * CHART STYLES
+ * ======================================== */
+
+.chart {
+  -fx-background-color: #fdfffb;
+  -fx-border-color: #eef1ed;
+  -fx-border-width: 1;
+  -fx-border-radius: 10;
+}
+
+.chart-title {
+  -fx-font-family: "Quicksand SemiBold";
+  -fx-font-size: 14px;
+  -fx-text-fill: #04140b;
+}
+
+.chart-legend {
+  -fx-background-color: transparent;
+}
+
+.chart-pie {
+  -fx-pie-color: CHART_COLOR_1;
+  -fx-background-color: radial-gradient(
+    radius 100%,
+    derive(-fx-pie-color, 20%),
+    derive(-fx-pie-color, -10%)
+  );
+  -fx-background-insets: 1;
+  -fx-border-color: -fx-background;
+}
+.chart-pie-label {
+  -fx-padding: 3px;
+  -fx-fill: -fx-text-base-color;
+}
+.chart-pie-label-line {
+  -fx-stroke: derive(-fx-background, -20%);
+}
+.pie-legend-symbol.chart-pie {
+  -fx-background-radius: 8px;
+  -fx-padding: 8px;
+  -fx-border-color: null;
+}
+
+.chart-bar {
+  -fx-bar-fill: CHART_COLOR_1;
+  -fx-background-color: linear-gradient(
+    to right,
+    derive(-fx-bar-fill, -4%),
+    derive(-fx-bar-fill, -1%),
+    derive(-fx-bar-fill, 0%),
+    derive(-fx-bar-fill, -1%),
+    derive(-fx-bar-fill, -6%)
+  );
+  -fx-background-insets: 0;
+}
+.chart-bar.negative {
+  -fx-background-insets: 1 0 0 0;
+}
+
+.chart-pie-label {
+  -fx-font-family: "Quicksand Medium";
+  -fx-font-size: 11px;
+  -fx-text-fill: #04140b;
+}
+
+/* Chart axis styling */
+.chart .axis {
+  -fx-tick-label-font-family: "Quicksand Medium";
+  -fx-tick-label-font-size: 10px;
+  -fx-tick-label-fill: #04140b;
+}
+
+.chart .axis-label {
+  -fx-font-family: "Quicksand SemiBold";
+  -fx-font-size: 12px;
+  -fx-text-fill: #04140b;
+}
+
+/* Chart specific colours for better distinction */
+.chart-plot-background {
+  -fx-background-color: transparent;
+}
+
+.chart-content {
+  -fx-padding: 10px;
+}
+
+.default-color0,
+.difficulty-expert {
+  -fx-pie-color: #f44336;
+  -fx-bar-fill: #f44336;
+}
+.default-color1,
+.difficulty-advanced {
+  -fx-pie-color: #ff9800;
+  -fx-bar-fill: #ff9800;
+}
+.default-color2,
+.difficulty-intermediate {
+  -fx-pie-color: #ffc107;
+  -fx-bar-fill: #ffc107;
+}
+.default-color3,
+.difficulty-easy {
+  -fx-pie-color: #a1d11c;
+  -fx-bar-fill: #a1d11c;
+}
+.default-color4,
+.difficulty-easiest {
+  -fx-pie-color: #4caf50;
+  -fx-bar-fill: #4caf50;
+}
+.default-color5 {
+  -fx-bar-fill: #00bcd4;
+}
+.default-color6 {
+  -fx-bar-fill: #2196f3;
+}
+.default-color7 {
+  -fx-bar-fill: #3f51b5;
+}
+.default-color8 {
+  -fx-bar-fill: #673ab7;
+}
+.default-color9 {
+  -fx-bar-fill: #9c27b0;
+}
+
+.legend-expert {
+  -fx-background-color: #f44336;
+}
+.legend-advanced {
+  -fx-background-color: #ff9800;
+}
+.legend-intermediate {
+  -fx-background-color: #ffc107;
+}
+.legend-easy {
+  -fx-background-color: #a1d11c;
+}
+.legend-easiest {
+  -fx-background-color: #4caf50;
 }

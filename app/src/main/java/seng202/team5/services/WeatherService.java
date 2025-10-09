@@ -27,6 +27,8 @@ public class WeatherService {
 
     /**
      * Fetches the API key from environment variable or properties file
+     *
+     * @return API key string
      */
     private static String getApiKey() {
         // environment variable (for CI/CD)
@@ -47,8 +49,9 @@ public class WeatherService {
             System.err.println("Please make sure your properties file is set up correctly.");
         }
 
-        throw new RuntimeException(
+        System.err.println(
                 "OpenWeather API key not found. Please add OPENWEATHER_API_KEY environment variable or config.properties in the resources folder.");
+        return "";
     }
 
     /**
@@ -90,8 +93,9 @@ public class WeatherService {
             double tempMin = main.get("temp_min").getAsDouble();
             double tempMax = main.get("temp_max").getAsDouble();
             String description = weatherObj.get("description").getAsString();
+            String iconType = weatherObj.get("icon").getAsString();
 
-            return new Weather(temp, tempMin, tempMax, description, null);
+            return new Weather(temp, tempMin, tempMax, description, null, iconType);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -99,6 +103,14 @@ public class WeatherService {
         }
     }
 
+    /**
+     * Fetches a 4-day weather forecast for a given latitude and longitude
+     * Returns forecast data starting from tomorrow for the next 4 days
+     *
+     * @param lat Latitude of location
+     * @param lon Longitude of location
+     * @return List of Weather objects containing forecast data
+     */
     public List<Weather> getFourDayForecast(double lat, double lon) {
         try {
             String urlStr = String.format(
@@ -126,6 +138,9 @@ public class WeatherService {
 
             Map<String, List<Double>> tempsByDate = new LinkedHashMap<>();
             Map<String, String> descByDate = new LinkedHashMap<>();
+            Map<String, String> iconByDate = new LinkedHashMap<>();
+
+            String tomorrow = java.time.LocalDate.now().plusDays(1).toString();
 
             for (JsonElement elem : list) {
                 JsonObject entry = elem.getAsJsonObject();
@@ -134,10 +149,15 @@ public class WeatherService {
 
                 double temp = main.get("temp").getAsDouble();
                 String description = weatherObj.get("description").getAsString();
+                String iconType = weatherObj.get("icon").getAsString();
                 String date = entry.get("dt_txt").getAsString().split(" ")[0]; // yyyy-MM-dd
 
-                tempsByDate.computeIfAbsent(date, k -> new ArrayList<>()).add(temp);
-                descByDate.putIfAbsent(date, description);
+                // Only include dates from tomorrow onwards
+                if (date.compareTo(tomorrow) >= 0) {
+                    tempsByDate.computeIfAbsent(date, k -> new ArrayList<>()).add(temp);
+                    descByDate.putIfAbsent(date, description);
+                    iconByDate.putIfAbsent(date, iconType);
+                }
             }
 
             List<Weather> forecast = new ArrayList<>();
@@ -152,8 +172,9 @@ public class WeatherService {
                 double min = temps.stream().mapToDouble(Double::doubleValue).min().orElse(0);
                 double max = temps.stream().mapToDouble(Double::doubleValue).max().orElse(0);
                 String desc = descByDate.get(date);
+                String iconType = iconByDate.get(date);
 
-                forecast.add(new Weather(avg, min, max, desc, date));
+                forecast.add(new Weather(avg, min, max, desc, date, iconType));
                 count++;
             }
 

@@ -39,12 +39,12 @@
             </VBox>
             <VBox spacing="10.0">
                <children>
-                  <Label fx:id="questionLabel1" styleClass="text-light" text="Experience">
+                  <Label fx:id="questionLabel1" styleClass="text-light" text="Experience" wrapText="true">
                      <font>
                         <Font size="14.0" />
                      </font>
                   </Label>
-                  <Slider fx:id="slider1" blockIncrement="1.0" majorTickUnit="1.0" max="5.0" min="1.0" minorTickCount="0" />
+                  <Slider fx:id="slider1" blockIncrement="1.0" majorTickUnit="1.0" max="5.0" min="1.0" minorTickCount="0" showTickMarks="true" />
                   <HBox>
                      <children>
                         <Label fx:id="minLabel1" minWidth="80.0" text="Beginner">
@@ -73,12 +73,12 @@
             </VBox>
             <VBox spacing="10.0">
                <children>
-                  <Label fx:id="questionLabel2" styleClass="text-light" text="Preferred gradient of tramp?">
+                  <Label fx:id="questionLabel2" styleClass="text-light" text="Preferred gradient of tramp?" wrapText="true">
                      <font>
                         <Font size="14.0" />
                      </font>
                   </Label>
-                  <Slider fx:id="slider2" />
+                  <Slider fx:id="slider2" blockIncrement="1.0" majorTickUnit="1.0" max="5.0" min="1.0" minorTickCount="0" showTickMarks="true" />
                   <HBox>
                      <children>
                         <Label fx:id="minLabel2" minWidth="80.0" text="Gentle">

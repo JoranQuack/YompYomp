@@ -3,11 +3,14 @@ package seng202.team5.gui;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.sun.javafx.webkit.WebConsoleListener;
+
+import javafx.application.Platform;
 import javafx.concurrent.Worker;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
+import javafx.scene.shape.Rectangle;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
 import netscape.javascript.JSObject;
@@ -15,6 +18,7 @@ import seng202.team5.data.SqlBasedTrailLogRepo;
 import seng202.team5.data.SqlBasedTrailRepo;
 import seng202.team5.gui.components.LegendLabelComponent;
 import seng202.team5.gui.components.TrailCardComponent;
+import seng202.team5.gui.components.WeatherComponent;
 import seng202.team5.models.Trail;
 import seng202.team5.services.RegionFinder;
 import seng202.team5.utils.CompletionTimeParser;
@@ -57,17 +61,9 @@ public class ViewTrailController extends Controller {
     }
 
     @FXML
-    private Label translationLabel;
-    @FXML
-    private Label descriptionLabel;
-    @FXML
-    private Hyperlink culturalUrlHyperlink;
-    @FXML
     private Button editInfoButton;
     @FXML
     private HBox mapContainer;
-    @FXML
-    private Button backButton;
     @FXML
     private CheckBox nearbyTrailsCheckbox;
     @FXML
@@ -82,11 +78,8 @@ public class ViewTrailController extends Controller {
     private Hyperlink remoteHutsLink;
     @FXML
     private Button logTrailButton;
-    private WebView trailMapWebView;
     @FXML
-    private Label WeatherLabel;
-    @FXML
-    private Label forecastLabel;
+    private HBox weatherContainer;
 
     /**
      * Initialises the view trail screen with data retrieved from database
@@ -96,38 +89,37 @@ public class ViewTrailController extends Controller {
         setupFormFields();
         setupEventHandlers();
         setupLegend();
-        javafx.application.Platform.runLater(this::initMap);
+        Platform.runLater(this::initMap);
+        setupWeather();
+    }
+
+    /**
+     * Sets up the weather service and fetches weather data for the trail location
+     */
+    private void setupWeather() {
         weatherService = new WeatherService("https://api.openweathermap.org/data/2.5/weather",
                 "https://api.openweathermap.org/data/2.5/forecast");
 
         new Thread(() -> {
             Weather weather = weatherService.getWeatherByCoords(trail.getLat(), trail.getLon());
             if (weather != null) {
-                javafx.application.Platform.runLater(() -> WeatherLabel.setText(String.format(
-                        "%.1f°C (min %.1f°C / max %.1f°C) — %s",
-                        weather.getTemperature(), weather.getTempMin(), weather.getTempMax(),
-                        weather.getDescription())));
+                Platform.runLater(() -> weatherContainer.getChildren().add(new WeatherComponent(weather)));
             } else {
-                javafx.application.Platform.runLater(() -> WeatherLabel.setText("Weather unavailable"));
+                Platform.runLater(() -> weatherContainer.getChildren().add(new Label("Weather unavailable")));
             }
         }).start();
 
         new Thread(() -> {
             List<Weather> forecast = weatherService.getFourDayForecast(trail.getLat(), trail.getLon());
             if (!forecast.isEmpty()) {
-                StringBuilder sb = new StringBuilder(" ");
                 for (Weather day : forecast) {
-                    sb.append(String.format(
-                            "%s: %.1f°C (min %.1f°C / max %.1f°C) — %s ",
-                            day.getDate(), day.getTemperature(), day.getTempMin(), day.getTempMax(),
-                            day.getDescription()));
+                    Platform.runLater(() -> weatherContainer.getChildren().add(new WeatherComponent(day)));
                 }
-                javafx.application.Platform.runLater(() -> forecastLabel.setText(sb.toString()));
+
             } else {
-                javafx.application.Platform.runLater(() -> forecastLabel.setText("Forecast unavailable"));
+                Platform.runLater(() -> weatherContainer.getChildren().add(new Label("Forecast unavailable")));
             }
         }).start();
-
     }
 
     /**
@@ -135,19 +127,6 @@ public class ViewTrailController extends Controller {
      */
     private void setupFormFields() {
         initTrailCard();
-        descriptionLabel.setText(trail.getDescription());
-        if (!trail.getTranslation().isEmpty()) {
-            translationLabel.setText(trail.getTranslation());
-            translationLabel.setVisible(true);
-        } else {
-            translationLabel.setVisible(false);
-        }
-        if (!trail.getCultureUrl().isEmpty()) {
-            culturalUrlHyperlink.setText(trail.getCultureUrl());
-            culturalUrlHyperlink.setVisible(true);
-        } else {
-            culturalUrlHyperlink.setVisible(false);
-        }
         setupTrailRadiusFields();
         setupHutLinks();
     }
@@ -171,7 +150,6 @@ public class ViewTrailController extends Controller {
      * Sets up event handlers for form controls
      */
     private void setupEventHandlers() {
-        backButton.setOnAction(e -> onBackButtonClicked());
         editInfoButton.setOnAction(e -> onEditInfoButtonClicked());
         logTrailButton.setOnAction(e -> onLogTrailClicked());
         if (isTrailLogged(trail)) {
@@ -207,11 +185,11 @@ public class ViewTrailController extends Controller {
      * Sets up the legend for the map marker colours
      */
     private void setupLegend() {
-        LegendLabelComponent easiestLegend = new LegendLabelComponent("008000", "Easiest");
-        LegendLabelComponent easyLegend = new LegendLabelComponent("8de45f", "Easy");
-        LegendLabelComponent intermediateLegend = new LegendLabelComponent("ffff00", "Intermediate");
-        LegendLabelComponent advancedLegend = new LegendLabelComponent("ffa500", "Advanced Colour");
-        LegendLabelComponent expertLegend = new LegendLabelComponent("ff0000", "Expert");
+        LegendLabelComponent easiestLegend = new LegendLabelComponent("Easiest");
+        LegendLabelComponent easyLegend = new LegendLabelComponent("Easy");
+        LegendLabelComponent intermediateLegend = new LegendLabelComponent("Intermediate");
+        LegendLabelComponent advancedLegend = new LegendLabelComponent("Advanced");
+        LegendLabelComponent expertLegend = new LegendLabelComponent("Expert");
 
         legendContainer.getChildren().add(easiestLegend);
         legendContainer.getChildren().add(easyLegend);
@@ -224,7 +202,8 @@ public class ViewTrailController extends Controller {
      * Initialises the trail card at the top of the screen
      */
     private void initTrailCard() {
-        TrailCardComponent trailCard = new TrailCardComponent(super.getUserService().isGuest(), true, false);
+        TrailCardComponent trailCard = new TrailCardComponent(super.getUserService().isGuest(), true, false,
+                super.getNavigator());
         trailCard.setData(trail, null);
         trailCardHBox.getChildren().add(trailCard);
     }
@@ -252,6 +231,15 @@ public class ViewTrailController extends Controller {
         trailMapWebView.setPrefWidth(-1);
         HBox.setHgrow(trailMapWebView, Priority.ALWAYS);
         mapContainer.getChildren().add(trailMapWebView);
+
+        Rectangle clip = new Rectangle();
+        clip.setArcWidth(20);
+        clip.setArcHeight(20);
+
+        clip.widthProperty().bind(mapContainer.widthProperty());
+        clip.heightProperty().bind(mapContainer.heightProperty());
+
+        trailMapWebView.setClip(clip);
 
         webEngine = trailMapWebView.getEngine();
         webEngine.setJavaScriptEnabled(true);
@@ -397,11 +385,6 @@ public class ViewTrailController extends Controller {
 
     private void onLogTrailClicked() {
         super.getNavigator().launchScreen(new LogTrailController(super.getNavigator(), trail));
-    }
-
-    @FXML
-    private void onBackButtonClicked() {
-        super.getNavigator().goBack();
     }
 
     @FXML
