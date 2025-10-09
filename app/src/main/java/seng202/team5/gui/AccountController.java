@@ -140,8 +140,7 @@ public class AccountController extends Controller {
         if (!confirmed) {
             return;
         }
-        App.resetApplication();
-        super.getNavigator().launchScreen(new LoadingController(super.getNavigator(), null));
+        super.getNavigator().launchScreen(new LoadingController(super.getNavigator(), null, true));
     }
 
     @FXML

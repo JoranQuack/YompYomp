@@ -50,9 +50,6 @@ public class App {
 
     /**
      * Sets up the application by setting up the database and scraping images
-     *
-     * @param setupService
-     * @param setupExec
      */
     public static void setupApplication() {
         setupService = new SetupService(trailRepo, databaseService);
