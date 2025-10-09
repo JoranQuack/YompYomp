@@ -77,16 +77,6 @@ public class SqlBasedTrailRepo {
     }
 
     /**
-     * Retrieves recommended trails from database
-     *
-     * @return a list of recommended trails
-     */
-    public List<Trail> getRecommendedTrails() {
-        String sql = SELECT_ALL + " ORDER BY userWeight DESC, name ASC LIMIT 8";
-        return queryHelper.executeQuery(sql, null, this::mapRowToTrail);
-    }
-
-    /**
      * Returns if the trail has been processed or not
      *
      * @param trail the trail to be checked
