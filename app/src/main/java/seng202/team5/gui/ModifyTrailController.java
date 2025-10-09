@@ -144,37 +144,37 @@ public class ModifyTrailController extends Controller {
         // For TextFields
         latitudeTextField.textProperty().addListener((obs, oldText, newText) -> {
             if (!newText.isEmpty()) {
-                latitudeTextField.getStyleClass().remove("text-red");
-                mapContainer.getStyleClass().remove("text-red");
+                latitudeTextField.getStyleClass().remove("validation-error");
+                mapContainer.getStyleClass().remove("validation-error");
             }
         });
         longitudeTextField.textProperty().addListener((obs, oldText, newText) -> {
             if (!newText.isEmpty()) {
-                longitudeTextField.getStyleClass().remove("text-red");
-                mapContainer.getStyleClass().remove("text-red");
+                longitudeTextField.getStyleClass().remove("validation-error");
+                mapContainer.getStyleClass().remove("validation-error");
             }
         });
         trailNameTextField.textProperty().addListener((obs, oldText, newText) -> {
             if (!newText.isEmpty()) {
-                trailNameTextField.getStyleClass().remove("text-red");
+                trailNameTextField.getStyleClass().remove("validation-error");
             }
         });
         // For TextArea
         trailDescriptionTextArea.textProperty().addListener((obs, oldText, newText) -> {
             if (!newText.isEmpty()) {
-                trailDescriptionTextArea.getStyleClass().remove("text-red");
+                trailDescriptionTextArea.getStyleClass().remove("validation-error");
             }
         });
         // For ComboBox
         trailTypeComboBox.valueProperty().addListener((obs, oldVal, newVal) -> {
             if (newVal != null && !newVal.isEmpty()) {
-                trailTypeComboBox.getStyleClass().remove("text-red");
+                trailTypeComboBox.getStyleClass().remove("validation-error");
             }
         });
         // For culture URL field
         cultureUrlTextField.textProperty().addListener((obs, oldText, newText) -> {
             if (!newText.isEmpty()) {
-                cultureUrlTextField.getStyleClass().remove("text-red");
+                cultureUrlTextField.getStyleClass().remove("validation-error");
             }
         });
     }
@@ -390,16 +390,16 @@ public class ModifyTrailController extends Controller {
 
         // Validate latitude
         if (latitudeTextField.getText().isEmpty()) {
-            latitudeTextField.getStyleClass().add("text-red");
-            mapContainer.getStyleClass().add("text-red");
+            latitudeTextField.getStyleClass().add("validation-error");
+            mapContainer.getStyleClass().add("validation-error");
             emptyFieldLabel.setText("Please enter a valid latitude.");
             isValid = false;
         }
 
         // Validate longitude
         if (longitudeTextField.getText().isEmpty()) {
-            longitudeTextField.getStyleClass().add("text-red");
-            mapContainer.getStyleClass().add("text-red");
+            longitudeTextField.getStyleClass().add("validation-error");
+            mapContainer.getStyleClass().add("validation-error");
             if (emptyFieldLabel.getText().isEmpty()) {
                 emptyFieldLabel.setText("Please enter a valid longitude.");
             }
@@ -408,7 +408,7 @@ public class ModifyTrailController extends Controller {
 
         // Validate trail name
         if (trailNameTextField.getText().isEmpty()) {
-            trailNameTextField.getStyleClass().add("text-red");
+            trailNameTextField.getStyleClass().add("validation-error");
             if (emptyFieldLabel.getText().isEmpty()) {
                 emptyFieldLabel.setText("Please enter a trail name.");
             }
@@ -420,7 +420,7 @@ public class ModifyTrailController extends Controller {
             boolean nameExists = trailService.existsByName(inputTrailName, excludeId);
 
             if (nameExists) {
-                trailNameTextField.getStyleClass().add("text-red");
+                trailNameTextField.getStyleClass().add("validation-error");
                 emptyFieldLabel.setText("A trail with this name already exists! Please choose a different name.");
                 isValid = false;
             }
@@ -428,7 +428,7 @@ public class ModifyTrailController extends Controller {
 
         // Validate trail description
         if (trailDescriptionTextArea.getText().isEmpty()) {
-            trailDescriptionTextArea.getStyleClass().add("text-red");
+            trailDescriptionTextArea.getStyleClass().add("validation-error");
             if (emptyFieldLabel.getText().isEmpty()) {
                 emptyFieldLabel.setText("Please enter a trail description.");
             }
@@ -437,7 +437,7 @@ public class ModifyTrailController extends Controller {
 
         // Validate trail type
         if (trailTypeComboBox.getValue() == null) {
-            trailTypeComboBox.getStyleClass().add("text-red");
+            trailTypeComboBox.getStyleClass().add("validation-error");
             if (emptyFieldLabel.getText().isEmpty()) {
                 emptyFieldLabel.setText("Please select a trail type.");
             }
@@ -449,7 +449,7 @@ public class ModifyTrailController extends Controller {
             try {
                 URI.create(cultureUrlTextField.getText().trim()).toURL();
             } catch (MalformedURLException | IllegalArgumentException e) {
-                cultureUrlTextField.getStyleClass().add("text-red");
+                cultureUrlTextField.getStyleClass().add("validation-error");
                 if (emptyFieldLabel.getText().isEmpty()) {
                     emptyFieldLabel.setText("Please enter a valid URL for the culture link.");
                 }
@@ -469,13 +469,13 @@ public class ModifyTrailController extends Controller {
      * Clears validation styling from all form elements
      */
     private void clearValidationStyling() {
-        latitudeTextField.getStyleClass().remove("text-red");
-        longitudeTextField.getStyleClass().remove("text-red");
-        trailNameTextField.getStyleClass().remove("text-red");
-        trailDescriptionTextArea.getStyleClass().remove("text-red");
-        trailTypeComboBox.getStyleClass().remove("text-red");
-        cultureUrlTextField.getStyleClass().remove("text-red");
-        mapContainer.getStyleClass().remove("text-red");
+        latitudeTextField.getStyleClass().remove("validation-error");
+        longitudeTextField.getStyleClass().remove("validation-error");
+        trailNameTextField.getStyleClass().remove("validation-error");
+        trailDescriptionTextArea.getStyleClass().remove("validation-error");
+        trailTypeComboBox.getStyleClass().remove("validation-error");
+        cultureUrlTextField.getStyleClass().remove("validation-error");
+        mapContainer.getStyleClass().remove("validation-error");
     }
 
     /**
