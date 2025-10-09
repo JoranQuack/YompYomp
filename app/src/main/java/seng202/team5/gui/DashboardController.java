@@ -19,7 +19,7 @@ import seng202.team5.services.DashboardService;
  */
 public class DashboardController extends Controller {
     /** Service for dashboarding trails */
-    private DashboardService dashboardService;
+    private final DashboardService dashboardService;
 
     @FXML
     private FlowPane trailsContainer;
@@ -89,12 +89,10 @@ public class DashboardController extends Controller {
         if (App.getUserService().isGuest()) {
             regionCheckBox.setVisible(false);
             trails = dashboardService.getRandomTrails();
-        } else if (!regionCheckBox.isSelected())
-        {
+        } else if (!regionCheckBox.isSelected()) {
             regionCheckBox.setVisible(true);
             trails = dashboardService.getRecommendedTrails();
-        }
-        else {
+        } else {
             regionCheckBox.setVisible(true);
             trails = dashboardService.getPopularTrailsByRegions(App.getUserService().getUser().getRegion());
         }
