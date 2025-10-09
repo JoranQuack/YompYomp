@@ -55,6 +55,10 @@ Hyperlink {
   -fx-text-fill: #ff0000;
 }
 
+.text-green {
+  -fx-text-fill: #447055;
+}
+
 .text-darkish {
   -fx-text-fill: #7b7b7b;
 }
