@@ -11,7 +11,11 @@
   border-radius: 20px;
   padding: 5px 10px;
   font-size: 12px;
-  text-transform: capitalize;
+  text-transform: lowercase;
+}
+
+.pill::first-letter {
+    text-transform: uppercase;
 }
 
 .label {
