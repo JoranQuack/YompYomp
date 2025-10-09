@@ -11,8 +11,10 @@ import java.util.Optional;
 /**
  * Query helper for executing SQL
  * <p>
- * Supports single/multiple result queries, update/insert/delete operations, count queries,
- * and batch operations. Uses functional interfaces for parameter setting and row mapping.
+ * Supports single/multiple result queries, update/insert/delete operations,
+ * count queries,
+ * and batch operations. Uses functional interfaces for parameter setting and
+ * row mapping.
  */
 public class QueryHelper {
     private final DatabaseService databaseService;
@@ -28,11 +30,12 @@ public class QueryHelper {
 
     /**
      * Execute a query for result list
-     * @param sql          the SQL query string
-     * @param paramSetter  functional interface to set query parameters
-     * @param rowMapper    functional interface to map each ResultSet row to a type T
+     *
+     * @param sql         the SQL query string
+     * @param paramSetter functional interface to set query parameters
+     * @param rowMapper   functional interface to map each ResultSet row to a type T
      * @return a list of results
-     * @param <T>          the type of results
+     * @param <T> the type of results
      */
     public <T> List<T> executeQuery(String sql, ParameterSetter paramSetter, RowMapper<T> rowMapper) {
         List<T> results = new ArrayList<>();
@@ -56,11 +59,12 @@ public class QueryHelper {
 
     /**
      * Execute a query for single result
-     * @param sql          the SQL query string
-     * @param paramSetter  functional interface to set query parameters
-     * @param rowMapper    functional interface to map each ResultSet row to a type T
-     * @return             an optional containing the result if found or empty if no rows
-     * @param <T>          the type of the result
+     *
+     * @param sql         the SQL query string
+     * @param paramSetter functional interface to set query parameters
+     * @param rowMapper   functional interface to map each ResultSet row to a type T
+     * @return an optional containing the result if found or empty if no rows
+     * @param <T> the type of the result
      */
     public <T> Optional<T> executeQuerySingle(String sql, ParameterSetter paramSetter, RowMapper<T> rowMapper) {
         List<T> results = executeQuery(sql, paramSetter, rowMapper);
@@ -69,8 +73,9 @@ public class QueryHelper {
 
     /**
      * Execute an update/insert/delete operation
-     * @param sql          the SQL statement
-     * @param paramSetter  functional interface to set statement parameters
+     *
+     * @param sql         the SQL statement
+     * @param paramSetter functional interface to set statement parameters
      * @return the number of affected rows
      */
     public int executeUpdate(String sql, ParameterSetter paramSetter) {
@@ -90,8 +95,8 @@ public class QueryHelper {
     /**
      * Execute a query that returns a single integer (like COUNT)
      *
-     * @param sql          the SQL query string
-     * @param paramSetter  functional interface to set query parameters
+     * @param sql         the SQL query string
+     * @param paramSetter functional interface to set query parameters
      * @return the integer result
      */
     public int executeCountQuery(String sql, ParameterSetter paramSetter) {
@@ -134,7 +139,7 @@ public class QueryHelper {
                     stmt.addBatch();
                 }
 
-                int[] results = stmt.executeBatch();
+                stmt.executeBatch();
                 conn.commit(); // Commit all at once
 
             } catch (SQLException e) {
@@ -204,7 +209,8 @@ public class QueryHelper {
     }
 
     /**
-     * Functional interface for mapping a single ResultSet row to an object of type T.
+     * Functional interface for mapping a single ResultSet row to an object of type
+     * T.
      *
      * @param <T> the type of the mapped object
      */
@@ -221,7 +227,8 @@ public class QueryHelper {
     }
 
     /**
-     * Functional interface for setting parameters for a batch update on a PreparedStatement.
+     * Functional interface for setting parameters for a batch update on a
+     * PreparedStatement.
      *
      * @param <T> the type of the items in the batch
      */
