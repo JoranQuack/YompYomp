@@ -3,7 +3,6 @@ package seng202.team5.gui;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import seng202.team5.App;
-import seng202.team5.data.DatabaseService;
 import seng202.team5.models.Trail;
 import seng202.team5.models.TrailLog;
 import seng202.team5.services.LogService;
@@ -19,7 +18,6 @@ public class LogTrailController extends Controller {
     private TrailLog trailLog;
     private Trail trail;
     private LogService logService;
-    private DatabaseService databaseService;
 
     private boolean isNewLog = false;
 
@@ -27,13 +25,12 @@ public class LogTrailController extends Controller {
      * Launches the screen with the navigator
      *
      * @param navigator screen navigator
-     * @param trailLog  the trail log to be logged
+     * @param trail     the trail to be logged
      */
     public LogTrailController(ScreenNavigator navigator, Trail trail) {
         super(navigator);
         this.trail = trail;
-        this.databaseService = App.getDatabaseService();
-        this.logService = new LogService(databaseService);
+        this.logService = new LogService(App.getTrailLogRepo(), App.getTrailRepo());
         TrailLog trailLog = logService.getLogByTrailId(trail.getId()).orElse(null);
         if (trailLog == null) {
             this.trailLog = logService.createLogFromTrail(trail);

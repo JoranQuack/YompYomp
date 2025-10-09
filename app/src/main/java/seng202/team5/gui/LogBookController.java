@@ -76,7 +76,7 @@ public class LogBookController extends Controller {
      * Initialises the log service.
      */
     private void initializeLogService() {
-        this.logService = new LogService(App.getDatabaseService());
+        this.logService = new LogService(App.getTrailLogRepo(), App.getTrailRepo());
     }
 
     /**
@@ -211,7 +211,7 @@ public class LogBookController extends Controller {
         if (index < logCardPool.size()) {
             return logCardPool.get(index);
         } else {
-            TrailCardComponent logCard = new TrailCardComponent(super.getUserService().isGuest(), false, true,
+            TrailCardComponent logCard = new TrailCardComponent(App.getUserService().isGuest(), false, true,
                     super.getNavigator());
             logCardPool.add(logCard);
             VBox.setMargin(logCard, cardMargin);

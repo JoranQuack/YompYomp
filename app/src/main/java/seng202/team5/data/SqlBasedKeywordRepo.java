@@ -9,7 +9,7 @@ import seng202.team5.models.Trail;
  * This class provides methods to retrieve keywords grouped by categories from
  * the SQL database.
  */
-public class SqlBasedKeywordRepo implements IKeyword {
+public class SqlBasedKeywordRepo {
     private final QueryHelper queryHelper;
 
     private static final String SELECT_ALL_CATEGORIES_WITH_KEYWORDS = """
