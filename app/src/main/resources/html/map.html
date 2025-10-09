@@ -223,12 +223,12 @@
             <div class = "heading">${trail.name}</div>
             <div class = "label">${trail.region}</div>
             <div class = "container">
-                ${trail.difficulty && trail.difficulty != "" ?
+                ${trail.difficulty && trail.difficulty.trim().toLowerCase() != "unknown" && trail.difficulty.trim() != "" ?
                 `<div class = "pill bg-pinky">${trail.difficulty}</div>` : ""}
-                ${trailCompletionTime && trailCompletionTime.toLowerCase() != "unknown" ?
+                ${trailCompletionTime && trailCompletionTime.trim().toLowerCase() != "unknown" && trailCompletionTime.trim() != "" ?
                 `<div class = "pill bg-bluey">${trailCompletionTime}</div>` : ""}
-                ${trail.completionType && trail.completionType.toLowerCase() !== "unknown" ?
-                    `<div class = "pill bg-greeny">${trail.completionType}</div>` : ""}
+                ${trail.completionType && trail.completionType.trim().toLowerCase() !== "unknown" && trail.completionType.trim() != "" ?
+                `<div class = "pill bg-greeny">${trail.completionType}</div>` : ""}
             </div>
             ${!isActive ? `<a href="#" onclick="openTrailInfo(${trail.id}); return false;">View details</a>` : ""}
         `;
