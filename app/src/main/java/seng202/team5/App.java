@@ -43,6 +43,7 @@ public class App {
      * Resets the application data by clearing the database and re-running setup.
      */
     public static void resetApplication() {
+        App.getUserService().clearUser();
         databaseService.deleteDatabase();
         setupApplication();
     }
