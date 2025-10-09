@@ -100,6 +100,9 @@
                               </Label>
                               <Region HBox.hgrow="ALWAYS" />
                            </children>
+                           <VBox.margin>
+                              <Insets bottom="20.0" />
+                           </VBox.margin>
                         </HBox>
                      </children>
                   </VBox>
