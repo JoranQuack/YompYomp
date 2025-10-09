@@ -10,6 +10,7 @@ import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
 
 import seng202.team5.data.DatabaseService;
+import seng202.team5.data.SqlBasedTrailRepo;
 import seng202.team5.models.User;
 
 import java.sql.Connection;
@@ -27,6 +28,9 @@ public class UserServiceTest {
 
     @Mock
     private DatabaseService mockDatabaseService;
+
+    @Mock
+    private SqlBasedTrailRepo mockSqlBasedTrailRepo;
 
     @Mock
     private Connection mockConnection;
@@ -49,7 +53,7 @@ public class UserServiceTest {
         when(mockPreparedStatement.executeQuery()).thenReturn(mockResultSet);
         when(mockResultSet.next()).thenReturn(false);
 
-        userService = new UserService(mockDatabaseService);
+        userService = new UserService(mockSqlBasedTrailRepo, mockDatabaseService);
         testUser = new User(
                 1,
                 "Test User",
@@ -73,14 +77,14 @@ public class UserServiceTest {
     @Test
     @DisplayName("Should create UserService instance with default DatabaseService")
     void testConstructor() {
-        UserService newService = new UserService(new DatabaseService());
+        UserService newService = new UserService(mockSqlBasedTrailRepo, new DatabaseService());
         assertNotNull(newService);
     }
 
     @Test
     @DisplayName("Should create UserService instance with injected DatabaseService")
     void testConstructorWithDatabaseService() {
-        UserService newService = new UserService(mockDatabaseService);
+        UserService newService = new UserService(mockSqlBasedTrailRepo, mockDatabaseService);
         assertNotNull(newService);
     }
 
