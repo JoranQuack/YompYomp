@@ -1,7 +1,6 @@
 package seng202.team5.gui;
 
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.sun.javafx.webkit.WebConsoleListener;
 
 import javafx.application.Platform;
