@@ -25,18 +25,17 @@ package "Service" {
   class ImageService
   class WeatherService
   class LogService
+  class TrailService
+  class DashboardService
 }
 
 package "DataAccess (SQLite DB)" {
-  interface ITrail
-  interface IKeyword
-  interface ITrailLog
   class FileBasedTrailRepo
   class FileBasedKeywordRepo
   class SqlBasedFilterOptionsRepo
   class SqlBasedKeywordRepo
   class SqlBasedTrailRepo
-  class SqlBasedLogRepo
+  class SqlBasedTrailLogRepo
   class DatabaseService
 }
 
@@ -50,22 +49,26 @@ package "GUI" {
   class WelcomeController
   class DashboardController
   class LoadingController
-  class MatchmakingController
   class ProfileQuizController
   class ProfileSetupGeneralController
   class TrailsController
   class ViewTrailController
   class SafetyInfoController
+  class JavaScriptBridge
   package "Components" {
-    class LegendLabelComponent
     class NavbarComponent
     class TrailCardComponent
     class WeatherComponent
   }
-  package "util" {
-    class BackgroundImageUtil
-    }
 }
+
+package "util" {
+    class AppDataManager
+    class CompletionTimeParser
+    class DifficultyParser
+    class GeoUtils
+    class TrailsProcessor
+    }
 
 'skinparam linetype ortho
 
@@ -76,7 +79,6 @@ ScreenNavigator ..> Controller
 'Inheritence with the abstract controller class
 Controller <|-- WelcomeController
 Controller <|-- ProfileSetupGeneralController
-Controller <|-- MatchmakingController
 Controller <|-- ProfileQuizController
 Controller <|-- DashboardController
 Controller <|-- TrailsController
@@ -89,47 +91,59 @@ Controller <|-- SafetyInfoController
 Controller <|-- ModifyTrailController
 
 Controller ..> NavbarComponent
-Controller ..> TrailCardComponent
 
 App ..> SetupService
-TrailsController ..> SearchService
+App ..> DatabaseService
+App ..> SqlBasedFilterOptionsRepo
+App ..> SqlBasedTrailRepo
+App ..> SqlBasedTrailLogRepo
+App ..> SqlBasedKeywordRepo
+App ..> UserService
+
+SqlBasedFilterOptionsRepo ..> RegionFinder
+
+TrailsProcessor ..> RegionFinder
+
 ProfileSetupGeneralController ..> UserService
 ProfileQuizController ..> UserService
-MatchmakingController ..> MatchMakingService
-DashboardController ..> SearchService
-WelcomeController ..> UserService
-NavbarComponent ..> ImageService
-LogBookController ..> LogService
-TrailsController ..> WeatherService
-ViewTrailController ..> RegionFinder
-ViewTrailController ..> WeatherService
+TrailCardComponent ..> ImageService
+ModifyTrailController ..> TrailService
+JavaScriptBridge ..> TrailService
 
-SearchService ..> ITrail
-SetupService ..> ITrail
-SetupService ..> IKeyword
-LogService ..> SqlBasedLogRepo
-LogService ..> ITrail
+TrailsProcessor ..> GeoUtils
+TrailsProcessor ..> DifficultyParser
 
-ITrail <|.. FileBasedTrailRepo
-ITrail <|.. SqlBasedTrailRepo
-IKeyword <|.. FileBasedKeywordRepo
-IKeyword <|.. SqlBasedKeywordRepo
-ITrailLog <|.. SqlBasedLogRepo
+SqlBasedTrailLogRepo ..> TrailLog
+
+SetupService ..> TrailsProcessor
+SetupService ..> AppDataManager
+SetupService ..> FileBasedKeywordRepo
+SetupService ..> SqlBasedKeywordRepo
+SetupService ..> FileBasedTrailRepo
+SetupService ..> SqlBasedFilterOptionsRepo
+SearchService ..> SqlBasedFilterOptionsRepo
+LogService ..> SqlBasedTrailLogRepo
+LogService ..> CompletionTimeParser
+
 
 UserService ..> User
 MatchMakingService ..> User
 MatchMakingService ..> Trail
+MatchMakingService ..> SqlBasedKeywordRepo
 SearchService ..> Trail
 SetupService ..> Trail
 ProfileQuizController ..> Question
 WeatherService ..> Weather
+WeatherComponent ..> Weather
 UserService ..> Trail
 RegionFinder ..> Trail
 LogService ..> TrailLog
-LogService ..> Trail
 AccountStatisticsService ..> TrailLog
+LogService ..> Trail
 AccountStatisticsService ..> Trail
 AccountStatisticsService ..> User
+
+DashboardController ..> DashboardService
 
 App ..> FXAppEntry
 @enduml
