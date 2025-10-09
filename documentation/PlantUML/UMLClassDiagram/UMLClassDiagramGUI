@@ -19,8 +19,12 @@ package "GUI" {
     + main(args : String[]) : void
   }
   FXAppEntry -up-|> Application
-  FXAppEntry ..> ScreenNavigator
+  FXAppEntry *-- ScreenNavigator
   hide Application
+
+  class AccountController {
+
+  }
 
   class TrailsController {
     + TrailsController()
@@ -43,19 +47,16 @@ package "GUI" {
     - onSkip() : void
   }
 
-  class MatchmakingController {
-    + MatchmakingController(n : ScreenNavigator)
-    + initialize() : void
-    - startMatchmaking() : void
-    - showMatches(trails : List<Trail>) : void
-  }
-
   class LogBookController <<to be implemented>>{
     + LogBookController(n : ScreenNavigator)
     + initialize() : void
     - showLogBook() : void
     - highlightTrailLog() : bool
-}
+  }
+
+  class SafetyInfoController {
+
+  }
 
   class ProfileQuizController {
     + ProfileQuizController(n : ScreenNavigator)
@@ -81,7 +82,7 @@ package "GUI" {
   Controller <|-- ProfileSetupGeneralController
   Controller <|-- LogBookController
 
-  package "components" as components {
+  package "components" {
     class TrailCardComponent {
       + setTrail(trail : Trail) : void
       + setMatchScore(score : double) : void
@@ -95,7 +96,21 @@ package "GUI" {
       + onProfile() : void
       + onSettings() : void
     }
+
+    class LegendLabelComponent {
+
+    }
+
+    class WeatherComponent {
+
+    }
   }
+
+  package "utils" {
+     class BackgroundImageUtil {
+
+     }
+    }
 
   NavbarComponent --> DashboardController
   NavbarComponent --> TrailsController
