@@ -22,6 +22,8 @@ import seng202.team5.services.TrailService;
 import seng202.team5.utils.StringManipulator;
 import seng202.team5.utils.TrailsProcessor;
 
+import java.net.MalformedURLException;
+import java.net.URI;
 import java.util.List;
 
 /**
@@ -433,6 +435,12 @@ public class ModifyTrailController extends Controller {
             if (nameExists) {
                 trailNameTextField.setStyle("-fx-border-color: red;");
                 isValid = false;
+            }
+            try {
+                URI.create(cultureUrlTextField.getText().trim()).toURL();
+            } catch (MalformedURLException | IllegalArgumentException e) {
+                isValid = false;
+                cultureUrlTextField.setStyle("-fx-border-color: red;");
             }
         }
 
