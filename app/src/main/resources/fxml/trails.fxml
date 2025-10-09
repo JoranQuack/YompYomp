@@ -85,18 +85,14 @@
                         <HBox>
                            <children>
                               <Region HBox.hgrow="ALWAYS" />
-                              <Label fx:id="nextPageButton" contentDisplay="RIGHT" graphicTextGap="1.0" onMouseClicked="#onNextPageClicked" text="Next Page">
+                              <Label fx:id="nextPageButton" contentDisplay="RIGHT" graphicTextGap="1.0" onMouseClicked="#onNextPageClicked" styleClass="special-button" text="Next Page">
                                  <graphic>
                                     <ImageView fitHeight="17.0" fitWidth="17.0" nodeOrientation="RIGHT_TO_LEFT" pickOnBounds="true" preserveRatio="true">
                                        <image>
-                                          <Image url="@../images/back.png" />
+                                          <Image url="@../images/forward.png" />
                                        </image>
                                     </ImageView>
                                  </graphic>
-                                 <styleClass>
-                                    <String fx:value="special-button" />
-                                    <String fx:value="text-green" />
-                                 </styleClass>
                               </Label>
                               <Region HBox.hgrow="ALWAYS" />
                            </children>
