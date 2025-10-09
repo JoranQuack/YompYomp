@@ -75,7 +75,6 @@ public class TrailsController extends Controller {
      * Creates a controller with navigator.
      *
      * @param navigator         Screen navigator
-     * @param sqlBasedTrailRepo the trail repo
      */
     public TrailsController(ScreenNavigator navigator) {
         super(navigator);
@@ -86,7 +85,6 @@ public class TrailsController extends Controller {
      *
      * @param navigator         Screen navigator
      * @param searchText        Initial search text
-     * @param sqlBasedTrailRepo The trail repo
      */
     public TrailsController(ScreenNavigator navigator, String searchText) {
         super(navigator);

@@ -3,6 +3,8 @@ package seng202.team5.services;
 import seng202.team5.data.SqlBasedTrailRepo;
 import seng202.team5.models.Trail;
 
+import java.util.List;
+
 public class TrailService {
 
     private final SqlBasedTrailRepo sqlBasedTrailRepo;
@@ -29,5 +31,9 @@ public class TrailService {
 
     public int getNewTrailId() {
         return sqlBasedTrailRepo.getNewTrailId();
+    }
+
+    public List<Trail> getAllTrails() {
+        return sqlBasedTrailRepo.getAllTrails();
     }
 }
