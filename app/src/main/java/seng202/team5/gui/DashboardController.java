@@ -52,7 +52,7 @@ public class DashboardController extends Controller {
     @FXML
     private void initialize() {
 
-        initializeRecommendedTrails();
+        initializeTrails();
 
         searchBarTextField.addEventHandler(KeyEvent.KEY_PRESSED, event -> {
             if (event.getCode() == KeyCode.ENTER) {
@@ -81,15 +81,22 @@ public class DashboardController extends Controller {
     }
 
     /**
-     * Updates display with trail cards.
+     * Updates display with trail cards. Depending on the situation
      *
      */
-    private void initializeRecommendedTrails() {
+    private void initializeTrails() {
         List<Trail> trails;
         if (App.getUserService().isGuest()) {
+            regionCheckBox.setVisible(false);
             trails = dashboardService.getRandomTrails();
-        } else {
+        } else if (!regionCheckBox.isSelected())
+        {
+            regionCheckBox.setVisible(true);
             trails = dashboardService.getRecommendedTrails();
+        }
+        else {
+            regionCheckBox.setVisible(true);
+            trails = dashboardService.getPopularTrailsByRegions(App.getUserService().getUser().getRegion());
         }
         trailsContainer.getChildren().clear();
         trails.forEach(this::createAndAddTrailCard);
@@ -134,18 +141,11 @@ public class DashboardController extends Controller {
     }
 
     /**
-     * When the regions checkbox is toggled change the trails that are being shown
+     * When the regions checkbox is toggled re call the method that shows the trails
      */
     @FXML
     private void onRegionCheckBoxToggle() {
-        List<Trail> trailsToPopulateWith;
-        if (regionCheckBox.isSelected()) {
-            trailsToPopulateWith = dashboardService.getPopularTrailsByRegions(App.getUserService().getUser().getRegion());
-        }
-        else {
-            trailsToPopulateWith = dashboardService.getRecommendedTrails();
-        }
-        initializeTrails(trailsToPopulateWith);
+        initializeTrails();
     }
 
     @Override
