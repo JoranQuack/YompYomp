@@ -481,7 +481,7 @@ public class ModifyTrailController extends Controller {
 
         // Calculate user weight
         try {
-            User user = super.getUserService().getUser();
+            User user = App.getUserService().getUser();
             MatchmakingService matchmakingService = new MatchmakingService(App.getKeywordRepo(),
                     App.getTrailRepo());
             matchmakingService.setUserPreferences(user);

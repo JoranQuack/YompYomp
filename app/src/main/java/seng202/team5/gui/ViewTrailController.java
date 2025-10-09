@@ -46,8 +46,8 @@ public class ViewTrailController extends Controller {
     /**
      * Launches the screen with navigator
      *
-     * @param navigator         screen navigator
-     * @param trail             trail object to be displayed on screen
+     * @param navigator screen navigator
+     * @param trail     trail object to be displayed on screen
      */
     public ViewTrailController(ScreenNavigator navigator, Trail trail) {
         super(navigator);
@@ -198,7 +198,7 @@ public class ViewTrailController extends Controller {
      * Initialises the trail card at the top of the screen
      */
     private void initTrailCard() {
-        TrailCardComponent trailCard = new TrailCardComponent(super.getUserService().isGuest(), true, false,
+        TrailCardComponent trailCard = new TrailCardComponent(App.getUserService().isGuest(), true, false,
                 super.getNavigator());
         trailCard.setData(trail, null);
         trailCardHBox.getChildren().add(trailCard);
