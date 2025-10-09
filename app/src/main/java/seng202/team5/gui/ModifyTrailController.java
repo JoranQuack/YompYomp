@@ -19,6 +19,7 @@ import seng202.team5.models.Trail;
 import seng202.team5.models.User;
 import seng202.team5.services.MatchmakingService;
 import seng202.team5.services.RegionFinder;
+import seng202.team5.services.TrailService;
 import seng202.team5.utils.StringManipulator;
 import seng202.team5.utils.TrailsProcessor;
 
@@ -30,8 +31,8 @@ import java.util.List;
 public class ModifyTrailController extends Controller {
 
     private final Trail trail;
-    private final SqlBasedTrailRepo sqlBasedTrailRepo;
     private final RegionFinder regionFinder;
+    private TrailService trailService;
 
     private WebEngine webEngine;
     private JavaScriptBridge javaScriptBridge;
@@ -44,12 +45,11 @@ public class ModifyTrailController extends Controller {
      * @param trail             the selected trail
      * @param sqlBasedTrailRepo the trail repository
      */
-    public ModifyTrailController(ScreenNavigator navigator, Trail trail,
-            SqlBasedTrailRepo sqlBasedTrailRepo) {
+    public ModifyTrailController(ScreenNavigator navigator, Trail trail) {
         super(navigator);
         this.trail = trail;
         this.regionFinder = new RegionFinder();
-        this.sqlBasedTrailRepo = sqlBasedTrailRepo;
+        this.trailService = new TrailService(App.getTrailRepo());
     }
 
     @FXML
@@ -177,7 +177,7 @@ public class ModifyTrailController extends Controller {
      * Initialises the WebView and sets up the map with proper initialization flow
      */
     private void initMap() {
-        javaScriptBridge = new JavaScriptBridge(this, sqlBasedTrailRepo);
+        javaScriptBridge = new JavaScriptBridge(this);
         mapContainer.getChildren().clear();
         trailMapWebView = new WebView();
         trailMapWebView.setPrefHeight(-1);
@@ -323,16 +323,14 @@ public class ModifyTrailController extends Controller {
     private void onSaveButtonClicked() {
         if (userInputValidation()) {
             Trail updatedTrail = getUpdatedTrail();
-            sqlBasedTrailRepo.upsert(updatedTrail);
-            super.getNavigator().launchScreen(
-                    new ViewTrailController(super.getNavigator(), updatedTrail, sqlBasedTrailRepo,
-                            new SqlBasedTrailLogRepo(App.getDatabaseService())));
+            trailService.addTrail(updatedTrail);
+            super.getNavigator().launchScreen(new ViewTrailController(super.getNavigator(), updatedTrail));
         } else {
             // Check if the error is specifically due to duplicate trail name
             if (!trailNameTextField.getText().isEmpty()) {
                 String inputTrailName = trailNameTextField.getText().trim();
                 Integer excludeId = (trail != null) ? trail.getId() : null;
-                boolean nameExists = sqlBasedTrailRepo.existsByName(inputTrailName, excludeId);
+                boolean nameExists = trailService.existsByName(inputTrailName, excludeId);
 
                 if (nameExists) {
                     emptyFieldLabel.setText("A trail with this name already exists! Please choose a different name.");
@@ -361,8 +359,8 @@ public class ModifyTrailController extends Controller {
                     "bg-red");
 
             if (confirmed) {
-                sqlBasedTrailRepo.deleteById(trail.getId());
-                super.getNavigator().launchScreen(new TrailsController(super.getNavigator(), sqlBasedTrailRepo));
+                trailService.deleteTrail(trail);
+                super.getNavigator().launchScreen(new TrailsController(super.getNavigator()));
             }
         } else {
             super.getNavigator().goBack();
@@ -373,7 +371,7 @@ public class ModifyTrailController extends Controller {
      * Prefills boxes with existing data of the trail
      */
     private void initializeTextFields() {
-        Trail foundTrail = sqlBasedTrailRepo.findById(trail.getId()).get();
+        Trail foundTrail = trailService.findTrailById(trail.getId());
         trailNameTextField.setText(foundTrail.getName());
         difficultyComboBox.setValue(StringManipulator.capitaliseFirstLetter(foundTrail.getDifficulty()));
         trailTypeComboBox.setValue(StringManipulator.capitaliseFirstLetter(foundTrail.getCompletionType()));
@@ -430,7 +428,7 @@ public class ModifyTrailController extends Controller {
         if (!trailNameTextField.getText().isEmpty()) {
             String inputTrailName = trailNameTextField.getText().trim();
             Integer excludeId = (trail != null) ? trail.getId() : null;
-            boolean nameExists = sqlBasedTrailRepo.existsByName(inputTrailName, excludeId);
+            boolean nameExists = trailService.existsByName(inputTrailName, excludeId);
 
             if (nameExists) {
                 trailNameTextField.setStyle("-fx-border-color: red;");
@@ -473,7 +471,7 @@ public class ModifyTrailController extends Controller {
             userWeight = trail.getUserWeight();
         } else {
             // Creating new trail - temp values that will be recalculated
-            trailId = sqlBasedTrailRepo.getNewTrailId();
+            trailId = trailService.getNewTrailId();
             region = regionTextField.getText();
             thumbUrl = "";
             webUrl = "";

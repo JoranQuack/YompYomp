@@ -26,7 +26,6 @@ import seng202.team5.services.SearchService;
  */
 public class TrailsController extends Controller {
     private SearchService searchService;
-    private SqlBasedTrailRepo sqlBasedTrailRepo;
     private String searchText;
     private final List<TrailCardComponent> trailCardPool = new ArrayList<>();
 
@@ -78,9 +77,8 @@ public class TrailsController extends Controller {
      * @param navigator         Screen navigator
      * @param sqlBasedTrailRepo the trail repo
      */
-    public TrailsController(ScreenNavigator navigator, SqlBasedTrailRepo sqlBasedTrailRepo) {
+    public TrailsController(ScreenNavigator navigator) {
         super(navigator);
-        this.sqlBasedTrailRepo = sqlBasedTrailRepo;
     }
 
     /**
@@ -90,10 +88,9 @@ public class TrailsController extends Controller {
      * @param searchText        Initial search text
      * @param sqlBasedTrailRepo The trail repo
      */
-    public TrailsController(ScreenNavigator navigator, String searchText, SqlBasedTrailRepo sqlBasedTrailRepo) {
+    public TrailsController(ScreenNavigator navigator, String searchText) {
         super(navigator);
         this.searchText = searchText;
-        this.sqlBasedTrailRepo = sqlBasedTrailRepo;
     }
 
     /**
@@ -121,7 +118,7 @@ public class TrailsController extends Controller {
 
     @FXML
     private void onAddTrailButtonClicked() {
-        super.getNavigator().launchScreen(new ModifyTrailController(super.getNavigator(), null, sqlBasedTrailRepo));
+        super.getNavigator().launchScreen(new ModifyTrailController(super.getNavigator(), null));
     }
 
     @FXML
@@ -441,8 +438,7 @@ public class TrailsController extends Controller {
 
     @FXML
     private void onTrailCardClicked(Trail trail) {
-        super.getNavigator().launchScreen(new ViewTrailController(super.getNavigator(), trail, sqlBasedTrailRepo,
-                new SqlBasedTrailLogRepo(App.getDatabaseService())));
+        super.getNavigator().launchScreen(new ViewTrailController(super.getNavigator(), trail));
     }
 
     /**
