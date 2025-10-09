@@ -10,7 +10,7 @@ import java.util.Optional;
 
 /**
  * Query helper for executing SQL
- *
+ * <p>
  * Supports single/multiple result queries, update/insert/delete operations, count queries,
  * and batch operations. Uses functional interfaces for parameter setting and row mapping.
  */
@@ -116,11 +116,10 @@ public class QueryHelper {
      * @param sql         the SQL statement to execute for EACH item
      * @param items       the list of items to process
      * @param paramSetter functional interface to set parameters for each item
-     * @return array of update counts for each batch item
      */
-    public <T> int[] executeBatch(String sql, List<T> items, BatchParameterSetter<T> paramSetter) {
+    public <T> void executeBatch(String sql, List<T> items, BatchParameterSetter<T> paramSetter) {
         if (items.isEmpty()) {
-            return new int[0];
+            return;
         }
 
         try (Connection conn = databaseService.getConnection();
@@ -137,7 +136,6 @@ public class QueryHelper {
 
                 int[] results = stmt.executeBatch();
                 conn.commit(); // Commit all at once
-                return results;
 
             } catch (SQLException e) {
                 conn.rollback();
@@ -152,7 +150,7 @@ public class QueryHelper {
 
     /**
      * Execute multiple SQL statements in a single transaction because the lab
-     * computers are super duper slow
+     * computers are super-duper slow
      *
      * @param statements List of SQL statements with their parameter setters
      */

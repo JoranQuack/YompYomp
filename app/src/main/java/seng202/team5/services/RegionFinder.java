@@ -73,7 +73,7 @@ public class RegionFinder {
             Path shpPath = regionalDir.resolve(fileName);
 
             if (!shpPath.toFile().exists()) {
-                throw new IOException("Shapefile not found: " + shpPath.toString());
+                throw new IOException("Shapefile not found: " + shpPath);
             }
 
             try {
@@ -129,7 +129,7 @@ public class RegionFinder {
                 SimpleFeature feature = iterator.next();
 
                 // Get the region name from the attribute table
-                String regionName = getRegionName(feature, NAME_ATTRIBUTE);
+                String regionName = getRegionName(feature);
                 if (regionName == null || regionName.trim().isEmpty()) {
                     continue; // Skip regions with invalid names
                 }
@@ -163,16 +163,12 @@ public class RegionFinder {
     /**
      * Extracts the region name from a feature using the specified attribute.
      *
-     * @param feature       The feature to extract the name from
-     * @param nameAttribute The attribute name containing the region name
+     * @param feature The feature to extract the name from
      * @return The region name, or null if not found
      */
-    private String getRegionName(SimpleFeature feature, String nameAttribute) {
-        if (nameAttribute == null) {
-            return null;
-        }
+    private String getRegionName(SimpleFeature feature) {
 
-        Object nameValue = feature.getAttribute(nameAttribute);
+        Object nameValue = feature.getAttribute(RegionFinder.NAME_ATTRIBUTE);
         return nameValue != null ? nameValue.toString().trim() : null;
     }
 
@@ -216,7 +212,6 @@ public class RegionFinder {
             return "Other";
         } catch (Exception e) {
             System.err.println("Error checking point against regions: " + e.getMessage());
-            e.printStackTrace();
             return "Other";
         }
     }
@@ -287,24 +282,24 @@ public class RegionFinder {
     public Integer getDocRegionId(String regionName) {
         if (regionName == null) return null;
 
-        switch (regionName.toLowerCase()) {
-            case "northland": return 3001000;
-            case "auckland": return 3002000;
-            case "waikato": return 3004000;
-            case "bay of plenty": return 3005000;
-            case "gisborne": return 3006000;
-            case "taranaki": return 3008000;
-            case "manawat?-whanganui", "manawatu-whanganui", "manawatu", "whanganui", "manawatū-whanganui": return 3009000;
-            case "hawke's bay": return 3010000;
-            case "wellington": return 3012000;
-            case "chatham islands": return 3013000;
-            case "nelson", "tasman": return 3014000;
-            case "marlborough": return 3015000;
-            case "west coast": return 3016000;
-            case "canterbury": return 3017000;
-            case "otago": return 3018000;
-            case "southland": return 3020000;
-            default: return null;
-        }
+        return switch (regionName.toLowerCase()) {
+            case "northland" -> 3001000;
+            case "auckland" -> 3002000;
+            case "waistcoat" -> 3004000;
+            case "bay of plenty" -> 3005000;
+            case "gisborne" -> 3006000;
+            case "taranaki" -> 3008000;
+            case "manawat?-whanganui", "manawatu-whanganui", "manawatu", "whanganui", "manawatū-whanganui" -> 3009000;
+            case "hawke's bay" -> 3010000;
+            case "wellington" -> 3012000;
+            case "chatham islands" -> 3013000;
+            case "nelson", "tasman" -> 3014000;
+            case "marlborough" -> 3015000;
+            case "west coast" -> 3016000;
+            case "canterbury" -> 3017000;
+            case "otago" -> 3018000;
+            case "southland" -> 3020000;
+            default -> null;
+        };
     }
 }

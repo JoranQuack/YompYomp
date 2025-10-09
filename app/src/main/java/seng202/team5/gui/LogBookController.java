@@ -127,9 +127,9 @@ public class LogBookController extends Controller {
      * Loads initial data asynchronously
      */
     private void loadInitialDataAsync() {
-        Task<Void> loadTask = new Task<Void>() {
+        Task<Void> loadTask = new Task<>() {
             @Override
-            protected Void call() throws Exception {
+            protected Void call() {
                 if (searchText != null) {
                     logService.setCurrentQuery(searchText);
                 }
@@ -140,9 +140,7 @@ public class LogBookController extends Controller {
             @Override
             protected void succeeded() {
                 // JavaFX app thread
-                Platform.runLater(() -> {
-                    updateSearchDisplay();
-                });
+                Platform.runLater(() -> updateSearchDisplay());
             }
 
             @Override
@@ -190,9 +188,7 @@ public class LogBookController extends Controller {
                 TrailCardComponent logCard = getOrCreateLogCard(i, cardMargin);
 
                 logCard.setData(trail, log);
-                logCard.setOnMouseClicked(e -> {
-                    onLogCardClicked(log);
-                });
+                logCard.setOnMouseClicked(e -> onLogCardClicked(log));
                 logContainer.getChildren().add(logCard);
             }
         }
@@ -259,10 +255,8 @@ public class LogBookController extends Controller {
     @FXML
     private void onLogCardClicked(TrailLog log) {
         Optional<Trail> trailOpt = logService.getTrail(log.getTrailId());
-        trailOpt.ifPresent(trail -> {
-            super.getNavigator().launchScreen(
-                    new LogTrailController(super.getNavigator(), trail));
-        });
+        trailOpt.ifPresent(trail -> super.getNavigator().launchScreen(
+                new LogTrailController(super.getNavigator(), trail)));
     }
 
     /**

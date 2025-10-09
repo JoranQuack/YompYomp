@@ -73,7 +73,7 @@ public class WelcomeController extends Controller {
      */
     @FXML
     private void onSkipButtonClicked() {
-        super.getNavigator().launchScreen(new LoadingController(super.getNavigator(), null));
+        super.getNavigator().launchScreen(new LoadingController(super.getNavigator(), null, false));
     }
 
     @Override

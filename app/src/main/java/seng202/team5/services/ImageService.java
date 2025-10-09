@@ -4,6 +4,7 @@ import javafx.scene.image.Image;
 import seng202.team5.utils.AppDataManager;
 
 import java.io.File;
+import java.util.Objects;
 
 /**
  * Service class for handling image loading operations.
@@ -60,7 +61,7 @@ public class ImageService {
     public Image getDefaultTrailImage() {
         if (cachedDefaultImage == null || cachedDefaultImage.isError()) {
             try {
-                cachedDefaultImage = new Image(getClass().getResourceAsStream(DEFAULT_TRAIL_IMAGE_PATH));
+                cachedDefaultImage = new Image(Objects.requireNonNull(getClass().getResourceAsStream(DEFAULT_TRAIL_IMAGE_PATH)));
                 if (cachedDefaultImage.isError()) {
                     System.err.println("Error loading default trail image from: " + DEFAULT_TRAIL_IMAGE_PATH);
                 }

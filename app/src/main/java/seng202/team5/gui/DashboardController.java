@@ -19,7 +19,7 @@ import seng202.team5.services.DashboardService;
  */
 public class DashboardController extends Controller {
     /** Service for dashboarding trails */
-    private DashboardService dashboardService;
+    private final DashboardService dashboardService;
 
     @FXML
     private FlowPane trailsContainer;

@@ -102,10 +102,10 @@ public class SqlBasedFilterOptionsRepo {
      * @return true if options exist, false otherwise
      */
     public boolean hasFilterOptions(String filterType) {
-        Integer count = queryHelper.executeCountQuery(
+        int count = queryHelper.executeCountQuery(
                 COUNT_OPTIONS,
                 stmt -> stmt.setString(1, filterType));
-        return count != null && count > 0;
+        return count > 0;
     }
 
     /**

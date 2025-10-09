@@ -20,8 +20,8 @@ public class MatchmakingService {
     private final Map<String, List<String>> categoryToKeywords; // category -> keywords
     private final Map<String, Integer> userWeights = new HashMap<>(); // Higher weight is more favourable
     private final Map<Integer, Double> trailWeights = new HashMap<>(); // Identified by trail ID
-    private SqlBasedKeywordRepo keywordRepo;
-    private SqlBasedTrailRepo trailRepo;
+    private final SqlBasedKeywordRepo keywordRepo;
+    private final SqlBasedTrailRepo trailRepo;
 
     /**
      * Creates a MatchmakingService instance for testing with custom repos
@@ -205,7 +205,6 @@ public class MatchmakingService {
     /**
      * Gets weight of one trail based on the categories and user preferences.
      *
-     * @throws MatchmakingFailedException
      */
     public double getUserWeightFromTrail(Trail trail) throws MatchmakingFailedException {
         return scoreTrail(categoriseTrail(trail));

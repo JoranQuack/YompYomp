@@ -181,7 +181,7 @@ public class ProfileQuizController extends Controller {
             super.getNavigator()
                     .launchScreen(new ProfileQuizController(super.getNavigator(), quizId, user));
         } else {
-            super.getNavigator().launchScreen(new LoadingController(super.getNavigator(), user));
+            super.getNavigator().launchScreen(new LoadingController(super.getNavigator(), user, false));
         }
     }
 
@@ -194,7 +194,7 @@ public class ProfileQuizController extends Controller {
     @FXML
     private void onSkipQuizButtonClicked() {
         user = App.getUserService().getUserAfterSkip();
-        super.getNavigator().launchScreen(new LoadingController(super.getNavigator(), null));
+        super.getNavigator().launchScreen(new LoadingController(super.getNavigator(), null, false));
     }
 
     /**

@@ -28,12 +28,12 @@ public class TrailsProcessor {
                     // Only use type returned by parser if current type of trail is unknown
                     // Prioritise entry from drop down over parser
                     if (Objects.equals(trail.getCompletionType(), "unknown")) {
-                        trail.setCompletionType(result.getCompletionType());
+                        trail.setCompletionType(result.completionType());
                     }
                     // Update trail with parsed time information
-                    trail.setMinCompletionTimeMinutes(result.getMinCompletionTimeMinutes());
-                    trail.setMaxCompletionTimeMinutes(result.getMaxCompletionTimeMinutes());
-                    trail.setTimeUnit(result.getTimeUnit());
+                    trail.setMinCompletionTimeMinutes(result.minCompletionTimeMinutes());
+                    trail.setMaxCompletionTimeMinutes(result.maxCompletionTimeMinutes());
+                    trail.setTimeUnit(result.timeUnit());
                     trail.setMultiDay(result.isMultiDay());
                     trail.setHasVariableTime(result.hasVariableTime());
 

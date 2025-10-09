@@ -19,14 +19,13 @@ public class QueryHelperTest {
 
     private QueryHelper queryHelper;
     private DatabaseService databaseService;
-    private String testDbPath;
 
     @TempDir
     Path tempDir;
 
     @BeforeEach
     void setUp() throws SQLException {
-        testDbPath = tempDir.resolve("test.db").toString();
+        String testDbPath = tempDir.resolve("test.db").toString();
         databaseService = new DatabaseService(testDbPath);
         queryHelper = new QueryHelper(databaseService);
 
@@ -60,8 +59,8 @@ public class QueryHelperTest {
                 rs -> new TestRecord(rs.getInt("id"), rs.getString("name"), rs.getInt("value")));
 
         assertEquals(1, results.size());
-        assertEquals("Test2", results.get(0).name());
-        assertEquals(200, results.get(0).value());
+        assertEquals("Test2", results.getFirst().name());
+        assertEquals(200, results.getFirst().value());
     }
 
     @Test

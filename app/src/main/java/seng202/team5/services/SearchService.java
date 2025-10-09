@@ -23,9 +23,9 @@ public class SearchService {
 
     private final SqlBasedFilterOptionsRepo filterOptionsRepo;
 
-    private List<Trail> trails;
+    private final List<Trail> trails;
     private List<Trail> filteredTrails;
-    private Map<String, String> filters;
+    private final Map<String, String> filters;
 
     private int maxResults = 50;
     private String currentSortBy = "name";
@@ -95,23 +95,19 @@ public class SearchService {
             return false;
         }
 
-        if (!matchesFilter("completionType", filters.get("completionType"), trail.getCompletionType())) {
+        if (matchesFilter("completionType", filters.get("completionType"), trail.getCompletionType())) {
             return false;
         }
 
-        if (!matchesFilter("timeUnit", filters.get("timeUnit"), trail.getTimeUnit())) {
+        if (matchesFilter("timeUnit", filters.get("timeUnit"), trail.getTimeUnit())) {
             return false;
         }
 
-        if (!matchesFilter("difficulty", filters.get("difficulty"), trail.getDifficulty())) {
+        if (matchesFilter("difficulty", filters.get("difficulty"), trail.getDifficulty())) {
             return false;
         }
 
-        if (!matchesRegionFilter(filters.get("regions"), trail.getRegion())) {
-            return false;
-        }
-
-        return true;
+        return matchesRegionFilter(filters.get("regions"), trail.getRegion());
     }
 
     /**
@@ -119,28 +115,28 @@ public class SearchService {
      */
     private boolean matchesFilter(String filterType, String filterValue, String trailValue) {
         if (filterValue == null) {
-            return true; // No filter applied
+            return false; // No filter applied
         }
 
         if (filterValue.isEmpty()) {
-            return false; // Empty filter means exclude all
+            return true; // Empty filter means exclude all
         }
 
         List<String> selectedValues = List.of(filterValue.split(","));
 
         // If "Select All" is in the selected values, allow all trails through
         if (selectedValues.stream().anyMatch(selected -> selected.trim().equals("Select All"))) {
-            return true;
+            return false;
         }
 
         String defaultValue = DEFAULT_VALUES.get(filterType);
         if (defaultValue != null && selectedValues.stream()
                 .anyMatch(selected -> selected.trim().equalsIgnoreCase(defaultValue))) {
-            return true; // include all the trails
+            return false; // include all the trails
         }
 
         return selectedValues.stream()
-                .anyMatch(selected -> selected.trim().equalsIgnoreCase(trailValue));
+                .noneMatch(selected -> selected.trim().equalsIgnoreCase(trailValue));
     }
 
     /**
@@ -175,14 +171,11 @@ public class SearchService {
      * Filter out unwanted trails from sort
      */
     private boolean shouldIncludeInSort(Trail trail) {
-        switch (currentSortBy.toLowerCase()) {
-            case "time":
-                return trail.getAvgCompletionTimeMinutes() > 0;
-            case "difficulty":
-                return !trail.getDifficulty().equalsIgnoreCase("unknown");
-            default:
-                return true;
-        }
+        return switch (currentSortBy.toLowerCase()) {
+            case "time" -> trail.getAvgCompletionTimeMinutes() > 0;
+            case "difficulty" -> !trail.getDifficulty().equalsIgnoreCase("unknown");
+            default -> true;
+        };
     }
 
     /**
@@ -210,25 +203,12 @@ public class SearchService {
      * Gets the comparator for sorting trails based on current settings.
      */
     private Comparator<Trail> getSortComparator() {
-        Comparator<Trail> comparator;
-
-        switch (currentSortBy.toLowerCase()) {
-            case "name":
-                comparator = Comparator.comparing(Trail::getName, String.CASE_INSENSITIVE_ORDER);
-                break;
-            case "time":
-                comparator = Comparator.comparingInt(Trail::getAvgCompletionTimeMinutes);
-                break;
-            case "difficulty":
-                comparator = getDifficultyComparator();
-                break;
-            case "match":
-                comparator = Comparator.comparingDouble(Trail::getUserWeight).reversed();
-                break;
-            default:
-                comparator = Comparator.comparing(Trail::getName, String.CASE_INSENSITIVE_ORDER);
-                break;
-        }
+        Comparator<Trail> comparator = switch (currentSortBy.toLowerCase()) {
+            case "time" -> Comparator.comparingInt(Trail::getAvgCompletionTimeMinutes);
+            case "difficulty" -> getDifficultyComparator();
+            case "match" -> Comparator.comparingDouble(Trail::getUserWeight).reversed();
+            default -> Comparator.comparing(Trail::getName, String.CASE_INSENSITIVE_ORDER);
+        };
 
         return isAscending ? comparator : comparator.reversed();
     }

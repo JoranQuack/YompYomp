@@ -29,9 +29,8 @@ public class FileBasedKeywordRepo {
      * follow in a comma-separated list.
      *
      * @param filePath The path to the CSV file
-     * @return A map of category names to lists of keywords in that category
      */
-    private Map<String, List<String>> loadKeywordsFromCSV(String filePath) {
+    private void loadKeywordsFromCSV(String filePath) {
         // Using the filePath, open the CSV as a stream (in bytes) to read its contents.
         try (InputStream inputStream = getClass().getResourceAsStream(filePath)) {
             assert inputStream != null;
@@ -55,7 +54,6 @@ public class FileBasedKeywordRepo {
         } catch (IOException e) {
             throw new RuntimeException("Error loading keywords CSV", e);
         }
-        return keywords;
     }
 
     /**

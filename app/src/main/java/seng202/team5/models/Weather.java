@@ -1,46 +1,7 @@
 package seng202.team5.models;
 
-public class Weather {
-    private double temperature;
-    private double tempMax;
-    private double tempMin;
-    private String description;
-    private String date;
-    private String iconType;
-
-    public Weather(double temperature, double tempMax, double tempMin, String description, String date,
-            String iconType) {
-        this.temperature = temperature;
-        this.tempMax = tempMax;
-        this.tempMin = tempMin;
-        this.description = description;
-        this.date = date;
-        this.iconType = iconType;
-    }
-
-    public double getTemperature() {
-        return temperature;
-    }
-
-    public double getTempMax() {
-        return tempMax;
-    }
-
-    public double getTempMin() {
-        return tempMin;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public String getDate() {
-        return date;
-    }
-
-    public String getIconType() {
-        return iconType;
-    }
+public record Weather(double temperature, double tempMax, double tempMin, String description, String date,
+                      String iconType) {
 
     @Override
     public String toString() {

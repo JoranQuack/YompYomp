@@ -2,11 +2,9 @@ package seng202.team5.cucumber.StepDefinitions;
 
 import io.cucumber.java.Before;
 import io.cucumber.java.en.*;
-import seng202.team5.data.DatabaseService;
 import seng202.team5.data.SqlBasedKeywordRepo;
 import seng202.team5.data.SqlBasedTrailRepo;
 import seng202.team5.exceptions.MatchmakingFailedException;
-import seng202.team5.gui.TrailsController;
 import seng202.team5.models.Trail;
 import seng202.team5.models.User;
 import seng202.team5.services.MatchmakingService;
@@ -18,7 +16,6 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 public class ViewAllTrailsStepDefinitions {
-    private MatchmakingService matchmakingService;
     private SearchService searchService;
     private SqlBasedKeywordRepo mockKeywordRepo;
     private SqlBasedTrailRepo mockTrailRepo;
@@ -103,7 +100,7 @@ public class ViewAllTrailsStepDefinitions {
 
         // Make a copy and sort it alphabetically
         List<String> sortedNames = new ArrayList<>(trailNames);
-        Collections.sort(sortedNames, String.CASE_INSENSITIVE_ORDER);
+        sortedNames.sort(String.CASE_INSENSITIVE_ORDER);
 
         // Assert that the displayed list matches the alphabetically sorted list
         assertEquals(sortedNames, trailNames);
@@ -111,7 +108,8 @@ public class ViewAllTrailsStepDefinitions {
 
     @And("the dashboard screen of personalised recommended trails is shown")
     public void theDashboardScreenOfPersonalisedRecommendedTrailsIsShown() throws MatchmakingFailedException {
-        matchmakingService = new MatchmakingService(mockKeywordRepo, mockTrailRepo);
+        new MatchmakingService(mockKeywordRepo, mockTrailRepo);
+        MatchmakingService matchmakingService;
 
         // Build a test user with some preferences
         testUser = new User();

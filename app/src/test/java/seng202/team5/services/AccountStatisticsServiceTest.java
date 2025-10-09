@@ -32,16 +32,14 @@ class AccountStatisticsServiceTest {
     @Mock
     private MatchmakingService mockMatchmakingService;
 
-    private User testUser;
-    private List<TrailLog> testTrailLogs;
     private List<Trail> testTrails;
 
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
 
-        testUser = createTestUser();
-        testTrailLogs = createTestTrailLogs();
+        User testUser = createTestUser();
+        List<TrailLog> testTrailLogs = createTestTrailLogs();
         testTrails = createTestTrails();
 
         // Mock repo behaviours
@@ -79,17 +77,17 @@ class AccountStatisticsServiceTest {
 
     private List<Trail> createTestTrails() {
         Trail trail1 = new Trail(1, "Mountain Boi", "Easy", "Beautiful mountain views woooooow",
-                "2 hours", "thumb1.jpg", "http://example.com/trail1", -43.5321, 172.6362);
+                "2 hours", "thumb1.jpg", "https://example.com/trail1", -43.5321, 172.6362);
         trail1.setRegion("Canterbury");
         trail1.setUserWeight(0.8);
 
         Trail trail2 = new Trail(2, "Forest Boi", "Medium", "Peaceful forest walk and you won't even get lost",
-                "3 hours", "thumb2.jpg", "http://example.com/trail2", -43.5350, 172.6400);
+                "3 hours", "thumb2.jpg", "https://example.com/trail2", -43.5350, 172.6400);
         trail2.setRegion("Otago");
         trail2.setUserWeight(0.6);
 
         Trail trail3 = new Trail(3, "Coastal Boi", "Hard", "Scenic coastal walk but remember not to fall in",
-                "4 hours", "thumb3.jpg", "http://example.com/trail3", -43.5400, 172.6500);
+                "4 hours", "thumb3.jpg", "https://example.com/trail3", -43.5400, 172.6500);
         trail3.setRegion("Canterbury");
         trail3.setUserWeight(0.9);
 
