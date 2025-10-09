@@ -59,6 +59,12 @@ Hyperlink {
   -fx-text-fill: #447055;
 }
 
+.validation-error {
+  -fx-border-color: #ff0000;
+  -fx-border-width: 2px;
+  -fx-border-radius: 10;
+}
+
 .text-darkish {
   -fx-text-fill: #7b7b7b;
 }
