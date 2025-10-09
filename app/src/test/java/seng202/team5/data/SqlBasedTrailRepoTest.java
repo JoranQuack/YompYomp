@@ -161,13 +161,14 @@ public class SqlBasedTrailRepoTest {
         assertEquals(1, sqlBasedTrailRepo.countTrails());
     }
 
-    @Test
-    @DisplayName("Should return the correct recommended trails")
-    void testGetRecommendedTrails() throws SQLException, MatchmakingFailedException {
-        List<Trail> recommended = sqlBasedTrailRepo.getRecommendedTrails();
-        assertEquals(2, recommended.size());
-        assertTrue(recommended.get(0).getId() == 1);
-    }
+    //keeping this for now as we can use this in the new trail service when we merge with the testing branch
+//    @Test
+//    @DisplayName("Should return the correct recommended trails")
+//    void testGetRecommendedTrails() throws SQLException, MatchmakingFailedException {
+//        List<Trail> recommended = sqlBasedTrailRepo.getRecommendedTrails();
+//        assertEquals(2, recommended.size());
+//        assertTrue(recommended.get(0).getId() == 1);
+//    }
 
     @Test
     @DisplayName("Should return if trail is processed correctly")

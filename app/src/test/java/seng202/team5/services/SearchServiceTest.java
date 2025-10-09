@@ -39,7 +39,7 @@ public class SearchServiceTest {
 
         when(mockTrailRepo.getAllTrails()).thenReturn(mockTrails);
 
-        searchService = new SearchService(mockTrailRepo);
+        searchService = new SearchService(mockTrailRepo, null);
         searchService.setMaxResults(20); // testing 20 results per page, but there are only 5 trails
     }
 

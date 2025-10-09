@@ -51,7 +51,7 @@ class AccountStatisticsServiceTest {
         when(mockTrailRepo.findById(3)).thenReturn(Optional.of(testTrails.get(2)));
 
         accountStatisticsService = new AccountStatisticsService(
-                mockTrailLogRepo, mockTrailRepo, mockMatchmakingService, testUser);
+                mockTrailRepo, mockTrailLogRepo, mockMatchmakingService, testUser);
     }
 
     private User createTestUser() {

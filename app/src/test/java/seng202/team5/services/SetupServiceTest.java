@@ -30,6 +30,8 @@ public class SetupServiceTest {
 
     @Mock
     private DatabaseService mockDatabaseService;
+    @Mock
+    private SqlBasedTrailRepo mockSqlBasedTrailRepo;
 
     private SetupService setupService;
     private String testDbPath;
@@ -41,7 +43,7 @@ public class SetupServiceTest {
     void setUp() {
         MockitoAnnotations.openMocks(this);
         testDbPath = tempDir.resolve("test.db").toString();
-        setupService = new SetupService(new DatabaseService(testDbPath));
+        setupService = new SetupService(mockSqlBasedTrailRepo, mockDatabaseService);
     }
 
     @Test
@@ -181,7 +183,7 @@ public class SetupServiceTest {
         List<Trail> trails = Arrays.asList(trail1, trail2);
         testTrailRepo.upsertAll(trails);
 
-        SetupService testSetupService = new SetupService(testDbService);
+        SetupService testSetupService = new SetupService(testTrailRepo, testDbService);
         SetupService spySetupService = spy(testSetupService);
         doNothing().when(spySetupService).scrapeTrailImage(anyString());
 
@@ -198,7 +200,7 @@ public class SetupServiceTest {
         DatabaseService testDbService = new DatabaseService(testDbPath);
         testDbService.createDatabaseIfNotExists();
 
-        SetupService testSetupService = new SetupService(testDbService);
+        SetupService testSetupService = new SetupService(mockSqlBasedTrailRepo, testDbService);
         SetupService spySetupService = spy(testSetupService);
 
         spySetupService.scrapeAllTrailImages();
@@ -213,7 +215,7 @@ public class SetupServiceTest {
         DatabaseService testDbService = new DatabaseService(testDbPath);
         testDbService.createDatabaseIfNotExists();
 
-        SetupService testSetupService = new SetupService(testDbService);
+        SetupService testSetupService = new SetupService(mockSqlBasedTrailRepo, testDbService);
 
         // This test verifies that syncDbFromTrailFile doesn't throw exceptions
         // The actual file loading behavior is tested elsewhere
@@ -232,7 +234,7 @@ public class SetupServiceTest {
                 "url", "url", 0.0, 0.0);
         testTrailRepo.upsertAll(Arrays.asList(existingTrail));
 
-        SetupService testSetupService = new SetupService(testDbService);
+        SetupService testSetupService = new SetupService(mockSqlBasedTrailRepo, testDbService);
 
         // This test verifies that syncDbFromTrailFile works even when DB already has
         // data
@@ -246,7 +248,7 @@ public class SetupServiceTest {
         DatabaseService testDbService = new DatabaseService(testDbPath);
         testDbService.createDatabaseIfNotExists();
 
-        SetupService testSetupService = new SetupService(testDbService);
+        SetupService testSetupService = new SetupService(mockSqlBasedTrailRepo, testDbService);
 
         // This test verifies that syncDbFromTrailFile handles cases where file has no
         // trails
@@ -254,14 +256,18 @@ public class SetupServiceTest {
     }
 
     @Test
-    @DisplayName("Should call both sync and scrape methods in setupApplication")
+    @DisplayName("Should call both setup database and scrape methods in setupApplication")
     void testSetupApplication_CallsBothMethods() {
-        SetupService spySetupService = spy(setupService);
+        DatabaseService mockDatabaseService = mock(DatabaseService.class);
+        SetupService spySetupService = spy(new SetupService(mockSqlBasedTrailRepo, mockDatabaseService));
+
         doNothing().when(spySetupService).scrapeAllTrailImages();
+        doNothing().when(spySetupService).setupDatabase();
 
         spySetupService.setupApplication();
 
-        verify(spySetupService).scrapeAllTrailImages();
+        verify(spySetupService, times(1)).setupDatabase();
+        verify(spySetupService, times(1)).scrapeAllTrailImages();
     }
 
     @Test
@@ -279,7 +285,7 @@ public class SetupServiceTest {
         List<Trail> trails = Arrays.asList(trailWithNullUrl);
         testTrailRepo.upsertAll(trails);
 
-        SetupService testSetupService = new SetupService(testDbService);
+        SetupService testSetupService = new SetupService(testTrailRepo, testDbService);
         SetupService spySetupService = spy(testSetupService);
         doNothing().when(spySetupService).scrapeTrailImage(any());
 

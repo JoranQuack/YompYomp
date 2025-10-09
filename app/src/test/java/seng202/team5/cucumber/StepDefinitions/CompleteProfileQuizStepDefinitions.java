@@ -70,7 +70,7 @@ public class CompleteProfileQuizStepDefinitions {
                 new Trail(10, "Wetlands Walk", "Easy", "Easy walk through wetlands, great for birdwatching",
                         "1.5 hours", "thumb10.jpg", "http://example.com/trail10", -43.5260, 172.6220));
         when(mockTrailRepo.getAllTrails()).thenReturn(mockTrails);
-        searchService = new SearchService(mockTrailRepo);
+        searchService = new SearchService(mockTrailRepo, null);
         matchmakingService = new MatchmakingService(mockKeywordRepo, mockTrailRepo);
 
         // Build a test user with some preferences
