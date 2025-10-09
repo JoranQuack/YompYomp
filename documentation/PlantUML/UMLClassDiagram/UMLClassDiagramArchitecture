@@ -72,8 +72,8 @@ package "util" {
 'skinparam linetype ortho
 
 'Controller relationships
-FXAppEntry --> ScreenNavigator
-ScreenNavigator ..> Controller
+FXAppEntry *-- ScreenNavigator
+ScreenNavigator o-- Controller
 
 'Inheritence with the abstract controller class
 Controller <|-- WelcomeController
@@ -89,21 +89,21 @@ Controller <|-- LogTrailController
 Controller <|-- SafetyInfoController
 Controller <|-- ModifyTrailController
 
-Controller ..> NavbarComponent
+Controller *-- NavbarComponent
 
-App ..> SetupService
-App ..> DatabaseService
-App ..> SqlBasedFilterOptionsRepo
-App ..> SqlBasedTrailRepo
-App ..> SqlBasedTrailLogRepo
-App ..> SqlBasedKeywordRepo
-App ..> UserService
+App *-- SetupService
+App *-- DatabaseService
+App *-- SqlBasedFilterOptionsRepo
+App *-- SqlBasedTrailRepo
+App *-- SqlBasedTrailLogRepo
+App *-- SqlBasedKeywordRepo
+App *-- UserService
 
-SqlBasedFilterOptionsRepo ..> RegionFinder
+SqlBasedFilterOptionsRepo --> RegionFinder
 
-ProfileQuizController ..> UserService
-TrailCardComponent ..> ImageService
-JavaScriptBridge ..> TrailService
+ProfileQuizController --> UserService
+TrailCardComponent --> ImageService
+JavaScriptBridge --> TrailService
 
 TrailsProcessor ..> GeoUtils
 TrailsProcessor ..> DifficultyParser
@@ -116,17 +116,17 @@ SetupService ..> SqlBasedKeywordRepo
 SetupService ..> FileBasedTrailRepo
 SetupService ..> SqlBasedFilterOptionsRepo
 
-MatchMakingService ..> User
-MatchMakingService ..> Trail
-SearchService ..> Trail
-ProfileQuizController ..> Question
-WeatherService ..> Weather
-WeatherComponent ..> Weather
-UserService ..> User
-LogService ..> TrailLog
-AccountStatisticsService ..> User
+MatchMakingService --> User
+MatchMakingService --> Trail
+SearchService --> Trail
+ProfileQuizController --> Question
+WeatherService --> Weather
+WeatherComponent --> Weather
+UserService --> User
+LogService --> TrailLog
+AccountStatisticsService --> User
 
-DashboardController ..> DashboardService
+DashboardController --> DashboardService
 
 App ..> FXAppEntry
 @enduml
