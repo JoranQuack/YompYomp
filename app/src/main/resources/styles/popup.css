@@ -8,6 +8,7 @@
 }
 
 .pill {
+  font-family: "Quicksand Medium", sans-serif;
   border-radius: 20px;
   padding: 5px 10px;
   font-size: 12px;
@@ -15,7 +16,7 @@
 }
 
 .pill::first-letter {
-    text-transform: uppercase;
+  text-transform: uppercase;
 }
 
 .label {
@@ -51,6 +52,22 @@
 .container {
   display: flex;
   gap: 5px;
+  padding: 5px 0 5px 0;
+}
+
+button {
+  font-family: "Quicksand SemiBold", sans-serif;
+  font-size: 15px;
+  color: #04140b;
+  background-color: #d5e6d4;
+  border-radius: 10px;
+  border: none;
+  padding: 5px 10px;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #8faf8e;
 }
 
 .legend-expert {
@@ -69,5 +86,5 @@
   background-color: #4caf50;
 }
 .legend-default {
-    background-color: #808080;
+  background-color: #808080;
 }

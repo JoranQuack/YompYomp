@@ -162,7 +162,7 @@
                     return;
                 }
 
-                const difficultyClass = `legend-${['expert','advanced','intermediate','easy','easiest'].includes((trail.difficulty || '').toLowerCase())
+                const difficultyClass = `legend-${['expert', 'advanced', 'intermediate', 'easy', 'easiest'].includes((trail.difficulty || '').toLowerCase())
                     ? trail.difficulty.toLowerCase()
                     : 'default'}`;
 
@@ -223,12 +223,14 @@
             <div class = "heading">${trail.name}</div>
             <div class = "label">${trail.region}</div>
             <div class = "container">
-                ${[ [trail.difficulty, "bg-pinky"], [trailCompletionTime, "bg-bluey"], [trail.completionType, "bg-greeny"] ]
-                .map(([text, color]) => text && text.trim().toLowerCase() !== "unknown" && text.trim() !== ""
-                    ? `<div class="pill ${color}">${text}</div>` : "")
-                .join("")}
+                ${[[trail.difficulty, "bg-pinky"], [trailCompletionTime, "bg-bluey"], [trail.completionType, "bg-greeny"]]
+                    .map(([text, color]) => text && text.trim().toLowerCase() !== "unknown" && text.trim() !== ""
+                        ? `<div class="pill ${color}">${text}</div>` : "")
+                    .join("")}
             </div>
-            ${!isActive ? `<a href="#" onclick="openTrailInfo(${trail.id}); return false;">View details</a>` : ""}
+            <div style="margin-top: 5px; width: 100%; text-align: center;">
+            ${!isActive ? `<button onclick="openTrailInfo(${trail.id}); return false;">View details</button>` : ""}
+            </div>
         `;
         }
 
