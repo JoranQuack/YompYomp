@@ -90,7 +90,7 @@ public class SqlBasedTrailRepo implements ITrail {
     /**
      * Returns if the trail has been processed or not
      *
-     * @param trail
+     * @param trail the trail to be checked
      * @return boolean indicating if trail has been processed
      */
     public boolean isTrailProcessed(Trail trail) {
@@ -153,6 +153,7 @@ public class SqlBasedTrailRepo implements ITrail {
      * its fields are updated; otherwise a new trail is inserted.
      *
      * @param trails List of trails to upsert
+     * @throws MatchmakingFailedException if there are no trails in the list
      */
     public void upsertAll(List<Trail> trails) throws MatchmakingFailedException {
         if (trails.isEmpty())

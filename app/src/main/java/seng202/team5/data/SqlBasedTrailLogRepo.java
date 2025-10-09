@@ -4,11 +4,8 @@ import seng202.team5.exceptions.MatchmakingFailedException;
 import seng202.team5.models.TrailLog;
 
 import java.sql.*;
-import java.sql.Date;
 import java.time.LocalDate;
 import java.util.*;
-
-import static java.util.logging.Level.parse;
 
 /**
  * Class is responsible for holding and executing all SQL queries related to
@@ -66,8 +63,7 @@ public class SqlBasedTrailLogRepo implements ITrailLog {
         return queryHelper.executeQuerySingle(
                 SELECT_BY_ID,
                 stmt -> stmt.setInt(1, id),
-                        this::mapRowToTrailLog
-        );
+                this::mapRowToTrailLog);
     }
 
     /**
@@ -128,6 +124,20 @@ public class SqlBasedTrailLogRepo implements ITrailLog {
     }
 
     /**
+     * Finds the trail log for the given trail id
+     *
+     * @param trailId the id of the trail
+     * @return an Optional containing the trail log if found; otherwise empty
+     */
+    @Override
+    public Optional<TrailLog> findByTrailId(int trailId) {
+        return queryHelper.executeQuerySingle(
+                "SELECT * FROM trailLog WHERE trailId = ? LIMIT 1",
+                stmt -> stmt.setInt(1, trailId),
+                this::mapRowToTrailLog);
+    }
+
+    /**
      * Maps the current result set row to a trailLog
      *
      * @param rs result set positioned at a row from a trailLog
@@ -138,7 +148,8 @@ public class SqlBasedTrailLogRepo implements ITrailLog {
     public TrailLog mapRowToTrailLog(ResultSet rs) throws SQLException {
         String dateString = rs.getString("startDate");
         LocalDate startDate = null;
-        if (dateString != null) startDate = LocalDate.parse(dateString);
+        if (dateString != null)
+            startDate = LocalDate.parse(dateString);
         return new TrailLog(
                 rs.getInt("id"),
                 rs.getInt("trailId"),
@@ -148,14 +159,13 @@ public class SqlBasedTrailLogRepo implements ITrailLog {
                 rs.getString("completionType"),
                 (Integer) rs.getObject("rating"),
                 rs.getString("perceivedDifficulty"),
-                rs.getString("notes")
-        );
+                rs.getString("notes"));
     }
 
     /**
      * Binds trailLog fields to the prepared statement. The order must match.
      *
-     * @param stmt  prepared statement to bind
+     * @param stmt     prepared statement to bind
      * @param trailLog source of values
      * @throws SQLException if a parameter cannot be set
      */
@@ -164,14 +174,17 @@ public class SqlBasedTrailLogRepo implements ITrailLog {
         stmt.setInt(1, trailLog.getId());
         stmt.setInt(2, trailLog.getTrailId());
         stmt.setString(3, trailLog.getStartDate().toString());
-        if (trailLog.getCompletionTime() != null) stmt.setInt(4, trailLog.getCompletionTime());
-        else stmt.setNull(4, Types.INTEGER);
+        if (trailLog.getCompletionTime() != null)
+            stmt.setInt(4, trailLog.getCompletionTime());
+        else
+            stmt.setNull(4, Types.INTEGER);
         stmt.setString(5, trailLog.getTimeUnit());
         stmt.setString(6, trailLog.getCompletionType());
-        if (trailLog.getRating() != null) stmt.setInt(7, trailLog.getRating());
-        else stmt.setNull(7, Types.INTEGER);
+        if (trailLog.getRating() != null)
+            stmt.setInt(7, trailLog.getRating());
+        else
+            stmt.setNull(7, Types.INTEGER);
         stmt.setString(8, trailLog.getPerceivedDifficulty());
-        stmt.setString(9, trailLog.getNotes()
-        );
+        stmt.setString(9, trailLog.getNotes());
     }
 }

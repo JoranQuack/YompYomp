@@ -144,4 +144,68 @@ public class DatabaseServiceTest {
         connection1.close();
         connection2.close();
     }
+
+    @Test
+    @DisplayName("Should delete database file if it exists")
+    void testDeleteDatabase() throws SQLException {
+        // First create the DB file
+        databaseService.createDatabaseIfNotExists();
+        File dbFile = new File(testDbPath);
+        assertTrue(dbFile.exists()); // database file should exist before deletion
+
+        boolean result = databaseService.deleteDatabase();
+        assertTrue(result);
+        assertFalse(dbFile.exists());
+    }
+
+    @Test
+    @DisplayName("Should create database file and schema if it does not exist")
+    void testCreateDatabaseIfNotExists() throws SQLException {
+        File dbFile = new File(testDbPath);
+        assertFalse(dbFile.exists()); //database file does not exist yet
+
+        databaseService.createDatabaseIfNotExists();
+
+        assertTrue(dbFile.exists());
+        try (Connection conn = databaseService.getConnection()) {
+            assertFalse(conn.isClosed(), "Connection should be valid after DB creation");
+        }
+    }
+
+    @Test
+    @DisplayName("Should not overwrite existing database when calling createDatabaseIfNotExists again")
+    void testCreateDatabaseIfAlreadyExists() throws SQLException {
+        databaseService.createDatabaseIfNotExists();
+        File dbFile = new File(testDbPath);
+        long lastModified = dbFile.lastModified();
+
+        // Call again
+        databaseService.createDatabaseIfNotExists();
+
+        assertEquals(lastModified, dbFile.lastModified());
+    }
+
+    @Test
+    @DisplayName("Should return false for isSchemaUpToDate if DB does not exist")
+    void testSchemaUpToDateNoDatabase() {
+        File dbFile = new File(testDbPath);
+        if (dbFile.exists()) {
+            dbFile.delete();
+        }
+
+        assertFalse(databaseService.isSchemaUpToDate());
+    }
+
+    @Test
+    @DisplayName("Should return false for isSchemaUpToDate if schema_version table is missing")
+    void testSchemaUpToDateMissingTable() throws SQLException {
+        databaseService.createDatabaseIfNotExists();
+
+        try (Connection conn = databaseService.getConnection();
+             Statement stmt = conn.createStatement()) {
+            stmt.execute("DROP TABLE schema_version");
+        }
+
+        assertFalse(databaseService.isSchemaUpToDate());
+    }
 }

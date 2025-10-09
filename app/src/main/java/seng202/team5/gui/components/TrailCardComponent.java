@@ -1,13 +1,13 @@
 package seng202.team5.gui.components;
 
 import java.io.IOException;
-import java.util.function.Consumer;
 
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Insets;
+import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.FlowPane;
@@ -15,11 +15,10 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.Rectangle;
-import seng202.team5.data.DatabaseService;
+import seng202.team5.gui.ScreenNavigator;
 import seng202.team5.models.Trail;
 import seng202.team5.models.TrailLog;
 import seng202.team5.services.ImageService;
-import seng202.team5.services.LogService;
 import seng202.team5.utils.CompletionTimeParser;
 import seng202.team5.utils.StringManipulator;
 
@@ -41,6 +40,8 @@ public class TrailCardComponent extends VBox {
     @FXML
     private FlowPane attributesFlowPane;
     @FXML
+    private FlowPane ratingFlowPane;
+    @FXML
     private Label difficultyLabel;
     @FXML
     private Label durationLabel;
@@ -52,37 +53,20 @@ public class TrailCardComponent extends VBox {
     private VBox infoContainer;
     @FXML
     private StackPane matchContainer;
-    @FXML
-    private ImageView starIcon;
-    @FXML
-    private Label starLabel;
-    @FXML
-    private ImageView bookmark;
-    @FXML
-    private ImageView bookmarkFill;
-    @FXML
-    private ImageView trashIcon;
-
-    private Trail trail;
-    private TrailLog trailLog;
-
-    private Consumer<Trail> onBookmarkClickedHandler;
-    private Consumer<Trail> onBookmarkFillClickedHandler;
-    private Consumer<TrailLog> onTrashClickedHandler;
 
     private final ImageService imageService;
+    private final ScreenNavigator navigator;
 
     private boolean isUnmatched;
     private boolean logMode;
-    private boolean inLogBook = false;
-    private boolean bookmarked = false;
     private boolean isSingle;
 
-    public TrailCardComponent(boolean isUnmatched, boolean isSingle, boolean logMode) {
+    public TrailCardComponent(boolean isUnmatched, boolean isSingle, boolean logMode, ScreenNavigator navigator) {
         this.isUnmatched = isUnmatched;
         this.isSingle = isSingle;
         this.logMode = logMode;
         this.imageService = new ImageService();
+        this.navigator = navigator;
 
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/components/trail_card.fxml"));
         fxmlLoader.setRoot(this);
@@ -93,82 +77,6 @@ public class TrailCardComponent extends VBox {
         } catch (IOException e) {
             throw new RuntimeException(e);
         } // If not work, crash?
-    }
-
-    /**
-     * Log trail card constructor.
-     *
-     */
-    public TrailCardComponent() {
-        this.isUnmatched = false;
-        this.logMode = true;
-        this.inLogBook = true;
-        this.imageService = new ImageService();
-
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/components/trail_card.fxml"));
-        fxmlLoader.setRoot(this);
-        fxmlLoader.setController(this); // FXML elements
-
-        try {
-            fxmlLoader.load();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        } // If not work, crash?
-    }
-
-    public void setTrail(Trail trail) {
-        this.trail = trail;
-    }
-
-    public void setOnBookmarkClickedHandler(Consumer<Trail> handler) {
-        this.onBookmarkClickedHandler = handler;
-    }
-
-    public void setOnBookmarkFillClickedHandler(Consumer<Trail> handler) {
-        this.onBookmarkFillClickedHandler = handler;
-    }
-
-    public void setOnTrashClickedHandler(Consumer<TrailLog> handler) {
-        this.onTrashClickedHandler = handler;
-    }
-
-    @FXML
-    private void onBookmarkClicked(MouseEvent event) {
-        event.consume();
-        if (onBookmarkClickedHandler != null && trail != null) {
-            onBookmarkClickedHandler.accept(trail);
-        }
-    }
-
-    @FXML
-    private void onBookmarkFillClicked(MouseEvent event) {
-        event.consume();
-        if (onBookmarkFillClickedHandler != null && trail != null) {
-            onBookmarkFillClickedHandler.accept(trail);
-        }
-    }
-
-    @FXML
-    private void onTrashIconClicked(MouseEvent event) {
-        event.consume();
-        if (onTrashClickedHandler != null && trailLog != null) {
-            onTrashClickedHandler.accept(trailLog);
-        }
-    }
-
-    public void setBookmarked(boolean value) {
-        bookmarked = value;
-        updateBookmarkIcon();
-    }
-
-    public void updateBookmarkIcon() {
-        if (bookmarked) {
-            bookmarkFill.setVisible(true);
-            bookmark.setVisible(false);
-        } else {
-            bookmarkFill.setVisible(false);
-            bookmark.setVisible(true);
-        }
     }
 
     /**
@@ -185,14 +93,9 @@ public class TrailCardComponent extends VBox {
      * Sets the trail or log data for this card component.
      *
      * @param trail The trail object to display
-     * @param log The log object to display
+     * @param log   The log object to display
      */
     public void setData(Trail trail, TrailLog log) {
-        this.trail = trail;
-        this.trailLog = log;
-        bookmark.setVisible(true);
-        bookmarkFill.setVisible(false);
-
         resetComponentVisibility();
 
         if (!isSingle) {
@@ -226,15 +129,6 @@ public class TrailCardComponent extends VBox {
         }
 
         if (!logMode) {
-            LogService logService = new LogService(new DatabaseService());
-            boolean isLogged = logService.isTrailLogged(trail.getId());
-            bookmark.setVisible(!isLogged);
-            bookmarkFill.setVisible(isLogged);
-
-            starLabel.setVisible(false);
-            starIcon.setVisible(false);
-            trashIcon.setVisible(false);
-
             if (!trail.getDifficulty().contains("unknown")) {
                 difficultyLabel.setText(StringManipulator.capitaliseFirstLetter(trail.getDifficulty()));
             } else {
@@ -264,20 +158,13 @@ public class TrailCardComponent extends VBox {
             } else {
                 updateMatchBar(trail);
             }
-        }
-        else if (logMode) {
+
+            ratingFlowPane.getStyleClass().clear();
+
+        } else if (logMode) {
             matchBar.setVisible(false);
             matchLabel.setVisible(false);
             typeLabel.setVisible(false);
-            trashIcon.setVisible(false);
-
-            starLabel.setVisible(true);
-            starIcon.setVisible(true);
-            if (log.getRating() != null) {
-                starLabel.setText(String.valueOf(log.getRating()));
-            } else {
-                starLabel.setText("Rate Me!");
-            }
 
             if (log.getPerceivedDifficulty() != null) {
                 difficultyLabel.setText(StringManipulator.capitaliseFirstLetter(log.getPerceivedDifficulty()));
@@ -286,19 +173,41 @@ public class TrailCardComponent extends VBox {
             }
 
             if (log.getCompletionTime() != null) {
-                durationLabel.setText(log.getCompletionTime() + " "  + log.getTimeUnit());
+                durationLabel.setText(log.getCompletionTime() + " " + log.getTimeUnit());
             } else {
                 attributesFlowPane.getChildren().remove(durationLabel);
             }
 
-            if (inLogBook) {
-               trashIcon.setVisible(true);
-               bookmark.setVisible(false);
-               bookmarkFill.setVisible(false);
-            }
-
+            fillStarRating(log);
         }
 
+        if (isSingle)
+            setSingleProperties(trail);
+
+    }
+
+    /**
+     * Sets properties specific to single trail card view.
+     */
+    private void setSingleProperties(Trail trail) {
+        trailCardContainer.getStyleClass().add("single");
+        infoContainer.setPadding(new Insets(0, 0, 0, 0));
+        Label description = new Label(trail.getDescription());
+        description.setWrapText(true);
+        infoContainer.getChildren().add(3, description);
+        VBox.setMargin(description, new Insets(0, 0, 10, 0));
+        if (trail.getCultureUrl() != null && !trail.getCultureUrl().isEmpty()) {
+            Hyperlink culturalUrl = new Hyperlink("Cultural Information");
+            culturalUrl.setOnAction(e -> {
+                navigator.openWebPage((trail.getCultureUrl()));
+            });
+            infoContainer.getChildren().add(4, culturalUrl);
+            VBox.setMargin(culturalUrl, new Insets(0, 0, 10, 0));
+        }
+
+        if (trail.getTranslation() != null && !trail.getTranslation().isEmpty()) {
+            infoContainer.getChildren().add(1, new Label(trail.getTranslation()));
+        }
     }
 
     /**
@@ -328,7 +237,19 @@ public class TrailCardComponent extends VBox {
         matchLabel.setText(matchPercent + "% match");
     }
 
-    public ImageView getTrashIcon() {
-        return trashIcon;
+    /** Fills the star rating content */
+    private void fillStarRating(TrailLog log) {
+        infoContainer.getChildren().remove(matchContainer);
+        ratingFlowPane.getChildren().clear();
+        ratingFlowPane.getStyleClass().add("darken");
+        ImageView star = new ImageView(new Image(getClass().getResourceAsStream("/images/star_icon.png")));
+        star.setFitWidth(20);
+        star.setFitHeight(20);
+        ratingFlowPane.getChildren().add(star);
+        int rating = log.getRating();
+        Label label = new Label(String.valueOf(rating));
+        label.getStyleClass().add("text-light");
+        label.getStyleClass().add("heading");
+        ratingFlowPane.getChildren().add(label);
     }
 }

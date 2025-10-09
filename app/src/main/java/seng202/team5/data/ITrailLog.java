@@ -76,9 +76,17 @@ public interface ITrailLog {
     /**
      * Binds the trailLog fields to the prepared statement. The order must match.
      *
-     * @param stmt prepared statement to bind
+     * @param stmt     prepared statement to bind
      * @param trailLog source of values
      * @throws SQLException if a parameter cannot be set
      */
     void setTrailLogParameters(PreparedStatement stmt, TrailLog trailLog) throws SQLException;
+
+    /**
+     * Returns the trail logs for a specific trail id
+     *
+     * @param trailId the trail id to search for
+     * @return an optional containing the trail log if found, or empty if not found
+     */
+    Optional<TrailLog> findByTrailId(int trailId);
 }
