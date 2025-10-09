@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import seng202.team5.data.ITrailLog;
+import seng202.team5.data.SqlBasedTrailLogRepo;
 import seng202.team5.data.SqlBasedTrailRepo;
 import seng202.team5.exceptions.MatchmakingFailedException;
 import seng202.team5.models.Trail;
@@ -24,7 +24,7 @@ class AccountStatisticsServiceTest {
     private AccountStatisticsService accountStatisticsService;
 
     @Mock
-    private ITrailLog mockTrailLogRepo;
+    private SqlBasedTrailLogRepo mockTrailLogRepo;
 
     @Mock
     private SqlBasedTrailRepo mockTrailRepo;

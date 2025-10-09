@@ -10,7 +10,7 @@ import java.util.Optional;
  * Class is responsible for holding and executing all SQL queries related to
  * 'Trails'
  */
-public class SqlBasedTrailRepo implements ITrail {
+public class SqlBasedTrailRepo {
     private final QueryHelper queryHelper;
 
     // SQL Constants
@@ -72,7 +72,6 @@ public class SqlBasedTrailRepo implements ITrail {
      *
      * @return a list of all rows in the trail table
      */
-    @Override
     public List<Trail> getAllTrails() {
         return queryHelper.executeQuery(SELECT_ALL, null, this::mapRowToTrail);
     }
@@ -105,7 +104,6 @@ public class SqlBasedTrailRepo implements ITrail {
      * @param id id of the object
      * @return an Optional containing the trail if found; otherwise empty
      */
-    @Override
     public Optional<Trail> findById(int id) {
         return queryHelper.executeQuerySingle(
                 SELECT_BY_ID,
@@ -204,7 +202,6 @@ public class SqlBasedTrailRepo implements ITrail {
      *
      * @return number of trails as an integer
      */
-    @Override
     public int countTrails() {
         return queryHelper.executeCountQuery(COUNT_SQL, null);
     }

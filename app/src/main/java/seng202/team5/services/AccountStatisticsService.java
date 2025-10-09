@@ -1,6 +1,6 @@
 package seng202.team5.services;
 
-import seng202.team5.data.ITrailLog;
+import seng202.team5.data.SqlBasedTrailLogRepo;
 import seng202.team5.data.SqlBasedTrailRepo;
 import seng202.team5.exceptions.MatchmakingFailedException;
 import seng202.team5.models.Trail;
@@ -29,7 +29,7 @@ public class AccountStatisticsService {
      * @param trailRepo          Repository for trails
      * @param matchmakingService Service for trail categorization and scoring
      */
-    public AccountStatisticsService(ITrailLog trailLogRepo, SqlBasedTrailRepo trailRepo,
+    public AccountStatisticsService(SqlBasedTrailLogRepo trailLogRepo, SqlBasedTrailRepo trailRepo,
             MatchmakingService matchmakingService, User user) {
         this.trailRepo = trailRepo;
         this.matchmakingService = matchmakingService;

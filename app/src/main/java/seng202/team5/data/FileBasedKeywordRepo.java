@@ -7,7 +7,7 @@ import java.util.*;
  * Loads data from the keyword CSV file.
  * It stores the keywords in a map of category to a list of keywords.
  */
-public class FileBasedKeywordRepo implements IKeyword {
+public class FileBasedKeywordRepo {
     // This is what this CSV reader will return. It is in the form
     // - Map of categories (ONE) : List of keywords (at least one)
     private final Map<String, List<String>> keywords = new HashMap<>();
@@ -37,7 +37,7 @@ public class FileBasedKeywordRepo implements IKeyword {
             assert inputStream != null;
             try (// InputStreamReader converts the stream to a character stream, and
                  // BufferedReader allows efficient line-by-line reading
-                 BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream))) {
+                    BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream))) {
 
                 String line;
                 while ((line = reader.readLine()) != null) {
@@ -63,7 +63,6 @@ public class FileBasedKeywordRepo implements IKeyword {
      *
      * @return The map of categories to keywords
      */
-    @Override
     public Map<String, List<String>> getKeywords() {
         return keywords;
     }

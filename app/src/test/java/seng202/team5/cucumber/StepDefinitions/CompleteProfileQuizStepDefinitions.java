@@ -2,7 +2,6 @@ package seng202.team5.cucumber.StepDefinitions;
 
 import io.cucumber.java.Before;
 import io.cucumber.java.en.*;
-import seng202.team5.data.DatabaseService;
 import seng202.team5.data.SqlBasedKeywordRepo;
 import seng202.team5.data.SqlBasedTrailRepo;
 import seng202.team5.exceptions.MatchmakingFailedException;
@@ -69,8 +68,7 @@ public class CompleteProfileQuizStepDefinitions {
                 new Trail(9, "Volcanic Ridge Track", "Hard", "Trail along volcanic ridges with dramatic views",
                         "4 hours", "thumb9.jpg", "http://example.com/trail9", -43.5480, 172.6480),
                 new Trail(10, "Wetlands Walk", "Easy", "Easy walk through wetlands, great for birdwatching",
-                        "1.5 hours", "thumb10.jpg", "http://example.com/trail10", -43.5260, 172.6220)
-        );
+                        "1.5 hours", "thumb10.jpg", "http://example.com/trail10", -43.5260, 172.6220));
         when(mockTrailRepo.getAllTrails()).thenReturn(mockTrails);
         searchService = new SearchService(mockTrailRepo);
         matchmakingService = new MatchmakingService(mockKeywordRepo, mockTrailRepo);
