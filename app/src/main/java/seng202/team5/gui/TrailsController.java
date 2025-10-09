@@ -68,6 +68,8 @@ public class TrailsController extends Controller {
     private Label resetButton;
     @FXML
     private javafx.scene.control.ScrollPane trailsScrollPane;
+    @FXML
+    private Label nextPageButton;
 
     /**
      * Creates a controller with navigator.
@@ -148,6 +150,7 @@ public class TrailsController extends Controller {
         Label loadingLabel = new Label("Loading trails...");
         trailsContainer.getChildren().add(loadingLabel);
         resultsLabel.setText("Loading...");
+        nextPageButton.setVisible(false);
     }
 
     /**
@@ -425,10 +428,36 @@ public class TrailsController extends Controller {
      */
     private void onPageSelected() {
         String selectedPage = pageChoiceBox.getValue();
-        if (selectedPage != null) {
-            int pageIndex = Integer.parseInt(selectedPage) - 1;
-            List<Trail> trails = searchService.getPage(pageIndex);
-            updateTrailsDisplay(trails);
+        if (selectedPage == null) {
+            return;
+        }
+        int pageIndex = Integer.parseInt(selectedPage) - 1;
+
+        if (pageIndex >= searchService.getNumberOfPages() - 1) {
+            nextPageButton.setVisible(false);
+        } else {
+            nextPageButton.setVisible(true);
+        }
+
+        List<Trail> trails = searchService.getPage(pageIndex);
+        updateTrailsDisplay(trails);
+
+    }
+
+    @FXML
+    private void onNextPageClicked() {
+        String selectedPage = pageChoiceBox.getValue();
+        if (selectedPage == null) {
+            return;
+        }
+        int currentPageIndex = Integer.parseInt(selectedPage) - 1;
+        int nextPageIndex = currentPageIndex + 1;
+
+        if (nextPageIndex < searchService.getNumberOfPages()) {
+            isUpdating = true;
+            pageChoiceBox.setValue(String.valueOf(nextPageIndex + 1));
+            onPageSelected();
+            isUpdating = false;
         }
     }
 
@@ -493,6 +522,7 @@ public class TrailsController extends Controller {
         trailsContainer.getChildren().add(noResultsContainer);
 
         resultsLabel.setText("No trails found.");
+        nextPageButton.setVisible(false);
     }
 
     /**
