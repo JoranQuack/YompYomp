@@ -77,7 +77,7 @@ public class ImageService {
      * @param thumbnailUrl The thumbnail URL
      * @return The local file path for the image
      */
-    private String getImagePath(String thumbnailUrl) {
+    protected String getImagePath(String thumbnailUrl) {
         String filename = extractFilenameFromUrl(thumbnailUrl);
         return AppDataManager.getAppData("images/" + filename);
     }

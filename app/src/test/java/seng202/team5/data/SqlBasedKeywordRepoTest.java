@@ -13,6 +13,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -52,6 +53,19 @@ public class SqlBasedKeywordRepoTest {
                         )
                     )
                     """);
+            stmt.execute("""
+                    CREATE TABLE IF NOT EXISTS trail (
+                        id INTEGER PRIMARY KEY,
+                        name TEXT
+                    )
+                    """);
+            stmt.execute("""
+                    CREATE TABLE IF NOT EXISTS trailCategory (
+                        trailId INTEGER NOT NULL REFERENCES trail (id),
+                        categoryId INTEGER NOT NULL REFERENCES category (id),
+                        PRIMARY KEY (trailId, categoryId)
+                    );
+                            """);
             stmt.execute("DELETE FROM keyword");
             stmt.execute("DELETE FROM category");
 
@@ -64,6 +78,9 @@ public class SqlBasedKeywordRepoTest {
             stmt.execute("INSERT INTO keyword (value, categoryId) VALUES ('bush', 2)");
             stmt.execute("INSERT INTO keyword (value, categoryId) VALUES ('mountain', 3)");
             stmt.execute("INSERT INTO keyword (value, categoryId) VALUES ('alpine', 3)");
+            stmt.execute("INSERT INTO trail (id, name) VALUES (1, 'Test Trail')");
+            stmt.execute("INSERT INTO trailCategory (trailId, categoryId) VALUES (1, 1)");
+            stmt.execute("INSERT INTO trailCategory (trailId, categoryId) VALUES (1, 2)");
         }
     }
 
@@ -71,7 +88,9 @@ public class SqlBasedKeywordRepoTest {
     void tearDown() throws SQLException {
         try (Connection conn = databaseService.getConnection();
                 Statement stmt = conn.createStatement()) {
+            stmt.execute("DROP TABLE IF EXISTS trailCategory");
             stmt.execute("DROP TABLE IF EXISTS keyword");
+            stmt.execute("DROP TABLE IF EXISTS trail");
             stmt.execute("DROP TABLE IF EXISTS category");
         }
 
@@ -104,5 +123,33 @@ public class SqlBasedKeywordRepoTest {
         assertEquals(2, keywords.get("Alpine").size());
         assertTrue(keywords.get("Alpine").contains("mountain"));
         assertTrue(keywords.get("Alpine").contains("alpine"));
+    }
+
+    @Test
+    @DisplayName("Should correctly count the number of categories in the database")
+    void testCountCategories() {
+        int categoryCount = sqlBasedKeywordRepo.countCategories();
+        assertEquals(3, categoryCount, "There should be 3 categories in the database");
+    }
+
+    @Test
+    @DisplayName("Should correctly get the categories for a given trail")
+    void testGetCategoriesForTrail() {
+        Set<String> categories = sqlBasedKeywordRepo.getCategoriesForTrail(1);
+        assertNotNull(categories);
+        assertFalse(categories.isEmpty(), "Trail 1 has two categories assigned");
+        assertTrue(categories.contains("FamilyFriendly"));
+        assertTrue(categories.contains("Forest"));
+    }
+
+    @Test
+    @DisplayName("Should return all trail categories together")
+    void testGetCategoriesForTrailWithNoCategories() {
+        Map<Integer, Set<String>> trailCategories = sqlBasedKeywordRepo.getAllTrailCategories();
+        assertNotNull(trailCategories);
+        assertTrue(trailCategories.containsKey(1), "Trail 1 should be present");
+        assertEquals(2, trailCategories.get(1).size(), "Trail 1 should have two categories");
+        assertTrue(trailCategories.get(1).contains("FamilyFriendly"));
+        assertTrue(trailCategories.get(1).contains("Forest"));
     }
 }

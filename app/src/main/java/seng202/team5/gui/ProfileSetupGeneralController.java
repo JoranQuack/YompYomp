@@ -7,6 +7,7 @@ import javafx.scene.layout.StackPane;
 
 import org.controlsfx.control.CheckComboBox;
 
+import seng202.team5.App;
 import seng202.team5.gui.util.BackgroundImageUtil;
 import seng202.team5.models.User;
 import seng202.team5.services.RegionFinder;
@@ -56,7 +57,7 @@ public class ProfileSetupGeneralController extends Controller {
         System.out.println();
         BackgroundImageUtil.setupCoverBehavior(bgImage, rootPane);
 
-        super.getUserService().setGuest(false);
+        App.getUserService().setGuest(false);
 
         RegionFinder regionFinder = new RegionFinder();
         List<String> regionList = regionFinder.getRegionNames();
@@ -104,7 +105,7 @@ public class ProfileSetupGeneralController extends Controller {
      */
     @FXML
     private void onSkipSetupButtonClicked() {
-        user = super.getUserService().getUserAfterSkip();
+        user = App.getUserService().getUserAfterSkip();
         super.getNavigator().launchScreen(new LoadingController(super.getNavigator(), null));
     }
 
@@ -116,7 +117,7 @@ public class ProfileSetupGeneralController extends Controller {
     private boolean setUserPreferences() {
         String name = usernameTextField.getText();
 
-        if (name == null || name.trim().isEmpty() || !super.getUserService().isValidName(name.trim())) {
+        if (name == null || name.trim().isEmpty() || !App.getUserService().isValidName(name.trim())) {
             usernameTextField.setStyle("-fx-border-color: red; -fx-border-width: 2px;");
             usernameLabel.setText("Invalid name. Please try again.");
             return false;
