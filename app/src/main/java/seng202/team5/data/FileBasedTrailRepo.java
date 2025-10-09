@@ -77,8 +77,17 @@ public class FileBasedTrailRepo {
                 double lon = Double.parseDouble(values[9]); // longitude given by y
 
                 // create the new trail object
-                Trail newTrail = new Trail(id, name, difficulty, description, completionInfo,
-                        thumbnailURL, webpageURL, lat, lon);
+                Trail newTrail = new Trail.Builder()
+                        .id(id)
+                        .name(name)
+                        .difficulty(difficulty)
+                        .description(description)
+                        .completionInfo(completionInfo)
+                        .thumbnailURL(thumbnailURL)
+                        .webpageURL(webpageURL)
+                        .lat(lat)
+                        .lon(lon)
+                        .build();
 
                 // add the new trail object to the list
                 trails.add(newTrail);

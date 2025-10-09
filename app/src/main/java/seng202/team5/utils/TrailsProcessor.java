@@ -3,6 +3,7 @@ package seng202.team5.utils;
 import seng202.team5.models.Trail;
 import seng202.team5.services.RegionFinder;
 
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
@@ -17,38 +18,56 @@ public class TrailsProcessor {
      */
     public static List<Trail> processTrails(List<Trail> trails) {
         RegionFinder regionFinder = new RegionFinder("/datasets/regional/", "regional-council-2025.shp");
+        List<Trail> processedTrails = new ArrayList<>();
+
         for (Trail trail : trails) {
             String completionInfo = trail.getCompletionInfo();
+
+            int minTime = trail.getMinCompletionTimeMinutes();
+            int maxTime = trail.getMaxCompletionTimeMinutes();
+            String completionType = trail.getCompletionType();
+            String timeUnit = trail.getTimeUnit();
+            boolean isMultiDay = trail.isMultiDay();
+            boolean hasVariableTime = trail.hasVariableTime();
 
             if (completionInfo != null && !completionInfo.trim().isEmpty()) {
                 try {
                     CompletionTimeParser.CompletionTimeResult result = CompletionTimeParser
                             .parseCompletionTime(completionInfo);
 
-                    // Only use type returned by parser if current type of trail is unknown
-                    // Prioritise entry from drop down over parser
                     if (Objects.equals(trail.getCompletionType(), "unknown")) {
-                        trail.setCompletionType(result.getCompletionType());
+                        completionType = result.getCompletionType();
                     }
-                    // Update trail with parsed time information
-                    trail.setMinCompletionTimeMinutes(result.getMinCompletionTimeMinutes());
-                    trail.setMaxCompletionTimeMinutes(result.getMaxCompletionTimeMinutes());
-                    trail.setTimeUnit(result.getTimeUnit());
-                    trail.setMultiDay(result.isMultiDay());
-                    trail.setHasVariableTime(result.hasVariableTime());
+                    minTime = result.getMinCompletionTimeMinutes();
+                    maxTime = result.getMaxCompletionTimeMinutes();
+                    timeUnit = result.getTimeUnit();
+                    isMultiDay = result.isMultiDay();
+                    hasVariableTime = result.hasVariableTime();
 
                 } catch (Exception e) {
                     System.err.println("Error parsing completion time for trail " + trail.getId() +
                             " ('" + completionInfo + "'): " + e.getMessage());
-                    // Keep default values if parsing fails
                 }
             }
 
-            trail.setDifficulty(DifficultyParser.parseDifficulty(trail.getDifficulty()));
-            trail.setRegion(regionFinder.findRegionForTrail(trail));
+            processedTrails.add(
+                    new Trail.Builder()
+                            .from(trail) // copy existing fields
+                            .minCompletionTimeMinutes(minTime)
+                            .maxCompletionTimeMinutes(maxTime)
+                            .completionType(completionType)
+                            .timeUnit(timeUnit)
+                            .isMultiDay(isMultiDay)
+                            .hasVariableTime(hasVariableTime)
+                            .difficulty(DifficultyParser.parseDifficulty(trail.getDifficulty()))
+                            .region(regionFinder.findRegionForTrail(trail))
+                            .build()
+            );
         }
-        return trails;
+
+        return processedTrails;
     }
+
     /**
      * Returns a list of trails that are within a specified radius of the given trail
      * The current trail itself is excluded from the results

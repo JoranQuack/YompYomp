@@ -475,9 +475,23 @@ public class ModifyTrailController extends Controller {
             userWeight = 0.5;
         }
 
-        Trail newTrail = new Trail(trailId, trailName, translation, region, difficulty, trailType,
-                completionTime, trailDescription, thumbUrl, webUrl, cultureUrl,
-                userWeight, latitude, longitude);
+        Trail newTrail = new Trail.Builder()
+                .id(trailId)
+                .name(trailName)
+                .translation(translation)
+                .region(region)
+                .difficulty(difficulty)
+                .completionType(trailType)
+                .completionInfo(completionTime)
+                .description(trailDescription)
+                .thumbnailURL(thumbUrl)
+                .webpageURL(webUrl)
+                .cultureUrl(cultureUrl)
+                .userWeight(userWeight)
+                .lat(latitude)
+                .lon(longitude)
+                .build();
+
 
         // Calculate user weight
         try {
@@ -486,7 +500,12 @@ public class ModifyTrailController extends Controller {
                     App.getTrailRepo());
             matchmakingService.setUserPreferences(user);
             double calculatedWeight = matchmakingService.getUserWeightFromTrail(newTrail);
-            newTrail.setUserWeight(calculatedWeight);
+
+            // Create a new Trail instance with updated userWeight
+            newTrail = new Trail.Builder()
+                    .from(newTrail)
+                    .userWeight(calculatedWeight)
+                    .build();
         } catch (Exception e) {
             // Keep the default weight
         }
