@@ -37,7 +37,7 @@
                               <Label text="Choose your avatar" />
                               <HBox alignment="TOP_CENTER" spacing="10.0">
                                  <children>
-                                    <ImageView fx:id="clearProfileImage" fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true" styleClass="special-button">
+                                    <ImageView fitHeight="50.0" fitWidth="50.0" onMouseClicked="#onClearProfileImageClicked" pickOnBounds="true" preserveRatio="true" styleClass="special-button">
                                        <image>
                                           <Image url="@../images/profiles/ban.png" />
                                        </image>
@@ -234,9 +234,14 @@
                   <Region VBox.vgrow="ALWAYS" />
                   <HBox alignment="CENTER">
                      <children>
-                        <Button fx:id="deleteProfileButton" mnemonicParsing="false" styleClass="bg-red" text="Delete Profile" />
+                        <Button mnemonicParsing="false" onAction="#onResetAppClicked" styleClass="bg-red" text="Reset App" />
+                        <Button mnemonicParsing="false" onAction="#onDeleteProfileButtonClicked" styleClass="bg-red" text="Delete Profile">
+                           <HBox.margin>
+                              <Insets left="10.0" />
+                           </HBox.margin></Button>
                         <Region HBox.hgrow="ALWAYS" />
-                        <Button fx:id="redoQuizButton" mnemonicParsing="false" text="Redo Quiz" />
+                        <Region HBox.hgrow="ALWAYS" />
+                        <Button mnemonicParsing="false" onAction="#onRedoQuizButtonClicked" text="Redo Quiz" />
                      </children>
                   </HBox>
                </children>

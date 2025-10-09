@@ -22,6 +22,8 @@ import seng202.team5.services.TrailService;
 import seng202.team5.utils.StringManipulator;
 import seng202.team5.utils.TrailsProcessor;
 
+import java.net.MalformedURLException;
+import java.net.URI;
 import java.util.List;
 
 /**
@@ -142,31 +144,37 @@ public class ModifyTrailController extends Controller {
         // For TextFields
         latitudeTextField.textProperty().addListener((obs, oldText, newText) -> {
             if (!newText.isEmpty()) {
-                latitudeTextField.setStyle("");
-                mapContainer.setStyle(""); // clear map border as well
+                latitudeTextField.getStyleClass().remove("validation-error");
+                mapContainer.getStyleClass().remove("validation-error");
             }
         });
         longitudeTextField.textProperty().addListener((obs, oldText, newText) -> {
             if (!newText.isEmpty()) {
-                longitudeTextField.setStyle("");
-                mapContainer.setStyle("");
+                longitudeTextField.getStyleClass().remove("validation-error");
+                mapContainer.getStyleClass().remove("validation-error");
             }
         });
         trailNameTextField.textProperty().addListener((obs, oldText, newText) -> {
             if (!newText.isEmpty()) {
-                trailNameTextField.setStyle("");
+                trailNameTextField.getStyleClass().remove("validation-error");
             }
         });
         // For TextArea
         trailDescriptionTextArea.textProperty().addListener((obs, oldText, newText) -> {
             if (!newText.isEmpty()) {
-                trailDescriptionTextArea.setStyle("");
+                trailDescriptionTextArea.getStyleClass().remove("validation-error");
             }
         });
         // For ComboBox
         trailTypeComboBox.valueProperty().addListener((obs, oldVal, newVal) -> {
             if (newVal != null && !newVal.isEmpty()) {
-                trailTypeComboBox.setStyle("");
+                trailTypeComboBox.getStyleClass().remove("validation-error");
+            }
+        });
+        // For culture URL field
+        cultureUrlTextField.textProperty().addListener((obs, oldText, newText) -> {
+            if (!newText.isEmpty()) {
+                cultureUrlTextField.getStyleClass().remove("validation-error");
             }
         });
     }
@@ -325,21 +333,8 @@ public class ModifyTrailController extends Controller {
             Trail updatedTrail = getUpdatedTrail();
             trailService.addTrail(updatedTrail);
             super.getNavigator().launchScreen(new ViewTrailController(super.getNavigator(), updatedTrail));
-        } else {
-            // Check if the error is specifically due to duplicate trail name
-            if (!trailNameTextField.getText().isEmpty()) {
-                String inputTrailName = trailNameTextField.getText().trim();
-                Integer excludeId = (trail != null) ? trail.getId() : null;
-                boolean nameExists = trailService.existsByName(inputTrailName, excludeId);
-
-                if (nameExists) {
-                    emptyFieldLabel.setText("A trail with this name already exists! Please choose a different name.");
-                    return;
-                }
-            }
-
-            emptyFieldLabel.setText("Please make sure all required fields are filled!");
         }
+        // Error message is already set by userInputValidation method
     }
 
     @FXML
@@ -382,61 +377,105 @@ public class ModifyTrailController extends Controller {
     }
 
     /**
-     * Validates user input
+     * Validates user input and sets appropriate error styling and messages
      *
      * @return whether inputs are valid
      */
     private boolean userInputValidation() {
         boolean isValid = true;
+        emptyFieldLabel.setText(""); // Clear prev error
 
+        // Clear prev styling
+        clearValidationStyling();
+
+        // Validate latitude
         if (latitudeTextField.getText().isEmpty()) {
-            latitudeTextField.setStyle("-fx-border-color: red;");
-            mapContainer.setStyle("-fx-border-color: red;");
+            latitudeTextField.getStyleClass().add("validation-error");
+            mapContainer.getStyleClass().add("validation-error");
+            emptyFieldLabel.setText("Please enter a valid latitude.");
             isValid = false;
-        } else {
-            latitudeTextField.setStyle("");
-            mapContainer.setStyle("");
-        }
-        if (longitudeTextField.getText().isEmpty()) {
-            longitudeTextField.setStyle("-fx-border-color: red;");
-            mapContainer.setStyle("-fx-border-color: red;");
-            isValid = false;
-        } else {
-            longitudeTextField.setStyle("");
-            mapContainer.setStyle("");
-        }
-        if (trailNameTextField.getText().isEmpty()) {
-            trailNameTextField.setStyle("-fx-border-color: red;");
-            isValid = false;
-        } else {
-            trailNameTextField.setStyle("");
-        }
-        if (trailDescriptionTextArea.getText().isEmpty()) {
-            trailDescriptionTextArea.setStyle("-fx-border-color: red;");
-            isValid = false;
-        } else {
-            trailDescriptionTextArea.setStyle("");
-        }
-        if (trailTypeComboBox.getValue() == null) {
-            trailTypeComboBox.setStyle("-fx-border-color: red;");
-            isValid = false;
-        } else {
-            trailTypeComboBox.setStyle("");
         }
 
-        // Check if trail name already exists (case and whitespace insensitive)
-        if (!trailNameTextField.getText().isEmpty()) {
+        // Validate longitude
+        if (longitudeTextField.getText().isEmpty()) {
+            longitudeTextField.getStyleClass().add("validation-error");
+            mapContainer.getStyleClass().add("validation-error");
+            if (emptyFieldLabel.getText().isEmpty()) {
+                emptyFieldLabel.setText("Please enter a valid longitude.");
+            }
+            isValid = false;
+        }
+
+        // Validate trail name
+        if (trailNameTextField.getText().isEmpty()) {
+            trailNameTextField.getStyleClass().add("validation-error");
+            if (emptyFieldLabel.getText().isEmpty()) {
+                emptyFieldLabel.setText("Please enter a trail name.");
+            }
+            isValid = false;
+        } else {
+            // Check if trail name exists already
             String inputTrailName = trailNameTextField.getText().trim();
             Integer excludeId = (trail != null) ? trail.getId() : null;
             boolean nameExists = trailService.existsByName(inputTrailName, excludeId);
 
             if (nameExists) {
-                trailNameTextField.setStyle("-fx-border-color: red;");
+                trailNameTextField.getStyleClass().add("validation-error");
+                emptyFieldLabel.setText("A trail with this name already exists! Please choose a different name.");
                 isValid = false;
             }
         }
 
+        // Validate trail description
+        if (trailDescriptionTextArea.getText().isEmpty()) {
+            trailDescriptionTextArea.getStyleClass().add("validation-error");
+            if (emptyFieldLabel.getText().isEmpty()) {
+                emptyFieldLabel.setText("Please enter a trail description.");
+            }
+            isValid = false;
+        }
+
+        // Validate trail type
+        if (trailTypeComboBox.getValue() == null) {
+            trailTypeComboBox.getStyleClass().add("validation-error");
+            if (emptyFieldLabel.getText().isEmpty()) {
+                emptyFieldLabel.setText("Please select a trail type.");
+            }
+            isValid = false;
+        }
+
+        // Validate culture URL if provided
+        if (!cultureUrlTextField.getText().trim().isEmpty()) {
+            try {
+                URI.create(cultureUrlTextField.getText().trim()).toURL();
+            } catch (MalformedURLException | IllegalArgumentException e) {
+                cultureUrlTextField.getStyleClass().add("validation-error");
+                if (emptyFieldLabel.getText().isEmpty()) {
+                    emptyFieldLabel.setText("Please enter a valid URL for the culture link.");
+                }
+                isValid = false;
+            }
+        }
+
+        // If multiple errors, show generic message
+        if (!isValid && emptyFieldLabel.getText().isEmpty()) {
+            emptyFieldLabel.setText("Please correct the highlighted fields.");
+        }
+
         return isValid;
+    }
+
+    /**
+     * Clears validation styling from all form elements
+     */
+    private void clearValidationStyling() {
+        latitudeTextField.getStyleClass().remove("validation-error");
+        longitudeTextField.getStyleClass().remove("validation-error");
+        trailNameTextField.getStyleClass().remove("validation-error");
+        trailDescriptionTextArea.getStyleClass().remove("validation-error");
+        trailTypeComboBox.getStyleClass().remove("validation-error");
+        cultureUrlTextField.getStyleClass().remove("validation-error");
+        mapContainer.getStyleClass().remove("validation-error");
     }
 
     /**
