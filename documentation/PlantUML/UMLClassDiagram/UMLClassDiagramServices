@@ -6,12 +6,29 @@ title Services Package
 package "services" {
 
   class ImageService {
-    + loadTrailImage(url : String) : Image
+    + loadTrailImage(urlTrailImage : String) : Image
     + getDefaultTrailImage() : Image
   }
 
+  class TrailService {
+    + TrailService(sqlBasedTrailRepo : SqlBasedTrailRepo)
+    + existsByName(inputTrailName : String, excludeId : Integer) : boolean
+    + findTrailById(id : int) : Trail
+  }
+
+  class AccountStatisticsService {
+    +AccountStatisticsService(trailRepo : SqlBasedTrailRepo , trailLogRepo : SqlBasedTrailLogRepo, matchmakingService : MatchmakingService, user : User)
+    - getLoggedTrails(logs : List<TrailLog>) : List<Trail>
+    + getTopCategory() : String
+  }
+
+  class DashboardService {
+    +DashboardService(trailRepo : SqlBasedTrailRepo)
+    + getRecommendedTrails() : List<Trail>
+  }
+
   class LogService {
-    + LogService(databaseService : DatabaseService)
+    + LogService(trailLogRepo : SqlBasedTrailLogRepo, trailRepo: SqlBasedTrailRepo )
     + getNumberOfPages() : int
     + updateLogs()
     + getPage(page : int) : List<TrailLog>
@@ -22,12 +39,13 @@ package "services" {
 
   class WeatherService{
     + WeatherService(baseUrl : String, forecastUrl : String)
+    - getApiKey() : String
     + getWeatherByCoords(lat : double, lon : double) : Weather
     + getFourDayForecast(lat : double, lon : double) : List<Weather>
 }
 
   class MatchMakingService {
-    + MatchMakingService(databaseService : DatabaseService)
+    + MatchMakingService(keywordRepo : SqlBasedKeywordRepo , trailRepo : SqlBasedTrailRepo )
     + generateTrailWeights(user : User) : void
     + setUserPreferences(user : User)
     + getRecommendedTrails(user : User, limit : int) : List<Trail>
@@ -37,8 +55,7 @@ package "services" {
   }
 
   class SearchService {
-    + SearchService(databaseService : DatabaseService)
-    + setMaxResults(n : int) : void
+    + SearchService( sqlBasedTrailRepo: SqlBasedTrailRepo , filterOptionsRepo, SqlBasedFilterOptionsRepo )
     + getNumberOfTrails() : int
     + getNumberOfPages(query : String) : int
     + updateTrails()
@@ -48,7 +65,7 @@ package "services" {
   }
 
   class SetupService {
-    + SetupService(databaseService : DatabaseService)
+    + SetupService(sqlTrailRepo: SqlBasedTrailRepo, databaseService : DatabaseService)
     + setupDatabase() : void
     + scrapeTrailImage(url : String) : void
     + syncDB() : void
@@ -56,7 +73,7 @@ package "services" {
   }
 
   class UserService {
-    + UserService(databaseService : DatabaseService)
+    + UserService(trailRepo : SqlBasedTrailRepo , databaseService : DatabaseService)
     + getUser() : User
     + setUserParameters(stmt : PreparedStatement, user : User) : void
     - loadUserFromDatabase() : User
@@ -84,12 +101,27 @@ package "services" {
     + getAllRegions() : Map<String, Geometry>
   }
 
+  package "DataAccess (SQLite DB)" {
+    class SqlBasedFilterOptionsRepo
+    class SqlBasedKeywordRepo
+    class SqlBasedTrailRepo
+    class SqlBasedTrailLogRepo
+  }
+
+    TrailService ..> SqlBasedTrailRepo
+    AccountStatisticsService ..> SqlBasedTrailRepo
+    AccountStatisticsService ..> SqlBasedTrailLogRepo
+    DashboardService ..> SqlBasedTrailRepo
+    LogService ..> SqlBasedTrailRepo
+    LogService ..> SqlBasedTrailLogRepo
+    MatchMakingService ..> SqlBasedTrailRepo
+    MatchMakingService ..> SqlBasedKeywordRepo
+    SearchService ..> SqlBasedTrailRepo
+    SearchService ..> SqlBasedFilterOptionsRepo
+    SetupService ..> DatabaseService
+    SetupService ..> SqlBasedTrailRepo
+    UserService ..> DatabaseService
+    UserService ..> SqlBasedTrailRepo
 }
 
-SearchService *-- DatabaseService
-MatchMakingService *-- DatabaseService
-UserService *-- DatabaseService
-SetupService *-- DatabaseService
-WeatherService *-- DatabaseService
-LogService *-- DatabaseService
 @enduml
