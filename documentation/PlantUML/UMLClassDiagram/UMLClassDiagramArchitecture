@@ -11,45 +11,60 @@ package "Models" {
   class Trail
   class User
   enum Question
-  class TripLog
+  class TrailLog
+  class Weather
 }
 
 package "Service" {
+  class AccountStatisticsService
   class SetupService
   class SearchService
   class UserService
   class MatchMakingService
+  class RegionFinder
   class ImageService
-  class WeatherService <<to be implemented>>
-  class MapService <<to be implemented>>
-  class LogService <<to be implemented>>
+  class WeatherService
+  class LogService
 }
 
 package "DataAccess (SQLite DB)" {
   interface ITrail
   interface IKeyword
+  interface ITrailLog
   class FileBasedTrailRepo
   class FileBasedKeywordRepo
-  class SQLBasedKeywordRepo
-  class SQLBasedTrailRepo
-  class SQLBasedLogRepo
+  class SqlBasedFilterOptionsRepo
+  class SqlBasedKeywordRepo
+  class SqlBasedTrailRepo
+  class SqlBasedLogRepo
   class DatabaseService
 }
 
 package "GUI" {
-  class LogBookController <<to be implemented>>
+  class AccountController
+  class LogBookController
+  class LogTrailController
+  class ModifyTrailController
   class ScreenNavigator
   abstract class Controller
   class WelcomeController
   class DashboardController
+  class LoadingController
   class MatchmakingController
   class ProfileQuizController
   class ProfileSetupGeneralController
   class TrailsController
+  class ViewTrailController
+  class SafetyInfoController
   package "Components" {
+    class LegendLabelComponent
     class NavbarComponent
     class TrailCardComponent
+    class WeatherComponent
   }
+  package "util" {
+    class BackgroundImageUtil
+    }
 }
 
 'skinparam linetype ortho
@@ -66,6 +81,12 @@ Controller <|-- ProfileQuizController
 Controller <|-- DashboardController
 Controller <|-- TrailsController
 Controller <|-- LogBookController
+Controller <|-- ViewTrailController
+Controller <|-- LoadingController
+Controller <|-- AccountController
+Controller <|-- LogTrailController
+Controller <|-- SafetyInfoController
+Controller <|-- ModifyTrailController
 
 Controller ..> NavbarComponent
 Controller ..> TrailCardComponent
@@ -78,20 +99,22 @@ MatchmakingController ..> MatchMakingService
 DashboardController ..> SearchService
 WelcomeController ..> UserService
 NavbarComponent ..> ImageService
-TrailsController ..> MapService
 LogBookController ..> LogService
 TrailsController ..> WeatherService
+ViewTrailController ..> RegionFinder
+ViewTrailController ..> WeatherService
 
 SearchService ..> ITrail
 SetupService ..> ITrail
 SetupService ..> IKeyword
-LogService ..> SQLBasedLogRepo
+LogService ..> SqlBasedLogRepo
 LogService ..> ITrail
 
 ITrail <|.. FileBasedTrailRepo
-ITrail <|.. SQLBasedTrailRepo
+ITrail <|.. SqlBasedTrailRepo
 IKeyword <|.. FileBasedKeywordRepo
-IKeyword <|.. SQLBasedKeywordRepo
+IKeyword <|.. SqlBasedKeywordRepo
+ITrailLog <|.. SqlBasedLogRepo
 
 UserService ..> User
 MatchMakingService ..> User
@@ -99,5 +122,14 @@ MatchMakingService ..> Trail
 SearchService ..> Trail
 SetupService ..> Trail
 ProfileQuizController ..> Question
+WeatherService ..> Weather
+UserService ..> Trail
+RegionFinder ..> Trail
+LogService ..> TrailLog
+LogService ..> Trail
+AccountStatisticsService ..> TrailLog
+AccountStatisticsService ..> Trail
+AccountStatisticsService ..> User
+
 App ..> FXAppEntry
 @enduml
