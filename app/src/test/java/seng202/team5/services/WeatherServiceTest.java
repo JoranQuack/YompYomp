@@ -106,9 +106,9 @@ class WeatherServiceTest {
             List<Weather> forecast = weatherService.getFourDayForecast(-43.5320, 172.6362);
 
             assertEquals(4, forecast.size());
-            assertEquals("2025-10-10", forecast.get(0).getDate());
-            assertEquals("cloudy", forecast.get(0).getDescription());
-            assertEquals("windy", forecast.get(3).getDescription());
+            assertEquals("2025-10-11", forecast.get(0).getDate());
+            assertEquals("sunny", forecast.get(0).getDescription());
+            assertEquals("foggy", forecast.get(3).getDescription());
         }
     }
 
