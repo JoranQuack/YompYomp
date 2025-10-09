@@ -133,4 +133,89 @@ public class SearchServiceTest {
 
         assertNotEquals(page1.getFirst().getId(), page2.getFirst().getId(), "Pages should not overlap");
     }
+
+    @Test
+    @DisplayName("getNumberOfPages handles maxResults <= 0")
+    void testGetNumberOfPagesZeroMaxResults() {
+        searchService.setMaxResults(0);
+        searchService.updateSearch(""); // populate filteredTrails
+        assertEquals(1, searchService.getNumberOfPages(), "Should return 1 page when maxResults <= 0");
+    }
+
+    @Test
+    @DisplayName("matchesAllFilters correctly evaluates all filters")
+    void testMatchesAllFilters() throws Exception {
+        var method = SearchService.class.getDeclaredMethod("matchesAllFilters", Trail.class);
+        method.setAccessible(true);
+
+        // Trail with name that won't match query
+        Trail trail = mockTrails.getFirst();
+        searchService.updateFilter("query", "nonexistent");
+        assertFalse((boolean) method.invoke(searchService, trail));
+
+        // Trail with matching query
+        searchService.updateFilter("query", "Alpine");
+        assertTrue((boolean) method.invoke(searchService, trail));
+
+        // Difficulty filter that fails
+        searchService.updateFilter("difficulty", "Hard");
+        assertFalse((boolean) method.invoke(searchService, mockTrails.getFirst()));
+
+        // Difficulty filter that passes
+        searchService.updateFilter("difficulty", "Easy");
+        assertTrue((boolean) method.invoke(searchService, mockTrails.getFirst()));
+    }
+
+    @Test
+    @DisplayName("matchesFilter handles all cases")
+    void testMatchesFilter() throws Exception {
+        var method = SearchService.class.getDeclaredMethod("matchesFilter", String.class, String.class, String.class);
+        method.setAccessible(true);
+
+        // null filter -> true
+        assertTrue((boolean) method.invoke(searchService, "difficulty", null, "Easy"));
+
+        // empty filter -> false
+        assertFalse((boolean) method.invoke(searchService, "difficulty", "", "Easy"));
+
+        // Select All -> true
+        assertTrue((boolean) method.invoke(searchService, "difficulty", "Select All", "Unknown"));
+
+        // default value included -> true
+        assertTrue((boolean) method.invoke(searchService, "difficulty", "easy", "Easy"));
+
+        // matching trailValue -> true
+        assertTrue((boolean) method.invoke(searchService, "difficulty", "Easy,Medium", "Easy"));
+
+        // not matching -> false
+        assertFalse((boolean) method.invoke(searchService, "difficulty", "Medium,Hard", "Easy"));
+    }
+
+    @Test
+    @DisplayName("matchesRegionFilter handles all cases")
+    void testMatchesRegionFilter() throws Exception {
+        var method = SearchService.class.getDeclaredMethod("matchesRegionFilter", String.class, String.class);
+        method.setAccessible(true);
+
+        // null filter -> true
+        assertTrue((boolean) method.invoke(searchService, null, "North"));
+
+        // empty filter -> false
+        assertFalse((boolean) method.invoke(searchService, "", "North"));
+
+        // Select All -> true
+        assertTrue((boolean) method.invoke(searchService, "Select All", "North"));
+
+        // trailRegion matches -> true
+        assertTrue((boolean) method.invoke(searchService, "North,South", "North"));
+
+        // trailRegion null -> match "Other"
+        assertTrue((boolean) method.invoke(searchService, "Other,North", null));
+    }
+
+    @Test
+    @DisplayName("getDefaultFilterValue returns default or 'All'")
+    void testGetDefaultFilterValue() {
+        assertEquals("All", searchService.getDefaultFilterValue("nonexistent"));
+    }
 }

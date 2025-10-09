@@ -228,4 +228,121 @@ class MatchmakingServiceTest {
         assertEquals(0, emptyScore, 0.0001);
 
     }
+
+    @Test
+    @DisplayName("setUserPreferences should throw if user is null")
+    void testSetUserPreferencesThrowsWhenNull() {
+        assertThrows(MatchmakingFailedException.class, () -> matchmakingService.setUserPreferences(null));
+    }
+
+    @Test
+    @DisplayName("assignWeightsToTrails should throw if trail list is empty")
+    void testAssignWeightsToTrailsThrowsWhenEmpty() throws MatchmakingFailedException {
+        when(mockTrailRepo.getAllTrails()).thenReturn(Collections.emptyList());
+        MatchmakingService service = new MatchmakingService(mockKeywordRepo, mockTrailRepo);
+        assertThrows(MatchmakingFailedException.class, service::assignWeightsToTrails);
+    }
+
+    @Test
+    @DisplayName("scoreTrail returns 0 if maxScore <= 0")
+    void testScoreTrailMaxScoreZero() throws MatchmakingFailedException {
+        User user = makeTestUser();
+        // Override all preferences to 0
+        user.setIsFamilyFriendly(false);
+        user.setIsAccessible(false);
+        user.setExperienceLevel(0);
+        user.setGradientPreference(0);
+        user.setBushPreference(0);
+        user.setReservePreference(0);
+        user.setLakeRiverPreference(0);
+        user.setCoastPreference(0);
+        user.setMountainPreference(0);
+        user.setWildlifePreference(0);
+        user.setHistoricPreference(0);
+        user.setWaterfallPreference(0);
+
+        matchmakingService.setUserPreferences(user);
+
+        Set<String> trailCategories = new HashSet<>(Arrays.asList("FamilyFriendly", "Accessible"));
+        double score = matchmakingService.scoreTrail(trailCategories);
+
+        assertEquals(0.0, score, 0.0001);
+    }
+
+    @Test
+    @DisplayName("generateTrailWeights should throw if trails are empty")
+    void testGenerateTrailWeightsThrows() throws MatchmakingFailedException {
+        when(mockTrailRepo.getAllTrails()).thenReturn(Collections.emptyList());
+        User user = makeTestUser();
+        assertThrows(MatchmakingFailedException.class,
+                () -> matchmakingService.generateTrailWeights(user));
+    }
+
+    @Test
+    @DisplayName("getTrailWeight returns 0 for unknown trail ID")
+    void testGetTrailWeightDefault() {
+        double weight = matchmakingService.getTrailWeight(999); // ID not in trailWeights
+        assertEquals(0.0, weight, 0.0001);
+    }
+
+    @Test
+    @DisplayName("getTrailsSortedByWeight returns trails sorted by weight then name")
+    void testGetTrailsSortedByWeight() throws MatchmakingFailedException {
+        User user = makeTestUser();
+        matchmakingService.setUserPreferences(user);
+
+        matchmakingService.assignWeightsToTrails();
+
+        List<Trail> sortedTrails = matchmakingService.getTrailsSortedByWeight();
+        assertNotNull(sortedTrails);
+        assertEquals(mockTrails.size(), sortedTrails.size());
+
+        // Check descending order by weight
+        for (int i = 1; i < sortedTrails.size(); i++) {
+            double prevWeight = matchmakingService.getTrailWeight(sortedTrails.get(i - 1).getId());
+            double currWeight = matchmakingService.getTrailWeight(sortedTrails.get(i).getId());
+            assertTrue(prevWeight >= currWeight);
+        }
+    }
+
+    @Test
+    @DisplayName("assignWeightsToTrails sets categories and userWeight")
+    void testAssignWeightsToTrailsPopulatesWeights() throws MatchmakingFailedException {
+        matchmakingService.assignWeightsToTrails();
+
+        List<Trail> allTrails = mockTrailRepo.getAllTrails();
+        for (Trail trail : allTrails) {
+            assertNotNull(trail.getCategories());
+            assertTrue(matchmakingService.getTrailWeight(trail.getId()) >= 0.0);
+        }
+    }
+
+    @Test
+    @DisplayName("getUserWeightFromTrail calculates score correctly")
+    void testGetUserWeightFromTrail() throws MatchmakingFailedException {
+        User user = makeTestUser();
+        matchmakingService.setUserPreferences(user);
+
+        Trail trail = mockTrails.getFirst();
+        double weight = matchmakingService.getUserWeightFromTrail(trail);
+
+        assertTrue(weight >= 0.0 && weight <= 1.0);
+    }
+
+    @Test
+    @DisplayName("categoriseAllTrails assigns categories and calls keywordRepo.assignTrailCategories")
+    void testCategoriseAllTrails() throws MatchmakingFailedException {
+        MatchmakingService spyService = spy(matchmakingService);
+
+        spyService.categoriseAllTrails();
+
+        // Verify all trails have categories assigned
+        for (Trail trail : mockTrails) {
+            assertNotNull(trail.getCategories());
+            assertFalse(trail.getCategories().isEmpty());
+        }
+
+        // Verify assignTrailCategories was called in keywordRepo
+        verify(mockKeywordRepo, times(1)).assignTrailCategories(mockTrails);
+    }
 }

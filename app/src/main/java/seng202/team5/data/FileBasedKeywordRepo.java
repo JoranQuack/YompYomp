@@ -33,21 +33,23 @@ public class FileBasedKeywordRepo implements IKeyword {
      */
     private Map<String, List<String>> loadKeywordsFromCSV(String filePath) {
         // Using the filePath, open the CSV as a stream (in bytes) to read its contents.
-        try (InputStream inputStream = getClass().getResourceAsStream(filePath);
-                // InputStreamReader converts the stream to a character stream, and
-                // BufferedReader allows efficient line-by-line reading
-                BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream))) {
+        try (InputStream inputStream = getClass().getResourceAsStream(filePath)) {
+            assert inputStream != null;
+            try (// InputStreamReader converts the stream to a character stream, and
+                 // BufferedReader allows efficient line-by-line reading
+                 BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream))) {
 
-            String line;
-            while ((line = reader.readLine()) != null) {
-                String[] values = line.split(",");
-                if (values.length > 1) {
-                    String category = values[0].trim();
-                    List<String> keywordList = new ArrayList<>();
-                    for (int i = 1; i < values.length; i++) {
-                        keywordList.add(values[i].trim());
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    String[] values = line.split(",");
+                    if (values.length > 1) {
+                        String category = values[0].trim();
+                        List<String> keywordList = new ArrayList<>();
+                        for (int i = 1; i < values.length; i++) {
+                            keywordList.add(values[i].trim());
+                        }
+                        keywords.put(category, keywordList);
                     }
-                    keywords.put(category, keywordList);
                 }
             }
         } catch (IOException e) {

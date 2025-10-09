@@ -99,7 +99,7 @@ public class SqlBasedKeywordRepo implements IKeyword {
     }
 
     /**
-     * Assigns categories to a trail in the database.
+     * Assigns categories to a list of trails in the database
      *
      * @param trails List of trails to assign categories to
      */
