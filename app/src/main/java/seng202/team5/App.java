@@ -34,6 +34,26 @@ public class App {
      * @param args Command line arguments
      */
     public static void main(String[] args) {
+        setupApplication();
+        FXAppEntry.launch(FXAppEntry.class, args);
+
+    }
+
+    /**
+     * Resets the application data by clearing the database and re-running setup.
+     */
+    public static void resetApplication() {
+        databaseService.deleteDatabase();
+        setupApplication();
+    }
+
+    /**
+     * Sets up the application by setting up the database and scraping images
+     *
+     * @param setupService
+     * @param setupExec
+     */
+    public static void setupApplication() {
         setupService = new SetupService(trailRepo, databaseService);
 
         ExecutorService setupExec = Executors.newSingleThreadExecutor(r -> {
@@ -45,9 +65,6 @@ public class App {
         runSetupInBackground(setupService, setupExec);
         // shutdown hook for when application closed
         Runtime.getRuntime().addShutdownHook(new Thread(setupExec::shutdown));
-
-        FXAppEntry.launch(FXAppEntry.class, args);
-
     }
 
     /**
