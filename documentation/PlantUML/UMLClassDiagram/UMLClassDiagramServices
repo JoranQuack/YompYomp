@@ -55,7 +55,7 @@ package "services" {
   }
 
   class SearchService {
-    + SearchService( sqlBasedTrailRepo: SqlBasedTrailRepo , filterOptionsRepo, SqlBasedFilterOptionsRepo )
+    + SearchService( sqlBasedTrailRepo: SqlBasedTrailRepo , filterOptionsRepo: SqlBasedFilterOptionsRepo )
     + getNumberOfTrails() : int
     + getNumberOfPages(query : String) : int
     + updateTrails()
@@ -100,28 +100,28 @@ package "services" {
     + findRegionForPoint(latitude : double, longitude : double) : String
     + getAllRegions() : Map<String, Geometry>
   }
+}
 
-  package "DataAccess (SQLite DB)" {
+package "DataAccess (SQLite DB)" {
     class SqlBasedFilterOptionsRepo
     class SqlBasedKeywordRepo
     class SqlBasedTrailRepo
     class SqlBasedTrailLogRepo
   }
 
-    TrailService ..> SqlBasedTrailRepo
-    AccountStatisticsService ..> SqlBasedTrailRepo
-    AccountStatisticsService ..> SqlBasedTrailLogRepo
-    DashboardService ..> SqlBasedTrailRepo
-    LogService ..> SqlBasedTrailRepo
-    LogService ..> SqlBasedTrailLogRepo
-    MatchMakingService ..> SqlBasedTrailRepo
-    MatchMakingService ..> SqlBasedKeywordRepo
-    SearchService ..> SqlBasedTrailRepo
-    SearchService ..> SqlBasedFilterOptionsRepo
-    SetupService ..> DatabaseService
-    SetupService ..> SqlBasedTrailRepo
-    UserService ..> DatabaseService
-    UserService ..> SqlBasedTrailRepo
-}
+TrailService ..> SqlBasedTrailRepo
+AccountStatisticsService ..> SqlBasedTrailRepo
+AccountStatisticsService ..> SqlBasedTrailLogRepo
+DashboardService ..> SqlBasedTrailRepo
+LogService ..> SqlBasedTrailRepo
+LogService ..> SqlBasedTrailLogRepo
+MatchMakingService ..> SqlBasedTrailRepo
+MatchMakingService ..> SqlBasedKeywordRepo
+SearchService ..> SqlBasedTrailRepo
+SearchService ..> SqlBasedFilterOptionsRepo
+SetupService ..> DatabaseService
+SetupService ..> SqlBasedTrailRepo
+UserService ..> DatabaseService
+UserService ..> SqlBasedTrailRepo
 
 @enduml
