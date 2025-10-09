@@ -5,6 +5,7 @@ import org.json.simple.parser.JSONParser;
 import seng202.team5.App;
 import seng202.team5.data.SqlBasedTrailRepo;
 import seng202.team5.models.Trail;
+import seng202.team5.services.TrailService;
 
 /**
  * A bridge that handles communication between the JavaScript code
@@ -14,7 +15,7 @@ import seng202.team5.models.Trail;
 public class JavaScriptBridge {
 
     private final Controller controller;
-    private final SqlBasedTrailRepo sqlBasedTrailRepo;
+    private final TrailService trailService;
 
     /**
      * Creates a new JavaScriptBridge that will update the given controller
@@ -25,7 +26,7 @@ public class JavaScriptBridge {
      */
     public JavaScriptBridge(Controller controller) {
         this.controller = controller;
-        this.sqlBasedTrailRepo = App.getTrailRepo();
+        this.trailService = new TrailService(App.getTrailRepo());
     }
 
     /**
@@ -59,7 +60,7 @@ public class JavaScriptBridge {
      */
     public void openTrailInfo(int trailId) {
         if (controller instanceof ViewTrailController viewTrailController) {
-            Trail trail = sqlBasedTrailRepo.findById(trailId).get();
+            Trail trail = trailService.findTrailById(trailId);
             if (trail != null) {
                 viewTrailController.openTrailInfo(trail);
             }
