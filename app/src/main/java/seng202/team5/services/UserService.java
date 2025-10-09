@@ -3,6 +3,7 @@ package seng202.team5.services;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import seng202.team5.data.DatabaseService;
 import seng202.team5.data.QueryHelper;
@@ -283,7 +284,14 @@ public class UserService {
     public Map<String, Integer> getTrailStats() {
         SqlBasedTrailRepo trailRepo = new SqlBasedTrailRepo(databaseService);
         MatchmakingService matchmakingService = new MatchmakingService(databaseService);
-        List<Trail> recommendedTrails = trailRepo.getRecommendedTrails();
+        //get all the trails
+        List<Trail> allTrails = trailRepo.getAllTrails();
+        //sort to get the recommened ones
+        List<Trail> recommendedTrails = allTrails.stream()
+                .sorted(Comparator.comparing(Trail::getUserWeight).reversed())
+                .limit(8).
+                collect(Collectors.toList());
+
         Map<String, Integer> trailStats = new HashMap<>();
         for (Trail trail : recommendedTrails) {
             try {

@@ -20,7 +20,6 @@ public abstract class Controller {
 
     private final ScreenNavigator navigator;
     private final NavbarComponent navbarController;
-    private final SqlBasedTrailRepo sqlBasedTrailRepo;
 
     /**
      * No-argument constructor for FXML compatibility
@@ -28,7 +27,6 @@ public abstract class Controller {
     protected Controller() {
         this.navigator = null; // Will be set later via setter
         this.navbarController = null; // Will be set later via setter
-        this.sqlBasedTrailRepo = new SqlBasedTrailRepo(App.getDatabaseService());
     }
 
     /**
@@ -38,8 +36,7 @@ public abstract class Controller {
      */
     protected Controller(final ScreenNavigator navigator) {
         this.navigator = navigator;
-        this.sqlBasedTrailRepo = new SqlBasedTrailRepo(App.getDatabaseService());
-        this.navbarController = new NavbarComponent(navigator, App.getUserService(), sqlBasedTrailRepo);
+        this.navbarController = new NavbarComponent(navigator, App.getUserService());
     }
 
     /**

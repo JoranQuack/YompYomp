@@ -38,9 +38,8 @@ public class NavbarComponent extends HBox {
      *
      * @param navigator         the screen navigator
      * @param userService       the userService
-     * @param sqlBasedTrailRepo the trail repo
      */
-    public NavbarComponent(ScreenNavigator navigator, UserService userService, SqlBasedTrailRepo sqlBasedTrailRepo) {
+    public NavbarComponent(ScreenNavigator navigator, UserService userService) {
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/components/navbar.fxml"));
         fxmlLoader.setRoot(this);
         fxmlLoader.setController(this);
@@ -73,7 +72,7 @@ public class NavbarComponent extends HBox {
 
         navButtons = List.of(homeButton, trailsButton, logbookButton);
         homeButton.setOnAction(e -> navigator.launchScreen(new DashboardController(navigator)));
-        trailsButton.setOnAction(e -> navigator.launchScreen(new TrailsController(navigator, sqlBasedTrailRepo)));
+        trailsButton.setOnAction(e -> navigator.launchScreen(new TrailsController(navigator)));
         logbookButton.setOnAction(e -> navigator.launchScreen(new LogBookController(navigator)));
         if (navigator.hasPreviousScreen()) {
             backButton.setOnMouseClicked(e -> navigator.goBack());
