@@ -16,17 +16,17 @@ package "Models" {
 }
 
 package "Service" {
+  class LogService
   class AccountStatisticsService
-  class SetupService
   class SearchService
   class UserService
   class MatchMakingService
   class RegionFinder
   class ImageService
   class WeatherService
-  class LogService
   class TrailService
   class DashboardService
+  class SetupService
 }
 
 package "DataAccess (SQLite DB)" {
@@ -64,7 +64,6 @@ package "GUI" {
 
 package "util" {
     class AppDataManager
-    class CompletionTimeParser
     class DifficultyParser
     class GeoUtils
     class TrailsProcessor
@@ -102,18 +101,13 @@ App ..> UserService
 
 SqlBasedFilterOptionsRepo ..> RegionFinder
 
-TrailsProcessor ..> RegionFinder
-
-ProfileSetupGeneralController ..> UserService
 ProfileQuizController ..> UserService
 TrailCardComponent ..> ImageService
-ModifyTrailController ..> TrailService
 JavaScriptBridge ..> TrailService
 
 TrailsProcessor ..> GeoUtils
 TrailsProcessor ..> DifficultyParser
 
-SqlBasedTrailLogRepo ..> TrailLog
 
 SetupService ..> TrailsProcessor
 SetupService ..> AppDataManager
@@ -121,26 +115,15 @@ SetupService ..> FileBasedKeywordRepo
 SetupService ..> SqlBasedKeywordRepo
 SetupService ..> FileBasedTrailRepo
 SetupService ..> SqlBasedFilterOptionsRepo
-SearchService ..> SqlBasedFilterOptionsRepo
-LogService ..> SqlBasedTrailLogRepo
-LogService ..> CompletionTimeParser
 
-
-UserService ..> User
 MatchMakingService ..> User
 MatchMakingService ..> Trail
-MatchMakingService ..> SqlBasedKeywordRepo
 SearchService ..> Trail
-SetupService ..> Trail
 ProfileQuizController ..> Question
 WeatherService ..> Weather
 WeatherComponent ..> Weather
-UserService ..> Trail
-RegionFinder ..> Trail
+UserService ..> User
 LogService ..> TrailLog
-AccountStatisticsService ..> TrailLog
-LogService ..> Trail
-AccountStatisticsService ..> Trail
 AccountStatisticsService ..> User
 
 DashboardController ..> DashboardService
