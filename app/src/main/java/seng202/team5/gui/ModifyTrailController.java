@@ -17,6 +17,7 @@ import seng202.team5.models.Trail;
 import seng202.team5.models.User;
 import seng202.team5.services.MatchmakingService;
 import seng202.team5.services.RegionFinder;
+import seng202.team5.utils.CompletionTimeParser;
 import seng202.team5.services.TrailService;
 import seng202.team5.utils.StringManipulator;
 import seng202.team5.utils.TrailsProcessor;
@@ -239,7 +240,9 @@ public class ModifyTrailController extends Controller {
     private void addLocation() {
         Gson gson = new Gson();
         String trailJson = gson.toJson(trail); // convert Trail object to JSON string
-        javaScriptConnector.call("addMarker", trail.getLat(), trail.getLon(), trailJson);
+        String trailCompletionTime = CompletionTimeParser.formatTimeRange(trail.getMinCompletionTimeMinutes(),
+                trail.getMaxCompletionTimeMinutes());
+        javaScriptConnector.call("addMarker", trail.getLat(), trail.getLon(), trailJson, trailCompletionTime);
     }
 
     /**
@@ -445,7 +448,10 @@ public class ModifyTrailController extends Controller {
         // Get form values
         String trailName = trailNameTextField.getText();
         String translation = translationTextField.getText();
-        String difficulty = difficultyComboBox.getValue().toLowerCase();
+        String difficulty = "";
+        if (difficultyComboBox.getValue() != null) {
+            difficulty = difficultyComboBox.getValue().toLowerCase();
+        }
         String trailType = trailTypeComboBox.getValue().toLowerCase();
         String completionTime = completionTimeTextField.getText().toLowerCase();
         String trailDescription = trailDescriptionTextArea.getText();

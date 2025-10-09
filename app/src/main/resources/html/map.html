@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.css" />
     <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.Default.css" />
     <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.css" />
+    <link rel="stylesheet" href="../styles/popup.css">
     <meta name="viewport" content="initial-scale=1.0">
     <meta charset="utf-8">
     <style>
@@ -75,7 +76,6 @@
             initMap: initMap,
             enableClick: enableClick,
             clearMarkers: clearMarkers,
-            getColorByDifficulty: getColorByDifficulty,
             displayTrails: displayTrails,
             buildPopupContent: buildPopupContent,
             openTrailInfo: openTrailInfo,
@@ -104,7 +104,7 @@
          * @param lng longitude to place marker at
          * @param trailJson the trail that the marker will be displayed for
          */
-        function addMarker(lat, lng, trailJson) {
+        function addMarker(lat, lng, trailJson, trailCompletionTime) {
             let trail = null;
             if (trailJson) {
                 trail = JSON.parse(trailJson);
@@ -119,7 +119,7 @@
                 map.setView([lat, lng], 13);
             }
             if (trail) {
-                activeMarker.bindPopup(buildPopupContent(trail));
+                activeMarker.bindPopup(buildPopupContent(trail, trailCompletionTime));
             }
         }
 
@@ -144,22 +144,6 @@
         }
 
         /**
-         * Returns a colour string corresponding to the difficulty level of a trail
-         * @param difficulty the difficulty level of a trail
-         * @returns {string} a colour string representing the difficulty
-         */
-        function getColorByDifficulty(difficulty) {
-            switch (difficulty.toLowerCase()) {
-                case "easiest": return "green";
-                case "easy": return "#8de45f";
-                case "intermediate": return "yellow";
-                case "advanced": return "orange";
-                case "expert": return "red";
-                default: return "gray";
-            }
-        }
-
-        /**
          * Displays a list of trails on the map as coloured custom icons.
          * Each trail is represented by an icon whose colour is determined by
          * the trail's difficulty. The currently active marker is not modified
@@ -177,13 +161,16 @@
                     activeMarker.getLatLng().lng === trail.lon) {
                     return;
                 }
-                const color = getColorByDifficulty(trail.difficulty);
+
+                const difficultyClass = `legend-${['expert', 'advanced', 'intermediate', 'easy', 'easiest'].includes((trail.difficulty || '').toLowerCase())
+                    ? trail.difficulty.toLowerCase()
+                    : 'default'}`;
 
                 const customIcon = L.divIcon({
                     className: 'custom-div-icon',
                     html: `
-                    <div class="marker-pin" style="background:${color};"></div>
-                    <div class="marker-img" style="background-image:url('../images/trail.png');"></div>
+                        <div class="marker-pin ${difficultyClass}"></div>
+                        <div class="marker-img" style="background-image:url('../images/trail.png');"></div>
                 `,
                     iconSize: [32, 42],
                     iconAnchor: [16, 42],
@@ -192,7 +179,7 @@
 
                 const [lat, lng] = normalizeLng(trail.lat, trail.lon);
                 const marker = L.marker([lat, lng], { icon: customIcon });
-                marker.bindPopup(buildPopupContent(trail));
+                marker.bindPopup(buildPopupContent(trail, trail.completionTime));
                 markers.addLayer(marker);
             });
 
@@ -223,22 +210,27 @@
         /**
          * Builds the popup content for a given trail. No link is shown for the marker that the user is viewing a trail for
          * @param trail the trail object
+         * @param trailCompletionTime the trail completion time that has been formatted
          * @returns {string} HTML string for the popup
          */
-        function buildPopupContent(trail) {
+        function buildPopupContent(trail, trailCompletionTime) {
             const isActive =
                 activeMarker &&
                 activeMarker.getLatLng().lat === trail.lat &&
                 activeMarker.getLatLng().lng === trail.lon;
 
             return `
-            <b>${trail.name}</b><br>
-            Difficulty: ${trail.difficulty}<br>
-            ${trail.completionInfo && trail.completionInfo.trim() !== ""
-                    ? `Completion Time: ${trail.completionInfo}<br>`
-                    : ""}
-            ${trail.description}
-            ${!isActive ? `<a href="#" onclick="openTrailInfo(${trail.id}); return false;">View details</a>` : ""}
+            <div class = "heading">${trail.name}</div>
+            <div class = "label">${trail.region}</div>
+            <div class = "container">
+                ${[[trail.difficulty, "bg-pinky"], [trailCompletionTime, "bg-bluey"], [trail.completionType, "bg-greeny"]]
+                    .map(([text, color]) => text && text.trim().toLowerCase() !== "unknown" && text.trim() !== ""
+                        ? `<div class="pill ${color}">${text}</div>` : "")
+                    .join("")}
+            </div>
+            <div style="margin-top: 5px; width: 100%; text-align: center;">
+            ${!isActive ? `<button onclick="openTrailInfo(${trail.id}); return false;">View details</button>` : ""}
+            </div>
         `;
         }
 
