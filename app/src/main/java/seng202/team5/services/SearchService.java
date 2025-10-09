@@ -34,8 +34,8 @@ public class SearchService {
     /**
      * Legacy constructor for testing (fallback without filter options repo).
      */
-    public SearchService(SqlBasedTrailRepo sqlBasedTrailRepo) {
-        this.filterOptionsRepo = null;
+    public SearchService(SqlBasedTrailRepo sqlBasedTrailRepo, SqlBasedFilterOptionsRepo filterOptionsRepo) {
+        this.filterOptionsRepo = filterOptionsRepo;
         this.trails = sqlBasedTrailRepo.getAllTrails();
         this.filteredTrails = trails;
         this.filters = new HashMap<>();

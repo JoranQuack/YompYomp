@@ -203,7 +203,7 @@ public class TrailsController extends Controller {
      * Initializes the search service.
      */
     private void initializeSearchService() {
-        this.searchService = new SearchService(App.getTrailRepo());
+        this.searchService = new SearchService(App.getTrailRepo(), App.getFilterOptionsRepo());
     }
 
     /**

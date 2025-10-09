@@ -19,6 +19,7 @@ import seng202.team5.gui.components.LegendLabelComponent;
 import seng202.team5.gui.components.TrailCardComponent;
 import seng202.team5.gui.components.WeatherComponent;
 import seng202.team5.models.Trail;
+import seng202.team5.services.LogService;
 import seng202.team5.services.RegionFinder;
 import seng202.team5.services.TrailService;
 import seng202.team5.utils.StringManipulator;
@@ -36,6 +37,7 @@ public class ViewTrailController extends Controller {
     private WeatherService weatherService;
     private RegionFinder regionFinder;
     private TrailService trailService;
+    private LogService logService;
 
     private WebEngine webEngine;
     private JavaScriptBridge javaScriptBridge;
@@ -51,6 +53,7 @@ public class ViewTrailController extends Controller {
         super(navigator);
         this.trail = trail;
         this.trailService = new TrailService(App.getTrailRepo());
+        this.logService = new LogService(App.getTrailLogRepo(), App.getTrailRepo());
     }
 
     @FXML
@@ -361,7 +364,7 @@ public class ViewTrailController extends Controller {
     }
 
     private boolean isTrailLogged(Trail trail) {
-        return trailService.findTrailById(trail.getId()) != null;
+        return logService.isTrailLogged(trail.getId());
     }
 
     private void onLogTrailClicked() {
