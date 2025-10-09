@@ -10,20 +10,16 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.VBox;
 import seng202.team5.App;
-import seng202.team5.data.DatabaseService;
-import seng202.team5.data.SqlBasedTrailLogRepo;
-import seng202.team5.data.SqlBasedTrailRepo;
 import seng202.team5.gui.components.TrailCardComponent;
 import seng202.team5.models.Trail;
-import seng202.team5.services.SearchService;
+import seng202.team5.services.DashboardService;
 
 /**
  * Controller for the dashboard screen.
  */
 public class DashboardController extends Controller {
-    /** Service for searching and filtering trails */
-    private SearchService searchService;
-    private SqlBasedTrailRepo repo;
+    /** Service for dashboarding trails */
+    private DashboardService dashboardService;
 
     @FXML
     private FlowPane trailsContainer;
@@ -38,29 +34,13 @@ public class DashboardController extends Controller {
     private Hyperlink DOCLink;
 
     /**
-     * Default constructor required by JavaFX FXML loading.
-     */
-    public DashboardController() {
-        super();
-    }
-
-    /**
      * Creates controller with navigator.
      *
      * @param navigator Screen navigator
      */
     public DashboardController(ScreenNavigator navigator) {
         super(navigator);
-        initializeSearchService();
-    }
-
-    /**
-     * Initializes the search service.
-     */
-    private void initializeSearchService() {
-        this.repo = new SqlBasedTrailRepo(new DatabaseService());
-        this.searchService = new SearchService(new DatabaseService());
-        searchService.setMaxResults(8);
+        this.dashboardService = new DashboardService(App.getTrailRepo());
     }
 
     /**
@@ -68,14 +48,9 @@ public class DashboardController extends Controller {
      */
     @FXML
     private void initialize() {
-        // Initialize search service if not already done
-        if (searchService == null) {
-            initializeSearchService();
-        }
 
-        List<Trail> trails = repo.getRecommendedTrails();
+        List<Trail> trails = dashboardService.getRecommendedTrails();
         initializeRecommendedTrails(trails);
-        // addTrailButton.setOnAction(e -> onAddTrailButtonClicked());
 
         searchBarTextField.addEventHandler(KeyEvent.KEY_PRESSED, event -> {
             if (event.getCode() == KeyCode.ENTER) {
@@ -89,18 +64,18 @@ public class DashboardController extends Controller {
 
     @FXML
     private void onViewAllClicked() {
-        super.getNavigator().launchScreen(new TrailsController(super.getNavigator(), repo));
+        super.getNavigator().launchScreen(new TrailsController(super.getNavigator()));
     }
 
     @FXML
     private void onAddTrailButtonClicked() {
-        super.getNavigator().launchScreen(new ModifyTrailController(super.getNavigator(), null, repo));
+        super.getNavigator().launchScreen(new ModifyTrailController(super.getNavigator(), null));
     }
 
     @FXML
     private void onSearchButtonClicked() {
         super.getNavigator()
-                .launchScreen(new TrailsController(super.getNavigator(), searchBarTextField.getText(), repo));
+                .launchScreen(new TrailsController(super.getNavigator(), searchBarTextField.getText()));
     }
 
     /**
@@ -131,7 +106,7 @@ public class DashboardController extends Controller {
      */
     private TrailCardComponent createTrailCard(Trail trail) {
         TrailCardComponent trailCard = new TrailCardComponent(
-                super.getUserService().isGuest(), false, false, super.getNavigator());
+                App.getUserService().isGuest(), false, false, super.getNavigator());
         trailCard.setData(trail, null);
         return trailCard;
     }
@@ -148,8 +123,7 @@ public class DashboardController extends Controller {
 
     @FXML
     private void onTrailCardClicked(Trail trail) {
-        super.getNavigator().launchScreen(new ViewTrailController(super.getNavigator(), trail, repo,
-                new SqlBasedTrailLogRepo(App.getDatabaseService())));
+        super.getNavigator().launchScreen(new ViewTrailController(super.getNavigator(), trail));
     }
 
     @Override

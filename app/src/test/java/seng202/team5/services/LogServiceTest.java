@@ -5,7 +5,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import seng202.team5.data.ITrailLog;
+
+import seng202.team5.data.SqlBasedTrailLogRepo;
 import seng202.team5.data.SqlBasedTrailRepo;
 import seng202.team5.models.Trail;
 import seng202.team5.models.TrailLog;
@@ -20,8 +21,7 @@ import java.util.Optional;
 public class LogServiceTest {
 
     @Mock
-    private ITrailLog mockLogInterface;
-    // TODO needs to be updated to the ITrail when refactor has been done
+    private SqlBasedTrailLogRepo mockLogInterface;
     @Mock
     private SqlBasedTrailRepo mockTrailRepo;
 
@@ -136,7 +136,6 @@ public class LogServiceTest {
 
         when(mockLogInterface.countTrailLogs()).thenAnswer(invocationOnMock -> mockLogs.size());
 
-        // TODO update to use the ITrail interface when refactor has been done
         logService = new LogService(mockLogInterface, mockTrailRepo);
         logService.setMaxResults(20);
     }
@@ -190,7 +189,6 @@ public class LogServiceTest {
 
         logService.setCurrentQuery("track");
         logService.updateLogs();
-        List<TrailLog> logs = logService.getPage(0);
         int pagesFiltered = logService.getNumberOfPages();
         assertEquals(1, pagesFiltered, "There should only be one page for 3 filtered results");
 

@@ -94,7 +94,8 @@ public class LoadingController extends Controller {
                 userService.saveUser(user);
 
                 // Do matchmaking now that we know everything is slaytastic
-                MatchmakingService matchmakingService = new MatchmakingService(App.getDatabaseService());
+                MatchmakingService matchmakingService = new MatchmakingService(App.getKeywordRepo(),
+                        App.getTrailRepo());
                 matchmakingService.generateTrailWeights(user);
                 return null;
             }
