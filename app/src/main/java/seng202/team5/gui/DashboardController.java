@@ -49,8 +49,7 @@ public class DashboardController extends Controller {
     @FXML
     private void initialize() {
 
-        List<Trail> trails = dashboardService.getRecommendedTrails();
-        initializeRecommendedTrails(trails);
+        initializeRecommendedTrails();
 
         searchBarTextField.addEventHandler(KeyEvent.KEY_PRESSED, event -> {
             if (event.getCode() == KeyCode.ENTER) {
@@ -80,10 +79,14 @@ public class DashboardController extends Controller {
 
     /**
      * Updates display with trail cards.
-     *
-     * @param trails List of trails to display
      */
-    private void initializeRecommendedTrails(List<Trail> trails) {
+    private void initializeRecommendedTrails() {
+        List<Trail> trails;
+        if (App.getUserService().isGuest()) {
+            trails = dashboardService.getRandomTrails();
+        } else {
+            trails = dashboardService.getRecommendedTrails();
+        }
         trailsContainer.getChildren().clear();
         trails.forEach(this::createAndAddTrailCard);
     }
