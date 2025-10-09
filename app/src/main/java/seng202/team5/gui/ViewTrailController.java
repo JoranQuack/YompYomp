@@ -292,7 +292,9 @@ public class ViewTrailController extends Controller {
             List<Map<String, Object>> trailsWithTime = new ArrayList<>();
 
             for (Trail trail : trails) {
-                Map<String, Object> trailMap = new Gson().fromJson(new Gson().toJson(trail), Map.class);
+                @SuppressWarnings("unchecked")
+                Map<String, Object> trailMap = (Map<String, Object>) new Gson().fromJson(new Gson().toJson(trail),
+                        Map.class);
 
                 String completionTime = CompletionTimeParser.formatTimeRange(
                         trail.getMinCompletionTimeMinutes(), trail.getMaxCompletionTimeMinutes());
