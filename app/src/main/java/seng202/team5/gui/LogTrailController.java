@@ -27,7 +27,7 @@ public class LogTrailController extends Controller {
      * Launches the screen with the navigator
      *
      * @param navigator screen navigator
-     * @param trailLog  the trail log to be logged
+     * @param trail  the trail to be logged
      */
     public LogTrailController(ScreenNavigator navigator, Trail trail) {
         super(navigator);

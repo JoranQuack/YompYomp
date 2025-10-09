@@ -14,8 +14,6 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import seng202.team5.App;
 import seng202.team5.data.DatabaseService;
-import seng202.team5.data.SqlBasedTrailLogRepo;
-import seng202.team5.data.SqlBasedTrailRepo;
 import seng202.team5.models.Question;
 import seng202.team5.models.User;
 import seng202.team5.services.AccountStatisticsService;
@@ -107,10 +105,8 @@ public class AccountController extends Controller {
         this.user = getUserService().getUser();
 
         DatabaseService databaseService = App.getDatabaseService();
-        SqlBasedTrailRepo trailRepo = new SqlBasedTrailRepo(databaseService);
-        SqlBasedTrailLogRepo trailLogRepo = new SqlBasedTrailLogRepo(databaseService);
         MatchmakingService matchmakingService = new MatchmakingService(databaseService);
-        this.statisticsService = new AccountStatisticsService(trailLogRepo, trailRepo, matchmakingService, user);
+        this.statisticsService = new AccountStatisticsService(matchmakingService, user);
     }
 
     @FXML

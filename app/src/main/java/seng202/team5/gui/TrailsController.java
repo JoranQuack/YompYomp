@@ -13,8 +13,6 @@ import javafx.concurrent.Task;
 import javafx.application.Platform;
 import org.controlsfx.control.CheckComboBox;
 import seng202.team5.App;
-import seng202.team5.data.SqlBasedTrailLogRepo;
-import seng202.team5.data.SqlBasedTrailRepo;
 import seng202.team5.gui.components.TrailCardComponent;
 import seng202.team5.models.Trail;
 import seng202.team5.services.SearchService;

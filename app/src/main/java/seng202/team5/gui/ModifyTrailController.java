@@ -43,7 +43,6 @@ public class ModifyTrailController extends Controller {
      *
      * @param navigator         screen navigator
      * @param trail             the selected trail
-     * @param sqlBasedTrailRepo the trail repository
      */
     public ModifyTrailController(ScreenNavigator navigator, Trail trail) {
         super(navigator);

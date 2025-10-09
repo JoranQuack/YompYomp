@@ -15,8 +15,6 @@ import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
 import netscape.javascript.JSObject;
 import seng202.team5.App;
-import seng202.team5.data.SqlBasedTrailLogRepo;
-import seng202.team5.data.SqlBasedTrailRepo;
 import seng202.team5.gui.components.LegendLabelComponent;
 import seng202.team5.gui.components.TrailCardComponent;
 import seng202.team5.gui.components.WeatherComponent;
