@@ -72,7 +72,7 @@ public class ViewAllTrailsStepDefinitions {
                         "1.5 hours", "thumb10.jpg", "http://example.com/trail10", -43.5260, 172.6220)
         );
         when(mockTrailRepo.getAllTrails()).thenReturn(mockTrails);
-        searchService = new SearchService(mockTrailRepo);
+        searchService = new SearchService(mockTrailRepo, null);
     }
 
     @Given("the user has loaded the application and is on the welcome screen")

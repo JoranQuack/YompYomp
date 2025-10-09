@@ -1,6 +1,10 @@
 package seng202.team5;
 
 import seng202.team5.data.DatabaseService;
+import seng202.team5.data.SqlBasedFilterOptionsRepo;
+import seng202.team5.data.SqlBasedKeywordRepo;
+import seng202.team5.data.SqlBasedTrailLogRepo;
+import seng202.team5.data.SqlBasedTrailRepo;
 import seng202.team5.gui.FXAppEntry;
 import seng202.team5.services.SetupService;
 import seng202.team5.services.UserService;
@@ -15,7 +19,13 @@ import java.util.concurrent.Executors;
 public class App {
     private static SetupService setupService;
     private static final DatabaseService databaseService = new DatabaseService();
-    private static final UserService userService = new UserService(databaseService);
+
+    private static final SqlBasedFilterOptionsRepo filterOptionsRepo = new SqlBasedFilterOptionsRepo(databaseService);
+    private static final SqlBasedKeywordRepo keywordRepo = new SqlBasedKeywordRepo(databaseService);
+    private static final SqlBasedTrailLogRepo trailLogRepo = new SqlBasedTrailLogRepo(databaseService);
+    private static final SqlBasedTrailRepo trailRepo = new SqlBasedTrailRepo(databaseService);
+
+    private static final UserService userService = new UserService(trailRepo, databaseService);
 
     /**
      * Application entry point. It handles the starting of the executer and then
@@ -24,7 +34,7 @@ public class App {
      * @param args Command line arguments
      */
     public static void main(String[] args) {
-        setupService = new SetupService(databaseService);
+        setupService = new SetupService(trailRepo, databaseService);
 
         ExecutorService setupExec = Executors.newSingleThreadExecutor(r -> {
             Thread thread = new Thread(r, "setup-worker");
@@ -83,4 +93,39 @@ public class App {
         return userService;
     }
 
+    /**
+     * Gets the filter options repository instance
+     *
+     * @return the filter options repository instance
+     */
+    public static SqlBasedFilterOptionsRepo getFilterOptionsRepo() {
+        return filterOptionsRepo;
+    }
+
+    /**
+     * Gets the keyword repository instance
+     *
+     * @return the keyword repository instance
+     */
+    public static SqlBasedKeywordRepo getKeywordRepo() {
+        return keywordRepo;
+    }
+
+    /**
+     * Gets the trail log repository instance
+     *
+     * @return the trail log repository instance
+     */
+    public static SqlBasedTrailLogRepo getTrailLogRepo() {
+        return trailLogRepo;
+    }
+
+    /**
+     * Gets the trail repository instance
+     *
+     * @return the trail repository instance
+     */
+    public static SqlBasedTrailRepo getTrailRepo() {
+        return trailRepo;
+    }
 }

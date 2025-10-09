@@ -1,0 +1,90 @@
+/* ========================================
+ * TEXT & TYPOGRAPHY
+ * ======================================== */
+
+.heading {
+  font-family: "Quicksand SemiBold", sans-serif;
+  font-size: 18px;
+}
+
+.pill {
+  font-family: "Quicksand Medium", sans-serif;
+  border-radius: 20px;
+  padding: 5px 10px;
+  font-size: 12px;
+  text-transform: lowercase;
+}
+
+.pill::first-letter {
+  text-transform: uppercase;
+}
+
+.label {
+  font-family: "Quicksand Medium", sans-serif;
+  font-size: 15px;
+  color: #04140b;
+}
+
+/* ========================================
+ * INPUT ELEMENTS
+ * ======================================== */
+
+/* ========================================
+ * GENERAL CLASSES
+ * ======================================== */
+
+.bg-pinky {
+  background-color: #e9d8ed;
+}
+
+.bg-bluey {
+  background-color: #d8e5fd;
+}
+
+.bg-greeny {
+  background-color: #d5e6d4;
+}
+
+.round-corners {
+  border-radius: 10px;
+}
+
+.container {
+  display: flex;
+  gap: 5px;
+  padding: 5px 0 5px 0;
+}
+
+button {
+  font-family: "Quicksand SemiBold", sans-serif;
+  font-size: 15px;
+  color: #04140b;
+  background-color: #d5e6d4;
+  border-radius: 10px;
+  border: none;
+  padding: 5px 10px;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #8faf8e;
+}
+
+.legend-expert {
+  background-color: #f44336;
+}
+.legend-advanced {
+  background-color: #ff9800;
+}
+.legend-intermediate {
+  background-color: #ffc107;
+}
+.legend-easy {
+  background-color: #a1d11c;
+}
+.legend-easiest {
+  background-color: #4caf50;
+}
+.legend-default {
+  background-color: #808080;
+}

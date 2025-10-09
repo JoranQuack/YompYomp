@@ -13,9 +13,6 @@ import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import seng202.team5.App;
-import seng202.team5.data.DatabaseService;
-import seng202.team5.data.SqlBasedTrailLogRepo;
-import seng202.team5.data.SqlBasedTrailRepo;
 import seng202.team5.models.Question;
 import seng202.team5.models.User;
 import seng202.team5.services.AccountStatisticsService;
@@ -91,26 +88,17 @@ public class AccountController extends Controller {
     private AccountStatisticsService statisticsService;
 
     /**
-     * Default constructor required by JavaFX FXML loading.
-     */
-    public AccountController() {
-        super();
-    }
-
-    /**
      * Creates controller with navigator.
      *
      * @param navigator Screen navigator
      */
     public AccountController(ScreenNavigator navigator) {
         super(navigator);
-        this.user = getUserService().getUser();
+        this.user = App.getUserService().getUser();
 
-        DatabaseService databaseService = App.getDatabaseService();
-        SqlBasedTrailRepo trailRepo = new SqlBasedTrailRepo(databaseService);
-        SqlBasedTrailLogRepo trailLogRepo = new SqlBasedTrailLogRepo(databaseService);
-        MatchmakingService matchmakingService = new MatchmakingService(databaseService);
-        this.statisticsService = new AccountStatisticsService(trailLogRepo, trailRepo, matchmakingService, user);
+        MatchmakingService matchmakingService = new MatchmakingService(App.getKeywordRepo(), App.getTrailRepo());
+        this.statisticsService = new AccountStatisticsService(App.getTrailRepo(), App.getTrailLogRepo(),
+                matchmakingService, user);
     }
 
     @FXML
@@ -141,8 +129,8 @@ public class AccountController extends Controller {
 
     @FXML
     private void onDeleteProfileButtonClicked() {
-        super.getUserService().clearUser();
-        super.getUserService().setGuest(true);
+        App.getUserService().clearUser();
+        App.getUserService().setGuest(true);
         super.getNavigator().launchScreen(new DashboardController(super.getNavigator()));
     }
 
@@ -150,7 +138,7 @@ public class AccountController extends Controller {
     private void onClearProfileImageClicked() {
         profileImage.setImage(new Image("/images/profiles/user.png"));
         user.setProfilePicture("/images/profiles/user.png");
-        super.getUserService().saveUser(user);
+        App.getUserService().saveUser(user);
     }
 
     @FXML
@@ -158,7 +146,7 @@ public class AccountController extends Controller {
         profileImage.setImage(optionImage.getImage());
         user.setProfilePicture(optionImage.getImage().getUrl());
         super.getNavbarController().getProfileImage().setImage(new Image(user.getProfilePicture()));
-        super.getUserService().saveUser(user);
+        App.getUserService().saveUser(user);
     }
 
     /**

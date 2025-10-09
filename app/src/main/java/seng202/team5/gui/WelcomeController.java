@@ -5,6 +5,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.StackPane;
+import seng202.team5.App;
 import seng202.team5.gui.util.BackgroundImageUtil;
 import seng202.team5.models.User;
 
@@ -45,16 +46,16 @@ public class WelcomeController extends Controller {
 
         BackgroundImageUtil.setupCoverBehavior(bgImage, rootStackPane);
 
-        super.getUserService().cleanupIncompleteProfiles();
+        App.getUserService().cleanupIncompleteProfiles();
 
-        User existingUser = super.getUserService().getUser();
+        User existingUser = App.getUserService().getUser();
         if (existingUser != null && existingUser.isProfileComplete()) {
             titleLabel.setText("Welcome back, " + existingUser.getName() + "!");
             subtitleLabel.setText("Create a new profile or continue to the dashboard.");
             setUpProfileButton.setText("Create new profile");
             skipButton.setText("Continue");
         } else {
-            super.getUserService().clearUser();
+            App.getUserService().clearUser();
         }
     }
 
