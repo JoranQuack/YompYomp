@@ -8,7 +8,6 @@ import javafx.scene.chart.BarChart;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.PieChart;
 import javafx.scene.chart.XYChart;
-import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -25,8 +24,6 @@ public class AccountController extends Controller {
 
     @FXML
     private ImageView profileImage;
-    @FXML
-    private ImageView clearProfileImage;
     @FXML
     private ImageView optionImage1;
     @FXML
@@ -67,10 +64,6 @@ public class AccountController extends Controller {
     private Label historicLabel;
     @FXML
     private Label waterfallLabel;
-    @FXML
-    private Button redoQuizButton;
-    @FXML
-    private Button deleteProfileButton;
     @FXML
     private BarChart<String, Number> preferencesBarChart;
     @FXML
@@ -117,9 +110,6 @@ public class AccountController extends Controller {
         for (ImageView optionImage : optionImages) {
             optionImage.setOnMouseClicked(e -> onOptionImageClicked(optionImage));
         }
-        clearProfileImage.setOnMouseClicked(e -> onClearProfileImageClicked());
-        redoQuizButton.setOnAction(e -> onRedoQuizButtonClicked());
-        deleteProfileButton.setOnAction(e -> onDeleteProfileButtonClicked());
     }
 
     @FXML
@@ -129,9 +119,29 @@ public class AccountController extends Controller {
 
     @FXML
     private void onDeleteProfileButtonClicked() {
+        boolean confirmed = super.showAlert("Delete Profile",
+                "Are you sure you want to delete your profile?",
+                "This will permanently clear all your profile preferences and set you as a guest user. The logged trails in your logbook will remain.",
+                "Delete", "Cancel", "bg-red");
+        if (!confirmed) {
+            return;
+        }
         App.getUserService().clearUser();
         App.getUserService().setGuest(true);
         super.getNavigator().launchScreen(new DashboardController(super.getNavigator()));
+    }
+
+    @FXML
+    private void onResetAppClicked() {
+        boolean confirmed = super.showAlert("Reset App",
+                "Are you sure you want to reset the app?",
+                "This action cannot be undone.",
+                "Reset", "Cancel", "bg-red");
+        if (!confirmed) {
+            return;
+        }
+        App.resetApplication();
+        super.getNavigator().launchScreen(new LoadingController(super.getNavigator(), null));
     }
 
     @FXML
