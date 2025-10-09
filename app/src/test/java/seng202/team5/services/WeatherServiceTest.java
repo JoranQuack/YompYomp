@@ -9,6 +9,7 @@ import java.io.ByteArrayInputStream;
 import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URL;
+import java.time.LocalDate;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -79,19 +80,26 @@ class WeatherServiceTest {
     @Test
     @DisplayName("getFourDayForecast parses four days correctly from valid JSON")
     void testGetFourDayForecast_ValidResponse() throws Exception {
-        String jsonResponse = """
-                {
-                  "list": [
-                    {"dt_txt": "2025-10-09 12:00:00", "main": {"temp": 12}, "weather": [{"description": "today", "icon": "01d"}]},
-                    {"dt_txt": "2025-10-10 12:00:00", "main": {"temp": 14}, "weather": [{"description": "cloudy", "icon": "02d"}]},
-                    {"dt_txt": "2025-10-10 18:00:00", "main": {"temp": 16}, "weather": [{"description": "cloudy", "icon": "02d"}]},
-                    {"dt_txt": "2025-10-11 12:00:00", "main": {"temp": 18}, "weather": [{"description": "sunny", "icon": "01d"}]},
-                    {"dt_txt": "2025-10-12 12:00:00", "main": {"temp": 20}, "weather": [{"description": "rainy", "icon": "10d"}]},
-                    {"dt_txt": "2025-10-13 12:00:00", "main": {"temp": 22}, "weather": [{"description": "windy", "icon": "03d"}]},
-                    {"dt_txt": "2025-10-14 12:00:00", "main": {"temp": 24}, "weather": [{"description": "foggy", "icon": "50d"}]}
-                  ]
-                }
-                """;
+        // Use dynamic dates relative to tomorrow
+        LocalDate tomorrow = LocalDate.now().plusDays(1);
+        LocalDate dayAfter = tomorrow.plusDays(1);
+        LocalDate dayAfter2 = tomorrow.plusDays(2);
+        LocalDate dayAfter3 = tomorrow.plusDays(3);
+        LocalDate dayAfter4 = tomorrow.plusDays(4);
+
+        String jsonResponse = String.format(
+                """
+                        {
+                          "list": [
+                            {"dt_txt": "%s 12:00:00", "main": {"temp": 18}, "weather": [{"description": "sunny", "icon": "01d"}]},
+                            {"dt_txt": "%s 12:00:00", "main": {"temp": 20}, "weather": [{"description": "rainy", "icon": "10d"}]},
+                            {"dt_txt": "%s 12:00:00", "main": {"temp": 22}, "weather": [{"description": "windy", "icon": "03d"}]},
+                            {"dt_txt": "%s 12:00:00", "main": {"temp": 24}, "weather": [{"description": "foggy", "icon": "50d"}]},
+                            {"dt_txt": "%s 12:00:00", "main": {"temp": 26}, "weather": [{"description": "clear", "icon": "01d"}]}
+                          ]
+                        }
+                        """,
+                tomorrow, dayAfter, dayAfter2, dayAfter3, dayAfter4);
 
         when(mockUrl.openConnection()).thenReturn(mockConnection);
         when(mockConnection.getResponseCode()).thenReturn(200);
@@ -106,7 +114,7 @@ class WeatherServiceTest {
             List<Weather> forecast = weatherService.getFourDayForecast(-43.5320, 172.6362);
 
             assertEquals(4, forecast.size());
-            assertEquals("2025-10-11", forecast.get(0).getDate());
+            assertEquals(tomorrow.toString(), forecast.get(0).getDate());
             assertEquals("sunny", forecast.get(0).getDescription());
             assertEquals("foggy", forecast.get(3).getDescription());
         }
