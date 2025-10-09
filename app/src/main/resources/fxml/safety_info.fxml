@@ -1,35 +1,116 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Hyperlink?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
 
-<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/null" xmlns:fx="http://javafx.com/fxml/1">
-   <children>
-      <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0">
+<ScrollPane styleClass="root-pane" stylesheets="@../styles/global.css" xmlns="http://javafx.com/javafx/null" xmlns:fx="http://javafx.com/fxml/1">
+   <content>
+      <VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0">
          <children>
-            <Label text="Emergency Information" />
-         </children>
-      </HBox>
-      <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0">
-         <children>
-            <HBox alignment="CENTER">
+            <HBox alignment="CENTER" prefHeight="48.0" prefWidth="600.0">
                <children>
-                  <TextArea editable="false" prefHeight="175.0" prefWidth="395.0" text="In the event of an emergency, call 111 and request Police.&#10;Be prepared to tell them:&#10;- WHAT: Urgency + situation (is someone lost, or injured?).&#10;- WHERE: Location/terrain. Map grid reference or GPS coordinates are preferable.&#10;- WHO: Your name and phone number.&#10;- ACCESSIBLE: Weather, are you close to a road? Open enough area for a helicopter to land or hover?&#10;- SUPPLIES: What you have available to you.&#10;" wrapText="true" />
+                  <Label styleClass="heading" text="Emergency Information" />
                </children>
             </HBox>
-         </children>
-      </VBox>
-      <VBox prefHeight="176.0" prefWidth="600.0">
-         <children>
-            <HBox alignment="CENTER" prefHeight="100.0" prefWidth="600.0">
+            <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0">
                <children>
-                  <Label text="Safety Tips" />
+                  <HBox alignment="CENTER">
+                     <children>
+                        <VBox alignment="CENTER">
+                           <children>
+                              <Label alignment="CENTER" text="In the event of an emergency, call 111 and request Police." />
+                              <Label text="Be prepared to tell them:" />
+                              <HBox alignment="CENTER_LEFT">
+                                 <children>
+                                    <Label styleClass="strong-text" text="- WHAT:">
+                                       <HBox.margin>
+                                          <Insets left="50.0" right="20.0" />
+                                       </HBox.margin>
+                                    </Label>
+                                    <Label text=" Urgency + situation (is someone lost, or injured?)" wrapText="true" />
+                                 </children>
+                              </HBox>
+                              <HBox alignment="CENTER_LEFT">
+                                 <children>
+                                    <Label prefHeight="21.0" prefWidth="95.0" styleClass="strong-text" text="- WHERE:">
+                                       <HBox.margin>
+                                          <Insets left="50.0" right="50.0" />
+                                       </HBox.margin>
+                                    </Label>
+                                    <Label text="Location/terrain. Map grid reference or GPS coordinates are preferable" wrapText="true" />
+                                 </children>
+                              </HBox>
+                              <HBox alignment="CENTER_LEFT">
+                                 <children>
+                                    <Label styleClass="strong-text" text="- WHO:">
+                                       <HBox.margin>
+                                          <Insets left="50.0" right="50.0" />
+                                       </HBox.margin>
+                                    </Label>
+                                    <Label text="Your name and phone number" wrapText="true" />
+                                 </children>
+                              </HBox>
+                              <HBox alignment="CENTER_LEFT">
+                                 <children>
+                                    <Label prefHeight="21.0" prefWidth="200.0" styleClass="strong-text" text="- ACCESSIBLE:">
+                                       <HBox.margin>
+                                          <Insets left="50.0" right="50.0" />
+                                       </HBox.margin>
+                                    </Label>
+                                    <Label prefHeight="42.0" prefWidth="511.0" text="Weather, are you close to a road? Open enough area for a helicopter to land or hover?" wrapText="true" />
+                                 </children>
+                              </HBox>
+                              <HBox alignment="CENTER_LEFT">
+                                 <children>
+                                    <Label styleClass="strong-text" text="- SUPPLIES:" wrapText="true">
+                                       <HBox.margin>
+                                          <Insets left="50.0" right="30.0" />
+                                       </HBox.margin>
+                                    </Label>
+                                    <Label text="What you have available to you." />
+                                 </children>
+                              </HBox>
+                           </children>
+                        </VBox>
+                     </children>
+                  </HBox>
                </children>
-            </HBox>
+            </VBox>
+            <VBox prefHeight="176.0" prefWidth="600.0">
+               <children>
+                  <HBox alignment="CENTER" prefHeight="31.0" prefWidth="600.0">
+                     <children>
+                        <Label styleClass="heading" text="Safety Tips" />
+                     </children>
+                  </HBox>
+                  <HBox alignment="TOP_CENTER" prefHeight="100.0" prefWidth="200.0">
+                     <children>
+                        <VBox alignment="TOP_CENTER">
+                           <children>
+                              <Label text="Remember, &quot;The bush is safe, until you forget that it's not.&quot; - Gerry Purcell" />
+                              <Label text="Label" />
+                           </children>
+                        </VBox>
+                     </children>
+                  </HBox>
+                  <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0">
+                     <children>
+                        <VBox alignment="CENTER" prefHeight="68.0" prefWidth="389.0">
+                           <children>
+                              <Label text="For more detailed information, please visit:" />
+                              <Hyperlink text="https://www.mountainsafety.org.nz/learn/skills/emergency" />
+                           </children>
+                        </VBox>
+                     </children>
+                  </HBox>
+               </children>
+            </VBox>
          </children>
       </VBox>
-   </children>
-</VBox>
+   </content>
+</ScrollPane>
