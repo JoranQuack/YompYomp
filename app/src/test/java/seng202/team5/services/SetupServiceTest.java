@@ -320,8 +320,8 @@ public class SetupServiceTest {
                 .description("Description1")
                 .difficulty("Easy")
                 .completionInfo("1hr")
-                .webpageURL(null)
-                .thumbnailURL("url1")
+                .webpageURL("url1")
+                .thumbnailURL(null)
                 .lat(0.0)
                 .lon(0.0)
                 .build();
