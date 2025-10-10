@@ -36,19 +36,35 @@ class MatchmakingServiceTest {
                 // int id, String name, String description, String difficulty, String
                 // completionInfo,
                 // String thumbnailURL, String webpageURL
-                new Trail(1, "Alpine Trail", "Easy", "A beautiful alpine trail through the mountains",
+                createMockTrail(1, "Alpine Trail", "Easy", "A beautiful alpine trail through the mountains",
                         "2 hours", "thumb1.jpg", "http://example.com/trail1", -43.5321, 172.6362),
-                new Trail(2, "Forest Trail", "Medium", "A scenic forest trail with wildlife viewing",
-                        "3 hours", "thumb2.jpg", "http://example.com/trail2", -43.5350, 172.6400),
-                new Trail(3, "Mountain Peak Trail", "Hard", "Challenging trail to the mountain peak",
-                        "5 hours", "thumb3.jpg", "http://example.com/trail3", -43.5400, 172.6500),
-                new Trail(4, "Coastal Walk", "Easy", "Easy coastal walk with ocean views",
+                createMockTrail(2, "Forest Trail", "Medium", "A scenic forest trail with wildlife viewing",
+                        "3 hours", "thumb2.jpg", "http://example.com/trail2", -43.5380, 172.6410),
+                createMockTrail(3, "Mountain Peak Trail", "Hard", "Challenging trail to the mountain peak",
+                        "5 hours", "thumb3.jpg", "http://example.com/trail3", -43.5450, 172.6500),
+                createMockTrail(4, "Coastal Walk", "Easy", "Easy coastal walk with ocean views",
                         "1.5 hours", "thumb4.jpg", "http://example.com/trail4", -43.5250, 172.6200),
-                new Trail(5, "River Trail", "Medium", "Trail following the river through the valley",
+                createMockTrail(5, "River Trail", "Medium", "Trail following the river through the valley",
                         "2.5 hours", "thumb5.jpg", "http://example.com/trail5", -43.5300, 172.6450)));
         when(mockTrailRepo.getAllTrails()).thenReturn(mockTrails);
 
         matchmakingService = new MatchmakingService(mockKeywordRepo, mockTrailRepo);
+    }
+
+    private Trail createMockTrail(int id, String name, String difficulty, String description,
+                                  String completionInfo, String thumbnailURL, String webpageURL,
+                                  double lat, double lon) {
+        return new Trail.Builder()
+                .id(id)
+                .name(name)
+                .difficulty(difficulty)
+                .description(description)
+                .completionInfo(completionInfo)
+                .thumbnailURL(thumbnailURL)
+                .webpageURL(webpageURL)
+                .lat(lat)
+                .lon(lon)
+                .build();
     }
 
     /**
