@@ -136,6 +136,10 @@ These are features the team is most proud of.
 - External database (not local)
 - Upload new dataset
 
+## AI Declaration
+
+AI was used sparingly to assist with debugging, as well as IntelliJ Idea Code Completion and GitHub Copilot Completions.
+
 ## Authors
 
 - [Hayley Kawelenga](https://eng-git.canterbury.ac.nz/hka105)
