@@ -112,7 +112,7 @@ public class SetupService {
     /**
      * Creates the database if it doesn't exist.
      */
-    private void createDbActions() {
+    void createDbActions() {
         if (databaseService.databaseExists() && databaseService.isSchemaUpToDate()) {
             return;
         }
