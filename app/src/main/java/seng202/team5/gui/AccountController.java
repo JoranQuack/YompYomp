@@ -78,7 +78,7 @@ public class AccountController extends Controller {
     private Label totalTrailsLabel;
 
     User user;
-    private AccountStatisticsService statisticsService;
+    private final AccountStatisticsService statisticsService;
 
     /**
      * Creates controller with navigator.
@@ -140,8 +140,7 @@ public class AccountController extends Controller {
         if (!confirmed) {
             return;
         }
-        App.resetApplication();
-        super.getNavigator().launchScreen(new LoadingController(super.getNavigator(), null));
+        super.getNavigator().launchScreen(new LoadingController(super.getNavigator(), null, true));
     }
 
     @FXML
@@ -214,8 +213,7 @@ public class AccountController extends Controller {
             preferencesBarChart.setLegendVisible(false);
 
             // Configure Y-axis for integer ticks and max value of 5
-            if (preferencesBarChart.getYAxis() instanceof NumberAxis) {
-                NumberAxis yAxis = (NumberAxis) preferencesBarChart.getYAxis();
+            if (preferencesBarChart.getYAxis() instanceof NumberAxis yAxis) {
                 yAxis.setLowerBound(0);
                 yAxis.setUpperBound(5);
                 yAxis.setTickUnit(1);
@@ -281,12 +279,12 @@ public class AccountController extends Controller {
 
         try {
             // Total trails in logbook
-            Integer totalTrails = statisticsService.getTotalLoggedTrails();
-            totalTrailsLabel.setText(totalTrails != null ? totalTrails.toString() : "0");
+            int totalTrails = statisticsService.getTotalLoggedTrails();
+            totalTrailsLabel.setText(Integer.toString(totalTrails));
 
             // Average match score from logged trails
             Double avgScore = statisticsService.getAverageMatchScore();
-            avgMatchScoreLabel.setText(avgScore != null ? String.format("%.1f%%", avgScore) : "0.0%");
+            avgMatchScoreLabel.setText(String.format("%.1f%%", avgScore));
 
             // Top category from logged trails
             String topCategory = statisticsService.getTopCategory();
@@ -330,8 +328,7 @@ public class AccountController extends Controller {
                 regionBarChart.setLegendVisible(false);
 
                 // Configure Y-axis for integer ticks only
-                if (regionBarChart.getYAxis() instanceof NumberAxis) {
-                    NumberAxis yAxis = (NumberAxis) regionBarChart.getYAxis();
+                if (regionBarChart.getYAxis() instanceof NumberAxis yAxis) {
                     yAxis.setLowerBound(0);
                     yAxis.setTickUnit(1);
                     yAxis.setMinorTickVisible(false);
@@ -386,8 +383,8 @@ public class AccountController extends Controller {
     /**
      * Returns string label to be set for each user preference
      *
-     * @param preference
-     * @param sliderLabels
+     * @param preference the preference weight
+     * @param sliderLabels what the labels should say
      * @return string to be set for user preference label
      */
     private String getPreferenceLabel(int preference, String[] sliderLabels) {

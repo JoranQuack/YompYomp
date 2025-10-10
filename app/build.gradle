@@ -105,7 +105,8 @@ dependencies {
     // dotenv for environment variable management
     implementation 'io.github.cdimascio:dotenv-java:3.0.0'
 
-
+    // for validating URLs
+    implementation 'commons-validator:commons-validator:1.7'
 }
 
 // Apply a specific Java toolchain to ease working on different environments.

@@ -171,28 +171,14 @@ public class SqlBasedKeywordRepo {
     }
 
     /**
-     * Helper class to represent a keyword entry for batch processing.
-     */
-    private static class KeywordEntry {
-        final String keyword;
-        final String category;
-
-        KeywordEntry(String keyword, String category) {
-            this.keyword = keyword;
-            this.category = category;
-        }
+         * Helper class to represent a keyword entry for batch processing.
+         */
+        private record KeywordEntry(String keyword, String category) {
     }
 
     /**
-     * Helper class to represent a trail-category association for batch processing.
-     */
-    private static class TrailCategoryEntry {
-        final int trailId;
-        final String category;
-
-        TrailCategoryEntry(int trailId, String category) {
-            this.trailId = trailId;
-            this.category = category;
-        }
+         * Helper class to represent a trail-category association for batch processing.
+         */
+        private record TrailCategoryEntry(int trailId, String category) {
     }
 }

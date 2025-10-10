@@ -2,16 +2,23 @@ package seng202.team5.gui;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
+import org.controlsfx.control.CheckComboBox;
+
+import javafx.application.Platform;
+import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
-import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.control.TextField;
+import javafx.scene.control.ToggleButton;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.VBox;
-import javafx.concurrent.Task;
-import javafx.application.Platform;
-import org.controlsfx.control.CheckComboBox;
 import seng202.team5.App;
 import seng202.team5.gui.components.TrailCardComponent;
 import seng202.team5.models.Trail;
@@ -67,7 +74,9 @@ public class TrailsController extends Controller {
     @FXML
     private Label resetButton;
     @FXML
-    private javafx.scene.control.ScrollPane trailsScrollPane;
+    private ScrollPane trailsScrollPane;
+    @FXML
+    private Label nextPageButton;
 
     /**
      * Creates a controller with navigator.
@@ -148,15 +157,16 @@ public class TrailsController extends Controller {
         Label loadingLabel = new Label("Loading trails...");
         trailsContainer.getChildren().add(loadingLabel);
         resultsLabel.setText("Loading...");
+        nextPageButton.setVisible(false);
     }
 
     /**
      * Loads initial data asynchronously
      */
     private void loadInitialDataAsync() {
-        Task<Void> loadTask = new Task<Void>() {
+        Task<Void> loadTask = new Task<>() {
             @Override
-            protected Void call() throws Exception {
+            protected Void call() {
                 if (searchText != null) {
                     searchService.setCurrentQuery(searchText);
                 }
@@ -180,6 +190,8 @@ public class TrailsController extends Controller {
                         restorePageAndScrollPosition();
                         isRestoringState = false;
                     }
+
+                    nextPageButton.setVisible(searchService.getNumberOfPages() > 1);
                 });
             }
 
@@ -260,7 +272,7 @@ public class TrailsController extends Controller {
         // Remove the default "All regions" option as we handle that separately
         regionList = regionList.stream()
                 .filter(region -> !region.equals("All regions"))
-                .collect(Collectors.toList());
+                .toList();
 
         // Add Select All option at the top
         List<String> allRegions = new ArrayList<>();
@@ -425,10 +437,37 @@ public class TrailsController extends Controller {
      */
     private void onPageSelected() {
         String selectedPage = pageChoiceBox.getValue();
-        if (selectedPage != null) {
-            int pageIndex = Integer.parseInt(selectedPage) - 1;
-            List<Trail> trails = searchService.getPage(pageIndex);
-            updateTrailsDisplay(trails);
+        if (selectedPage == null) {
+            return;
+        }
+        int pageIndex = Integer.parseInt(selectedPage) - 1;
+
+        if (pageIndex >= searchService.getNumberOfPages() - 1) {
+            nextPageButton.setVisible(false);
+        } else {
+            nextPageButton.setVisible(true);
+        }
+
+        List<Trail> trails = searchService.getPage(pageIndex);
+        updateTrailsDisplay(trails);
+
+    }
+
+    @FXML
+    private void onNextPageClicked() {
+        String selectedPage = pageChoiceBox.getValue();
+        trailsScrollPane.setVvalue(0.0);
+        if (selectedPage == null) {
+            return;
+        }
+        int currentPageIndex = Integer.parseInt(selectedPage) - 1;
+        int nextPageIndex = currentPageIndex + 1;
+
+        if (nextPageIndex < searchService.getNumberOfPages()) {
+            isUpdating = true;
+            pageChoiceBox.setValue(String.valueOf(nextPageIndex + 1));
+            onPageSelected();
+            isUpdating = false;
         }
     }
 
@@ -493,6 +532,7 @@ public class TrailsController extends Controller {
         trailsContainer.getChildren().add(noResultsContainer);
 
         resultsLabel.setText("No trails found.");
+        nextPageButton.setVisible(false);
     }
 
     /**
@@ -548,16 +588,12 @@ public class TrailsController extends Controller {
      * Gets the title for a filter type
      */
     private String getFilterTitle(String filterType) {
-        switch (filterType) {
-            case "completionType":
-                return "Types";
-            case "timeUnit":
-                return "Time Units";
-            case "difficulty":
-                return "Difficulties";
-            default:
-                return filterType;
-        }
+        return switch (filterType) {
+            case "completionType" -> "Types";
+            case "timeUnit" -> "Time Units";
+            case "difficulty" -> "Difficulties";
+            default -> filterType;
+        };
     }
 
     /**
@@ -587,9 +623,9 @@ public class TrailsController extends Controller {
                 }
             } else if (change.wasRemoved()) {
                 for (String removed : change.getRemoved()) {
+                    boolean anySpecificItemChecked = false;
                     if ("Select All".equals(removed)) {
                         // Check if Select All was the only thing selected
-                        boolean anySpecificItemChecked = false;
                         for (String item : checkComboBox.getItems()) {
                             if (!"Select All".equals(item) && checkComboBox.getCheckModel().isChecked(item)) {
                                 anySpecificItemChecked = true;
@@ -603,7 +639,6 @@ public class TrailsController extends Controller {
                         }
                     } else {
                         // automatically check "Select All" to prevent having nothing selected
-                        boolean anySpecificItemChecked = false;
                         for (String item : checkComboBox.getItems()) {
                             if (!"Select All".equals(item) && checkComboBox.getCheckModel().isChecked(item)) {
                                 anySpecificItemChecked = true;
@@ -679,7 +714,7 @@ public class TrailsController extends Controller {
         resetIcon.setFitWidth(17.0);
         resetIcon.setPickOnBounds(true);
         resetIcon.setPreserveRatio(true);
-        resetIcon.setImage(new javafx.scene.image.Image(getClass().getResourceAsStream("/images/reset.png")));
+        resetIcon.setImage(new javafx.scene.image.Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/reset.png"))));
         resetBtn.setGraphic(resetIcon);
 
         resetBtn.getStyleClass().addAll("special-button", "regular-text");
@@ -803,7 +838,7 @@ public class TrailsController extends Controller {
 
         isUpdating = false;
 
-        // The page restoration will happen in loadInitialDataAsync's success
+        // The page restoration will happen in loadInitialDataAsync success
     }
 
     /**
@@ -849,11 +884,9 @@ public class TrailsController extends Controller {
 
         // scroll position after short delay
         if (trailsScrollPane != null) {
-            Platform.runLater(() -> {
-                Platform.runLater(() -> { // Double runLater to ensure UI is done loading
-                    trailsScrollPane.setVvalue(savedScrollPosition);
-                });
-            });
+            Platform.runLater(() -> Platform.runLater(() -> { // Double runLater to ensure UI is done loading
+                trailsScrollPane.setVvalue(savedScrollPosition);
+            }));
         }
     }
 }

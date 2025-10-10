@@ -20,14 +20,14 @@ public class TrailsProcessorTest {
     void setup() {
         mockTrails = new ArrayList<>(Arrays.asList(
                 new Trail(1, "Alpine Trail", "Easy", "A beautiful alpine trail through the mountains",
-                        "2 hours", "thumb1.jpg", "http://example.com/trail1", -43.5225, 172.5794), // Christchurch
+                        "2 hours", "thumb1.jpg", "https://example.com/trail1", -43.5225, 172.5794), // Christchurch
                 new Trail(2, "Forest Trail", "Medium", "A scenic forest trail with wildlife viewing",
-                        "3 hours", "thumb2.jpg", "http://example.com/trail2", -43.5390, 172.6300), // ~5km away
+                        "3 hours", "thumb2.jpg", "https://example.com/trail2", -43.5390, 172.6300), // ~5km away
                 new Trail(3, "Mountain Peak Trail", "Hard", "Challenging trail to the mountain peak",
-                        "5 hours", "thumb3.jpg", "http://example.com/trail3", -36.8485, 174.7633) // Auckland ~760km
+                        "5 hours", "thumb3.jpg", "https://example.com/trail3", -36.8485, 174.7633) // Auckland ~760km
         ));
 
-        currentTrail = mockTrails.get(0); // Alpine Trail
+        currentTrail = mockTrails.getFirst(); // Alpine Trail
     }
 
     @Test
@@ -42,7 +42,7 @@ public class TrailsProcessorTest {
     void testNearbyTrailFoundWithinRadius() {
         List<Trail> results = TrailsProcessor.getNearbyTrails(currentTrail, 10, mockTrails);
         assertEquals(1, results.size());
-        assertEquals("Forest Trail", results.get(0).getName());
+        assertEquals("Forest Trail", results.getFirst().getName());
     }
 
     @Test
@@ -50,7 +50,7 @@ public class TrailsProcessorTest {
     void testFarTrailExcluded() {
         List<Trail> results = TrailsProcessor.getNearbyTrails(currentTrail, 100, mockTrails);
         assertEquals(1, results.size());
-        assertEquals("Forest Trail", results.get(0).getName());
+        assertEquals("Forest Trail", results.getFirst().getName());
     }
 
     @Test
@@ -67,6 +67,6 @@ public class TrailsProcessorTest {
     void testExcludesCurrentTrailItself() {
         List<Trail> results = TrailsProcessor.getNearbyTrails(currentTrail, 10, mockTrails);
         assertEquals(1, results.size());
-        assertEquals("Forest Trail", results.get(0).getName());
+        assertEquals("Forest Trail", results.getFirst().getName());
     }
 }

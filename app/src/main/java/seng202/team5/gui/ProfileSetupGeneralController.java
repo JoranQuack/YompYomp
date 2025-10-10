@@ -106,7 +106,7 @@ public class ProfileSetupGeneralController extends Controller {
     @FXML
     private void onSkipSetupButtonClicked() {
         user = App.getUserService().getUserAfterSkip();
-        super.getNavigator().launchScreen(new LoadingController(super.getNavigator(), null));
+        super.getNavigator().launchScreen(new LoadingController(super.getNavigator(), null, false));
     }
 
     /**

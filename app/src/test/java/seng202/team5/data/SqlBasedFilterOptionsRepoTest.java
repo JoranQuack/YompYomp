@@ -20,7 +20,6 @@ import static org.junit.jupiter.api.Assertions.*;
  */
 public class SqlBasedFilterOptionsRepoTest {
     private SqlBasedFilterOptionsRepo filterOptionsRepo;
-    private DatabaseService databaseService;
     private String testDbPath;
 
     @TempDir
@@ -29,7 +28,7 @@ public class SqlBasedFilterOptionsRepoTest {
     @BeforeEach
     void setUp() throws Exception {
         testDbPath = tempDir.resolve("test.db").toString();
-        databaseService = new DatabaseService(testDbPath);
+        DatabaseService databaseService = new DatabaseService(testDbPath);
         filterOptionsRepo = new SqlBasedFilterOptionsRepo(databaseService);
 
         // Use schema for test db
@@ -37,7 +36,7 @@ public class SqlBasedFilterOptionsRepoTest {
 
         // Add fake data
         try (Connection connection = databaseService.getConnection();
-                Statement stmt = connection.createStatement()) {
+             Statement stmt = connection.createStatement()) {
 
             stmt.execute("""
                     INSERT INTO trail (id, name, difficulty, completionType, timeUnit, isMultiDay) VALUES

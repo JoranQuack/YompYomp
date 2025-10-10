@@ -12,6 +12,7 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
 import netscape.javascript.JSObject;
+import org.apache.commons.validator.routines.UrlValidator;
 import seng202.team5.App;
 import seng202.team5.models.Trail;
 import seng202.team5.models.User;
@@ -22,9 +23,8 @@ import seng202.team5.services.TrailService;
 import seng202.team5.utils.StringManipulator;
 import seng202.team5.utils.TrailsProcessor;
 
-import java.net.MalformedURLException;
-import java.net.URI;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Controller for the modify trail screen
@@ -33,7 +33,7 @@ public class ModifyTrailController extends Controller {
 
     private final Trail trail;
     private final RegionFinder regionFinder;
-    private TrailService trailService;
+    private final TrailService trailService;
 
     private WebEngine webEngine;
     private JavaScriptBridge javaScriptBridge;
@@ -82,7 +82,6 @@ public class ModifyTrailController extends Controller {
     private TextField regionTextField;
     @FXML
     private Label invalidNumberLabel;
-    private WebView trailMapWebView;
 
     /**
      * Initialises the screen with components for user to input data
@@ -185,7 +184,7 @@ public class ModifyTrailController extends Controller {
     private void initMap() {
         javaScriptBridge = new JavaScriptBridge(this);
         mapContainer.getChildren().clear();
-        trailMapWebView = new WebView();
+        WebView trailMapWebView = new WebView();
         trailMapWebView.setPrefHeight(-1);
         trailMapWebView.setPrefWidth(-1);
         HBox.setHgrow(trailMapWebView, Priority.ALWAYS);
@@ -203,6 +202,8 @@ public class ModifyTrailController extends Controller {
         webEngine = trailMapWebView.getEngine();
         webEngine.setJavaScriptEnabled(true);
 
+
+
         WebConsoleListener.setDefaultListener((view, message, lineNumber, sourceID) -> System.out
                 .printf("Map WebView console log line: %d, message: %s%n", lineNumber, message));
 
@@ -213,7 +214,7 @@ public class ModifyTrailController extends Controller {
             }
         });
 
-        webEngine.load(Controller.class.getResource("/html/map.html").toExternalForm());
+        webEngine.load(Objects.requireNonNull(Controller.class.getResource("/html/map.html")).toExternalForm());
     }
 
     /**
@@ -446,9 +447,8 @@ public class ModifyTrailController extends Controller {
 
         // Validate culture URL if provided
         if (!cultureUrlTextField.getText().trim().isEmpty()) {
-            try {
-                URI.create(cultureUrlTextField.getText().trim()).toURL();
-            } catch (MalformedURLException | IllegalArgumentException e) {
+            UrlValidator urlValidator = new UrlValidator();
+            if (!urlValidator.isValid(cultureUrlTextField.getText().trim())) {
                 cultureUrlTextField.getStyleClass().add("validation-error");
                 if (emptyFieldLabel.getText().isEmpty()) {
                     emptyFieldLabel.setText("Please enter a valid URL for the culture link.");
@@ -491,6 +491,33 @@ public class ModifyTrailController extends Controller {
         if (difficultyComboBox.getValue() != null) {
             difficulty = difficultyComboBox.getValue().toLowerCase();
         }
+        Trail newTrail = getNewTrail(trailName, translation, difficulty);
+
+        // Calculate user weight
+        try {
+            User user = App.getUserService().getUser();
+            MatchmakingService matchmakingService = new MatchmakingService(App.getKeywordRepo(),
+                    App.getTrailRepo());
+            matchmakingService.setUserPreferences(user);
+            double calculatedWeight = matchmakingService.getUserWeightFromTrail(newTrail);
+            newTrail.setUserWeight(calculatedWeight);
+        } catch (Exception e) {
+            // Keep the default weight
+        }
+
+        List<Trail> updatedTrail = TrailsProcessor.processTrails(List.of(newTrail));
+        return updatedTrail.getFirst();
+    }
+
+    /**
+     * Gets a new trail
+     *
+     * @param trailName the name of the new trail
+     * @param translation the translation
+     * @param difficulty the difficulty
+     * @return the new trail
+     */
+    private Trail getNewTrail(String trailName, String translation, String difficulty) {
         String trailType = trailTypeComboBox.getValue().toLowerCase();
         String completionTime = completionTimeTextField.getText().toLowerCase();
         String trailDescription = trailDescriptionTextArea.getText();
@@ -520,43 +547,9 @@ public class ModifyTrailController extends Controller {
             userWeight = 0.5;
         }
 
-        Trail newTrail = new Trail.Builder()
-                .id(trailId)
-                .name(trailName)
-                .translation(translation)
-                .region(region)
-                .difficulty(difficulty)
-                .completionType(trailType)
-                .completionInfo(completionTime)
-                .description(trailDescription)
-                .thumbnailURL(thumbUrl)
-                .webpageURL(webUrl)
-                .cultureUrl(cultureUrl)
-                .userWeight(userWeight)
-                .lat(latitude)
-                .lon(longitude)
-                .build();
-
-
-        // Calculate user weight
-        try {
-            User user = App.getUserService().getUser();
-            MatchmakingService matchmakingService = new MatchmakingService(App.getKeywordRepo(),
-                    App.getTrailRepo());
-            matchmakingService.setUserPreferences(user);
-            double calculatedWeight = matchmakingService.getUserWeightFromTrail(newTrail);
-
-            // Create a new Trail instance with updated userWeight
-            newTrail = new Trail.Builder()
-                    .from(newTrail)
-                    .userWeight(calculatedWeight)
-                    .build();
-        } catch (Exception e) {
-            // Keep the default weight
-        }
-
-        List<Trail> updatedTrail = TrailsProcessor.processTrails(List.of(newTrail));
-        return updatedTrail.getFirst();
+        return new Trail(trailId, trailName, translation, region, difficulty, trailType,
+                completionTime, trailDescription, thumbUrl, webUrl, cultureUrl,
+                userWeight, latitude, longitude);
     }
 
     @Override

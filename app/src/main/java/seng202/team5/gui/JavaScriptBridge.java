@@ -32,7 +32,7 @@ public class JavaScriptBridge {
      * Called from JavaScript when the user clicks on the map
      * This method parses the JSON string containing the latitude and longitude,
      * extracts the numeric values and forwards them to the controller's
-     *
+     * <p>
      * {@link ModifyTrailController#updateLatLonFields(double, double)} method
      *
      * @param latlng a JSON string containing latitude and longitude
@@ -46,7 +46,7 @@ public class JavaScriptBridge {
                 double lng = (Double) latlng_json.get("lng");
                 modifyTrailController.updateLatLonFields(lat, lng);
             } catch (org.json.simple.parser.ParseException e) {
-                e.printStackTrace();
+                System.err.println(e.getMessage());
             }
         }
     }

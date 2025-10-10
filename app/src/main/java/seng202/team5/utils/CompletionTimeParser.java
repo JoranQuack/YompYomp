@@ -7,61 +7,21 @@ import java.util.regex.Pattern;
  * Utility class for parsing completion time strings from DOC trail data.
  * Handles various time formats including ranges, completion types, and
  * multi-day trips.
- *
+ * <p>
  * The big goal of this class is to take DOC's awful completion time strings and
  * turn them into consistent data we can use for our app! Also being able to
- * translate back to human readable strings from what we will store in the Trail
+ * translate back to human-readable strings from what we will store in the Trail
  * objects, but again, in a consistent way.
  */
 public class CompletionTimeParser {
 
     /**
-     * Result class containing all parsed time information to make it easier to
-     * store everything in one place as we process stuff
-     */
-    public static class CompletionTimeResult {
-        private final int minCompletionTimeMinutes;
-        private final int maxCompletionTimeMinutes;
-        private final String completionType;
-        private final String timeUnit;
-        private final boolean isMultiDay;
-        private final boolean hasVariableTime;
-
-        public CompletionTimeResult(int minCompletionTimeMinutes, int maxCompletionTimeMinutes,
-                String completionType, String timeUnit, boolean isMultiDay,
-                boolean hasVariableTime) {
-            this.minCompletionTimeMinutes = minCompletionTimeMinutes;
-            this.maxCompletionTimeMinutes = maxCompletionTimeMinutes;
-            this.completionType = completionType;
-            this.timeUnit = timeUnit;
-            this.isMultiDay = isMultiDay;
-            this.hasVariableTime = hasVariableTime;
-        }
-
-        // Getters
-        public int getMinCompletionTimeMinutes() {
-            return minCompletionTimeMinutes;
-        }
-
-        public int getMaxCompletionTimeMinutes() {
-            return maxCompletionTimeMinutes;
-        }
-
-        public String getCompletionType() {
-            return completionType;
-        }
-
-        public String getTimeUnit() {
-            return timeUnit;
-        }
-
-        public boolean isMultiDay() {
-            return isMultiDay;
-        }
-
-        public boolean hasVariableTime() {
-            return hasVariableTime;
-        }
+         * Result class containing all parsed time information to make it easier to
+         * store everything in one place as we process stuff
+         */
+        public record CompletionTimeResult(int minCompletionTimeMinutes, int maxCompletionTimeMinutes,
+                                           String completionType, String timeUnit, boolean isMultiDay,
+                                           boolean hasVariableTime) {
     }
 
     // Regex patterns for different time formats
@@ -182,14 +142,11 @@ public class CompletionTimeParser {
         if (matcher.find()) {
             String type = matcher.group(1).toLowerCase();
             // Make things consistent (thanks DOC)
-            switch (type) {
-                case "each way":
-                    return "one way";
-                case "circuit":
-                    return "loop";
-                default:
-                    return type;
-            }
+            return switch (type) {
+                case "each way" -> "one way";
+                case "circuit" -> "loop";
+                default -> type;
+            };
         }
         return "unknown";
     }

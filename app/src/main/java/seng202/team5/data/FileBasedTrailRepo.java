@@ -36,14 +36,13 @@ public class FileBasedTrailRepo {
      * format
      *
      * @param filePath Path to the CSV file
-     * @return List of trail objects retrieved from the CSV
      */
-    private List<Trail> loadTrailsFromCSV(String filePath) {
+    private void loadTrailsFromCSV(String filePath) {
         // Get the resource as an input stream from the classpath
         InputStream inputStream = getClass().getResourceAsStream(filePath);
         if (inputStream == null) {
             System.err.println("Could not find resource: " + filePath);
-            return trails;
+            return;
         }
 
         // define and try the OpenCSV reader with InputStreamReader
@@ -66,28 +65,7 @@ public class FileBasedTrailRepo {
                 }
 
                 // Parse each field from the current line
-                int id = Integer.parseInt(values[0]);
-                String name = values[1];
-                String description = values[2];
-                String difficulty = values[3];
-                String completionInfo = values[4];
-                String thumbnailURL = values[6];
-                String webpageURL = values[7];
-                double lat = Double.parseDouble(values[10]); // latitude given by x
-                double lon = Double.parseDouble(values[9]); // longitude given by y
-
-                // create the new trail object
-                Trail newTrail = new Trail.Builder()
-                        .id(id)
-                        .name(name)
-                        .difficulty(difficulty)
-                        .description(description)
-                        .completionInfo(completionInfo)
-                        .thumbnailURL(thumbnailURL)
-                        .webpageURL(webpageURL)
-                        .lat(lat)
-                        .lon(lon)
-                        .build();
+                Trail newTrail = getNewTrail(values);
 
                 // add the new trail object to the list
                 trails.add(newTrail);
@@ -95,7 +73,28 @@ public class FileBasedTrailRepo {
         } catch (Exception e) {
             System.out.println("Error with file: " + filePath + ": " + e.getMessage());
         }
-        return trails;
+    }
+
+    /**
+     * Extract new trail from the values
+     *
+     * @param values List of strings with the values to extract for the tail
+     * @return the new trail
+     */
+    private static Trail getNewTrail(String[] values) {
+        int id = Integer.parseInt(values[0]);
+        String name = values[1];
+        String description = values[2];
+        String difficulty = values[3];
+        String completionInfo = values[4];
+        String thumbnailURL = values[6];
+        String webpageURL = values[7];
+        double lat = Double.parseDouble(values[10]); // latitude given by x
+        double lon = Double.parseDouble(values[9]); // longitude given by y
+
+        // create the new trail object
+        return new Trail(id, name, difficulty, description, completionInfo,
+                thumbnailURL, webpageURL, lat, lon);
     }
 
     /**
