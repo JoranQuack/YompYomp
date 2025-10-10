@@ -4,14 +4,20 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.controlsfx.control.CheckComboBox;
+
+import javafx.application.Platform;
+import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
-import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.control.TextField;
+import javafx.scene.control.ToggleButton;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.VBox;
-import javafx.concurrent.Task;
-import javafx.application.Platform;
-import org.controlsfx.control.CheckComboBox;
 import seng202.team5.App;
 import seng202.team5.gui.components.TrailCardComponent;
 import seng202.team5.models.Trail;
@@ -67,7 +73,9 @@ public class TrailsController extends Controller {
     @FXML
     private Label resetButton;
     @FXML
-    private javafx.scene.control.ScrollPane trailsScrollPane;
+    private ScrollPane trailsScrollPane;
+    @FXML
+    private Label nextPageButton;
 
     /**
      * Creates a controller with navigator.
@@ -148,6 +156,7 @@ public class TrailsController extends Controller {
         Label loadingLabel = new Label("Loading trails...");
         trailsContainer.getChildren().add(loadingLabel);
         resultsLabel.setText("Loading...");
+        nextPageButton.setVisible(false);
     }
 
     /**
@@ -180,6 +189,8 @@ public class TrailsController extends Controller {
                         restorePageAndScrollPosition();
                         isRestoringState = false;
                     }
+
+                    nextPageButton.setVisible(searchService.getNumberOfPages() > 1);
                 });
             }
 
@@ -425,10 +436,37 @@ public class TrailsController extends Controller {
      */
     private void onPageSelected() {
         String selectedPage = pageChoiceBox.getValue();
-        if (selectedPage != null) {
-            int pageIndex = Integer.parseInt(selectedPage) - 1;
-            List<Trail> trails = searchService.getPage(pageIndex);
-            updateTrailsDisplay(trails);
+        if (selectedPage == null) {
+            return;
+        }
+        int pageIndex = Integer.parseInt(selectedPage) - 1;
+
+        if (pageIndex >= searchService.getNumberOfPages() - 1) {
+            nextPageButton.setVisible(false);
+        } else {
+            nextPageButton.setVisible(true);
+        }
+
+        List<Trail> trails = searchService.getPage(pageIndex);
+        updateTrailsDisplay(trails);
+
+    }
+
+    @FXML
+    private void onNextPageClicked() {
+        String selectedPage = pageChoiceBox.getValue();
+        trailsScrollPane.setVvalue(0.0);
+        if (selectedPage == null) {
+            return;
+        }
+        int currentPageIndex = Integer.parseInt(selectedPage) - 1;
+        int nextPageIndex = currentPageIndex + 1;
+
+        if (nextPageIndex < searchService.getNumberOfPages()) {
+            isUpdating = true;
+            pageChoiceBox.setValue(String.valueOf(nextPageIndex + 1));
+            onPageSelected();
+            isUpdating = false;
         }
     }
 
@@ -493,6 +531,7 @@ public class TrailsController extends Controller {
         trailsContainer.getChildren().add(noResultsContainer);
 
         resultsLabel.setText("No trails found.");
+        nextPageButton.setVisible(false);
     }
 
     /**
