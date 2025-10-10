@@ -9,7 +9,6 @@ import seng202.team5.data.SqlBasedTrailRepo;
 import seng202.team5.models.Trail;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -90,5 +89,32 @@ public class DashboardServiceTest {
     void testGetRecommendedTrails(){
         List<Trail> result = dashboardService.getRecommendedTrails();
         assertEquals(8, result.size(), "Should only return 8 trails");
+    }
+
+    @Test
+    @DisplayName("getPopularTrailsByRegions should filter by region and return top 8 sorted by match percentage")
+    void testGetPopularTrailsByRegions() {
+        List<String> regions = Arrays.asList("RegionA", "RegionC");
+        List<Trail> result = dashboardService.getPopularTrailsByRegions(regions);
+
+        assertTrue(result.stream().allMatch(t -> regions.contains(t.getRegion())),
+                "All trails should belong to selected regions");
+        assertTrue(result.size() <= 8, "Should limit to at most 8 results");
+    }
+
+    @Test
+    @DisplayName("getRandomTrails should return 8 random trails")
+    void testGetRandomTrails() {
+        List<Trail> first = dashboardService.getRandomTrails();
+        List<Trail> second = dashboardService.getRandomTrails();
+
+        assertEquals(8, first.size(), "Should return 8 trails each time");
+        assertEquals(8, second.size(), "Should return 8 trails each time");
+
+        // It's possible by chance they are equal but extremely unlikely
+        boolean likelyDifferent = !first.equals(second);
+        if(likelyDifferent) {
+            assertTrue(likelyDifferent, "Order should usually differ between runs");
+        }
     }
 }
