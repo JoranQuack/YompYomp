@@ -13,8 +13,8 @@ package "models" {
     + toString() : String
   }
 
-  class Trail.Builder {
-    +from(trail : Trail_ : Builder
+  class TrailBuilder {
+    +from(trail : Trail) : Builder
     + build() : Trail
   }
 
@@ -32,7 +32,7 @@ package "models" {
     + toString() : String
   }
 
-  Trail.Builder --> Trail : <<builds>>
+  TrailBuilder --> Trail : <<builds>>
 }
 
 TrailLog -- Trail
