@@ -71,9 +71,18 @@ To run tests, run the following command
   ./gradlew test
 ```
 
+## API Reference
+
+The weather system requires an API key from OpenWeatherMap. Either set your system environment or include the key in a config.properties file.
+
+| Option      | Parameter             | Instructions                        |
+| :---------- | :-------------------- | :---------------------------------- |
+| Config File | `openweather.api.key` | Move to app/src/main/resources/     |
+| Environment | `OPENWEATHER_API_KEY` | Add to system environment variables |
+
 ## Current Product Version
 
-### Use Cases and Features Implemented
+### Use Cases Implemented
 
 - **UC_1** Complete Profile Quiz
 - **UC_2** View Personalised Recommended Trails
@@ -83,26 +92,33 @@ To run tests, run the following command
 - **UC_6** View Single Trail (without map and weather)
 - **UC_7** Add Missing Trail
 - **UC_8** Modify Existing Trail
+- **UC_9** Log Trail
+- **UC_10** Rate Trail
+- **UC_11** Access Logbook
+- **UC_12** Access Account
+- **UC_13** View and Customise Profile
 
 ### Highlighted Features
 
 These are features the team is most proud of.
 
+- Minimalist and consistent UI
 - Matchmaking recommendation algorithm
-- Description scanning algorithm for keywords and trail categorisation
-- Setup quiz interface
 - Filtering and sorting features
-- Database operation seamlessness
+- Setup quiz interface
+- Map interface
+- Weather system
+- Logbook features
+- Modification and addition of trails
 - Guest mode functionality
-- Using components to reduce code complexity
+- Account statistics
 
 ### Use Cases and Features Not Yet Implemented
 
-- **UC_9** Log Trip
-- **UC_10** Rate Trip
-- **UC_11** Access Logbook
-- Map features for **UC_6**
-- Weather features for **UC_6**
+- Multiple user profiles
+- Trail routes
+- Mobile app support
+- External database (not local)
 
 ## Authors
 
