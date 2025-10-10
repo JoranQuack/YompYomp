@@ -36,6 +36,9 @@ public class DashboardService {
      * @return list of popular trails
      */
     public List<Trail> getPopularTrailsByRegions(List<String> regions) {
+        if (regions == null || regions.isEmpty()) {
+            return getRecommendedTrails();
+        }
         List<Trail> trails = trailRepo.getAllTrails();
         return trails.stream()
                 .filter(trail -> regions.contains(trail.getRegion()))
