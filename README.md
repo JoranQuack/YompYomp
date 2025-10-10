@@ -61,7 +61,10 @@ Open the application
 ```
 
 > [!IMPORTANT]
-> This Jar is NOT cross-platform, so you must build the jar on the appropriate OS (and machine) to where you want to run it.
+> This Jar is NOT cross-platform, so you must build the jar on the appropriate OS (and machine) to where you want to run it.<br>
+
+> [!NOTE]
+> When the application is first launched images will slowly populate alphabetically.
 
 ### Running Tests
 
@@ -93,10 +96,9 @@ The weather system requires an API key from OpenWeatherMap. Either set your syst
 - **UC_7** Add Missing Trail
 - **UC_8** Modify Existing Trail
 - **UC_9** Log Trail
-- **UC_10** Rate Trail
-- **UC_11** Access Logbook
-- **UC_12** Access Account
-- **UC_13** View and Customise Profile
+- **UC_10** Access Logbook
+- **UC_11** Access Account
+- **UC_12** View and Customise Profile
 
 ### Feature Packages Implemented
 
