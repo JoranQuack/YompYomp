@@ -138,11 +138,25 @@ public class MatchmakingService {
      */
     public void categoriseAllTrails() throws MatchmakingFailedException {
         List<Trail> trails = trailRepo.getAllTrails();
-        for (Trail trail : trails) {
-            Set<String> categories = categoriseTrail(trail);
-            trail.setCategories(categories);
-        }
-        keywordRepo.assignTrailCategories(trails);
+
+        List<Trail> updatedTrails = trails.stream()
+                .map(trail -> {
+                    Set<String> categories = null;
+                    try {
+                        categories = categoriseTrail(trail);
+                    } catch (MatchmakingFailedException e) {
+                        throw new RuntimeException(e);
+                    }
+
+                    // Create a new Trail with updated categories
+                    return new Trail.Builder()
+                            .from(trail)
+                            .categories(categories)
+                            .build();
+                })
+                .toList();
+
+        keywordRepo.assignTrailCategories(updatedTrails);
     }
 
     /**
@@ -221,13 +235,22 @@ public class MatchmakingService {
 
             Map<Integer, Set<String>> allTrailCategories = keywordRepo.getAllTrailCategories();
 
-            for (Trail trail : trails) {
-                Set<String> categories = allTrailCategories.getOrDefault(trail.getId(), new HashSet<>());
-                double weight = scoreTrail(categories);
-                trail.setCategories(categories);
-                trail.setUserWeight(weight);
-                trailWeights.put(trail.getId(), weight);
-            }
+            trails = trails.stream()
+                    .map(trail -> {
+                        Set<String> categories = allTrailCategories.getOrDefault(trail.getId(), new HashSet<>());
+                        double weight = scoreTrail(categories);
+
+                        // Create a new Trail with updated fields
+                        Trail updatedTrail = new Trail.Builder()
+                                .from(trail)
+                                .categories(categories)
+                                .userWeight(weight)
+                                .build();
+
+                        trailWeights.put(trail.getId(), weight);
+                        return updatedTrail;
+                    })
+                    .toList(); // creates a new list with updated Trail objects
 
         } else {
             throw new MatchmakingFailedException("Trails is empty");
@@ -256,13 +279,18 @@ public class MatchmakingService {
      */
     private List<Trail> getSortedTrails() {
         return trailRepo.getAllTrails().stream()
-                .peek(trail -> trail.setUserWeight(getTrailWeight(trail.getId())))
+                .map(trail ->
+                        new Trail.Builder()
+                                .from(trail)
+                                .userWeight(getTrailWeight(trail.getId()))
+                                .build()
+                )
                 .sorted((t1, t2) -> {
                     int weightCompare = Double.compare(t2.getUserWeight(), t1.getUserWeight());
                     if (weightCompare != 0) {
                         return weightCompare; // descending order if weights are different
                     }
-                    return t1.getName().compareTo(t2.getName()); // orders alphabetically if weights are equal
+                    return t1.getName().compareTo(t2.getName()); // alphabetical if weights are equal
                 })
                 .collect(Collectors.toList());
     }

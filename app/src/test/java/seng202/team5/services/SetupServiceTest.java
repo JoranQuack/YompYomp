@@ -188,16 +188,36 @@ public class SetupServiceTest {
     private static SetupService getSetupService(DatabaseService testDbService) throws MatchmakingFailedException {
         SqlBasedTrailRepo testTrailRepo = new SqlBasedTrailRepo(testDbService);
 
-        Trail trail1 = new Trail(1, "Trail1", "Description1", "Easy", "1hr",
-                "https://example.com/image1.jpg", "url1", 0.0, 0.0);
-        Trail trail2 = new Trail(2, "Trail2", "Description2", "Medium", "2hr",
-                "https://example.com/image2.jpg", "url2", 0.0, 0.0);
+        Trail trail1 = new Trail.Builder()
+                .id(1)
+                .name("Trail1")
+                .description("Description1")
+                .difficulty("Easy")
+                .completionInfo("1hr")
+                .webpageURL("url1")
+                .thumbnailURL("https://example.com/image1.jpg")
+                .lat(0.0)
+                .lon(0.0)
+                .build();
+
+        Trail trail2 = new Trail.Builder()
+                .id(2)
+                .name("Trail2")
+                .description("Description2")
+                .difficulty("Medium")
+                .completionInfo("2hr")
+                .webpageURL("url2")
+                .thumbnailURL("https://example.com/image2.jpg")
+                .lat(0.0)
+                .lon(0.0)
+                .build();
 
         List<Trail> trails = Arrays.asList(trail1, trail2);
         testTrailRepo.upsertAll(trails);
 
         return new SetupService(testTrailRepo, testDbService);
     }
+
 
     @Test
     @DisplayName("Should handle empty trail list when scraping images")
@@ -236,8 +256,17 @@ public class SetupServiceTest {
         testDbService.createDatabaseIfNotExists();
 
         SqlBasedTrailRepo testTrailRepo = new SqlBasedTrailRepo(testDbService);
-        Trail existingTrail = new Trail(1, "ExistingTrail", "Description", "Easy", "1hr",
-                "url", "url", 0.0, 0.0);
+        Trail existingTrail = new Trail.Builder()
+                .id(1)
+                .name("ExistingTrail")
+                .description("Description")
+                .difficulty("Easy")
+                .completionInfo("1hr")
+                .webpageURL("url")
+                .thumbnailURL("url")
+                .lat(0.0)
+                .lon(0.0)
+                .build();
         testTrailRepo.upsertAll(List.of(existingTrail));
 
         SetupService testSetupService = new SetupService(mockSqlBasedTrailRepo, testDbService);
@@ -285,8 +314,17 @@ public class SetupServiceTest {
 
         SqlBasedTrailRepo testTrailRepo = new SqlBasedTrailRepo(testDbService);
 
-        Trail trailWithNullUrl = new Trail(1, "Trail1", "Description1", "Easy", "1hr",
-                null, "url1", 0.0, 0.0);
+        Trail trailWithNullUrl = new Trail.Builder()
+                .id(1)
+                .name("Trail1")
+                .description("Description1")
+                .difficulty("Easy")
+                .completionInfo("1hr")
+                .webpageURL("url1")
+                .thumbnailURL(null)
+                .lat(0.0)
+                .lon(0.0)
+                .build();
 
         List<Trail> trails = List.of(trailWithNullUrl);
         testTrailRepo.upsertAll(trails);

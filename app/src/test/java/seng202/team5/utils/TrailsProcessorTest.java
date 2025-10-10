@@ -19,12 +19,39 @@ public class TrailsProcessorTest {
     @BeforeEach
     void setup() {
         mockTrails = new ArrayList<>(Arrays.asList(
-                new Trail(1, "Alpine Trail", "Easy", "A beautiful alpine trail through the mountains",
-                        "2 hours", "thumb1.jpg", "https://example.com/trail1", -43.5225, 172.5794), // Christchurch
-                new Trail(2, "Forest Trail", "Medium", "A scenic forest trail with wildlife viewing",
-                        "3 hours", "thumb2.jpg", "https://example.com/trail2", -43.5390, 172.6300), // ~5km away
-                new Trail(3, "Mountain Peak Trail", "Hard", "Challenging trail to the mountain peak",
-                        "5 hours", "thumb3.jpg", "https://example.com/trail3", -36.8485, 174.7633) // Auckland ~760km
+                new Trail.Builder()
+                        .id(1)
+                        .name("Alpine Trail")
+                        .difficulty("Easy")
+                        .description("A beautiful alpine trail through the mountains")
+                        .completionInfo("2 hours")
+                        .thumbnailURL("thumb1.jpg")
+                        .webpageURL("https://example.com/trail1")
+                        .lat(-43.5225)
+                        .lon(172.5794) // Christchurch
+                        .build(),
+                new Trail.Builder()
+                        .id(2)
+                        .name("Forest Trail")
+                        .difficulty("Medium")
+                        .description("A scenic forest trail with wildlife viewing")
+                        .completionInfo("3 hours")
+                        .thumbnailURL("thumb2.jpg")
+                        .webpageURL("https://example.com/trail2")
+                        .lat(-43.5390)
+                        .lon(172.6300) // ~5km away
+                        .build(),
+                new Trail.Builder()
+                        .id(3)
+                        .name("Mountain Peak Trail")
+                        .difficulty("Hard")
+                        .description("Challenging trail to the mountain peak")
+                        .completionInfo("5 hours")
+                        .thumbnailURL("thumb3.jpg")
+                        .webpageURL("https://example.com/trail3")
+                        .lat(-36.8485)
+                        .lon(174.7633) // Auckland ~760km
+                        .build()
         ));
 
         currentTrail = mockTrails.getFirst(); // Alpine Trail
