@@ -4,14 +4,20 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.controlsfx.control.CheckComboBox;
+
+import javafx.application.Platform;
+import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
-import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.control.TextField;
+import javafx.scene.control.ToggleButton;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.VBox;
-import javafx.concurrent.Task;
-import javafx.application.Platform;
-import org.controlsfx.control.CheckComboBox;
 import seng202.team5.App;
 import seng202.team5.gui.components.TrailCardComponent;
 import seng202.team5.models.Trail;
@@ -67,7 +73,7 @@ public class TrailsController extends Controller {
     @FXML
     private Label resetButton;
     @FXML
-    private javafx.scene.control.ScrollPane trailsScrollPane;
+    private ScrollPane trailsScrollPane;
     @FXML
     private Label nextPageButton;
 
@@ -449,6 +455,7 @@ public class TrailsController extends Controller {
     @FXML
     private void onNextPageClicked() {
         String selectedPage = pageChoiceBox.getValue();
+        trailsScrollPane.setVvalue(0.0);
         if (selectedPage == null) {
             return;
         }
