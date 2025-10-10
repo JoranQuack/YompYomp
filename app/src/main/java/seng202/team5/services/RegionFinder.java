@@ -280,12 +280,13 @@ public class RegionFinder {
      * @return The doc region id or null if not found
      */
     public Integer getDocRegionId(String regionName) {
-        if (regionName == null) return null;
+        if (regionName == null)
+            return null;
 
         return switch (regionName.toLowerCase()) {
             case "northland" -> 3001000;
             case "auckland" -> 3002000;
-            case "waistcoat" -> 3004000;
+            case "waikato" -> 3004000;
             case "bay of plenty" -> 3005000;
             case "gisborne" -> 3006000;
             case "taranaki" -> 3008000;
