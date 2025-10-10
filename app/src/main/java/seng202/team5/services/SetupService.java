@@ -159,9 +159,6 @@ public class SetupService {
      * Syncs keywords in the database.
      */
     public void syncKeywords() {
-        if (sqlTrailRepo.countTrails() > 0) {
-            return;
-        }
         SqlBasedKeywordRepo sqlBasedKeywordRepo = App.getKeywordRepo();
         FileBasedKeywordRepo fileBasedKeywordRepo = new FileBasedKeywordRepo(
                 "/datasets/Categories_and_Keywords.csv");
