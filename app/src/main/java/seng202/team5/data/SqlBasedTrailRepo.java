@@ -204,26 +204,27 @@ public class SqlBasedTrailRepo {
      * @throws java.sql.SQLException if the column cannot be read
      */
     private Trail mapRowToTrail(java.sql.ResultSet rs) throws java.sql.SQLException {
-        return new Trail(
-                rs.getInt("id"),
-                rs.getString("name"),
-                rs.getString("translation"),
-                rs.getString("region"),
-                rs.getString("difficulty"),
-                rs.getString("description"),
-                rs.getString("completionInfo"),
-                rs.getInt("minCompletionTimeMinutes"),
-                rs.getInt("maxCompletionTimeMinutes"),
-                rs.getString("completionType"),
-                rs.getString("timeUnit"),
-                rs.getBoolean("isMultiDay"),
-                rs.getBoolean("hasVariableTime"),
-                rs.getString("thumbUrl"),
-                rs.getString("webUrl"),
-                rs.getString("cultureUrl"),
-                rs.getDouble("userWeight"),
-                rs.getDouble("lat"),
-                rs.getDouble("lon"));
+        return new Trail.Builder()
+                .id(rs.getInt("id"))
+                .name(rs.getString("name"))
+                .translation(rs.getString("translation"))
+                .region(rs.getString("region"))
+                .difficulty(rs.getString("difficulty"))
+                .description(rs.getString("description"))
+                .completionInfo(rs.getString("completionInfo"))
+                .minCompletionTimeMinutes(rs.getInt("minCompletionTimeMinutes"))
+                .maxCompletionTimeMinutes(rs.getInt("maxCompletionTimeMinutes"))
+                .completionType(rs.getString("completionType"))
+                .timeUnit(rs.getString("timeUnit"))
+                .isMultiDay(rs.getBoolean("isMultiDay"))
+                .hasVariableTime(rs.getBoolean("hasVariableTime"))
+                .thumbnailURL(rs.getString("thumbUrl"))
+                .webpageURL(rs.getString("webUrl"))
+                .cultureUrl(rs.getString("cultureUrl"))
+                .userWeight(rs.getDouble("userWeight"))
+                .lat(rs.getDouble("lat"))
+                .lon(rs.getDouble("lon"))
+                .build();
     }
 
     /**
