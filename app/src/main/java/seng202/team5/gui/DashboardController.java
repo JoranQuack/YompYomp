@@ -89,6 +89,10 @@ public class DashboardController extends Controller {
         if (App.getUserService().isGuest()) {
             regionCheckBox.setVisible(false);
             trails = dashboardService.getRandomTrails();
+        } else if (App.getUserService().getUser().getRegion() == null
+                || App.getUserService().getUser().getRegion().isEmpty()) {
+            regionCheckBox.setVisible(false);
+            trails = dashboardService.getRecommendedTrails();
         } else if (!regionCheckBox.isSelected()) {
             regionCheckBox.setVisible(true);
             trails = dashboardService.getRecommendedTrails();
