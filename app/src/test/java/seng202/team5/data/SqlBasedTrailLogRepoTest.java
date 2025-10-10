@@ -6,7 +6,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 import seng202.team5.exceptions.MatchmakingFailedException;
-import seng202.team5.models.Trail;
 import seng202.team5.models.TrailLog;
 
 import java.io.File;
@@ -189,6 +188,25 @@ public class SqlBasedTrailLogRepoTest {
         assertEquals(1, sqlBasedTrailLogRepo.countTrailLogs());
     }
 
+    @Test
+    @DisplayName("Should return the next id that a log can be assigned to")
+    void testGetNewTrailLogId() {
+        // Assuming sqlBasedTrailLogRepo already contains logs with IDs 1 and 2
+        assertEquals(3, sqlBasedTrailLogRepo.getNewTrailLogId());
+
+        TrailLog log = new TrailLog(5, 102, LocalDate.of(2025, 10, 1), 90, "minutes", "Loop", 5, "Easy", "Smooth scenic track.");
+
+
+        sqlBasedTrailLogRepo.upsert(log);
+
+        assertEquals(6, sqlBasedTrailLogRepo.getNewTrailLogId());
+    }
+
+    @Test
+    @DisplayName("Find trial log for given trial id")
+    void testFindByTrailId() {
+        assertEquals(2, sqlBasedTrailLogRepo.findByTrailId(100).get().getId());
+    }
 }
 
 
