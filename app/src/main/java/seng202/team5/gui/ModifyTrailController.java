@@ -487,27 +487,39 @@ public class ModifyTrailController extends Controller {
         // Get form values
         String trailName = trailNameTextField.getText();
         String translation = translationTextField.getText();
+
         String difficulty = "";
         if (difficultyComboBox.getValue() != null) {
             difficulty = difficultyComboBox.getValue().toLowerCase();
         }
+
         Trail newTrail = getNewTrail(trailName, translation, difficulty);
 
         // Calculate user weight
+        double calculatedWeight = 0.0;
         try {
             User user = App.getUserService().getUser();
-            MatchmakingService matchmakingService = new MatchmakingService(App.getKeywordRepo(),
-                    App.getTrailRepo());
+            MatchmakingService matchmakingService = new MatchmakingService(
+                    App.getKeywordRepo(),
+                    App.getTrailRepo()
+            );
             matchmakingService.setUserPreferences(user);
-            double calculatedWeight = matchmakingService.getUserWeightFromTrail(newTrail);
-            newTrail.setUserWeight(calculatedWeight);
+            calculatedWeight = matchmakingService.getUserWeightFromTrail(newTrail);
         } catch (Exception e) {
-            // Keep the default weight
+            // Keep the default weight if matchmaking fails
         }
 
-        List<Trail> updatedTrail = TrailsProcessor.processTrails(List.of(newTrail));
-        return updatedTrail.getFirst();
+        // Rebuild trail with calculated user weight
+        Trail weightedTrail = new Trail.Builder()
+                .from(newTrail)
+                .userWeight(calculatedWeight)
+                .build();
+
+        // Process and return the updated trail
+        List<Trail> processed = TrailsProcessor.processTrails(List.of(weightedTrail));
+        return processed.getFirst();
     }
+
 
     /**
      * Gets a new trail
@@ -534,12 +546,12 @@ public class ModifyTrailController extends Controller {
         if (trail != null) {
             // Updating existing trail
             trailId = trail.getId();
-            region = "";
+            region = ""; // Will be recalculated later
             thumbUrl = trail.getThumbnailURL();
             webUrl = trail.getWebpageURL();
             userWeight = trail.getUserWeight();
         } else {
-            // Creating new trail - temp values that will be recalculated
+            // Creating new trail - temporary defaults
             trailId = trailService.getNewTrailId();
             region = regionTextField.getText();
             thumbUrl = "";
@@ -547,10 +559,24 @@ public class ModifyTrailController extends Controller {
             userWeight = 0.5;
         }
 
-        return new Trail(trailId, trailName, translation, region, difficulty, trailType,
-                completionTime, trailDescription, thumbUrl, webUrl, cultureUrl,
-                userWeight, latitude, longitude);
+        return new Trail.Builder()
+                .id(trailId)
+                .name(trailName)
+                .translation(translation)
+                .region(region)
+                .description(trailDescription)
+                .difficulty(difficulty)
+                .completionInfo(completionTime)
+                .completionType(trailType)
+                .thumbnailURL(thumbUrl)
+                .webpageURL(webUrl)
+                .cultureUrl(cultureUrl)
+                .userWeight(userWeight)
+                .lat(latitude)
+                .lon(longitude)
+                .build();
     }
+
 
     @Override
     protected String getFxmlFile() {

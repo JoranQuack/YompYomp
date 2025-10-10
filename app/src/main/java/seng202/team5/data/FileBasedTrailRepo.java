@@ -90,11 +90,21 @@ public class FileBasedTrailRepo {
         String thumbnailURL = values[6];
         String webpageURL = values[7];
         double lat = Double.parseDouble(values[10]); // latitude given by x
-        double lon = Double.parseDouble(values[9]); // longitude given by y
+        double lon = Double.parseDouble(values[9]);  // longitude given by y
 
-        // create the new trail object
-        return new Trail(id, name, difficulty, description, completionInfo,
-                thumbnailURL, webpageURL, lat, lon);
+        // Create the new Trail object
+        return new Trail.Builder()
+                .id(id)
+                .name(name)
+                .description(description)
+                .difficulty(difficulty)
+                .completionInfo(completionInfo)
+                .thumbnailURL(thumbnailURL)
+                .webpageURL(webpageURL)
+                .lat(lat)
+                .lon(lon)
+                .build();
+
     }
 
     /**
