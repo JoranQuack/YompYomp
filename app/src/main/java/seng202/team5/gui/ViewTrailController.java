@@ -103,7 +103,8 @@ public class ViewTrailController extends Controller {
             if (weather != null) {
                 Platform.runLater(() -> weatherContainer.getChildren().add(new WeatherComponent(weather)));
             } else {
-                Platform.runLater(() -> weatherContainer.getChildren().add(new Label("Weather unavailable")));
+                Platform.runLater(() -> weatherContainer.getChildren()
+                        .add(new Label("Weather unavailable, app may be offline.")));
             }
         }).start();
 
@@ -114,8 +115,6 @@ public class ViewTrailController extends Controller {
                     Platform.runLater(() -> weatherContainer.getChildren().add(new WeatherComponent(day)));
                 }
 
-            } else {
-                Platform.runLater(() -> weatherContainer.getChildren().add(new Label("Forecast unavailable")));
             }
         }).start();
     }
@@ -259,9 +258,14 @@ public class ViewTrailController extends Controller {
      * Sets up the JavaScript bridge for communication between Java and JavaScript
      */
     private void setupJavaScriptBridge() {
-        JSObject window = (JSObject) webEngine.executeScript("window");
-        window.setMember("javaScriptBridge", javaScriptBridge);
-        javaScriptConnector = (JSObject) webEngine.executeScript("jsConnector");
+        try {
+            JSObject window = (JSObject) webEngine.executeScript("window");
+            window.setMember("javaScriptBridge", javaScriptBridge);
+            javaScriptConnector = (JSObject) webEngine.executeScript("jsConnector");
+        } catch (Exception e) {
+            mapContainer.getChildren().clear();
+            mapContainer.getChildren().add(new Label("Map unavailable, app may be offline"));
+        }
     }
 
     private void initializeMapView() {
