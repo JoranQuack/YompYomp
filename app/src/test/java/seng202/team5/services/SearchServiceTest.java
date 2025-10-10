@@ -5,6 +5,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import seng202.team5.data.SqlBasedFilterOptionsRepo;
 import seng202.team5.data.SqlBasedTrailRepo;
 import seng202.team5.models.Trail;
 import static org.junit.jupiter.api.Assertions.*;
@@ -227,6 +228,44 @@ public class SearchServiceTest {
 
         // trailRegion null -> match "Other"
         assertTrue((boolean) method.invoke(searchService, "Other,North", null));
+    }
+
+    @Test
+    @DisplayName("getFilterOptions should include default value and capitalized DB options")
+    void testGetFilterOptions() {
+        var mockFilterRepo = mock(SqlBasedFilterOptionsRepo.class);
+        when(mockFilterRepo.hasFilterOptions("difficulty")).thenReturn(true);
+        when(mockFilterRepo.getFilterOptions("difficulty")).thenReturn(List.of("easy", "medium", "hard"));
+
+        SearchService serviceWithRepo = new SearchService(mockTrailRepo, mockFilterRepo);
+        List<String> options = serviceWithRepo.getFilterOptions("difficulty");
+
+        // Default + capitalized options
+        assertNotNull(options);
+        assertTrue(options.containsAll(List.of("Easy", "Medium", "Hard")),
+                "Should include capitalized DB options");
+    }
+
+    @Test
+    @DisplayName("getFilterOptions should return null if filterOptionsRepo is null")
+    void testGetFilterOptionsRepoNull() {
+        SearchService serviceWithoutRepo = new SearchService(mockTrailRepo, null);
+        assertNull(serviceWithoutRepo.getFilterOptions("difficulty"));
+    }
+
+    @Test
+    @DisplayName("getFilterOptions should call refresh when repo has no options")
+    void testGetFilterOptionsRefreshOnMissing() {
+        var mockFilterRepo = mock(SqlBasedFilterOptionsRepo.class);
+        when(mockFilterRepo.hasFilterOptions("region")).thenReturn(false);
+        when(mockFilterRepo.getFilterOptions("region")).thenReturn(List.of("north", "south"));
+
+        SearchService service = new SearchService(mockTrailRepo, mockFilterRepo);
+        List<String> options = service.getFilterOptions("region");
+
+        verify(mockFilterRepo).refreshAllFilterOptions();
+        assertTrue(options.contains("North"));
+        assertTrue(options.contains("South"));
     }
 
     @Test
