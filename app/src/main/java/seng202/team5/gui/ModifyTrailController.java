@@ -585,7 +585,7 @@ public class ModifyTrailController extends Controller {
 
     @Override
     protected String getTitle() {
-        return "Modify Trail Screen";
+        return "Modify Trail";
     }
 
     @Override

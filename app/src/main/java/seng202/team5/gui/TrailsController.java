@@ -740,7 +740,7 @@ public class TrailsController extends Controller {
 
     @Override
     protected String getTitle() {
-        return "Trails Screen";
+        return "Trails";
     }
 
     @Override

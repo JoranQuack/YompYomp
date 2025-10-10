@@ -404,7 +404,7 @@ public class AccountController extends Controller {
 
     @Override
     protected String getTitle() {
-        return "Account Screen";
+        return "Account";
     }
 
     @Override
@@ -417,10 +417,4 @@ public class AccountController extends Controller {
         return -1; // No navbar button active
     }
 
-    @Override
-    public void onLoadFailed(Exception e) {
-        showAlert("Account Failed To Load",
-                "Account page failed to load, please close and reload the application.",
-                "", "OK", null, null);
-    }
 }

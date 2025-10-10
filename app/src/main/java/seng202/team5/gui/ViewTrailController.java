@@ -397,7 +397,7 @@ public class ViewTrailController extends Controller {
 
     @Override
     protected String getTitle() {
-        return "View Trail Screen";
+        return "View Trail";
     }
 
     @Override
@@ -408,18 +408,5 @@ public class ViewTrailController extends Controller {
     @Override
     protected int getNavbarPageIndex() {
         return 1; // Trails section
-    }
-
-    /**
-     * Handles the case where the View Trail Screen fails to load
-     * by displaying an alert to the user
-     *
-     * @param e the exception that occurred while loading the trail screen
-     */
-    @Override
-    public void onLoadFailed(Exception e) {
-        showAlert("Trail Card Failed To Load",
-                "Loading selected trail failed, please close the application and try again.",
-                "", "OK", null, null);
     }
 }
