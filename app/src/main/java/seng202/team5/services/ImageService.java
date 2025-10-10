@@ -37,7 +37,7 @@ public class ImageService {
                 String fileUri = imageFile.toURI().toString();
                 image = new Image(fileUri, true);
             } else {
-                image = new Image(thumbnailUrl, true);
+                return getDefaultTrailImage();
             }
             if (!image.isError()) {
                 return image;
@@ -61,7 +61,8 @@ public class ImageService {
     public Image getDefaultTrailImage() {
         if (cachedDefaultImage == null || cachedDefaultImage.isError()) {
             try {
-                cachedDefaultImage = new Image(Objects.requireNonNull(getClass().getResourceAsStream(DEFAULT_TRAIL_IMAGE_PATH)));
+                cachedDefaultImage = new Image(
+                        Objects.requireNonNull(getClass().getResourceAsStream(DEFAULT_TRAIL_IMAGE_PATH)));
                 if (cachedDefaultImage.isError()) {
                     System.err.println("Error loading default trail image from: " + DEFAULT_TRAIL_IMAGE_PATH);
                 }
