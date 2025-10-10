@@ -7,7 +7,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<HBox alignment="TOP_CENTER" styleClass="root-pane" stylesheets="@../styles/global.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="seng202.team5.gui.SafetyInfoController">
+<HBox alignment="TOP_CENTER" styleClass="root-pane" stylesheets="@../styles/global.css" xmlns="http://javafx.com/javafx/21.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="seng202.team5.gui.SafetyInfoController">
    <children>
       <ScrollPane fitToHeight="true" fitToWidth="true" HBox.hgrow="ALWAYS">
          <content>
