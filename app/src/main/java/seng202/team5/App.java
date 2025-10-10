@@ -76,7 +76,7 @@ public class App {
                 setupService.setupApplication();
                 System.out.println("setup complete.");
             } catch (Exception e) {
-                e.printStackTrace();
+                System.err.println("setup failed: " + e.getMessage());
             }
         });
     }

@@ -35,7 +35,6 @@ public class SetupService {
     /**
      * Main constructor with database service
      *
-     * @param databaseService
      */
     public SetupService(SqlBasedTrailRepo sqlTrailRepo, DatabaseService databaseService) {
         this.databaseService = databaseService;
@@ -126,7 +125,6 @@ public class SetupService {
             databaseService.createDatabaseIfNotExists();
         } catch (Exception e) {
             System.err.println("Error setting up database: " + e.getMessage());
-            e.printStackTrace();
         }
     }
 
@@ -143,7 +141,6 @@ public class SetupService {
             sqlTrailRepo.insertOrIgnoreAll(trails);
         } catch (Exception e) {
             System.err.println("Error syncing database from trail file: " + e.getMessage());
-            e.printStackTrace();
         }
     }
 
@@ -168,7 +165,6 @@ public class SetupService {
             matchmakingService.categoriseAllTrails();
         } catch (MatchmakingFailedException e) {
             System.err.println("Error generating trail weights: " + e.getMessage());
-            e.printStackTrace();
         }
     }
 

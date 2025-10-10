@@ -19,7 +19,7 @@ import seng202.team5.services.DashboardService;
  */
 public class DashboardController extends Controller {
     /** Service for dashboarding trails */
-    private DashboardService dashboardService;
+    private final DashboardService dashboardService;
 
     @FXML
     private FlowPane trailsContainer;
@@ -32,6 +32,9 @@ public class DashboardController extends Controller {
 
     @FXML
     private Hyperlink DOCLink;
+
+    @FXML
+    private CheckBox regionCheckBox;
 
     /**
      * Creates controller with navigator.
@@ -49,8 +52,7 @@ public class DashboardController extends Controller {
     @FXML
     private void initialize() {
 
-        List<Trail> trails = dashboardService.getRecommendedTrails();
-        initializeRecommendedTrails(trails);
+        initializeTrails();
 
         searchBarTextField.addEventHandler(KeyEvent.KEY_PRESSED, event -> {
             if (event.getCode() == KeyCode.ENTER) {
@@ -79,11 +81,25 @@ public class DashboardController extends Controller {
     }
 
     /**
-     * Updates display with trail cards.
+     * Updates display with trail cards. Depending on the situation
      *
-     * @param trails List of trails to display
      */
-    private void initializeRecommendedTrails(List<Trail> trails) {
+    private void initializeTrails() {
+        List<Trail> trails;
+        if (App.getUserService().isGuest()) {
+            regionCheckBox.setVisible(false);
+            trails = dashboardService.getRandomTrails();
+        } else if (App.getUserService().getUser().getRegion() == null
+                || App.getUserService().getUser().getRegion().isEmpty()) {
+            regionCheckBox.setVisible(false);
+            trails = dashboardService.getRecommendedTrails();
+        } else if (!regionCheckBox.isSelected()) {
+            regionCheckBox.setVisible(true);
+            trails = dashboardService.getRecommendedTrails();
+        } else {
+            regionCheckBox.setVisible(true);
+            trails = dashboardService.getPopularTrailsByRegions(App.getUserService().getUser().getRegion());
+        }
         trailsContainer.getChildren().clear();
         trails.forEach(this::createAndAddTrailCard);
     }
@@ -124,6 +140,14 @@ public class DashboardController extends Controller {
     @FXML
     private void onTrailCardClicked(Trail trail) {
         super.getNavigator().launchScreen(new ViewTrailController(super.getNavigator(), trail));
+    }
+
+    /**
+     * When the regions checkbox is toggled re call the method that shows the trails
+     */
+    @FXML
+    private void onRegionCheckBoxToggle() {
+        initializeTrails();
     }
 
     @Override

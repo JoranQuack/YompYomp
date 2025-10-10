@@ -2,11 +2,9 @@ package seng202.team5.cucumber.StepDefinitions;
 
 import io.cucumber.java.Before;
 import io.cucumber.java.en.*;
-import seng202.team5.data.DatabaseService;
 import seng202.team5.data.SqlBasedKeywordRepo;
 import seng202.team5.data.SqlBasedTrailRepo;
 import seng202.team5.exceptions.MatchmakingFailedException;
-import seng202.team5.gui.TrailsController;
 import seng202.team5.models.Trail;
 import seng202.team5.models.User;
 import seng202.team5.services.MatchmakingService;
@@ -18,7 +16,6 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 public class ViewAllTrailsStepDefinitions {
-    private MatchmakingService matchmakingService;
     private SearchService searchService;
     private SqlBasedKeywordRepo mockKeywordRepo;
     private SqlBasedTrailRepo mockTrailRepo;
@@ -50,29 +47,45 @@ public class ViewAllTrailsStepDefinitions {
         when(mockKeywordRepo.getKeywords()).thenReturn(mockKeywords);
         // fake trails
         List<Trail> mockTrails = Arrays.asList(
-                new Trail(1, "Alpine Trail", "Easy", "A beautiful alpine trail through the mountains",
+                createMockTrail(1, "Alpine Trail", "Easy", "A beautiful alpine trail through the mountains",
                         "2 hours", "thumb1.jpg", "http://example.com/trail1", -43.5321, 172.6362),
-                new Trail(2, "Forest Trail", "Medium", "A scenic forest trail with wildlife viewing",
+                createMockTrail(2, "Forest Trail", "Medium", "A scenic forest trail with wildlife viewing",
                         "3 hours", "thumb2.jpg", "http://example.com/trail2", -43.5380, 172.6410),
-                new Trail(3, "Mountain Peak Trail", "Hard", "Challenging trail to the mountain peak",
+                createMockTrail(3, "Mountain Peak Trail", "Hard", "Challenging trail to the mountain peak",
                         "5 hours", "thumb3.jpg", "http://example.com/trail3", -43.5450, 172.6500),
-                new Trail(4, "Coastal Walk", "Easy", "Easy coastal walk with ocean views",
+                createMockTrail(4, "Coastal Walk", "Easy", "Easy coastal walk with ocean views",
                         "1.5 hours", "thumb4.jpg", "http://example.com/trail4", -43.5250, 172.6200),
-                new Trail(5, "River Trail", "Medium", "Trail following the river through the valley",
+                createMockTrail(5, "River Trail", "Medium", "Trail following the river through the valley",
                         "2.5 hours", "thumb5.jpg", "http://example.com/trail5", -43.5300, 172.6450),
-                new Trail(6, "Lakeside Loop", "Easy", "Loop trail around the serene lake",
+                createMockTrail(6, "Lakeside Loop", "Easy", "Loop trail around the serene lake",
                         "2 hours", "thumb6.jpg", "http://example.com/trail6", -43.5405, 172.6350),
-                new Trail(7, "Glacier Path", "Hard", "Trail through icy glaciers, suitable for experienced hikers",
+                createMockTrail(7, "Glacier Path", "Hard", "Trail through icy glaciers, suitable for experienced hikers",
                         "6 hours", "thumb7.jpg", "http://example.com/trail7", -43.5500, 172.6550),
-                new Trail(8, "Bushland Circuit", "Medium", "Circuit trail through native bush",
+                createMockTrail(8, "Bushland Circuit", "Medium", "Circuit trail through native bush",
                         "3 hours", "thumb8.jpg", "http://example.com/trail8", -43.5270, 172.6280),
-                new Trail(9, "Volcanic Ridge Track", "Hard", "Trail along volcanic ridges with dramatic views",
+                createMockTrail(9, "Volcanic Ridge Track", "Hard", "Trail along volcanic ridges with dramatic views",
                         "4 hours", "thumb9.jpg", "http://example.com/trail9", -43.5480, 172.6480),
-                new Trail(10, "Wetlands Walk", "Easy", "Easy walk through wetlands, great for birdwatching",
+                createMockTrail(10, "Wetlands Walk", "Easy", "Easy walk through wetlands, great for birdwatching",
                         "1.5 hours", "thumb10.jpg", "http://example.com/trail10", -43.5260, 172.6220)
         );
         when(mockTrailRepo.getAllTrails()).thenReturn(mockTrails);
         searchService = new SearchService(mockTrailRepo, null);
+    }
+
+    private Trail createMockTrail(int id, String name, String difficulty, String description,
+                                  String completionInfo, String thumbnailURL, String webpageURL,
+                                  double lat, double lon) {
+        return new Trail.Builder()
+                .id(id)
+                .name(name)
+                .difficulty(difficulty)
+                .description(description)
+                .completionInfo(completionInfo)
+                .thumbnailURL(thumbnailURL)
+                .webpageURL(webpageURL)
+                .lat(lat)
+                .lon(lon)
+                .build();
     }
 
     @Given("the user has loaded the application and is on the welcome screen")
@@ -103,7 +116,7 @@ public class ViewAllTrailsStepDefinitions {
 
         // Make a copy and sort it alphabetically
         List<String> sortedNames = new ArrayList<>(trailNames);
-        Collections.sort(sortedNames, String.CASE_INSENSITIVE_ORDER);
+        sortedNames.sort(String.CASE_INSENSITIVE_ORDER);
 
         // Assert that the displayed list matches the alphabetically sorted list
         assertEquals(sortedNames, trailNames);
@@ -111,7 +124,8 @@ public class ViewAllTrailsStepDefinitions {
 
     @And("the dashboard screen of personalised recommended trails is shown")
     public void theDashboardScreenOfPersonalisedRecommendedTrailsIsShown() throws MatchmakingFailedException {
-        matchmakingService = new MatchmakingService(mockKeywordRepo, mockTrailRepo);
+        new MatchmakingService(mockKeywordRepo, mockTrailRepo);
+        MatchmakingService matchmakingService;
 
         // Build a test user with some preferences
         testUser = new User();

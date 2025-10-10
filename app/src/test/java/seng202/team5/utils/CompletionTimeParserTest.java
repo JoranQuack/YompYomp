@@ -12,10 +12,10 @@ public class CompletionTimeParserTest {
     public void testParseCompletionTime_basicHours() {
         CompletionTimeParser.CompletionTimeResult result = CompletionTimeParser.parseCompletionTime("2 hrs");
 
-        assertEquals(120, result.getMinCompletionTimeMinutes());
-        assertEquals(120, result.getMaxCompletionTimeMinutes());
-        assertEquals("unknown", result.getCompletionType());
-        assertEquals("hours", result.getTimeUnit());
+        assertEquals(120, result.minCompletionTimeMinutes());
+        assertEquals(120, result.maxCompletionTimeMinutes());
+        assertEquals("unknown", result.completionType());
+        assertEquals("hours", result.timeUnit());
         assertFalse(result.isMultiDay());
         assertFalse(result.hasVariableTime());
     }
@@ -25,10 +25,10 @@ public class CompletionTimeParserTest {
     public void testParseCompletionTime_nullInput() {
         CompletionTimeParser.CompletionTimeResult result = CompletionTimeParser.parseCompletionTime(null);
 
-        assertEquals(0, result.getMinCompletionTimeMinutes());
-        assertEquals(0, result.getMaxCompletionTimeMinutes());
-        assertEquals("unknown", result.getCompletionType());
-        assertEquals("unknown", result.getTimeUnit());
+        assertEquals(0, result.minCompletionTimeMinutes());
+        assertEquals(0, result.maxCompletionTimeMinutes());
+        assertEquals("unknown", result.completionType());
+        assertEquals("unknown", result.timeUnit());
         assertFalse(result.isMultiDay());
         assertFalse(result.hasVariableTime());
     }
@@ -39,10 +39,10 @@ public class CompletionTimeParserTest {
         CompletionTimeParser.CompletionTimeResult result = CompletionTimeParser
                 .parseCompletionTime("2 hrs 20 min each way");
 
-        assertEquals(140, result.getMinCompletionTimeMinutes());
-        assertEquals(140, result.getMaxCompletionTimeMinutes());
-        assertEquals("one way", result.getCompletionType());
-        assertEquals("hours", result.getTimeUnit());
+        assertEquals(140, result.minCompletionTimeMinutes());
+        assertEquals(140, result.maxCompletionTimeMinutes());
+        assertEquals("one way", result.completionType());
+        assertEquals("hours", result.timeUnit());
         assertFalse(result.isMultiDay());
         assertFalse(result.hasVariableTime());
     }
