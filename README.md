@@ -113,12 +113,13 @@ These are features the team is most proud of.
 - Guest mode functionality
 - Account statistics
 
-### Use Cases and Features Not Yet Implemented
+### Potential future features (not implemented)
 
 - Multiple user profiles
 - Trail routes
 - Mobile app support
 - External database (not local)
+- Upload new dataset
 
 ## Authors
 
