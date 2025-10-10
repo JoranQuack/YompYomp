@@ -3,6 +3,7 @@ package seng202.team5.services;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
@@ -356,17 +357,22 @@ class MatchmakingServiceTest {
     @Test
     @DisplayName("categoriseAllTrails assigns categories and calls keywordRepo.assignTrailCategories")
     void testCategoriseAllTrails() throws MatchmakingFailedException {
+        // Spy the service to observe method calls
         MatchmakingService spyService = spy(matchmakingService);
 
         spyService.categoriseAllTrails();
 
-        // Verify all trails have categories assigned
-        for (Trail trail : mockTrails) {
+        // Capture the argument passed to assignTrailCategories
+        ArgumentCaptor<List<Trail>> captor = ArgumentCaptor.forClass(List.class);
+        verify(mockKeywordRepo, times(1)).assignTrailCategories(captor.capture());
+
+        List<Trail> updatedTrails = captor.getValue();
+
+        // Verify all trails in the captured list have categories assigned
+        for (Trail trail : updatedTrails) {
             assertNotNull(trail.getCategories());
             assertFalse(trail.getCategories().isEmpty());
         }
-
-        // Verify assignTrailCategories was called in keywordRepo
-        verify(mockKeywordRepo, times(1)).assignTrailCategories(mockTrails);
     }
+
 }
