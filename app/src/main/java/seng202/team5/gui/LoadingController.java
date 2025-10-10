@@ -76,7 +76,6 @@ public class LoadingController extends Controller {
                 if (isResetting) {
                     App.resetApplication();
                 }
-
                 // Wait for database setup before we do ANYTHING
                 App.getSetupService().waitForDatabaseSetup();
 
