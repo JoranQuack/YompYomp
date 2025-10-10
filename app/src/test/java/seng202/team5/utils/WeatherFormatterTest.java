@@ -1,5 +1,6 @@
 package seng202.team5.utils;
 
+import javafx.scene.image.Image;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -47,4 +48,12 @@ public class WeatherFormatterTest {
         assertEquals(today, result1, "Expected to get todays date correctly");
         assertEquals(today, result2, "Expected to get todays date correctly");
     }
+
+    @Test
+    @DisplayName("formatDate should return 'Invalid Date' for malformed input")
+    void testFormatDate_Invalid() {
+        assertEquals("Invalid Date", WeatherFormatter.formatDate("invalid-date"));
+        assertEquals("Invalid Date", WeatherFormatter.formatDate("20251006"));
+    }
+
 }
