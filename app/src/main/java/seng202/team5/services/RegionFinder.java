@@ -1,15 +1,5 @@
 package seng202.team5.services;
 
-import java.io.File;
-import java.io.IOException;
-import java.net.URL;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-
 import org.geotools.data.shapefile.ShapefileDataStore;
 import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.data.simple.SimpleFeatureIterator;
@@ -25,34 +15,46 @@ import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.referencing.operation.MathTransform;
 import org.opengis.referencing.operation.TransformException;
-
 import seng202.team5.models.Trail;
+
+import java.io.*;
+import java.net.URL;
+import java.nio.file.*;
+import java.util.*;
 
 /**
  * Service class for loading regional shapefile data, and then doing stuff with
  * points using it
  */
 public class RegionFinder {
-    private static final String NAME_ATTRIBUTE = "REGC2025_1"; // field with region names
 
-    private static String regionalDatasetsPath;
-    private static String fileName;
-    private static Map<String, Geometry> allRegions = new LinkedHashMap<>();
+    private static final String NAME_ATTRIBUTE = "REGC2025_1";
     private static final GeometryFactory geometryFactory = new GeometryFactory();
-
-    public RegionFinder(String regionalDatasetsPath, String fileName) {
-        RegionFinder.regionalDatasetsPath = regionalDatasetsPath;
-        RegionFinder.fileName = fileName;
-
-        try {
-            allRegions = loadAllRegions();
-        } catch (IOException e) {
-            System.err.println("Failed to load regions in RegionFinder constructor: " + e.getMessage());
-        }
-    }
+    private static final Map<String, Geometry> allRegions = new LinkedHashMap<>();
+    private final String regionalDatasetsPath;
+    private final String fileName;
 
     public RegionFinder() {
         this("/datasets/regional/", "regional-council-2025.shp");
+    }
+
+    /**
+     * Constructs a new RegionFinder using a specified dataset path and shapefile name.
+     * Automatically loads all region geometries into memory.
+     *
+     * @param regionalDatasetsPath the resource path to the dataset folder
+     * @param fileName             the shapefile name
+     */
+    public RegionFinder(String regionalDatasetsPath, String fileName) {
+        this.regionalDatasetsPath = regionalDatasetsPath;
+        this.fileName = fileName;
+
+        try {
+            allRegions.clear();
+            allRegions.putAll(loadAllRegions());
+        } catch (IOException e) {
+            System.err.println("Failed to load regions: " + e.getMessage());
+        }
     }
 
     /**
@@ -61,34 +63,60 @@ public class RegionFinder {
      * @return Map of region names to their geometries
      * @throws IOException if there's an error reading the shapefile
      */
-    public Map<String, Geometry> loadAllRegions() throws IOException {
+    private Map<String, Geometry> loadAllRegions() throws IOException {
+        URL resourceUrl = getClass().getResource(regionalDatasetsPath + fileName);
+        if (resourceUrl == null)
+            throw new IOException("Regional shapefile not found: " + regionalDatasetsPath + fileName);
 
-        try {
-            URL resourceUrl = getClass().getResource(regionalDatasetsPath);
-            if (resourceUrl == null) {
-                throw new IOException("Regional datasets directory not found in resources: " + regionalDatasetsPath);
-            }
-
-            Path regionalDir = Paths.get(resourceUrl.toURI());
-            Path shpPath = regionalDir.resolve(fileName);
-
-            if (!shpPath.toFile().exists()) {
-                throw new IOException("Shapefile not found: " + shpPath);
-            }
-
-            try {
-                Map<String, Geometry> regions = loadRegionsFromShapefile(shpPath.toString());
-                allRegions.putAll(regions);
-            } catch (IOException e) {
-                System.err.println("Failed to load regions from " + shpPath.getFileName() + ": " + e.getMessage());
-                throw e;
-            }
-
-        } catch (Exception e) {
-            throw new IOException("Failed to load regional datasets", e);
+        File shapeFile;
+        if (isJarResource(resourceUrl)) {
+            shapeFile = extractShapefileResources(regionalDatasetsPath, fileName);
+        } else {
+            shapeFile = Paths.get(resourceUrl.getPath()).toFile();
         }
 
-        return allRegions;
+        return loadRegionsFromShapefile(shapeFile.getAbsolutePath());
+    }
+
+    /**
+     * Determines whether a resource is located inside a JAR file.
+     *
+     * @param url the URL of the resource
+     * @return {@code true} if the resource is inside a JAR, {@code false} otherwise
+     */
+    private boolean isJarResource(URL url) {
+        return url.toString().startsWith("jar:");
+    }
+
+    /**
+     * Extracts all shapefile components (.shp, .dbf, .shx, .prj) from the JAR into a temporary directory.
+     * This allows GeoTools to read the shapefile even when bundled within a JAR.
+     *
+     * @param basePath    the base path of the shapefile within the resources
+     * @param shpFileName the name of the shapefile (e.g. {@code regional-council-2025.shp})
+     * @return a {@link File} object referencing the extracted .shp file
+     * @throws IOException if an extraction error occurs
+     */
+    private File extractShapefileResources(String basePath, String shpFileName) throws IOException {
+        String baseName = shpFileName.substring(0, shpFileName.lastIndexOf('.'));
+        String[] exts = {".shp", ".dbf", ".shx", ".prj"};
+        Path tempDir = Files.createTempDirectory("regions_");
+        tempDir.toFile().deleteOnExit();
+
+        for (String ext : exts) {
+            String resourcePath = basePath + baseName + ext;
+            try (InputStream in = getClass().getResourceAsStream(resourcePath)) {
+                if (in == null) {
+                    System.err.println("Missing shapefile component: " + resourcePath);
+                    continue;
+                }
+                Path out = tempDir.resolve(baseName + ext);
+                Files.copy(in, out, StandardCopyOption.REPLACE_EXISTING);
+                out.toFile().deleteOnExit();
+            }
+        }
+
+        return tempDir.resolve(baseName + ".shp").toFile();
     }
 
     /**
@@ -98,14 +126,14 @@ public class RegionFinder {
      * @return Map of region names to their geometries
      * @throws IOException if there's an error reading the shapefile
      */
+
     public Map<String, Geometry> loadRegionsFromShapefile(String shapeFilePath) throws IOException {
         File file = new File(shapeFilePath);
-        if (!file.exists()) {
-            throw new IOException("Shapefile not found: " + shapeFilePath);
-        }
+        if (!file.exists()) throw new IOException("Shapefile not found: " + shapeFilePath);
 
         ShapefileDataStore dataStore = null;
         SimpleFeatureIterator iterator = null;
+        Map<String, Geometry> regions = new LinkedHashMap<>();
 
         try {
             dataStore = new ShapefileDataStore(file.toURI().toURL());
@@ -113,51 +141,27 @@ public class RegionFinder {
             SimpleFeatureCollection featureCollection = featureSource.getFeatures();
 
             CoordinateReferenceSystem sourceCRS = dataStore.getSchema().getCoordinateReferenceSystem();
-            CoordinateReferenceSystem targetCRS = CRS.decode("EPSG:4326"); // lat/long
+            CoordinateReferenceSystem targetCRS = CRS.decode("EPSG:4326");
+            MathTransform transform = CRS.findMathTransform(sourceCRS, targetCRS, true);
 
-            Map<String, Geometry> regions = new LinkedHashMap<>();
             iterator = featureCollection.features();
-
-            // Prepare coordinate transformation if needed
-            MathTransform transform = null;
-            if (sourceCRS != null && !CRS.equalsIgnoreMetadata(sourceCRS, targetCRS)) {
-                transform = CRS.findMathTransform(sourceCRS, targetCRS, true);
-            }
-
-            // Iterate through features and extract each region
             while (iterator.hasNext()) {
                 SimpleFeature feature = iterator.next();
-
-                // Get the region name from the attribute table
                 String regionName = getRegionName(feature);
-                if (regionName == null || regionName.trim().isEmpty()) {
-                    continue; // Skip regions with invalid names
-                }
+                if (regionName == null || regionName.isBlank()) continue;
 
-                // Get the geometry
-                Geometry geometry = (Geometry) feature.getDefaultGeometry();
-                if (geometry != null && transform != null) {
-                    geometry = JTS.transform(geometry, transform);
-                }
-
-                // Store if valid
-                if (geometry != null) {
-                    regions.put(regionName, geometry);
-                }
+                Geometry geom = (Geometry) feature.getDefaultGeometry();
+                if (geom != null) geom = JTS.transform(geom, transform);
+                regions.put(regionName, geom);
             }
-
-            return regions;
-
         } catch (FactoryException | TransformException e) {
-            throw new IOException("Error processing coordinate reference systems", e);
+            throw new IOException("Coordinate transform error", e);
         } finally {
-            if (iterator != null) {
-                iterator.close();
-            }
-            if (dataStore != null) {
-                dataStore.dispose();
-            }
+            if (iterator != null) iterator.close();
+            if (dataStore != null) dataStore.dispose();
         }
+
+        return regions;
     }
 
     /**
@@ -167,9 +171,8 @@ public class RegionFinder {
      * @return The region name, or null if not found
      */
     private String getRegionName(SimpleFeature feature) {
-
-        Object nameValue = feature.getAttribute(RegionFinder.NAME_ATTRIBUTE);
-        return nameValue != null ? nameValue.toString().trim() : null;
+        Object val = feature.getAttribute(NAME_ATTRIBUTE);
+        return val != null ? val.toString().trim() : null;
     }
 
     /**
@@ -179,57 +182,37 @@ public class RegionFinder {
      * @return The name of the region, or "Other" if not found
      */
     public String findRegionForTrail(Trail trail) {
-        if (trail == null) {
-            return "Other";
-        }
-
+        if (trail == null) return "Other";
         return findRegionForPoint(trail.getLat(), trail.getLon());
     }
 
     /**
      * Checks if a point is within any of the loaded regions.
      *
-     * @param latitude  Latitude coordinate
-     * @param longitude Longitude coordinate
+     * @param lat  Latitude coordinate
+     * @param lon Longitude coordinate
      * @return Name of the region containing the point, or "Other" if not found
      */
-    public String findRegionForPoint(double latitude, double longitude) {
-        try {
-            // Create point (lat, lon)
-            Point point = geometryFactory.createPoint(new Coordinate(latitude, longitude));
 
-            // First: try contains() and intersects()
-            for (Map.Entry<String, Geometry> entry : allRegions.entrySet()) {
-                String regionName = entry.getKey();
-                Geometry regionGeometry = entry.getValue();
-
-                if (regionGeometry != null && regionGeometry.contains(point)) {
-                    return cleanRegionName(regionName);
-                }
-            }
-
-            // Otherwise, return "Other"
-            return "Other";
-        } catch (Exception e) {
-            System.err.println("Error checking point against regions: " + e.getMessage());
-            return "Other";
+    public String findRegionForPoint(double lat, double lon) {
+        Point point = geometryFactory.createPoint(new Coordinate(lat, lon));
+        for (Map.Entry<String, Geometry> e : allRegions.entrySet()) {
+            if (e.getValue() != null && e.getValue().contains(point))
+                return cleanRegionName(e.getKey());
         }
+        return "Other";
     }
 
     /**
      * Cleans up region names by handling "Region" suffix and special cases
      *
-     * @param regionName The raw region name from the shapefile
+     * @param name The raw region name from the shapefile
      * @return Cleaned region name
      */
-    private String cleanRegionName(String regionName) {
-        if (regionName.equals("Area Outside Region")) {
-            return "Other";
-        } else if (regionName.contains("ManawatÅ«-Whanganui")) {
-            return "Manawatū-Whanganui";
-        } else {
-            return regionName.replace(" Region", "").trim();
-        }
+    private String cleanRegionName(String name) {
+        if (name.equals("Area Outside Region")) return "Other";
+        if (name.contains("Manawat")) return "Manawatū-Whanganui";
+        return name.replace(" Region", "").trim();
     }
 
     /**
@@ -247,18 +230,13 @@ public class RegionFinder {
      * @return List of region names
      */
     public List<String> getRegionNames() {
-        List<String> orderedNames = new ArrayList<>();
-        for (String regionName : allRegions.keySet()) {
-            String cleanedName = cleanRegionName(regionName);
-            if (!orderedNames.contains(cleanedName)) {
-                orderedNames.add(cleanedName);
-            }
+        List<String> list = new ArrayList<>();
+        for (String n : allRegions.keySet()) {
+            String cleaned = cleanRegionName(n);
+            if (!list.contains(cleaned)) list.add(cleaned);
         }
-        // Always add "Other" for the trails that have no regions boohoo
-        if (!orderedNames.contains("Other")) {
-            orderedNames.add("Other");
-        }
-        return orderedNames;
+        if (!list.contains("Other")) list.add("Other");
+        return list;
     }
 
     /**
@@ -280,9 +258,7 @@ public class RegionFinder {
      * @return The doc region id or null if not found
      */
     public Integer getDocRegionId(String regionName) {
-        if (regionName == null)
-            return null;
-
+        if (regionName == null) return null;
         return switch (regionName.toLowerCase()) {
             case "northland" -> 3001000;
             case "auckland" -> 3002000;
