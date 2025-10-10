@@ -87,8 +87,9 @@ public abstract class Controller {
      * @param e the exception thrown while attempting to load the screen
      */
     public void onLoadFailed(Exception e) {
-        // default: just log
-        System.err.println("Failed to load screen: " + e.getMessage());
+        showAlert("Page Failed To Load",
+                getTitle() + " page failed to load, please close and reload the application.",
+                "", "OK", null, null);
     }
 
     /**
