@@ -7,8 +7,11 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import org.apache.commons.lang3.SystemUtils;
 
+import java.awt.Desktop;
 import java.io.IOException;
+import java.net.URI;
 import java.util.ArrayDeque;
 import java.util.Deque;
 
@@ -52,7 +55,20 @@ public class ScreenNavigator {
      */
     public void openWebPage(String url) {
         try {
-            java.awt.Desktop.getDesktop().browse(java.net.URI.create(url));
+            if (SystemUtils.IS_OS_LINUX) {
+                if (Runtime.getRuntime().exec(new String[] { "which", "xdg-open" }).getInputStream().read() != -1) {
+                    Runtime.getRuntime().exec(new String[] { "xdg-open", url });
+                } else {
+                    System.err.println("xdg-open not supported!");
+                }
+            } else {
+                if (Desktop.isDesktopSupported()) {
+                    Desktop desktop = Desktop.getDesktop();
+                    desktop.browse(URI.create(url));
+                } else {
+                    System.err.println("Desktop not supported!");
+                }
+            }
         } catch (IOException e) {
             System.err.println("Failed to open web page: " + e.getMessage());
         }
