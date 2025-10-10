@@ -9,17 +9,15 @@
 
 <HBox alignment="TOP_CENTER" styleClass="root-pane" stylesheets="@../styles/global.css" xmlns="http://javafx.com/javafx/null" xmlns:fx="http://javafx.com/fxml/1" fx:controller="seng202.team5.gui.SafetyInfoController">
    <children>
-      <ScrollPane>
+      <ScrollPane fitToHeight="true" fitToWidth="true" HBox.hgrow="ALWAYS">
          <content>
-            <VBox alignment="TOP_CENTER" minHeight="300.0" minWidth="500.0">
+            <VBox alignment="TOP_CENTER" maxWidth="1.7976931348623157E308">
                <children>
-                  <VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity">
+                  <VBox alignment="TOP_CENTER" layoutX="30.0" layoutY="30.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity">
                      <children>
-      
-                               <!-- Emergency Section -->
                         <HBox alignment="CENTER">
                            <children>
-                              <Label styleClass="heading" text="Emergency Information">
+                              <Label styleClass="heading" text="Emergency Information" HBox.hgrow="ALWAYS">
                                  <HBox.margin>
                                     <Insets bottom="10.0" top="20.0" />
                                  </HBox.margin>
@@ -30,7 +28,7 @@
                            <children>
                               <HBox alignment="CENTER">
                                  <children>
-                                    <VBox alignment="CENTER_LEFT">
+                                    <VBox alignment="TOP_CENTER" HBox.hgrow="ALWAYS">
                                        <children>
                                           <Label alignment="CENTER" text="If an emergency occurs whilst you're in the bush, call 111 and request Police.">
                                              <VBox.margin>
@@ -51,6 +49,9 @@
                                                    </HBox.margin>
                                                 </Label>
                                              </children>
+                                             <VBox.margin>
+                                                <Insets left="270.0" />
+                                             </VBox.margin>
                                           </HBox>
                                           <HBox alignment="CENTER_LEFT">
                                              <children>
@@ -62,8 +63,12 @@
                                                 <Label text="Location/terrain. Map grid reference or GPS coordinates are preferable." wrapText="true">
                                                    <HBox.margin>
                                                       <Insets left="30.0" />
-                                                   </HBox.margin></Label>
+                                                   </HBox.margin>
+                                                </Label>
                                              </children>
+                                             <VBox.margin>
+                                                <Insets left="270.0" />
+                                             </VBox.margin>
                                           </HBox>
                                           <HBox alignment="CENTER_LEFT">
                                              <children>
@@ -78,6 +83,9 @@
                                                    </HBox.margin>
                                                 </Label>
                                              </children>
+                                             <VBox.margin>
+                                                <Insets left="270.0" />
+                                             </VBox.margin>
                                           </HBox>
                                           <HBox alignment="CENTER_LEFT">
                                              <children>
@@ -92,6 +100,9 @@
                                                    </HBox.margin>
                                                 </Label>
                                              </children>
+                                             <VBox.margin>
+                                                <Insets left="270.0" />
+                                             </VBox.margin>
                                           </HBox>
                                           <HBox alignment="CENTER_LEFT">
                                              <children>
@@ -106,6 +117,9 @@
                                                    </HBox.margin>
                                                 </Label>
                                              </children>
+                                             <VBox.margin>
+                                                <Insets left="270.0" />
+                                             </VBox.margin>
                                           </HBox>
                                        </children>
                                     </VBox>
@@ -113,9 +127,7 @@
                               </HBox>
                            </children>
                         </VBox>
-      
-                         <!-- Safety Tips Section -->
-                        <VBox alignment="CENTER">
+                        <VBox alignment="TOP_CENTER">
                            <children>
                               <HBox alignment="CENTER">
                                  <children>
