@@ -190,30 +190,6 @@ public class UserService {
     }
 
     /**
-     * Mark the current user's profile as complete.
-     * This should be called when the user finishes the quiz.
-     */
-    public void markProfileComplete() {
-        User user = getUser();
-        if (user != null && !isGuest) {
-            user.setProfileComplete(true);
-            saveUserToDatabase(user);
-            this.cachedUser = user;
-        }
-    }
-
-    /**
-     * Check if there's a user in the database with an incomplete profile.
-     *
-     * @return true if an incomplete profile exists
-     */
-    public boolean hasIncompleteProfile() {
-        List<User> incompleteUsers = queryHelper.executeQuery(
-                "SELECT * FROM user WHERE isProfileComplete = 0 LIMIT 1", null, this::mapRowToUser);
-        return !incompleteUsers.isEmpty();
-    }
-
-    /**
      * Maps a database row to a User object.
      *
      * @param row the database row
@@ -273,39 +249,5 @@ public class UserService {
         stmt.setInt(15, user.getWaterfallPreference());
         stmt.setBoolean(16, user.isProfileComplete());
         stmt.setString(17, user.getProfilePicture());
-    }
-
-    /**
-     * Returns a map of pairs category : count
-     * To be used for pie chart
-     * Will be updated later after trip logging is merged
-     */
-    public Map<String, Integer> getTrailStats() {
-        SqlBasedTrailRepo trailRepo = this.trailRepo;
-        MatchmakingService matchmakingService = new MatchmakingService(App.getKeywordRepo(),
-                trailRepo);
-        // get all the trails
-        List<Trail> allTrails = trailRepo.getAllTrails();
-        // sort to get the recommended ones
-        List<Trail> recommendedTrails = allTrails.stream()
-                .sorted(Comparator.comparing(Trail::getUserWeight).reversed())
-                .limit(8).toList();
-
-        Map<String, Integer> trailStats = new HashMap<>();
-        for (Trail trail : recommendedTrails) {
-            try {
-                Set<String> categories = matchmakingService.categoriseTrail(trail);
-                for (String category : categories) {
-                    if (trailStats.containsKey(category)) {
-                        trailStats.put(category, trailStats.get(category) + 1);
-                    } else {
-                        trailStats.put(category, 1);
-                    }
-                }
-            } catch (MatchmakingFailedException e) {
-                System.out.println(e.getMessage());
-            }
-        }
-        return trailStats;
     }
 }
