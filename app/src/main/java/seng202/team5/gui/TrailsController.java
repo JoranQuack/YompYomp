@@ -2,6 +2,7 @@ package seng202.team5.gui;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import org.controlsfx.control.CheckComboBox;
@@ -163,9 +164,9 @@ public class TrailsController extends Controller {
      * Loads initial data asynchronously
      */
     private void loadInitialDataAsync() {
-        Task<Void> loadTask = new Task<Void>() {
+        Task<Void> loadTask = new Task<>() {
             @Override
-            protected Void call() throws Exception {
+            protected Void call() {
                 if (searchText != null) {
                     searchService.setCurrentQuery(searchText);
                 }
@@ -271,7 +272,7 @@ public class TrailsController extends Controller {
         // Remove the default "All regions" option as we handle that separately
         regionList = regionList.stream()
                 .filter(region -> !region.equals("All regions"))
-                .collect(Collectors.toList());
+                .toList();
 
         // Add Select All option at the top
         List<String> allRegions = new ArrayList<>();
@@ -587,16 +588,12 @@ public class TrailsController extends Controller {
      * Gets the title for a filter type
      */
     private String getFilterTitle(String filterType) {
-        switch (filterType) {
-            case "completionType":
-                return "Types";
-            case "timeUnit":
-                return "Time Units";
-            case "difficulty":
-                return "Difficulties";
-            default:
-                return filterType;
-        }
+        return switch (filterType) {
+            case "completionType" -> "Types";
+            case "timeUnit" -> "Time Units";
+            case "difficulty" -> "Difficulties";
+            default -> filterType;
+        };
     }
 
     /**
@@ -626,9 +623,9 @@ public class TrailsController extends Controller {
                 }
             } else if (change.wasRemoved()) {
                 for (String removed : change.getRemoved()) {
+                    boolean anySpecificItemChecked = false;
                     if ("Select All".equals(removed)) {
                         // Check if Select All was the only thing selected
-                        boolean anySpecificItemChecked = false;
                         for (String item : checkComboBox.getItems()) {
                             if (!"Select All".equals(item) && checkComboBox.getCheckModel().isChecked(item)) {
                                 anySpecificItemChecked = true;
@@ -642,7 +639,6 @@ public class TrailsController extends Controller {
                         }
                     } else {
                         // automatically check "Select All" to prevent having nothing selected
-                        boolean anySpecificItemChecked = false;
                         for (String item : checkComboBox.getItems()) {
                             if (!"Select All".equals(item) && checkComboBox.getCheckModel().isChecked(item)) {
                                 anySpecificItemChecked = true;
@@ -718,7 +714,7 @@ public class TrailsController extends Controller {
         resetIcon.setFitWidth(17.0);
         resetIcon.setPickOnBounds(true);
         resetIcon.setPreserveRatio(true);
-        resetIcon.setImage(new javafx.scene.image.Image(getClass().getResourceAsStream("/images/reset.png")));
+        resetIcon.setImage(new javafx.scene.image.Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/reset.png"))));
         resetBtn.setGraphic(resetIcon);
 
         resetBtn.getStyleClass().addAll("special-button", "regular-text");
@@ -842,7 +838,7 @@ public class TrailsController extends Controller {
 
         isUpdating = false;
 
-        // The page restoration will happen in loadInitialDataAsync's success
+        // The page restoration will happen in loadInitialDataAsync success
     }
 
     /**
@@ -888,11 +884,9 @@ public class TrailsController extends Controller {
 
         // scroll position after short delay
         if (trailsScrollPane != null) {
-            Platform.runLater(() -> {
-                Platform.runLater(() -> { // Double runLater to ensure UI is done loading
-                    trailsScrollPane.setVvalue(savedScrollPosition);
-                });
-            });
+            Platform.runLater(() -> Platform.runLater(() -> { // Double runLater to ensure UI is done loading
+                trailsScrollPane.setVvalue(savedScrollPosition);
+            }));
         }
     }
 }

@@ -3,7 +3,6 @@ package seng202.team5.services;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.*;
-import java.util.stream.Collectors;
 
 import seng202.team5.App;
 import seng202.team5.data.DatabaseService;
@@ -84,7 +83,7 @@ public class UserService {
      */
     private User loadUserFromDatabase() {
         List<User> users = queryHelper.executeQuery("SELECT * FROM user LIMIT 1", null, this::mapRowToUser);
-        return users.isEmpty() ? null : users.get(0);
+        return users.isEmpty() ? null : users.getFirst();
     }
 
     /**
@@ -246,7 +245,6 @@ public class UserService {
                     row.getBoolean("isProfileComplete"),
                     row.getString("profilePicture"));
         } catch (SQLException e) {
-            e.printStackTrace();
             return null;
         }
     }
@@ -291,7 +289,7 @@ public class UserService {
         // sort to get the recommended ones
         List<Trail> recommendedTrails = allTrails.stream()
                 .sorted(Comparator.comparing(Trail::getUserWeight).reversed())
-                .limit(8).collect(Collectors.toList());
+                .limit(8).toList();
 
         Map<String, Integer> trailStats = new HashMap<>();
         for (Trail trail : recommendedTrails) {
@@ -305,7 +303,7 @@ public class UserService {
                     }
                 }
             } catch (MatchmakingFailedException e) {
-                System.out.println(e);
+                System.out.println(e.getMessage());
             }
         }
         return trailStats;

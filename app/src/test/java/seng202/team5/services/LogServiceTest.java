@@ -113,7 +113,7 @@ public class LogServiceTest {
 
         when(mockTrailRepo.getAllTrails()).thenReturn(mockTrails);
 
-        when(mockLogInterface.findByTrailId(703975)).thenReturn(Optional.of(mockLogs.get(0)));
+        when(mockLogInterface.findByTrailId(703975)).thenReturn(Optional.of(mockLogs.getFirst()));
         when(mockLogInterface.findByTrailId(999999)).thenReturn(Optional.empty());
 
         when(mockTrailRepo.findById(anyInt())).thenAnswer(invocation -> {

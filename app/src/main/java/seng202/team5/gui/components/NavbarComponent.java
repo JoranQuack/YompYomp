@@ -15,7 +15,7 @@ import seng202.team5.services.UserService;
 
 public class NavbarComponent extends HBox {
 
-    private List<Button> navButtons;
+    private final List<Button> navButtons;
 
     // Components
     @FXML

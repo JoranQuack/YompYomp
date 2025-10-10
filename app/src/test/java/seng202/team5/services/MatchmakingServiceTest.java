@@ -94,17 +94,14 @@ class MatchmakingServiceTest {
      * tests
      * to independently verify the scoring logic in {@link MatchmakingService}.
      *
-     * @param strengthSum the total weighted sum of matched trail categories
-     * @param matched     the number of trail categories that match user preferences
-     * @param total       the total number of categories in the trail
-     * @param maxScore    the maximum possible weight sum across all user
-     *                    preferences
+     * @param maxScore the maximum possible weight sum across all user
+     *                 preferences
      * @return the expected weighted score (combination of user-weighted strength
-     *         and category coverage)
+     * and category coverage)
      */
-    private double expectedScore(double strengthSum, int matched, int total, double maxScore) {
-        double strength = strengthSum / maxScore;
-        double coverage = (double) matched / total;
+    private double expectedScore(double maxScore) {
+        double strength = 13.0 / maxScore;
+        double coverage = (double) 3 / 3;
         return MatchmakingService.STRENGTH_WEIGHT * strength + (1 - MatchmakingService.STRENGTH_WEIGHT) * coverage;
     }
 
@@ -160,7 +157,7 @@ class MatchmakingServiceTest {
         // 3 matched categories / 3 total categories for the trail
         // 0.8 * 13/29 + 0.2 * 3/3 ≈
         // 0.5586
-        assertEquals(expectedScore(5.0 + 4.0 + 4.0, 3, 3, matchmakingService.getMaxScore()), score, 0.0001);
+        assertEquals(expectedScore(matchmakingService.getMaxScore()), score, 0.0001);
     }
 
     @Test
@@ -172,7 +169,7 @@ class MatchmakingServiceTest {
         Set<String> categories = new HashSet<>(Arrays.asList("Wet", "Forest", "Alpine", "Wet", "Forest"));
         double score = matchmakingService.scoreTrail(categories);
         // Duplicates are ignored in a Set, so same as partial match: 0.5586
-        assertEquals(expectedScore(5.0 + 4.0 + 4.0, 3, 3, matchmakingService.getMaxScore()), score, 0.0001);
+        assertEquals(expectedScore(matchmakingService.getMaxScore()), score, 0.0001);
     }
 
     @Test
@@ -236,7 +233,7 @@ class MatchmakingServiceTest {
 
     @Test
     @DisplayName("assignWeightsToTrails should throw if trail list is empty")
-    void testAssignWeightsToTrailsThrowsWhenEmpty() throws MatchmakingFailedException {
+    void testAssignWeightsToTrailsThrowsWhenEmpty() {
         when(mockTrailRepo.getAllTrails()).thenReturn(Collections.emptyList());
         MatchmakingService service = new MatchmakingService(mockKeywordRepo, mockTrailRepo);
         assertThrows(MatchmakingFailedException.class, service::assignWeightsToTrails);
@@ -270,7 +267,7 @@ class MatchmakingServiceTest {
 
     @Test
     @DisplayName("generateTrailWeights should throw if trails are empty")
-    void testGenerateTrailWeightsThrows() throws MatchmakingFailedException {
+    void testGenerateTrailWeightsThrows() {
         when(mockTrailRepo.getAllTrails()).thenReturn(Collections.emptyList());
         User user = makeTestUser();
         assertThrows(MatchmakingFailedException.class,

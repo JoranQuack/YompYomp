@@ -54,7 +54,7 @@ public abstract class Controller {
                 .add(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/YompYompIcon.png"))));
 
         DialogPane dialogPane = alert.getDialogPane();
-        dialogPane.getStylesheets().add(getClass().getResource("/styles/global.css").toExternalForm());
+        dialogPane.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/styles/global.css")).toExternalForm());
         dialogPane.setGraphic(null);
 
         ButtonType confirmButton = new ButtonType(confirmText, ButtonBar.ButtonData.OK_DONE);
@@ -78,7 +78,7 @@ public abstract class Controller {
     /**
      * Called when the navigator fails to load the FXML file associated
      * with this controller
-     *
+     * <p>
      * By default, this method logs the exception details to the error
      * output. Controllers may override this method to provide
      * screen-specific error handling, such as displaying an alert
@@ -89,7 +89,6 @@ public abstract class Controller {
     public void onLoadFailed(Exception e) {
         // default: just log
         System.err.println("Failed to load screen: " + e.getMessage());
-        e.printStackTrace();
     }
 
     /**

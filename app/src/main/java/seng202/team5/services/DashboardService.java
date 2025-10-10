@@ -10,7 +10,7 @@ import seng202.team5.models.Trail;
 
 public class DashboardService {
 
-    private SqlBasedTrailRepo trailRepo;
+    private final SqlBasedTrailRepo trailRepo;
 
     public DashboardService(SqlBasedTrailRepo trailRepo) {
         this.trailRepo = trailRepo;

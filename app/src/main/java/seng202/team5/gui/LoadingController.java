@@ -14,9 +14,9 @@ import seng202.team5.services.UserService;
 
 public class LoadingController extends Controller {
 
-    private User user;
-    private boolean isSkip = false;
-    private boolean isResetting;
+    private final User user;
+    private final boolean isSkip;
+    private final boolean isResetting = false;
 
     @FXML
     private ProgressIndicator progressIndicator;
@@ -38,12 +38,7 @@ public class LoadingController extends Controller {
     public LoadingController(ScreenNavigator navigator, User user, boolean isResetting) {
         super(navigator);
         this.user = user;
-        if (user != null) {
-            isSkip = false;
-        } else {
-            isSkip = true;
-        }
-        this.isResetting = isResetting;
+        isSkip = user == null;
 
         // Use Platform.runLater to execute
         javafx.application.Platform.runLater(this::startMatchmaking);
@@ -75,7 +70,7 @@ public class LoadingController extends Controller {
         final ScreenNavigator navigator = super.getNavigator();
 
         // Create a background task for the matchmaking process
-        Task<Void> matchmakingTask = new Task<Void>() {
+        Task<Void> matchmakingTask = new Task<>() {
             @Override
             protected Void call() throws Exception {
                 if (isResetting) {
@@ -114,7 +109,6 @@ public class LoadingController extends Controller {
             protected void failed() {
                 Throwable exception = getException();
                 System.err.println("Matchmaking failed: " + exception.getMessage());
-                exception.printStackTrace();
                 navigator.launchScreen(new DashboardController(navigator));
                 exitThread();
             }

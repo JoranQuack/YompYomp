@@ -24,7 +24,7 @@ class WeatherServiceTest {
     private URI mockUri;
 
     @BeforeEach
-    void setUp() throws Exception {
+    void setUp() {
         weatherService = new WeatherService("https://fake-base-url", "https://fake-forecast-url");
         mockConnection = mock(HttpURLConnection.class);
         mockUrl = mock(URL.class);
@@ -55,10 +55,10 @@ class WeatherServiceTest {
             Weather result = weatherService.getWeatherByCoords(-43.5320, 172.6362);
 
             assertNotNull(result);
-            assertEquals(15.0, result.getTemperature());
-            assertEquals(15.0, result.getTempMin());
-            assertEquals(15.0, result.getTempMax());
-            assertEquals("clear sky", result.getDescription());
+            assertEquals(15.0, result.temperature());
+            assertEquals(15.0, result.tempMin());
+            assertEquals(15.0, result.tempMax());
+            assertEquals("clear sky", result.description());
         }
     }
 
@@ -82,24 +82,7 @@ class WeatherServiceTest {
     void testGetFourDayForecast_ValidResponse() throws Exception {
         // Use dynamic dates relative to tomorrow
         LocalDate tomorrow = LocalDate.now().plusDays(1);
-        LocalDate dayAfter = tomorrow.plusDays(1);
-        LocalDate dayAfter2 = tomorrow.plusDays(2);
-        LocalDate dayAfter3 = tomorrow.plusDays(3);
-        LocalDate dayAfter4 = tomorrow.plusDays(4);
-
-        String jsonResponse = String.format(
-                """
-                        {
-                          "list": [
-                            {"dt_txt": "%s 12:00:00", "main": {"temp": 18}, "weather": [{"description": "sunny", "icon": "01d"}]},
-                            {"dt_txt": "%s 12:00:00", "main": {"temp": 20}, "weather": [{"description": "rainy", "icon": "10d"}]},
-                            {"dt_txt": "%s 12:00:00", "main": {"temp": 22}, "weather": [{"description": "windy", "icon": "03d"}]},
-                            {"dt_txt": "%s 12:00:00", "main": {"temp": 24}, "weather": [{"description": "foggy", "icon": "50d"}]},
-                            {"dt_txt": "%s 12:00:00", "main": {"temp": 26}, "weather": [{"description": "clear", "icon": "01d"}]}
-                          ]
-                        }
-                        """,
-                tomorrow, dayAfter, dayAfter2, dayAfter3, dayAfter4);
+        String jsonResponse = getString(tomorrow);
 
         when(mockUrl.openConnection()).thenReturn(mockConnection);
         when(mockConnection.getResponseCode()).thenReturn(200);
@@ -114,10 +97,31 @@ class WeatherServiceTest {
             List<Weather> forecast = weatherService.getFourDayForecast(-43.5320, 172.6362);
 
             assertEquals(4, forecast.size());
-            assertEquals(tomorrow.toString(), forecast.get(0).getDate());
-            assertEquals("sunny", forecast.get(0).getDescription());
-            assertEquals("foggy", forecast.get(3).getDescription());
+            assertEquals(tomorrow.toString(), forecast.get(0).date());
+            assertEquals("sunny", forecast.get(0).description());
+            assertEquals("foggy", forecast.get(3).description());
         }
+    }
+
+    private static String getString(LocalDate tomorrow) {
+        LocalDate dayAfter = tomorrow.plusDays(1);
+        LocalDate dayAfter2 = tomorrow.plusDays(2);
+        LocalDate dayAfter3 = tomorrow.plusDays(3);
+        LocalDate dayAfter4 = tomorrow.plusDays(4);
+
+        return String.format(
+                """
+                        {
+                          "list": [
+                            {"dt_txt": "%s 12:00:00", "main": {"temp": 18}, "weather": [{"description": "sunny", "icon": "01d"}]},
+                            {"dt_txt": "%s 12:00:00", "main": {"temp": 20}, "weather": [{"description": "rainy", "icon": "10d"}]},
+                            {"dt_txt": "%s 12:00:00", "main": {"temp": 22}, "weather": [{"description": "windy", "icon": "03d"}]},
+                            {"dt_txt": "%s 12:00:00", "main": {"temp": 24}, "weather": [{"description": "foggy", "icon": "50d"}]},
+                            {"dt_txt": "%s 12:00:00", "main": {"temp": 26}, "weather": [{"description": "clear", "icon": "01d"}]}
+                          ]
+                        }
+                        """,
+                tomorrow, dayAfter, dayAfter2, dayAfter3, dayAfter4);
     }
 
     @Test

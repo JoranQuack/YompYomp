@@ -2,7 +2,6 @@ package seng202.team5.cucumber.StepDefinitions;
 
 import io.cucumber.java.Before;
 import io.cucumber.java.en.*;
-import seng202.team5.data.DatabaseService;
 import seng202.team5.data.SqlBasedKeywordRepo;
 import seng202.team5.data.SqlBasedTrailRepo;
 import seng202.team5.exceptions.MatchmakingFailedException;
@@ -25,7 +24,6 @@ public class ViewPersonalisedRecommendedTrailsStepDefinitions {
     private List<Trail> orderedTrails;
     private User testUser;
     private User currentUser;
-    private Map<String, Integer> userWeights;
 
     @Before
     public void setUp() {
@@ -110,7 +108,7 @@ public class ViewPersonalisedRecommendedTrailsStepDefinitions {
     public void userSelectsContinueButton() throws MatchmakingFailedException {
         // retrieve previously calculated userWeights
         matchmakingService.setUserPreferences(currentUser);
-        userWeights = matchmakingService.getUserWeights();
+        Map<String, Integer> userWeights = matchmakingService.getUserWeights();
     }
 
     @Then("the user is shown the previously calculated personalised recommended trails screen directly")

@@ -17,8 +17,7 @@ public class LegendLabelComponent extends HBox {
     /**
      * Initializes the label with a given tag and colour code
      *
-     * @param hexString
-     * @param tag
+     * @param tag the difficulty word
      */
     public LegendLabelComponent(String tag) {
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/components/legend_label.fxml"));
