@@ -9,8 +9,13 @@ package "models" {
   }
 
   class Trail {
-    + Trail() : void
+    - Trail(builder : Builder)
     + toString() : String
+  }
+
+  class Trail.Builder {
+    +from(trail : Trail_ : Builder
+    + build() : Trail
   }
 
   class User {
@@ -22,10 +27,12 @@ package "models" {
     + TrailLog() : void
   }
 
-  class Weather {
+  record Weather {
     + Weather() : void
     + toString() : String
   }
+
+  Trail.Builder --> Trail : <<builds>>
 }
 
 TrailLog -- Trail
