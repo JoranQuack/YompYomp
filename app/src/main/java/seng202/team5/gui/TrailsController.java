@@ -133,6 +133,7 @@ public class TrailsController extends Controller {
         // Reset search bar
         searchBarTextField.clear();
         searchService.setCurrentQuery("");
+        searchText = "";
 
         // Reset filters
         regionCheckComboBox.getCheckModel().clearChecks();
