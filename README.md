@@ -96,7 +96,7 @@ The weather system requires an API key from OpenWeatherMap. Either set your syst
 - **UC_10** Rate Trail
 - **UC_11** Access Logbook
 - **UC_12** Access Account
-- **UC_13** Access Safety Screen
+- **UC_13** View and Customise Profile
 
 ### Highlighted Features
 
