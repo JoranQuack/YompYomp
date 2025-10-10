@@ -10,7 +10,7 @@ import seng202.team5.models.Trail;
 
 public class DashboardService {
 
-    private SqlBasedTrailRepo trailRepo;
+    private final SqlBasedTrailRepo trailRepo;
 
     public DashboardService(SqlBasedTrailRepo trailRepo) {
         this.trailRepo = trailRepo;
@@ -36,6 +36,9 @@ public class DashboardService {
      * @return list of popular trails
      */
     public List<Trail> getPopularTrailsByRegions(List<String> regions) {
+        if (regions == null || regions.isEmpty()) {
+            return getRecommendedTrails();
+        }
         List<Trail> trails = trailRepo.getAllTrails();
         return trails.stream()
                 .filter(trail -> regions.contains(trail.getRegion()))

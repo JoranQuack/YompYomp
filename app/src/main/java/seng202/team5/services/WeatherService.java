@@ -98,7 +98,6 @@ public class WeatherService {
             return new Weather(temp, tempMin, tempMax, description, null, iconType);
 
         } catch (Exception e) {
-            e.printStackTrace();
             return null;
         }
     }
@@ -181,7 +180,6 @@ public class WeatherService {
             return forecast;
 
         } catch (Exception e) {
-            e.printStackTrace();
             return Collections.emptyList();
         }
     }

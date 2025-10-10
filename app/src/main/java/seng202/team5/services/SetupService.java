@@ -35,23 +35,11 @@ public class SetupService {
     /**
      * Main constructor with database service
      *
-     * @param databaseService
      */
     public SetupService(SqlBasedTrailRepo sqlTrailRepo, DatabaseService databaseService) {
         this.databaseService = databaseService;
         this.sqlTrailRepo = sqlTrailRepo;
         this.fileTrailRepo = new FileBasedTrailRepo("/datasets/DOC_Walking_Experiences_-2195374600472221140.csv");
-    }
-
-    /**
-     * Checks if the category table is populated.
-     *
-     * @param sqlBasedKeywordRepo keyword repo to be used
-     * @return true if the category table is populated, false otherwise.
-     */
-    boolean isCategoryTablePopulated(SqlBasedKeywordRepo sqlBasedKeywordRepo) {
-        System.out.println(sqlBasedKeywordRepo.countCategories());
-        return sqlBasedKeywordRepo.countCategories() > 0;
     }
 
     /**
@@ -137,7 +125,6 @@ public class SetupService {
             databaseService.createDatabaseIfNotExists();
         } catch (Exception e) {
             System.err.println("Error setting up database: " + e.getMessage());
-            e.printStackTrace();
         }
     }
 
@@ -145,14 +132,15 @@ public class SetupService {
      * Syncs the database from the trail file if trail doesn't exist
      */
     public void syncDbFromTrailFile() {
+        if (sqlTrailRepo.countTrails() > 0) {
+            return;
+        }
         try {
             List<Trail> source = fileTrailRepo.getAllTrails();
             List<Trail> trails = TrailsProcessor.processTrails(source);
             sqlTrailRepo.insertOrIgnoreAll(trails);
-            System.out.println("Sync trails complete, " + sqlTrailRepo.countTrails() + " trails.");
         } catch (Exception e) {
             System.err.println("Error syncing database from trail file: " + e.getMessage());
-            e.printStackTrace();
         }
     }
 
@@ -160,7 +148,7 @@ public class SetupService {
      * Syncs filter options in the database.
      */
     public void syncFilterOptions() {
-        SqlBasedFilterOptionsRepo filterOptionsRepo = new SqlBasedFilterOptionsRepo(databaseService);
+        SqlBasedFilterOptionsRepo filterOptionsRepo = App.getFilterOptionsRepo();
         filterOptionsRepo.refreshAllFilterOptions();
     }
 
@@ -177,7 +165,6 @@ public class SetupService {
             matchmakingService.categoriseAllTrails();
         } catch (MatchmakingFailedException e) {
             System.err.println("Error generating trail weights: " + e.getMessage());
-            e.printStackTrace();
         }
     }
 

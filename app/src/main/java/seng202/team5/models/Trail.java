@@ -257,10 +257,6 @@ public class Trail {
         this.difficulty = difficulty;
     }
 
-    public void setCompletionInfo(String completionInfo) {
-        this.completionInfo = completionInfo;
-    }
-
     public void setMinCompletionTimeMinutes(int minCompletionTimeMinutes) {
         this.minCompletionTimeMinutes = minCompletionTimeMinutes;
     }
@@ -285,28 +281,12 @@ public class Trail {
         this.hasVariableTime = hasVariableTime;
     }
 
-    public void setThumbnailURL(String thumbnailURL) {
-        this.thumbnailURL = thumbnailURL;
-    }
-
-    public void setWebpageURL(String webpageURL) {
-        this.webpageURL = webpageURL;
-    }
-
     public void setCategories(Set<String> categories) {
         this.categories = categories;
     }
 
     public void setUserWeight(double userWeight) {
         this.userWeight = userWeight;
-    }
-
-    public void setCultureUrl(String cultureUrl) {
-        this.cultureUrl = cultureUrl;
-    }
-
-    public void setTranslation(String translation) {
-        this.translation = translation;
     }
 
     public void setRegion(String region) {

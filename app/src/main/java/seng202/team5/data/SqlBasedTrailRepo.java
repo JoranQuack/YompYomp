@@ -84,8 +84,8 @@ public class SqlBasedTrailRepo {
      */
     public boolean isTrailProcessed(Trail trail) {
         String sql = "SELECT COUNT(*) FROM trail WHERE id = ? AND completionType IS NOT NULL AND completionType != 'unknown'";
-        Integer count = queryHelper.executeCountQuery(sql, stmt -> stmt.setInt(1, trail.getId()));
-        return count != null && count > 0;
+        int count = queryHelper.executeCountQuery(sql, stmt -> stmt.setInt(1, trail.getId()));
+        return count > 0;
     }
 
     /**
@@ -281,14 +281,14 @@ public class SqlBasedTrailRepo {
             sql += " AND id != ?";
         }
 
-        Integer count = queryHelper.executeCountQuery(sql, stmt -> {
+        int count = queryHelper.executeCountQuery(sql, stmt -> {
             stmt.setString(1, name);
             if (excludeId != null) {
                 stmt.setInt(2, excludeId);
             }
         });
 
-        return count != null && count > 0;
+        return count > 0;
     }
 
     /**

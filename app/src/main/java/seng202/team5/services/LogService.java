@@ -8,17 +8,18 @@ import seng202.team5.utils.CompletionTimeParser;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class LogService {
 
     private final SqlBasedTrailLogRepo trailLogRepo;
-    private List<TrailLog> logs;
+    private final List<TrailLog> logs;
     private List<TrailLog> filteredLogs;
     private int maxResults = 50;
     private String currentSearchValue;
-    private SqlBasedTrailRepo trailRepo;
+    private final SqlBasedTrailRepo trailRepo;
 
     public LogService(SqlBasedTrailLogRepo trailLogRepo, SqlBasedTrailRepo trailRepo) {
         this.trailLogRepo = trailLogRepo;
@@ -59,7 +60,7 @@ public class LogService {
      * @return list of logs for the specified page
      */
     public List<TrailLog> getPage(int page) {
-        if (currentSearchValue != "") {
+        if (!Objects.equals(currentSearchValue, "")) {
             updateLogs();
         }
         int startIndex = page * maxResults;

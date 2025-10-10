@@ -7,6 +7,7 @@ import org.junit.jupiter.api.io.TempDir;
 import org.mockito.Mock;
 import org.mockito.MockedStatic;
 import org.mockito.MockitoAnnotations;
+import seng202.team5.exceptions.MatchmakingFailedException;
 import seng202.team5.utils.AppDataManager;
 import seng202.team5.data.DatabaseService;
 import seng202.team5.data.SqlBasedTrailRepo;
@@ -78,7 +79,8 @@ public class SetupServiceTest {
         String testUrl = "https://example.com/existing.jpg";
         String tempImagePath = tempDir.resolve("existing.jpg").toString();
 
-        Files.write(Path.of(tempImagePath), "existing data".getBytes());
+        Path path = Path.of(tempImagePath);
+        Files.write(path, "existing data".getBytes());
 
         try (MockedStatic<AppDataManager> mockedAppDataManager = mockStatic(AppDataManager.class)) {
             mockedAppDataManager.when(() -> AppDataManager.getAppData("images/existing.jpg"))
@@ -86,7 +88,7 @@ public class SetupServiceTest {
 
             setupService.scrapeTrailImage(testUrl);
 
-            assertEquals("existing data", Files.readString(Path.of(tempImagePath)));
+            assertEquals("existing data", Files.readString(path));
             mockedAppDataManager.verify(() -> AppDataManager.getAppData("images/existing.jpg"));
         }
     }
@@ -173,6 +175,17 @@ public class SetupServiceTest {
         DatabaseService testDbService = new DatabaseService(testDbPath);
         testDbService.createDatabaseIfNotExists();
 
+        SetupService testSetupService = getSetupService(testDbService);
+        SetupService spySetupService = spy(testSetupService);
+        doNothing().when(spySetupService).scrapeTrailImage(anyString());
+
+        spySetupService.scrapeAllTrailImages();
+
+        verify(spySetupService).scrapeTrailImage("https://example.com/image1.jpg");
+        verify(spySetupService).scrapeTrailImage("https://example.com/image2.jpg");
+    }
+
+    private static SetupService getSetupService(DatabaseService testDbService) throws MatchmakingFailedException {
         SqlBasedTrailRepo testTrailRepo = new SqlBasedTrailRepo(testDbService);
 
         Trail trail1 = new Trail(1, "Trail1", "Description1", "Easy", "1hr",
@@ -183,14 +196,7 @@ public class SetupServiceTest {
         List<Trail> trails = Arrays.asList(trail1, trail2);
         testTrailRepo.upsertAll(trails);
 
-        SetupService testSetupService = new SetupService(testTrailRepo, testDbService);
-        SetupService spySetupService = spy(testSetupService);
-        doNothing().when(spySetupService).scrapeTrailImage(anyString());
-
-        spySetupService.scrapeAllTrailImages();
-
-        verify(spySetupService).scrapeTrailImage("https://example.com/image1.jpg");
-        verify(spySetupService).scrapeTrailImage("https://example.com/image2.jpg");
+        return new SetupService(testTrailRepo, testDbService);
     }
 
     @Test
@@ -219,7 +225,7 @@ public class SetupServiceTest {
 
         // This test verifies that syncDbFromTrailFile doesn't throw exceptions
         // The actual file loading behavior is tested elsewhere
-        assertDoesNotThrow(() -> testSetupService.syncDbFromTrailFile());
+        assertDoesNotThrow(testSetupService::syncDbFromTrailFile);
     }
 
     @Test
@@ -232,13 +238,13 @@ public class SetupServiceTest {
         SqlBasedTrailRepo testTrailRepo = new SqlBasedTrailRepo(testDbService);
         Trail existingTrail = new Trail(1, "ExistingTrail", "Description", "Easy", "1hr",
                 "url", "url", 0.0, 0.0);
-        testTrailRepo.upsertAll(Arrays.asList(existingTrail));
+        testTrailRepo.upsertAll(List.of(existingTrail));
 
         SetupService testSetupService = new SetupService(mockSqlBasedTrailRepo, testDbService);
 
         // This test verifies that syncDbFromTrailFile works even when DB already has
         // data
-        assertDoesNotThrow(() -> testSetupService.syncDbFromTrailFile());
+        assertDoesNotThrow(testSetupService::syncDbFromTrailFile);
     }
 
     @Test
@@ -252,7 +258,7 @@ public class SetupServiceTest {
 
         // This test verifies that syncDbFromTrailFile handles cases where file has no
         // trails
-        assertDoesNotThrow(() -> testSetupService.syncDbFromTrailFile());
+        assertDoesNotThrow(testSetupService::syncDbFromTrailFile);
     }
 
     @Test
@@ -282,14 +288,14 @@ public class SetupServiceTest {
         Trail trailWithNullUrl = new Trail(1, "Trail1", "Description1", "Easy", "1hr",
                 null, "url1", 0.0, 0.0);
 
-        List<Trail> trails = Arrays.asList(trailWithNullUrl);
+        List<Trail> trails = List.of(trailWithNullUrl);
         testTrailRepo.upsertAll(trails);
 
         SetupService testSetupService = new SetupService(testTrailRepo, testDbService);
         SetupService spySetupService = spy(testSetupService);
         doNothing().when(spySetupService).scrapeTrailImage(any());
 
-        assertDoesNotThrow(() -> spySetupService.scrapeAllTrailImages());
+        assertDoesNotThrow(spySetupService::scrapeAllTrailImages);
 
         verify(spySetupService).scrapeTrailImage(null);
     }

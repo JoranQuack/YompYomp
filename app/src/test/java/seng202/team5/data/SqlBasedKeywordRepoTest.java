@@ -65,7 +65,7 @@ public class SqlBasedKeywordRepoTest {
                         categoryId INTEGER NOT NULL REFERENCES category (id),
                         PRIMARY KEY (trailId, categoryId)
                     );
-                            """);
+                           \s""");
             stmt.execute("DELETE FROM keyword");
             stmt.execute("DELETE FROM category");
 

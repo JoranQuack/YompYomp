@@ -111,7 +111,7 @@ public class SqlBasedTrailRepoTest {
 
     @Test
     @DisplayName("Should return all trails in the test table")
-    void testGetAllTrails() throws SQLException {
+    void testGetAllTrails() {
         List<Trail> trails = sqlBasedTrailRepo.getAllTrails();
         assertEquals(2, trails.size());
         assertEquals("Test1", trails.get(0).getName());
@@ -120,14 +120,14 @@ public class SqlBasedTrailRepoTest {
 
     @Test
     @DisplayName("Should find correct trail from ID, and return empty when not found")
-    void testFindByID() throws SQLException {
+    void testFindByID() {
         assertTrue(sqlBasedTrailRepo.findById(9999).isEmpty());
         assertEquals("Test2", sqlBasedTrailRepo.findById(2).get().getName());
     }
 
     @Test
     @DisplayName("Should upsert one row into table correctly")
-    void testUpsert() throws SQLException {
+    void testUpsert() {
         sqlBasedTrailRepo.upsert(new Trail(3, "Test3", "Test Trail 3", "Medium", null, null, null, 0.0, 0.0));
         assertEquals(3, sqlBasedTrailRepo.countTrails());
         assertTrue(sqlBasedTrailRepo.findById(3).isPresent());
@@ -136,7 +136,7 @@ public class SqlBasedTrailRepoTest {
 
     @Test
     @DisplayName("Should upsert all of the list of trails")
-    void testUpsertAll() throws SQLException, MatchmakingFailedException {
+    void testUpsertAll() throws MatchmakingFailedException {
         sqlBasedTrailRepo.upsertAll(List.of(
                 new Trail(4, "Test4", "Test Trail 4", "Easy", null, null, null, 0.0, 0.0),
                 new Trail(5, "Test5", "Test Trail 5", "Medium", null, null, null, 0.0, 0.0),
@@ -147,7 +147,7 @@ public class SqlBasedTrailRepoTest {
 
     @Test
     @DisplayName("Should delete a trail and ensure it is gone")
-    void testDeleteByID() throws SQLException {
+    void testDeleteByID() {
         sqlBasedTrailRepo.deleteById(1);
         assertEquals(1, sqlBasedTrailRepo.countTrails());
         assertTrue(sqlBasedTrailRepo.findById(1).isEmpty());
@@ -155,24 +155,17 @@ public class SqlBasedTrailRepoTest {
 
     @Test
     @DisplayName("Should return the number of trails in database")
-    void testCountTrails() throws SQLException {
+    void testCountTrails() {
         assertEquals(2, sqlBasedTrailRepo.countTrails());
         sqlBasedTrailRepo.deleteById(1);
         assertEquals(1, sqlBasedTrailRepo.countTrails());
     }
 
     //keeping this for now as we can use this in the new trail service when we merge with the testing branch
-//    @Test
-//    @DisplayName("Should return the correct recommended trails")
-//    void testGetRecommendedTrails() throws SQLException, MatchmakingFailedException {
-//        List<Trail> recommended = sqlBasedTrailRepo.getRecommendedTrails();
-//        assertEquals(2, recommended.size());
-//        assertTrue(recommended.get(0).getId() == 1);
-//    }
 
     @Test
     @DisplayName("Should return if trail is processed correctly")
-    void testIsTrailProcessed() throws SQLException {
+    void testIsTrailProcessed() {
         Trail trail = new Trail(3, "Test3", "Test Trail 3", "Hard", null, null, null, 0.0, 0.0);
         trail.setCompletionType("one way");
         sqlBasedTrailRepo.upsert(trail);
@@ -183,7 +176,7 @@ public class SqlBasedTrailRepoTest {
 
     @Test
     @DisplayName("Should insert trails that don't exist, and ignore those that do")
-    void testInsertIfNotExists() throws SQLException {
+    void testInsertIfNotExists() {
         sqlBasedTrailRepo.insertOrIgnore(new Trail(1, "Test1", "Test Trail 1", "Easy", null, null, null, 0.0, 0.0));
         assertEquals(2, sqlBasedTrailRepo.countTrails()); // Should remain 2 as ID 1 already exists
 
@@ -193,7 +186,7 @@ public class SqlBasedTrailRepoTest {
 
     @Test
     @DisplayName("Should update the user weights of trails correctly")
-    void testUpdateUserWeights() throws SQLException {
+    void testUpdateUserWeights() {
         Trail trail1 = new Trail(100, "Test1", "Test Trail 1", "Easy", null, null, null, 0.0, 0.0);
         Trail trail2 = new Trail(200, "Test2", "Test Trail 2", "Medium", null, null, null, 0.0, 0.0);
         sqlBasedTrailRepo.upsert(trail1);
@@ -207,7 +200,7 @@ public class SqlBasedTrailRepoTest {
 
     @Test
     @DisplayName("Should clear all user weights")
-    void testClearUserWeights() throws SQLException {
+    void testClearUserWeights() {
         assertEquals(0.8, sqlBasedTrailRepo.findById(1).get().getUserWeight());
         assertEquals(0.5, sqlBasedTrailRepo.findById(2).get().getUserWeight());
 
@@ -215,13 +208,13 @@ public class SqlBasedTrailRepoTest {
 
         double weight1 = sqlBasedTrailRepo.findById(1).get().getUserWeight();
         double weight2 = sqlBasedTrailRepo.findById(2).get().getUserWeight();
-        assertTrue(weight1 == 0.0, "User weight should be reset to 0.0");
-        assertTrue(weight2 == 0.0, "User weight should be reset to 0.0");
+        assertEquals(0.0, weight1, "User weight should be reset to 0.0");
+        assertEquals(0.0, weight2, "User weight should be reset to 0.0");
     }
 
     @Test
     @DisplayName("Should insert all trails that don't exist, and ignore those that do")
-    void testInsertOrIgnoreAll() throws SQLException, MatchmakingFailedException {
+    void testInsertOrIgnoreAll() throws MatchmakingFailedException {
         List<Trail> trails = List.of(
                 new Trail(1, "Test1", "Test Trail 1", "Easy", null, null, null, 0.0, 0.0), // ignored (exists)
                 new Trail(3, "Test3", "Test Trail 3", "Medium", null, null, null, 0.0, 0.0), // inserted
@@ -237,16 +230,14 @@ public class SqlBasedTrailRepoTest {
     @Test
     @DisplayName("Should throw exception when inserting empty list with insertOrIgnoreAll")
     void testInsertOrIgnoreAllEmptyList() {
-        assertThrows(MatchmakingFailedException.class, () -> {
-            sqlBasedTrailRepo.insertOrIgnoreAll(List.of());
-        });
+        assertThrows(MatchmakingFailedException.class, () -> sqlBasedTrailRepo.insertOrIgnoreAll(List.of()));
     }
 
     @Test
     @DisplayName("Should check if trail name exists correctly")
-    void testExistsByName() throws SQLException {
+    void testExistsByName() {
         assertTrue(sqlBasedTrailRepo.existsByName("Test1", null));
-        assertTrue(sqlBasedTrailRepo.existsByName("test1", null)); // Case insensitive
+        assertTrue(sqlBasedTrailRepo.existsByName("test1", null)); // Case-insensitive
         assertTrue(sqlBasedTrailRepo.existsByName("  Test1  ", null)); // Whitespace insensitive
 
         assertFalse(sqlBasedTrailRepo.existsByName("NonExistentTrail", null));
@@ -258,7 +249,7 @@ public class SqlBasedTrailRepoTest {
 
     @Test
     @DisplayName("Should return correct new trail ID")
-    void testGetNewTrailId() throws SQLException {
+    void testGetNewTrailId() {
         assertEquals(3, sqlBasedTrailRepo.getNewTrailId());
 
         // Birth trail with ID 5 and make sure 6 is selected as tribute

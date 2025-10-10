@@ -17,18 +17,15 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 public class CompleteProfileQuizStepDefinitions {
-    private SqlBasedKeywordRepo mockKeywordRepo;
-    private SqlBasedTrailRepo mockTrailRepo;
     private MatchmakingService matchmakingService;
     private SearchService searchService;
     private User testUser;
-    private Map<String, Integer> userWeights;
 
     @Before
     public void setUp() {
         // Mock the repos
-        mockKeywordRepo = mock(SqlBasedKeywordRepo.class);
-        mockTrailRepo = mock(SqlBasedTrailRepo.class);
+        SqlBasedKeywordRepo mockKeywordRepo = mock(SqlBasedKeywordRepo.class);
+        SqlBasedTrailRepo mockTrailRepo = mock(SqlBasedTrailRepo.class);
 
         // fake keyword data
         Map<String, List<String>> mockKeywords = new HashMap<>();
@@ -127,7 +124,7 @@ public class CompleteProfileQuizStepDefinitions {
     @When("the user selects the \"Change Quiz Preferences\" button on the dashboard")
     public void userSelectsRedoQuiz() {
         // Retrieve previously stored matchmaking results
-        userWeights = matchmakingService.getUserWeights();
+        Map<String, Integer> userWeights = matchmakingService.getUserWeights();
     }
 
     @Then("the user will be taken back to original questions for the profile")

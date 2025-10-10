@@ -28,7 +28,7 @@ public class DatabaseServiceTest {
     }
 
     @AfterEach
-    void tearDown() throws SQLException {
+    void tearDown() {
         File dbFile = new File(testDbPath);
         if (dbFile.exists()) {
             dbFile.delete();
@@ -96,9 +96,7 @@ public class DatabaseServiceTest {
     void testInvalidDatabasePath() {
         DatabaseService invalidService = new DatabaseService("invalid/path/database.db");
 
-        assertThrows(SQLException.class, () -> {
-            invalidService.getConnection();
-        });
+        assertThrows(SQLException.class, invalidService::getConnection);
     }
 
     @Test

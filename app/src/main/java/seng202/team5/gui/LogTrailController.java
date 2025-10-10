@@ -15,9 +15,9 @@ import java.util.List;
  */
 public class LogTrailController extends Controller {
 
-    private TrailLog trailLog;
-    private Trail trail;
-    private LogService logService;
+    private final TrailLog trailLog;
+    private final Trail trail;
+    private final LogService logService;
 
     private boolean isNewLog = false;
 

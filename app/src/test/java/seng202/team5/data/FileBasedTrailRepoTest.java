@@ -61,7 +61,7 @@ public class FileBasedTrailRepoTest {
         assertNotNull(trails);
 
         if (!trails.isEmpty()) {
-            Trail firstTrail = trails.get(0);
+            Trail firstTrail = trails.getFirst();
             assertNotNull(firstTrail.getName());
             assertNotNull(firstTrail.getDifficulty());
             assertNotNull(firstTrail.getDescription());
