@@ -19,7 +19,6 @@ rectangle "YompYomp App System" {
   Users --> (Complete Profile Quiz)
 
   Profiled -down-> (Log Trail)
-  (Log Trail) <.left. (Rate Trail) : <<extend>>
   Profiled --> (View Personalised Recommended Trails)
   Profiled --> (View and Customise Profile)
 
