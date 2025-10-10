@@ -16,6 +16,7 @@ import seng202.team5.models.User;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.Arrays;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -106,5 +107,93 @@ public class UserServiceTest {
 
         userService.saveUserToDatabase(testUser);
         assertTrue(userService.isGuest());
+    }
+
+    @Test
+    @DisplayName("Should return cached user when available")
+    void testGetUserUsesCache() {
+        userService.saveUser(testUser); // caches the user
+        User result = userService.getUser();
+        assertSame(testUser, result);
+    }
+
+    @Test
+    @DisplayName("saveUser should mark user as profile complete and cache it")
+    void testSaveUser() {
+        testUser.setProfileComplete(false);
+        userService.saveUser(testUser);
+        assertTrue(testUser.isProfileComplete());
+        assertEquals(testUser, userService.getUser());
+    }
+
+    @Test
+    @DisplayName("setUser should unset guest mode and cache user")
+    void testSetUser() {
+        userService.setGuest(true);
+        userService.setUser(testUser);
+        assertFalse(userService.isGuest());
+        assertEquals(testUser, userService.getUser());
+    }
+
+    @Test
+    @DisplayName("isValidName should handle all edge cases")
+    void testIsValidName() {
+        assertTrue(userService.isValidName("Hayley"));
+        assertFalse(userService.isValidName(""));
+        assertFalse(userService.isValidName(null));
+        assertFalse(userService.isValidName("Guest User"));
+        assertFalse(userService.isValidName("null"));
+        assertFalse(userService.isValidName("A".repeat(31)));
+    }
+
+    @Test
+    @DisplayName("setGuest(true) should clear user and set guest mode")
+    void testSetGuestTrue() {
+        userService.saveUser(testUser);
+        userService.setGuest(true);
+        assertTrue(userService.isGuest());
+        verify(mockSqlBasedTrailRepo).clearUserWeights();
+    }
+
+    @Test
+    @DisplayName("setGuest(false) should disable guest mode")
+    void testSetGuestFalse() {
+        userService.setGuest(false);
+        assertFalse(userService.isGuest());
+    }
+
+    @Test
+    @DisplayName("clearUser should reset cached user and guest flag")
+    void testClearUser() throws SQLException {
+        userService.saveUser(testUser);
+        userService.clearUser();
+        assertNull(userService.getUser());
+        assertFalse(userService.isGuest());
+        verify(mockSqlBasedTrailRepo, times(1)).clearUserWeights();
+        verify(mockPreparedStatement, atLeastOnce()).executeUpdate();
+    }
+
+    @Test
+    @DisplayName("getUserAfterSkip should return previous user when valid")
+    void testGetUserAfterSkipWithPreviousUser() {
+        userService.saveUser(testUser);
+        User result = userService.getUserAfterSkip();
+        assertNotNull(result);
+        assertEquals("Test User", result.getName());
+    }
+
+    @Test
+    @DisplayName("getUserAfterSkip should return null when previous user missing or name null")
+    void testGetUserAfterSkipNoUser() {
+        assertNull(userService.getUserAfterSkip());
+        User nameless = new User();
+        userService.saveUser(nameless);
+        assertNull(userService.getUserAfterSkip());
+    }
+
+    @Test
+    @DisplayName("saveUserToDatabase should handle null user safely")
+    void testSaveUserToDatabaseWithNull() {
+        assertDoesNotThrow(() -> userService.saveUserToDatabase(null));
     }
 }
