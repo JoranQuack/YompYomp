@@ -73,4 +73,12 @@ SqlBasedTrailRepo     *-- QueryHelper
 SqlBasedKeywordRepo   *-- QueryHelper
 SqlBasedTrailLogRepo     *-- QueryHelper
 SqlBasedFilterOptionsRepo *-- QueryHelper
+
+SqlBasedTrailRepo ..> DatabaseService
+SqlBasedKeywordRepo ..> DatabaseService
+SqlBasedTrailLogRepo ..> DatabaseService
+SqlBasedFilterOptionsRepo ..> DatabaseService
+
+QueryHelper ..> DatabaseService
+
 @enduml
