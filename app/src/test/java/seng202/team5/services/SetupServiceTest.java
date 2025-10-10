@@ -7,6 +7,9 @@ import org.junit.jupiter.api.io.TempDir;
 import org.mockito.Mock;
 import org.mockito.MockedStatic;
 import org.mockito.MockitoAnnotations;
+import seng202.team5.App;
+import seng202.team5.data.SqlBasedFilterOptionsRepo;
+import seng202.team5.data.SqlBasedKeywordRepo;
 import seng202.team5.exceptions.MatchmakingFailedException;
 import seng202.team5.utils.AppDataManager;
 import seng202.team5.data.DatabaseService;
@@ -20,6 +23,7 @@ import java.net.URI;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.List;
 
@@ -337,4 +341,114 @@ public class SetupServiceTest {
 
         verify(spySetupService).scrapeTrailImage(null);
     }
+
+    @Test
+    @DisplayName("setupDatabase should return early when databaseService is null")
+    void testSetupDatabase_NullDatabaseService() {
+        SetupService service = new SetupService(mockSqlBasedTrailRepo, null);
+        service.setupDatabase();
+        assertFalse(service.isDatabaseSetupComplete());
+    }
+
+    @Test
+    @DisplayName("setupDatabase should complete successfully and mark setup complete")
+    void testSetupDatabase_SuccessPath() {
+        SetupService spyService = spy(new SetupService(mockSqlBasedTrailRepo, mockDatabaseService));
+
+        doNothing().when(spyService).createDbActions();
+        doNothing().when(spyService).syncDbFromTrailFile();
+        doNothing().when(spyService).syncKeywords();
+        doNothing().when(spyService).syncFilterOptions();
+
+        spyService.setupDatabase();
+
+        verify(spyService).createDbActions();
+        verify(spyService).syncDbFromTrailFile();
+        verify(spyService).syncKeywords();
+        verify(spyService).syncFilterOptions();
+        assertTrue(spyService.isDatabaseSetupComplete());
+    }
+
+    @Test
+    @DisplayName("createDbActions should return early if database exists and schema up to date")
+    void testCreateDbActions_ReturnsEarly() throws SQLException {
+        when(mockDatabaseService.databaseExists()).thenReturn(true);
+        when(mockDatabaseService.isSchemaUpToDate()).thenReturn(true);
+
+        SetupService service = new SetupService(mockSqlBasedTrailRepo, mockDatabaseService);
+        service.createDbActions();
+
+        verify(mockDatabaseService, never()).deleteDatabase();
+        verify(mockDatabaseService, never()).createDatabaseIfNotExists();
+    }
+
+    @Test
+    @DisplayName("createDbActions should delete and recreate database if schema outdated")
+    void testCreateDbActions_SchemaOutdated() throws SQLException {
+        when(mockDatabaseService.databaseExists()).thenReturn(true);
+        when(mockDatabaseService.isSchemaUpToDate()).thenReturn(false);
+
+        SetupService service = new SetupService(mockSqlBasedTrailRepo, mockDatabaseService);
+        service.createDbActions();
+
+        verify(mockDatabaseService).deleteDatabase();
+        verify(mockDatabaseService).createDatabaseIfNotExists();
+    }
+
+    @Test
+    @DisplayName("syncKeywords should insert categories and call matchmaking")
+    void testSyncKeywords_NormalFlow() throws Exception {
+        SqlBasedKeywordRepo mockKeywordRepo = mock(SqlBasedKeywordRepo.class);
+        SqlBasedTrailRepo mockTrailRepo = mock(SqlBasedTrailRepo.class);
+
+        try (MockedStatic<App> mockedApp = mockStatic(App.class)) {
+            mockedApp.when(App::getKeywordRepo).thenReturn(mockKeywordRepo);
+            mockedApp.when(App::getFilterOptionsRepo).thenReturn(mock(SqlBasedFilterOptionsRepo.class));
+
+            SetupService service = new SetupService(mockTrailRepo, mock(DatabaseService.class));
+            service.syncKeywords();
+
+            verify(mockKeywordRepo).insertCategoriesAndKeywords(any());
+        }
+    }
+
+    @Test
+    @DisplayName("syncFilterOptions should call refreshAllFilterOptions on repo")
+    void testSyncFilterOptions() {
+        SqlBasedFilterOptionsRepo mockRepo = mock(SqlBasedFilterOptionsRepo.class);
+
+        try (MockedStatic<App> mockedApp = mockStatic(App.class)) {
+            mockedApp.when(App::getFilterOptionsRepo).thenReturn(mockRepo);
+
+            SetupService service = new SetupService(mock(SqlBasedTrailRepo.class), mock(DatabaseService.class));
+            service.syncFilterOptions();
+
+            verify(mockRepo).refreshAllFilterOptions();
+        }
+    }
+
+    @Test
+    @DisplayName("waitForDatabaseSetup should exit once setup complete")
+    void testWaitForDatabaseSetup_Normal() throws InterruptedException {
+        SetupService service = new SetupService(mockSqlBasedTrailRepo, mockDatabaseService);
+
+        Thread t = new Thread(() -> {
+            try {
+                Thread.sleep(200);
+                service.setupDatabase(); // sets flag true
+            } catch (InterruptedException ignored) {}
+        });
+        t.start();
+
+        assertDoesNotThrow(service::waitForDatabaseSetup);
+    }
+
+    @Test
+    @DisplayName("waitForDatabaseSetup should handle interrupt")
+    void testWaitForDatabaseSetup_Interrupted() {
+        SetupService service = new SetupService(mockSqlBasedTrailRepo, mockDatabaseService);
+        Thread.currentThread().interrupt(); // force interrupt before loop
+        assertDoesNotThrow(service::waitForDatabaseSetup);
+    }
+
 }

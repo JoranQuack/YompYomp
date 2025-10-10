@@ -32,6 +32,9 @@ class AccountStatisticsServiceTest {
     @Mock
     private MatchmakingService mockMatchmakingService;
 
+    @Mock
+    private SqlBasedTrailLogRepo mockTrailLogRepo2;
+
     private List<Trail> testTrails;
 
     @BeforeEach
@@ -167,6 +170,14 @@ class AccountStatisticsServiceTest {
         double averageScore = accountStatisticsService.getAverageMatchScore();
 
         assertEquals(76.67, averageScore, 0.01);
+    }
+
+    @Test
+    @DisplayName("Should return 0.0 if logged trails is empty")
+    void testGetAverageMatchScore_EmptyList() {
+        AccountStatisticsService accountStatisticsService2 = new AccountStatisticsService(mockTrailRepo, mockTrailLogRepo2, mockMatchmakingService, null);
+        double averageScore = accountStatisticsService2.getAverageMatchScore();
+        assertEquals(0.0, averageScore, "If there are no logs it should return 0.0");
     }
 
     @Test
