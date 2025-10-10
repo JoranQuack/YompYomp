@@ -30,6 +30,7 @@ rectangle "YompYomp App System" {
 
   Users --> (Add Missing Trail)
   Users --> (Modify Existing Trail)
+  Users --> (Access Safety Screen)
 
   (View All Trails) ..> (View Single Trail) : <<include>>
   (View General Recommended Trails) ..> (View Single Trail) : <<include>>
