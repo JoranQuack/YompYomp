@@ -3,8 +3,12 @@ package seng202.team5.models;
 import java.util.HashSet;
 import java.util.Set;
 
+/**
+ * Represents a trail in the YompYomp application
+ */
 public class Trail {
 
+    //Fields
     private final int id;
     private final String name;
     private final String translation;
@@ -26,6 +30,12 @@ public class Trail {
     private final double lat;
     private final double lon;
 
+    /**
+     * Private constructor used by the Builder
+     * Ensures immutability of Trail objects
+     *
+     * @param builder the instance containing field values
+     */
     private Trail(Builder builder) {
         this.id = builder.id;
         this.name = builder.name;
