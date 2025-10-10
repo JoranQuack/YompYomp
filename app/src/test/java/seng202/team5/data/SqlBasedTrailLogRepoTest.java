@@ -5,6 +5,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
+import seng202.team5.exceptions.MatchmakingFailedException;
 import seng202.team5.models.Trail;
 import seng202.team5.models.TrailLog;
 
@@ -13,9 +14,10 @@ import java.nio.file.Path;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.time.LocalDate;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class SqlBasedTrailLogRepoTest {
 
@@ -38,7 +40,7 @@ public class SqlBasedTrailLogRepoTest {
             stmt.execute("""
                         CREATE TABLE IF NOT EXISTS trail (
                           id INTEGER PRIMARY KEY,
-                          name TEXT NOT NULL,
+                          name TEXT,
                           translation TEXT,
                           region TEXT,
                           description TEXT,
@@ -87,9 +89,22 @@ public class SqlBasedTrailLogRepoTest {
             stmt.execute("DELETE FROM trailCategory");
             stmt.execute("DELETE FROM trailLog");
             stmt.execute(
-                    "INSERT INTO trailLog (id, trailId, startDate, completionTime) VALUES (1, 99, '9/10/2025', 2)");
+                    "INSERT INTO trail (id) VALUES (99)");
             stmt.execute(
-                    "INSERT INTO trailLog (id, trailId, startDate, completionTime) VALUES (2, 100, '10/10/2025', 1)");
+                    "INSERT INTO trail (id) VALUES (100)");
+            stmt.execute(
+                    "INSERT INTO trail (id) VALUES (101)");
+            stmt.execute(
+                    "INSERT INTO trail (id) VALUES (102)");
+            stmt.execute(
+                    "INSERT INTO trail (id) VALUES (103)");
+            stmt.execute(
+                    "INSERT INTO trail (id) VALUES (104)");
+            stmt.execute(
+                    "INSERT INTO trailLog (id, trailId, startDate, completionTime) VALUES (1, 99, '2025-10-09', 2)");
+            stmt.execute(
+                    "INSERT INTO trailLog (id, trailId, startDate, completionTime) VALUES (2, 100, '2025-10-09', 1)");
+
         }
     }
 
@@ -117,4 +132,63 @@ public class SqlBasedTrailLogRepoTest {
         assertEquals(99, logs.get(0).getTrailId());
         assertEquals(100, logs.get(1).getTrailId());
     }
+
+    @Test
+    @DisplayName("Should find correct trail from ID, and return empty when not found")
+    void testFindByID() {
+        assertTrue(sqlBasedTrailLogRepo.findById(9999).isEmpty());
+        assertEquals(100, sqlBasedTrailLogRepo.findById(2).get().getTrailId());
+    }
+
+    @Test
+    @DisplayName("Should upsert one row into table correctly")
+    void testUpsert() {
+        TrailLog log = new TrailLog(
+                3, 101,
+                LocalDate.of(2025, 10, 9), 120,
+                "minutes", "Loop", 5,
+                "Easy", "Nice easy hike around the lake"
+        );
+
+
+        sqlBasedTrailLogRepo.upsert(log);
+
+        assertEquals(3, sqlBasedTrailLogRepo.countTrailLogs());
+        assertTrue(sqlBasedTrailLogRepo.findById(3).isPresent());
+        assertEquals(101, sqlBasedTrailLogRepo.findById(3).get().getTrailId());
+    }
+
+    @Test
+    @DisplayName("Should upsert all of the list of logs")
+    void testUpsertAll() throws MatchmakingFailedException {
+        sqlBasedTrailLogRepo.upsertAll(List.of(
+                new TrailLog(4, 102, LocalDate.of(2025, 10, 1), 90, "minutes", "Loop", 5, "Easy", "Smooth scenic track."),
+                new TrailLog(5, 103, LocalDate.of(2025, 10, 2), 120, "minutes", "One way", 4, "Medium", "Mild incline with great views."),
+                new TrailLog(6, 104, LocalDate.of(2025, 10, 3), 150, "minutes", "Loop", 3, "Hard", "Challenging terrain, rocky in places.")
+        ));
+
+
+        assertEquals(5, sqlBasedTrailLogRepo.countTrailLogs());
+        assertTrue(sqlBasedTrailLogRepo.findById(5).isPresent());
+    }
+
+
+    @Test
+    @DisplayName("Should delete a log and ensure it is gone")
+    void testDeleteByID() {
+        sqlBasedTrailLogRepo.deleteById(1);
+        assertEquals(1, sqlBasedTrailLogRepo.countTrailLogs());
+        assertTrue(sqlBasedTrailLogRepo.findById(1).isEmpty());
+    }
+
+    @Test
+    @DisplayName("Should return the number of logs in database")
+    void testCountLogs() {
+        assertEquals(2, sqlBasedTrailLogRepo.countTrailLogs());
+        sqlBasedTrailLogRepo.deleteById(1);
+        assertEquals(1, sqlBasedTrailLogRepo.countTrailLogs());
+    }
+
 }
+
+
