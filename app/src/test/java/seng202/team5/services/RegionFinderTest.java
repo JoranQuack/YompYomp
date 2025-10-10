@@ -76,13 +76,17 @@ public class RegionFinderTest {
 
     @Test
     public void testFindRegionForTrail() {
-        Trail mockTrail = new Trail();
-        mockTrail.setLat(-36.880933915772516);
-        mockTrail.setLon(174.7444827976006);
+        Trail mockTrail = new Trail.Builder()
+                .lat(-36.880933915772516)
+                .lon(174.7444827976006)
+                .build();
+
         String region = regionFinder.findRegionForTrail(mockTrail);
+
         assertNotNull(region);
         assertEquals("Auckland", region);
     }
+
 
     @Test
     public void testFindRegionForNullTrail() {

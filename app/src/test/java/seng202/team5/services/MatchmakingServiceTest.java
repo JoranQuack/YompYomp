@@ -220,13 +220,25 @@ class MatchmakingServiceTest {
         User user = makeTestUser();
         matchmakingService.setUserPreferences(user);
 
-        Trail trail = new Trail(6, "Case Test Trail", "Easy", "A FOREST trail with a RIVER nearby",
-                "2 hours", "thumb6.jpg", "http://example.com/trail6", 0.0, 0.0);
+        Trail trail = new Trail.Builder()
+                .id(6)
+                .name("Case Test Trail")
+                .difficulty("Easy")
+                .description("A FOREST trail with a RIVER nearby")
+                .completionInfo("2 hours")
+                .thumbnailURL("thumb6.jpg")
+                .webpageURL("http://example.com/trail6")
+                .lat(0.0)
+                .lon(0.0)
+                .build();
+
         Set<String> categories = matchmakingService.categoriseTrail(trail);
+
         assertTrue(categories.contains("Forest"));
         assertTrue(categories.contains("Wet"));
         assertEquals(2, categories.size());
     }
+
 
     @Test
     @DisplayName("Empty list should give match of 0%")
