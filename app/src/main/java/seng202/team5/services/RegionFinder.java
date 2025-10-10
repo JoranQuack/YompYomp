@@ -34,6 +34,9 @@ public class RegionFinder {
     private final String regionalDatasetsPath;
     private final String fileName;
 
+    /**
+     * Default constructor that has preset regional pass.
+     */
     public RegionFinder() {
         this("/datasets/regional/", "regional-council-2025.shp");
     }
@@ -89,12 +92,12 @@ public class RegionFinder {
     }
 
     /**
-     * Extracts all shapefile components (.shp, .dbf, .shx, .prj) from the JAR into a temporary directory.
-     * This allows GeoTools to read the shapefile even when bundled within a JAR.
+     * Extracts all shapefile components from the JAR into a temporary directory.
+     * This allows GeoTools to read the shapefile even when bundled within a JAR
      *
      * @param basePath    the base path of the shapefile within the resources
-     * @param shpFileName the name of the shapefile (e.g. {@code regional-council-2025.shp})
-     * @return a {@link File} object referencing the extracted .shp file
+     * @param shpFileName the name of the shapefile
+     * @return a File object referencing the extracted file
      * @throws IOException if an extraction error occurs
      */
     private File extractShapefileResources(String basePath, String shpFileName) throws IOException {
