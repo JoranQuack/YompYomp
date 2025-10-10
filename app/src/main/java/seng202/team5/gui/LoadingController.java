@@ -16,6 +16,7 @@ public class LoadingController extends Controller {
 
     private User user;
     private boolean isSkip = false;
+    private boolean isResetting;
 
     @FXML
     private ProgressIndicator progressIndicator;
@@ -34,7 +35,7 @@ public class LoadingController extends Controller {
      *
      * @param navigator screen navigator
      */
-    public LoadingController(ScreenNavigator navigator, User user) {
+    public LoadingController(ScreenNavigator navigator, User user, boolean isResetting) {
         super(navigator);
         this.user = user;
         if (user != null) {
@@ -42,6 +43,7 @@ public class LoadingController extends Controller {
         } else {
             isSkip = true;
         }
+        this.isResetting = isResetting;
 
         // Use Platform.runLater to execute
         javafx.application.Platform.runLater(this::startMatchmaking);
@@ -76,6 +78,9 @@ public class LoadingController extends Controller {
         Task<Void> matchmakingTask = new Task<Void>() {
             @Override
             protected Void call() throws Exception {
+                if (isResetting) {
+                    App.resetApplication();
+                }
                 // Wait for database setup before we do ANYTHING
                 App.getSetupService().waitForDatabaseSetup();
 
