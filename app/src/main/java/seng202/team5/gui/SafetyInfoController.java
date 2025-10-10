@@ -1,5 +1,7 @@
 package seng202.team5.gui;
 
+import javafx.fxml.FXML;
+
 public class SafetyInfoController extends Controller {
 
 
@@ -7,6 +9,10 @@ public class SafetyInfoController extends Controller {
         super(navigator);
     }
 
+    @FXML
+    private void onLinkClicked() {
+        super.getNavigator().openWebPage("https://www.mountainsafety.org.nz/learn/skills/emergency");
+    }
 
     @Override
     protected String getFxmlFile() {
