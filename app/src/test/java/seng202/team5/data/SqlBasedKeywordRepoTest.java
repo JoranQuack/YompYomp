@@ -6,14 +6,14 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
+import seng202.team5.models.Trail;
+
 import java.io.File;
 import java.nio.file.Path;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -144,12 +144,120 @@ public class SqlBasedKeywordRepoTest {
 
     @Test
     @DisplayName("Should return all trail categories together")
-    void testGetCategoriesForTrailWithNoCategories() {
+    void testGetAllTrailCategories() {
         Map<Integer, Set<String>> trailCategories = sqlBasedKeywordRepo.getAllTrailCategories();
         assertNotNull(trailCategories);
         assertTrue(trailCategories.containsKey(1), "Trail 1 should be present");
         assertEquals(2, trailCategories.get(1).size(), "Trail 1 should have two categories");
         assertTrue(trailCategories.get(1).contains("FamilyFriendly"));
         assertTrue(trailCategories.get(1).contains("Forest"));
+    }
+
+    @Test
+    @DisplayName("Should return empty set for trail with no categories")
+    void testGetCategoriesForTrailWithNoCategories() {
+        Set<String> categories = sqlBasedKeywordRepo.getCategoriesForTrail(999);
+        assertNotNull(categories);
+        assertTrue(categories.isEmpty(), "Non-existent trail should have no categories");
+    }
+
+    @Test
+    @DisplayName("Should return empty map when no trail categories exist")
+    void testGetAllTrailCategoriesWhenEmpty() throws SQLException {
+        try (Connection conn = databaseService.getConnection();
+                Statement stmt = conn.createStatement()) {
+            stmt.execute("DELETE FROM trailCategory");
+        }
+
+        Map<Integer, Set<String>> trailCategories = sqlBasedKeywordRepo.getAllTrailCategories();
+        assertNotNull(trailCategories);
+        assertTrue(trailCategories.isEmpty(), "Should return empty map when no trail categories exist");
+    }
+
+    @Test
+    @DisplayName("Should insert new categories and keywords into database")
+    void testInsertCategoriesAndKeywords() throws SQLException {
+        try (Connection conn = databaseService.getConnection();
+                Statement stmt = conn.createStatement()) {
+            stmt.execute("DELETE FROM trailCategory");
+            stmt.execute("DELETE FROM keyword");
+            stmt.execute("DELETE FROM category");
+        }
+
+        // creating the data
+        Map<String, List<String>> testKeywords = new LinkedHashMap<>();
+        testKeywords.put("Adventure", Arrays.asList("exciting", "thrill"));
+        testKeywords.put("Scenic", Arrays.asList("beautiful", "view"));
+
+        // Insert
+        sqlBasedKeywordRepo.insertCategoriesAndKeywords(testKeywords);
+
+        assertEquals(2, sqlBasedKeywordRepo.countCategories());
+
+        Map<String, List<String>> retrievedKeywords = sqlBasedKeywordRepo.getKeywords();
+        assertEquals(2, retrievedKeywords.size());
+        assertTrue(retrievedKeywords.containsKey("Adventure"));
+        assertTrue(retrievedKeywords.containsKey("Scenic"));
+        assertEquals(2, retrievedKeywords.get("Adventure").size());
+        assertEquals(2, retrievedKeywords.get("Scenic").size());
+    }
+
+    @Test
+    @DisplayName("Should assign categories to trails")
+    void testAssignTrailCategories() throws SQLException {
+        try (Connection conn = databaseService.getConnection();
+                Statement stmt = conn.createStatement()) {
+            stmt.execute("DELETE FROM trailCategory");
+            stmt.execute("INSERT INTO trail (id, name) VALUES (2, 'Test Trail 2')");
+        }
+
+        // Create the test trails
+        Trail trail1 = new Trail.Builder()
+                .id(1)
+                .name("Trail 1")
+                .categories(Set.of("FamilyFriendly", "Alpine"))
+                .build();
+
+        Trail trail2 = new Trail.Builder()
+                .id(2)
+                .name("Trail 2")
+                .categories(Set.of("Forest"))
+                .build();
+
+        List<Trail> trails = Arrays.asList(trail1, trail2);
+        sqlBasedKeywordRepo.assignTrailCategories(trails);
+
+        // Verify assignments
+        Set<String> trail1Categories = sqlBasedKeywordRepo.getCategoriesForTrail(1);
+        assertEquals(2, trail1Categories.size());
+        assertTrue(trail1Categories.contains("FamilyFriendly"));
+        assertTrue(trail1Categories.contains("Alpine"));
+
+        Set<String> trail2Categories = sqlBasedKeywordRepo.getCategoriesForTrail(2);
+        assertEquals(1, trail2Categories.size());
+        assertTrue(trail2Categories.contains("Forest"));
+    }
+
+    @Test
+    @DisplayName("Should handle categories with null and empty keywords")
+    void testGetKeywordsWithNullAndEmptyKeywords() throws SQLException {
+        try (Connection conn = databaseService.getConnection();
+                Statement stmt = conn.createStatement()) {
+            stmt.execute("INSERT INTO category (id, name) VALUES (4, 'EmptyCategory')");
+            stmt.execute("INSERT INTO category (id, name) VALUES (5, 'MixedCategory')");
+            stmt.execute("INSERT INTO keyword (value, categoryId) VALUES ('valid', 5)");
+            stmt.execute("INSERT INTO keyword (value, categoryId) VALUES ('', 5)");
+            stmt.execute("INSERT INTO keyword (value, categoryId) VALUES ('   ', 5)");
+        }
+
+        Map<String, List<String>> keywords = sqlBasedKeywordRepo.getKeywords();
+
+        assertTrue(keywords.containsKey("EmptyCategory"));
+        assertTrue(keywords.get("EmptyCategory").isEmpty(), "EmptyCategory should have no keywords");
+
+        assertTrue(keywords.containsKey("MixedCategory"));
+        List<String> mixedKeywords = keywords.get("MixedCategory");
+        assertEquals(1, mixedKeywords.size(), "Only valid keyword should be included");
+        assertTrue(mixedKeywords.contains("valid"));
     }
 }
