@@ -7,7 +7,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<HBox alignment="TOP_CENTER" styleClass="root-pane" stylesheets="@../styles/global.css" xmlns="http://javafx.com/javafx/null" xmlns:fx="http://javafx.com/fxml/1" fx:controller="seng202.team5.gui.SafetyInfoController">
+<HBox alignment="TOP_CENTER" styleClass="root-pane" stylesheets="@../styles/global.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="seng202.team5.gui.SafetyInfoController">
    <children>
       <ScrollPane fitToHeight="true" fitToWidth="true" HBox.hgrow="ALWAYS">
          <content>
@@ -242,7 +242,7 @@
                                                 <Insets top="20.0" />
                                              </VBox.margin>
                                           </Label>
-                                          <Hyperlink text="https://www.mountainsafety.org.nz/learn/skills/emergency" />
+                                          <Hyperlink onAction="#onLinkClicked" text="Mountain Safety Organisation" />
                                        </children>
                                        <HBox.margin>
                                           <Insets top="70.0" />
