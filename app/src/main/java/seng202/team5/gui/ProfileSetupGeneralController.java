@@ -140,7 +140,7 @@ public class ProfileSetupGeneralController extends Controller {
 
     @Override
     protected String getTitle() {
-        return "Profile Setup Screen";
+        return "Profile Setup";
     }
 
     @Override

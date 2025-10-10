@@ -251,7 +251,7 @@ public class ProfileQuizController extends Controller {
 
     @Override
     protected String getTitle() {
-        return "Profile Quiz Screen";
+        return "Profile Quiz";
     }
 
     @Override

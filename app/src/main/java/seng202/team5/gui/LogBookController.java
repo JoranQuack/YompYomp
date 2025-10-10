@@ -276,7 +276,7 @@ public class LogBookController extends Controller {
 
     @Override
     protected String getTitle() {
-        return "Logbook Screen";
+        return "Logbook";
     }
 
     @Override
@@ -287,17 +287,5 @@ public class LogBookController extends Controller {
     @Override
     protected int getNavbarPageIndex() {
         return 2;
-    }
-
-    @Override
-    public void onLoadFailed(Exception e) {
-        showAlert(
-                "Log Book Failed To Load",
-                "Error",
-                "Logbook failed to load, please close and reload the application.",
-                "OK",
-                null,
-                "error-button");
-
     }
 }
