@@ -7,7 +7,7 @@ import java.util.List;
  */
 public class User {
 
-    private int id;
+    private final int id;
     private String name;
     private List<String> regions;
     private boolean isFamilyFriendly;

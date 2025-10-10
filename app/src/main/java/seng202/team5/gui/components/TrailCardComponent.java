@@ -1,6 +1,7 @@
 package seng202.team5.gui.components;
 
 import java.io.IOException;
+import java.util.Objects;
 
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -57,9 +58,9 @@ public class TrailCardComponent extends VBox {
     private final ImageService imageService;
     private final ScreenNavigator navigator;
 
-    private boolean isUnmatched;
-    private boolean logMode;
-    private boolean isSingle;
+    private final boolean isUnmatched;
+    private final boolean logMode;
+    private final boolean isSingle;
 
     public TrailCardComponent(boolean isUnmatched, boolean isSingle, boolean logMode, ScreenNavigator navigator) {
         this.isUnmatched = isUnmatched;
@@ -82,7 +83,7 @@ public class TrailCardComponent extends VBox {
     /**
      * Completion time formatting.
      *
-     * @param trail
+     * @param trail the trail to format
      */
     private String formatCompletionTime(Trail trail) {
         return CompletionTimeParser.formatTimeRange(trail.getMinCompletionTimeMinutes(),
@@ -161,7 +162,7 @@ public class TrailCardComponent extends VBox {
 
             ratingFlowPane.getStyleClass().clear();
 
-        } else if (logMode) {
+        } else {
             matchBar.setVisible(false);
             matchLabel.setVisible(false);
             typeLabel.setVisible(false);
@@ -198,9 +199,7 @@ public class TrailCardComponent extends VBox {
         VBox.setMargin(description, new Insets(0, 0, 10, 0));
         if (trail.getCultureUrl() != null && !trail.getCultureUrl().isEmpty()) {
             Hyperlink culturalUrl = new Hyperlink("Cultural Information");
-            culturalUrl.setOnAction(e -> {
-                navigator.openWebPage((trail.getCultureUrl()));
-            });
+            culturalUrl.setOnAction(e -> navigator.openWebPage((trail.getCultureUrl())));
             infoContainer.getChildren().add(4, culturalUrl);
             VBox.setMargin(culturalUrl, new Insets(0, 0, 10, 0));
         }
@@ -242,7 +241,7 @@ public class TrailCardComponent extends VBox {
         infoContainer.getChildren().remove(matchContainer);
         ratingFlowPane.getChildren().clear();
         ratingFlowPane.getStyleClass().add("darken");
-        ImageView star = new ImageView(new Image(getClass().getResourceAsStream("/images/star_icon.png")));
+        ImageView star = new ImageView(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/star_icon.png"))));
         star.setFitWidth(20);
         star.setFitHeight(20);
         ratingFlowPane.getChildren().add(star);

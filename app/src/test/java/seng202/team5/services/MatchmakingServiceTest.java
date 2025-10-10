@@ -3,6 +3,7 @@ package seng202.team5.services;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
@@ -36,19 +37,35 @@ class MatchmakingServiceTest {
                 // int id, String name, String description, String difficulty, String
                 // completionInfo,
                 // String thumbnailURL, String webpageURL
-                new Trail(1, "Alpine Trail", "Easy", "A beautiful alpine trail through the mountains",
+                createMockTrail(1, "Alpine Trail", "Easy", "A beautiful alpine trail through the mountains",
                         "2 hours", "thumb1.jpg", "http://example.com/trail1", -43.5321, 172.6362),
-                new Trail(2, "Forest Trail", "Medium", "A scenic forest trail with wildlife viewing",
-                        "3 hours", "thumb2.jpg", "http://example.com/trail2", -43.5350, 172.6400),
-                new Trail(3, "Mountain Peak Trail", "Hard", "Challenging trail to the mountain peak",
-                        "5 hours", "thumb3.jpg", "http://example.com/trail3", -43.5400, 172.6500),
-                new Trail(4, "Coastal Walk", "Easy", "Easy coastal walk with ocean views",
+                createMockTrail(2, "Forest Trail", "Medium", "A scenic forest trail with wildlife viewing",
+                        "3 hours", "thumb2.jpg", "http://example.com/trail2", -43.5380, 172.6410),
+                createMockTrail(3, "Mountain Peak Trail", "Hard", "Challenging trail to the mountain peak",
+                        "5 hours", "thumb3.jpg", "http://example.com/trail3", -43.5450, 172.6500),
+                createMockTrail(4, "Coastal Walk", "Easy", "Easy coastal walk with ocean views",
                         "1.5 hours", "thumb4.jpg", "http://example.com/trail4", -43.5250, 172.6200),
-                new Trail(5, "River Trail", "Medium", "Trail following the river through the valley",
+                createMockTrail(5, "River Trail", "Medium", "Trail following the river through the valley",
                         "2.5 hours", "thumb5.jpg", "http://example.com/trail5", -43.5300, 172.6450)));
         when(mockTrailRepo.getAllTrails()).thenReturn(mockTrails);
 
         matchmakingService = new MatchmakingService(mockKeywordRepo, mockTrailRepo);
+    }
+
+    private Trail createMockTrail(int id, String name, String difficulty, String description,
+                                  String completionInfo, String thumbnailURL, String webpageURL,
+                                  double lat, double lon) {
+        return new Trail.Builder()
+                .id(id)
+                .name(name)
+                .difficulty(difficulty)
+                .description(description)
+                .completionInfo(completionInfo)
+                .thumbnailURL(thumbnailURL)
+                .webpageURL(webpageURL)
+                .lat(lat)
+                .lon(lon)
+                .build();
     }
 
     /**
@@ -94,17 +111,14 @@ class MatchmakingServiceTest {
      * tests
      * to independently verify the scoring logic in {@link MatchmakingService}.
      *
-     * @param strengthSum the total weighted sum of matched trail categories
-     * @param matched     the number of trail categories that match user preferences
-     * @param total       the total number of categories in the trail
-     * @param maxScore    the maximum possible weight sum across all user
-     *                    preferences
+     * @param maxScore the maximum possible weight sum across all user
+     *                 preferences
      * @return the expected weighted score (combination of user-weighted strength
-     *         and category coverage)
+     * and category coverage)
      */
-    private double expectedScore(double strengthSum, int matched, int total, double maxScore) {
-        double strength = strengthSum / maxScore;
-        double coverage = (double) matched / total;
+    private double expectedScore(double maxScore) {
+        double strength = 13.0 / maxScore;
+        double coverage = (double) 3 / 3;
         return MatchmakingService.STRENGTH_WEIGHT * strength + (1 - MatchmakingService.STRENGTH_WEIGHT) * coverage;
     }
 
@@ -160,7 +174,7 @@ class MatchmakingServiceTest {
         // 3 matched categories / 3 total categories for the trail
         // 0.8 * 13/29 + 0.2 * 3/3 ≈
         // 0.5586
-        assertEquals(expectedScore(5.0 + 4.0 + 4.0, 3, 3, matchmakingService.getMaxScore()), score, 0.0001);
+        assertEquals(expectedScore(matchmakingService.getMaxScore()), score, 0.0001);
     }
 
     @Test
@@ -172,7 +186,7 @@ class MatchmakingServiceTest {
         Set<String> categories = new HashSet<>(Arrays.asList("Wet", "Forest", "Alpine", "Wet", "Forest"));
         double score = matchmakingService.scoreTrail(categories);
         // Duplicates are ignored in a Set, so same as partial match: 0.5586
-        assertEquals(expectedScore(5.0 + 4.0 + 4.0, 3, 3, matchmakingService.getMaxScore()), score, 0.0001);
+        assertEquals(expectedScore(matchmakingService.getMaxScore()), score, 0.0001);
     }
 
     @Test
@@ -207,13 +221,25 @@ class MatchmakingServiceTest {
         User user = makeTestUser();
         matchmakingService.setUserPreferences(user);
 
-        Trail trail = new Trail(6, "Case Test Trail", "Easy", "A FOREST trail with a RIVER nearby",
-                "2 hours", "thumb6.jpg", "http://example.com/trail6", 0.0, 0.0);
+        Trail trail = new Trail.Builder()
+                .id(6)
+                .name("Case Test Trail")
+                .difficulty("Easy")
+                .description("A FOREST trail with a RIVER nearby")
+                .completionInfo("2 hours")
+                .thumbnailURL("thumb6.jpg")
+                .webpageURL("http://example.com/trail6")
+                .lat(0.0)
+                .lon(0.0)
+                .build();
+
         Set<String> categories = matchmakingService.categoriseTrail(trail);
+
         assertTrue(categories.contains("Forest"));
         assertTrue(categories.contains("Wet"));
         assertEquals(2, categories.size());
     }
+
 
     @Test
     @DisplayName("Empty list should give match of 0%")
@@ -236,7 +262,7 @@ class MatchmakingServiceTest {
 
     @Test
     @DisplayName("assignWeightsToTrails should throw if trail list is empty")
-    void testAssignWeightsToTrailsThrowsWhenEmpty() throws MatchmakingFailedException {
+    void testAssignWeightsToTrailsThrowsWhenEmpty() {
         when(mockTrailRepo.getAllTrails()).thenReturn(Collections.emptyList());
         MatchmakingService service = new MatchmakingService(mockKeywordRepo, mockTrailRepo);
         assertThrows(MatchmakingFailedException.class, service::assignWeightsToTrails);
@@ -270,7 +296,7 @@ class MatchmakingServiceTest {
 
     @Test
     @DisplayName("generateTrailWeights should throw if trails are empty")
-    void testGenerateTrailWeightsThrows() throws MatchmakingFailedException {
+    void testGenerateTrailWeightsThrows() {
         when(mockTrailRepo.getAllTrails()).thenReturn(Collections.emptyList());
         User user = makeTestUser();
         assertThrows(MatchmakingFailedException.class,
@@ -331,17 +357,22 @@ class MatchmakingServiceTest {
     @Test
     @DisplayName("categoriseAllTrails assigns categories and calls keywordRepo.assignTrailCategories")
     void testCategoriseAllTrails() throws MatchmakingFailedException {
+        // Spy the service to observe method calls
         MatchmakingService spyService = spy(matchmakingService);
 
         spyService.categoriseAllTrails();
 
-        // Verify all trails have categories assigned
-        for (Trail trail : mockTrails) {
+        // Capture the argument passed to assignTrailCategories
+        ArgumentCaptor<List<Trail>> captor = ArgumentCaptor.forClass(List.class);
+        verify(mockKeywordRepo, times(1)).assignTrailCategories(captor.capture());
+
+        List<Trail> updatedTrails = captor.getValue();
+
+        // Verify all trails in the captured list have categories assigned
+        for (Trail trail : updatedTrails) {
             assertNotNull(trail.getCategories());
             assertFalse(trail.getCategories().isEmpty());
         }
-
-        // Verify assignTrailCategories was called in keywordRepo
-        verify(mockKeywordRepo, times(1)).assignTrailCategories(mockTrails);
     }
+
 }

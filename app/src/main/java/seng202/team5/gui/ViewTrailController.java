@@ -30,6 +30,7 @@ import seng202.team5.models.Weather;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * Controller for the view trail screen
@@ -37,9 +38,8 @@ import java.util.Map;
 public class ViewTrailController extends Controller {
     private final Trail trail;
     private WeatherService weatherService;
-    private RegionFinder regionFinder;
-    private TrailService trailService;
-    private LogService logService;
+    private final TrailService trailService;
+    private final LogService logService;
 
     private WebEngine webEngine;
     private JavaScriptBridge javaScriptBridge;
@@ -225,7 +225,6 @@ public class ViewTrailController extends Controller {
         javaScriptBridge = new JavaScriptBridge(this);
         mapContainer.getChildren().clear();
         WebView trailMapWebView = new WebView();
-        trailMapWebView.setPrefHeight(-1);
         trailMapWebView.setPrefWidth(-1);
         HBox.setHgrow(trailMapWebView, Priority.ALWAYS);
         mapContainer.getChildren().add(trailMapWebView);
@@ -253,7 +252,7 @@ public class ViewTrailController extends Controller {
                     }
                 });
 
-        webEngine.load(Controller.class.getResource("/html/map.html").toExternalForm());
+        webEngine.load(Objects.requireNonNull(Controller.class.getResource("/html/map.html")).toExternalForm());
     }
 
     /**
@@ -293,7 +292,9 @@ public class ViewTrailController extends Controller {
             List<Map<String, Object>> trailsWithTime = new ArrayList<>();
 
             for (Trail trail : trails) {
-                Map<String, Object> trailMap = new Gson().fromJson(new Gson().toJson(trail), Map.class);
+                @SuppressWarnings("unchecked")
+                Map<String, Object> trailMap = (Map<String, Object>) new Gson().fromJson(new Gson().toJson(trail),
+                        Map.class);
 
                 String completionTime = CompletionTimeParser.formatTimeRange(
                         trail.getMinCompletionTimeMinutes(), trail.getMaxCompletionTimeMinutes());
@@ -306,7 +307,7 @@ public class ViewTrailController extends Controller {
     }
 
     /**
-     * Handles showing/hiding nearby trails depending on checbox state and radius.
+     * Handles showing/hiding nearby trails depending on checkbox state and radius.
      */
     private void refreshNearbyTrails() {
         if (nearbyTrailsCheckbox.isSelected()) {
@@ -347,7 +348,7 @@ public class ViewTrailController extends Controller {
     }
 
     private void setupHutLinks() {
-        regionFinder = new RegionFinder();
+        RegionFinder regionFinder = new RegionFinder();
         String region = trail.getRegion();
         String regionLower = trail.getRegion().toLowerCase();
         String difficulty = trail.getDifficulty().toLowerCase();
@@ -417,7 +418,6 @@ public class ViewTrailController extends Controller {
      */
     @Override
     public void onLoadFailed(Exception e) {
-        e.printStackTrace();
         showAlert("Trail Card Failed To Load",
                 "Loading selected trail failed, please close the application and try again.",
                 "", "OK", null, null);

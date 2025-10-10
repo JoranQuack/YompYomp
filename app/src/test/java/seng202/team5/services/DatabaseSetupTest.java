@@ -104,12 +104,10 @@ public class DatabaseSetupTest {
 
                 while (columns.next()) {
                     String columnName = columns.getString("COLUMN_NAME").toLowerCase();
-                    if ("userweight".equals(columnName)) {
-                        hasUserWeight = true;
-                    } else if ("id".equals(columnName)) {
-                        hasId = true;
-                    } else if ("name".equals(columnName)) {
-                        hasName = true;
+                    switch (columnName) {
+                        case "userweight" -> hasUserWeight = true;
+                        case "id" -> hasId = true;
+                        case "name" -> hasName = true;
                     }
                 }
 

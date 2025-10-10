@@ -168,8 +168,7 @@ public class AccountStatisticsService {
                     categoryStats.put(category, categoryStats.getOrDefault(category, 0) + 1);
                 }
             } catch (MatchmakingFailedException e) {
-                // Skip this trail if categorization fails
-                continue;
+                System.err.println(e.getMessage());
             }
         }
 
