@@ -11,93 +11,122 @@ package "Models" {
   class Trail
   class User
   enum Question
-  class TripLog
+  class TrailLog
+  class Weather
 }
 
 package "Service" {
-  class SetupService
+  class LogService
+  class AccountStatisticsService
   class SearchService
   class UserService
   class MatchMakingService
+  class RegionFinder
   class ImageService
-  class WeatherService <<to be implemented>>
-  class MapService <<to be implemented>>
-  class LogService <<to be implemented>>
+  class WeatherService
+  class TrailService
+  class DashboardService
+  class SetupService
 }
 
 package "DataAccess (SQLite DB)" {
-  interface ITrail
-  interface IKeyword
   class FileBasedTrailRepo
   class FileBasedKeywordRepo
-  class SQLBasedKeywordRepo
-  class SQLBasedTrailRepo
-  class SQLBasedLogRepo
+  class SqlBasedFilterOptionsRepo
+  class SqlBasedKeywordRepo
+  class SqlBasedTrailRepo
+  class SqlBasedTrailLogRepo
   class DatabaseService
 }
 
 package "GUI" {
-  class LogBookController <<to be implemented>>
+  class AccountController
+  class LogBookController
+  class LogTrailController
+  class ModifyTrailController
   class ScreenNavigator
   abstract class Controller
   class WelcomeController
   class DashboardController
-  class MatchmakingController
+  class LoadingController
   class ProfileQuizController
   class ProfileSetupGeneralController
   class TrailsController
+  class ViewTrailController
+  class SafetyInfoController
+  class JavaScriptBridge
   package "Components" {
     class NavbarComponent
     class TrailCardComponent
+    class WeatherComponent
   }
 }
+
+package "util" {
+    class AppDataManager
+    class DifficultyParser
+    class GeoUtils
+    class TrailsProcessor
+    }
 
 'skinparam linetype ortho
 
 'Controller relationships
-FXAppEntry --> ScreenNavigator
-ScreenNavigator ..> Controller
+FXAppEntry *-- ScreenNavigator
+ScreenNavigator o-- Controller
 
 'Inheritence with the abstract controller class
 Controller <|-- WelcomeController
 Controller <|-- ProfileSetupGeneralController
-Controller <|-- MatchmakingController
 Controller <|-- ProfileQuizController
 Controller <|-- DashboardController
 Controller <|-- TrailsController
 Controller <|-- LogBookController
+Controller <|-- ViewTrailController
+Controller <|-- LoadingController
+Controller <|-- AccountController
+Controller <|-- LogTrailController
+Controller <|-- SafetyInfoController
+Controller <|-- ModifyTrailController
 
-Controller ..> NavbarComponent
-Controller ..> TrailCardComponent
+Controller *-- NavbarComponent
 
-App ..> SetupService
-TrailsController ..> SearchService
-ProfileSetupGeneralController ..> UserService
-ProfileQuizController ..> UserService
-MatchmakingController ..> MatchMakingService
-DashboardController ..> SearchService
-WelcomeController ..> UserService
-NavbarComponent ..> ImageService
-TrailsController ..> MapService
-LogBookController ..> LogService
-TrailsController ..> WeatherService
+App *-- SetupService
+App *-- DatabaseService
+App *-- SqlBasedFilterOptionsRepo
+App *-- SqlBasedTrailRepo
+App *-- SqlBasedTrailLogRepo
+App *-- SqlBasedKeywordRepo
+App *-- UserService
 
-SearchService ..> ITrail
-SetupService ..> ITrail
-SetupService ..> IKeyword
-LogService ..> SQLBasedLogRepo
-LogService ..> ITrail
+SqlBasedFilterOptionsRepo --> RegionFinder
 
-ITrail <|.. FileBasedTrailRepo
-ITrail <|.. SQLBasedTrailRepo
-IKeyword <|.. FileBasedKeywordRepo
-IKeyword <|.. SQLBasedKeywordRepo
+ProfileQuizController --> UserService
+TrailCardComponent --> ImageService
+JavaScriptBridge --> TrailService
 
-UserService ..> User
-MatchMakingService ..> User
-MatchMakingService ..> Trail
-SearchService ..> Trail
-SetupService ..> Trail
-ProfileQuizController ..> Question
+TrailsProcessor ..> GeoUtils
+TrailsProcessor ..> DifficultyParser
+
+
+SetupService ..> TrailsProcessor
+SetupService ..> AppDataManager
+SetupService ..> FileBasedKeywordRepo
+SetupService ..> SqlBasedKeywordRepo
+SetupService ..> FileBasedTrailRepo
+SetupService ..> SqlBasedFilterOptionsRepo
+
+MatchMakingService --> User
+MatchMakingService --> Trail
+SearchService --> Trail
+ProfileQuizController --> Question
+WeatherService --> Weather
+WeatherComponent --> Weather
+UserService --> User
+LogService --> TrailLog
+AccountStatisticsService --> User
+
+DashboardController --> DashboardService
+
 App ..> FXAppEntry
 @enduml

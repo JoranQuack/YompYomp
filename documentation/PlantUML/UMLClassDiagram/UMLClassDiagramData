@@ -5,20 +5,10 @@ title Data Package
 
 package "data" {
 
-  ' Interfaces first (leftmost)
-  interface ITrail {
-    + getAllTrails() : List<Trail>
-    + findById(id : int) : Optional<Trail>
-    + countTrails() : int
-  }
-
-  interface IKeyword {
-    + getKeywords() : Map<String, List<String>>
-  }
-
   ' File-based classes next
   class FileBasedTrailRepo {
     + FileBasedTrailRepo(csvFilePath : String)
+    - loadTrailsFromCSV(filePath : String) : List<Trail>
     + getAllTrails() : List<Trail>
     + findById(id : int) : Optional<Trail>
     + countTrails() : int
@@ -26,8 +16,18 @@ package "data" {
 
   class FileBasedKeywordRepo {
     + FileBasedKeywordRepo(filePath : String)
-    + getKeywords() : Map<String, List<String>>
+    - loadKeywordsFromCSV(filePath : String) : Map<String, List<String>>
   }
+
+  class DatabaseService {
+      + DatabaseService()
+      + DatabaseService(databasePath : String)
+      + getConnection() : Connection
+      + databaseExists() : boolean
+      + deleteDatabase() : boolean
+      + createDatabaseIfNotExists() : void
+      + isSchemaUpToDate() : boolean
+    }
 
   ' QueryHelper placed before SQL classes to reduce backtracking
   class QueryHelper {
@@ -51,23 +51,34 @@ package "data" {
     + getKeywords() : Map<String, List<String>>
   }
 
-  class SqlBasedLogRepo <<to be implemented>> {
-    + SqlBasedLogRepo(databaseService : DatabaseService)
-    + getAllLogs() : List<TrailLog>
+  class SqlBasedTrailLogRepo {
+    + SqlBasedTrailLogRepo(databaseService : DatabaseService)
+    + getAllTrailLogs() : List<TrailLog>
     + findById(id : int) : Optional<TrailLog>
     + deleteById(id : int) : void
     + upsert(trailLog : TrailLog) : void
   }
+
+  class SqlBasedFilterOptionsRepo {
+    + SqlBasedFilterOptionsRepo(databaseService : DatabaseService)
+    + getFilterOptions(filterType : String) : List<String>
+    + refreshAllFilterOptions()
+    + refreshRegionOptions()
+  }
 }
 
-' Interface implementations
-FileBasedTrailRepo    ..|> ITrail
-SqlBasedTrailRepo     ..|> ITrail
-FileBasedKeywordRepo  ..|> IKeyword
-SqlBasedKeywordRepo   ..|> IKeyword
 
 ' Dependencies to QueryHelper
 SqlBasedTrailRepo     *-- QueryHelper
 SqlBasedKeywordRepo   *-- QueryHelper
-SqlBasedLogRepo     *-- QueryHelper
+SqlBasedTrailLogRepo     *-- QueryHelper
+SqlBasedFilterOptionsRepo *-- QueryHelper
+
+SqlBasedTrailRepo ..> DatabaseService
+SqlBasedKeywordRepo ..> DatabaseService
+SqlBasedTrailLogRepo ..> DatabaseService
+SqlBasedFilterOptionsRepo ..> DatabaseService
+
+QueryHelper ..> DatabaseService
+
 @enduml

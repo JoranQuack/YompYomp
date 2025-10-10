@@ -6,58 +6,80 @@ title Services Package
 package "services" {
 
   class ImageService {
-    + loadTrailImage(url : String) : Image
+    + loadTrailImage(urlTrailImage : String) : Image
     + getDefaultTrailImage() : Image
   }
 
-  class LogService <<to be implemented>>{
-    + LogService()
-    + addNewLog(trailLog : TrailLog) : void
-    + removeLogByID(id : int) : bool
-    + removeLogByName(name : String) : bool
-    + getLogBookCount() : int
-}
-
-  class MapService <<to be implemented>>{
-    + MapService()
-    + loadMap() : void
-    + highlightTrail() : void
+  class TrailService {
+    + TrailService(sqlBasedTrailRepo : SqlBasedTrailRepo)
+    + existsByName(inputTrailName : String, excludeId : Integer) : boolean
+    + findTrailById(id : int) : Trail
   }
 
-  class WeatherService <<to be implemented>>{
-    + WeatherService()
-    + getCurrent(lat : double, lon : double) : String
-    + getTrailForecast(trail : Trail, periodOfDays : int) : List<String>
+  class AccountStatisticsService {
+    +AccountStatisticsService(trailRepo : SqlBasedTrailRepo , trailLogRepo : SqlBasedTrailLogRepo, matchmakingService : MatchmakingService, user : User)
+    - getLoggedTrails(logs : List<TrailLog>) : List<Trail>
+    + getTopCategory() : String
+  }
+
+  class DashboardService {
+    +DashboardService(trailRepo : SqlBasedTrailRepo)
+    + getRecommendedTrails() : List<Trail>
+  }
+
+  class LogService {
+    + LogService(trailLogRepo : SqlBasedTrailLogRepo, trailRepo: SqlBasedTrailRepo )
+    + getNumberOfPages() : int
+    + updateLogs()
+    + getPage(page : int) : List<TrailLog>
+    + getAllLogs() : List<TrailLog>
+    + addLog(trailLog : TrailLog)
+    + deleteLog(logId : int)
+}
+
+  class WeatherService{
+    + WeatherService(baseUrl : String, forecastUrl : String)
+    - getApiKey() : String
+    + getWeatherByCoords(lat : double, lon : double) : Weather
+    + getFourDayForecast(lat : double, lon : double) : List<Weather>
 }
 
   class MatchMakingService {
+    + MatchMakingService(keywordRepo : SqlBasedKeywordRepo , trailRepo : SqlBasedTrailRepo )
     + generateTrailWeights(user : User) : void
+    + setUserPreferences(user : User)
     + getRecommendedTrails(user : User, limit : int) : List<Trail>
-    + categoriseTrail(trail : Trail) : Set<String>
+    + categoriseAllTrails()
     + scoreTrail(trailCategories : Set<String>) : double
-    + getPersonalisedTrails(page : int) : List<Trail>
+    + getSortedTrails() : List<Trail>
   }
 
   class SearchService {
-    + setMaxResults(n : int) : void
+    + SearchService( sqlBasedTrailRepo: SqlBasedTrailRepo , filterOptionsRepo: SqlBasedFilterOptionsRepo )
     + getNumberOfTrails() : int
     + getNumberOfPages(query : String) : int
-    + getPage(page : int) : List<Trail>
-    + search(query : String, page : int) : List<Trail>
+    + updateTrails()
+    + updateSearch(query : String)
+    + getFilterOptions(filterType : String) : List<String>
+    + getSortOptions() : List<String>
   }
 
   class SetupService {
-    + SetupService()
+    + SetupService(sqlTrailRepo: SqlBasedTrailRepo, databaseService : DatabaseService)
     + setupDatabase() : void
     + scrapeTrailImage(url : String) : void
     + syncDB() : void
-    + setupApplicaiton() : void
+    + setupApplication() : void
   }
 
   class UserService {
+    + UserService(trailRepo : SqlBasedTrailRepo , databaseService : DatabaseService)
     + getUser() : User
     + setUserParameters(stmt : PreparedStatement, user : User) : void
     - loadUserFromDatabase() : User
+    + setGuest(isGuest : boolean)
+    + clearUser()
+    + getUserAfterSkip()
   }
 
   class DatabaseService {
@@ -70,13 +92,36 @@ package "services" {
     + isSchemaUpToDate() : boolean
   }
 
+  class RegionFinder {
+    + RegionFinder(regionalDatasetsPath : String, fileName : string)
+    + loadAllRegions() : Map<String, Geometry>
+    + loadRegionsFromShapefile(shapeFilePath : String) : Map<String, Geometry>
+    + findRegionForTrail(trail : Trail) : String
+    + findRegionForPoint(latitude : double, longitude : double) : String
+    + getAllRegions() : Map<String, Geometry>
+  }
 }
 
-SearchService *-- DatabaseService
-MatchMakingService *-- DatabaseService
-UserService *-- DatabaseService
-SetupService *-- DatabaseService
-MapService *-- DatabaseService
-WeatherService *-- DatabaseService
-LogService *-- DatabaseService
+package "DataAccess (SQLite DB)" {
+    class SqlBasedFilterOptionsRepo
+    class SqlBasedKeywordRepo
+    class SqlBasedTrailRepo
+    class SqlBasedTrailLogRepo
+  }
+
+TrailService ..> SqlBasedTrailRepo
+AccountStatisticsService ..> SqlBasedTrailRepo
+AccountStatisticsService ..> SqlBasedTrailLogRepo
+DashboardService ..> SqlBasedTrailRepo
+LogService ..> SqlBasedTrailRepo
+LogService ..> SqlBasedTrailLogRepo
+MatchMakingService ..> SqlBasedTrailRepo
+MatchMakingService ..> SqlBasedKeywordRepo
+SearchService ..> SqlBasedTrailRepo
+SearchService ..> SqlBasedFilterOptionsRepo
+SetupService ..> DatabaseService
+SetupService ..> SqlBasedTrailRepo
+UserService ..> DatabaseService
+UserService ..> SqlBasedTrailRepo
+
 @enduml

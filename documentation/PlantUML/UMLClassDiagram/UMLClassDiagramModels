@@ -9,8 +9,13 @@ package "models" {
   }
 
   class Trail {
-    + Trail() : void
+    - Trail(builder : Builder)
     + toString() : String
+  }
+
+  class TrailBuilder {
+    +from(trail : Trail) : Builder
+    + build() : Trail
   }
 
   class User {
@@ -18,19 +23,18 @@ package "models" {
     + toString() : String
   }
 
-  class TripLog <<to be implemented>> {
-    + TripLog() : void
+  class TrailLog {
+    + TrailLog() : void
+  }
+
+  record Weather {
+    + Weather() : void
     + toString() : String
   }
 
-  class Location <<to be implemented>> {
-    + Location() : void
-    + toString() : String
-  }
+  TrailBuilder --> Trail : <<builds>>
 }
 
-TripLog -- Trail
-TripLog -- User
-TripLog -- Location
+TrailLog -- Trail
 
 @enduml
