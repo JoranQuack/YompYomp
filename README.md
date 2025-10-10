@@ -98,6 +98,19 @@ The weather system requires an API key from OpenWeatherMap. Either set your syst
 - **UC_12** Access Account
 - **UC_13** View and Customise Profile
 
+### Feature Packages Implemented
+
+- **Iwi** Bi-cultural component
+- **Kehu** Basic UI and Loading Existing Data
+- **Hillary** Extended Viewing and Data Filtering
+- **Tasman** Basic Exploration
+- **Tia** Extended Loading and Data Input
+- **Dudley Dobson** Data Validation
+- **Brunner** Persistent Data Storage
+- **Colenso** Graphs & Charts
+- **Heaphy** Map Browsing
+- **Kupe** Map Visualisations
+
 ### Highlighted Features
 
 These are features the team is most proud of.
@@ -113,12 +126,13 @@ These are features the team is most proud of.
 - Guest mode functionality
 - Account statistics
 
-### Use Cases and Features Not Yet Implemented
+### Potential future features (not implemented)
 
 - Multiple user profiles
 - Trail routes
 - Mobile app support
 - External database (not local)
+- Upload new dataset
 
 ## Authors
 
