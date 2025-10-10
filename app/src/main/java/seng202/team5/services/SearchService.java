@@ -95,15 +95,15 @@ public class SearchService {
             return false;
         }
 
-        if (matchesFilter("completionType", filters.get("completionType"), trail.getCompletionType())) {
+        if (!matchesFilter("completionType", filters.get("completionType"), trail.getCompletionType())) {
             return false;
         }
 
-        if (matchesFilter("timeUnit", filters.get("timeUnit"), trail.getTimeUnit())) {
+        if (!matchesFilter("timeUnit", filters.get("timeUnit"), trail.getTimeUnit())) {
             return false;
         }
 
-        if (matchesFilter("difficulty", filters.get("difficulty"), trail.getDifficulty())) {
+        if (!matchesFilter("difficulty", filters.get("difficulty"), trail.getDifficulty())) {
             return false;
         }
 
@@ -115,28 +115,28 @@ public class SearchService {
      */
     private boolean matchesFilter(String filterType, String filterValue, String trailValue) {
         if (filterValue == null) {
-            return false; // No filter applied
+            return true; // No filter applied - include all
         }
 
         if (filterValue.isEmpty()) {
-            return true; // Empty filter means exclude all
+            return false; // Empty filter means exclude all
         }
 
         List<String> selectedValues = List.of(filterValue.split(","));
 
         // If "Select All" is in the selected values, allow all trails through
         if (selectedValues.stream().anyMatch(selected -> selected.trim().equals("Select All"))) {
-            return false;
+            return true;
         }
 
         String defaultValue = DEFAULT_VALUES.get(filterType);
         if (defaultValue != null && selectedValues.stream()
                 .anyMatch(selected -> selected.trim().equalsIgnoreCase(defaultValue))) {
-            return false; // include all the trails
+            return true; // include all the trails
         }
 
         return selectedValues.stream()
-                .noneMatch(selected -> selected.trim().equalsIgnoreCase(trailValue));
+                .anyMatch(selected -> selected.trim().equalsIgnoreCase(trailValue));
     }
 
     /**
