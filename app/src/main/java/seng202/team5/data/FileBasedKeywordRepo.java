@@ -32,8 +32,13 @@ public class FileBasedKeywordRepo {
      */
     private void loadKeywordsFromCSV(String filePath) {
         // Using the filePath, open the CSV as a stream (in bytes) to read its contents.
+        if (filePath == null || filePath.isEmpty()) {
+            return; // nothing to load
+        }
         try (InputStream inputStream = getClass().getResourceAsStream(filePath)) {
-            assert inputStream != null;
+            if (inputStream == null) {
+                return; // file not found on class path
+            }
             try (// InputStreamReader converts the stream to a character stream, and
                  // BufferedReader allows efficient line-by-line reading
                     BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream))) {
