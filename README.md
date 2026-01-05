@@ -2,12 +2,6 @@
     <img src="app/src/main/resources/images/YompYompLogo.png" alt="YOMPYOMP_LOGO" width="500"/>
 </div>
 
-<div align="center">
-
-[![Pipeline](https://eng-git.canterbury.ac.nz/seng202-2025/seng202-25-team5/badges/main/pipeline.svg)](https://eng-git.canterbury.ac.nz/seng202-2025/seng202-25-team5/)
-[![coverage report](https://eng-git.canterbury.ac.nz/seng202-2025/seng202-25-team5/badges/main/coverage.svg)](https://eng-git.canterbury.ac.nz/seng202-2025/seng202-25-team5/-/commits/main)
-
-</div>
 
 # SENG202-25-Team5 - YompYomp
 
@@ -142,9 +136,9 @@ AI was used sparingly to assist with debugging, as well as IntelliJ Idea Code Co
 
 ## Authors
 
-- [Hayley Kawelenga](https://eng-git.canterbury.ac.nz/hka105)
-- [Jonny Chan](https://eng-git.canterbury.ac.nz/jch485)
-- [Joran Le Quellec](https://eng-git.canterbury.ac.nz/jle209)
-- [Lam (Lucy) Tran](https://eng-git.canterbury.ac.nz/ltr53)
-- [Sam Ladbrook](https://eng-git.canterbury.ac.nz/sla202)
-- [Sienna Robinson](https://eng-git.canterbury.ac.nz/sro179)
+- [Hayley Kawelenga](https://github.com/HayleyKawelenga5)
+- [Jonny Chan](https://github.com/jonnychan01)
+- [Joran Le Quellec](https://github.com/JoranQuack)
+- [Lam (Lucy) Tran](https://github.com/lucy-tnh)
+- [Sam Ladbrook](https://github.com/samladbrook)
+- [Sienna Robinson](https://github.com/itzsiennaduh)
