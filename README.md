@@ -4,7 +4,7 @@
 
 # SENG202-25-Team5 - YompYomp
 
-6-person group project to create a New Zealand tramping app, as part of the SENG202 2025 course at the University of Canterbury.
+6-person group project to create a New Zealand tramping app, as part of the SENG202 2025 course at the University of Canterbury. 
 
 The name of this app was chosen from the definition of the word "yomp", which means "a march with heavy equipment over difficult terrain". The decision to multiply it by 2 was to create a more interesting name for the user, and help with memorability.
 
