@@ -127,7 +127,7 @@ These are features the team is most proud of.
 - Trail routes
 - Mobile app support
 - External database (not local)
-- Upload new dataset
+- Upload new dataset 
 
 ## AI Declaration
 
