@@ -54,7 +54,7 @@ Open the application
 ```
 
 > [!IMPORTANT]
-> This Jar is NOT cross-platform, so you must build the jar on the appropriate OS (and machine) to where you want to run it.<br>
+> This Jar is NOT cross-platform, so you must build the jar on the appropriate OS (and machine) to where you want to run it.<br> 
 
 > [!NOTE]
 > When the application is first launched images will slowly populate alphabetically.
@@ -141,3 +141,5 @@ AI was used sparingly to assist with debugging, as well as IntelliJ Idea Code Co
 - [Lam (Lucy) Tran](https://github.com/lucy-tnh)
 - [Sam Ladbrook](https://github.com/samladbrook)
 - [Sienna Robinson](https://github.com/itzsiennaduh)
+
+
